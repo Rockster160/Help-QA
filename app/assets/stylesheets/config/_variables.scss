@@ -1,0 +1,14 @@
+$help-default: #FF9F0F;
+
+$zindex: (
+  flash : 1000,
+  header: 0,
+  body: 1
+);
+
+/*
+Use like...
+.header {
+  z-index: map-get($zindex, header);
+}
+*/

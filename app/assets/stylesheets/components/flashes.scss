@@ -1,0 +1,35 @@
+$flash-notice-bg: rgba(0, 150, 0, 0.8);
+$flash-alert-bg: #B21500;
+
+.flash-banner {
+  position: fixed;
+  z-index: map-get($zindex, flash);
+  top: 0;
+  right: 0;
+  left: 0;
+  max-width: 100%;
+  text-align: center;
+  box-shadow: 0px 8px 10px -8px #000;
+  border-bottom: 4px ridge green;
+
+  .flash-container {
+    position: relative;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 600px;
+    font-size: 22px;
+  }
+
+  &.flash-notice {
+    background-color: $flash-notice-bg;
+    color: white;
+    .dismiss-flash i.fa-times-circle-o { color: white; }
+  }
+  &.flash-alert {
+    background-color: $flash-alert-bg;
+    color: white;
+    .dismiss-flash i.fa-times-circle-o { color: white; }
+  }
+}

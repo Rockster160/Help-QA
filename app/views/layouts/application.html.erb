@@ -9,6 +9,16 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%= render 'layouts/flashes' %>
+    <%= render 'layouts/navigation' %>
+    <div class="body-wrapper">
+      <%= yield %>
+    </div>
+  <% if content_for?(:modals) %>
+    <%= yield(:modals) %>
+  <% end %>
+  <% if content_for?(:post_body_scripts) %>
+    <%= yield(:post_body_scripts) %>
+  <% end %>
   </body>
 </html>
