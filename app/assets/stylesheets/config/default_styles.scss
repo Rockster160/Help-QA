@@ -9,7 +9,11 @@ h6 {
   line-height: 1;
   margin: 0;
 }
-hr { margin-top: 0; }
+hr {
+  margin: 0;
+  margin-bottom: 5px;
+  border: 1px solid #EEE;
+}
 
 .stretch-children {
   display: table;
@@ -19,6 +23,7 @@ hr { margin-top: 0; }
     display: table-cell;
   }
 }
+
 a {
   text-decoration: none;
   color: blue;

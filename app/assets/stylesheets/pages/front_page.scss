@@ -7,11 +7,6 @@
       font-size: 14px;
       margin: 0;
     }
-    hr {
-      margin: 0;
-      margin-bottom: 5px;
-      border: 1px solid #EEE;
-    }
     .tags {
       font-size: 12px;
       .tag-search {
@@ -78,14 +73,20 @@
       .post-controls {
         font-size: 12px;
         .small-text {
-          vertical-align: top;
+          vertical-align: middle;
           display: inline-block;
           font-size: 8px;
         }
       }
     }
     .posts-wrapper {
-      h3 {}
+      h3 {
+        font-size: 32px;
+        font-weight: normal;
+        margin: 0;
+        padding: 0;
+        margin-top: 20px;
+      }
       .tags {}
       .posts-container {
         .post-container {

@@ -22,24 +22,33 @@
         </div>
       </div>
     </div>
-    <div class="popular-post">
-      <span class="text-bold">Currently Popular Post</span>
-      <!-- FIXME off-black color -->
-      <hr>
-      <a href="<%=  %>" class="post stretch-children">
-        <div class="avatar">
-          <img src="https://web.archive.org/web/20080131224341im_/http://help.com/media/ticons/status_offline.png" alt="">
-        </div>
-        <div class="words">
-          <div class="title">
-            What scares you the most?
+    <% if @currently_popular_post %>
+      <% post = @currently_popular_post %>
+      <% author = post.author %>
+      <div class="popular-post">
+        <span class="text-bold">Currently Popular Post</span>
+        <hr>
+        <a href="<%=  %>" class="post stretch-children">
+          <div class="avatar-container">
+            <div class="img-container">
+              <% if author.picture.present? %>
+                <div class="avatar"><%= image_tag author.picture.thumbnail %></div>
+              <% else %>
+                <div class="letter"><%= (author.try(:login).try(:username)&.gsub(/[^a-z]/i, '').try(:first).presence || "?").upcase %></div>
+              <% end %>
+            </div>
           </div>
-          <div class="details">
-            <strong>- 141 replies</strong> to Anonymous @ 01/31, 12:45
+          <div class="words">
+            <div class="title">
+              <%= post.body.split(/\?\.\!\\n/).first.first(100) %>
+            </div>
+            <div class="details">
+              <strong>- <%= pluralize(post.replies, "reply") %></strong> to <%= author.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
+            </div>
           </div>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
+    <% end %>
     <div class="recent-members">
       <h6>Most Recent Members Online</h6>
       <hr>
@@ -53,7 +62,7 @@
                 <% if online %>
                   is online!
                 <% else %>
-                  <% if person.last_login_at > 12.hours.ago %>
+                  <% if person.last_login_at > 30.hours.ago %>
                     last online: <%= timeago(person.last_login_at) %>
                   <% else %>
                     last online: <%= person.last_login_at.to_formatted_s(:short_with_time) %>
@@ -94,6 +103,7 @@
     </div>
     <div class="posts-wrapper">
       <h3>Most Recent Posts</h3>
+      <hr>
       <div class="tags"></div>
       <div class="posts-container">
         <% @recent_posts.each do |post| %>
@@ -123,7 +133,7 @@
         <% end %>
       </div>
       <div class="history">
-        <a href="" class="underline">View and Search All Posts</a>
+        <a href="<%=  %>" class="underline">View and Search All Posts</a>
       </div>
     </div>
   </div>
