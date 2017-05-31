@@ -1,0 +1,27 @@
+body {
+  font-family: Verdana;
+}
+p {
+  font-size: 16px;
+}
+h6 {
+  font-size: 16px;
+  line-height: 1;
+  margin: 0;
+}
+hr { margin-top: 0; }
+
+.stretch-children {
+  display: table;
+  width: 100%;
+  & > * {
+    vertical-align: top;
+    display: table-cell;
+  }
+}
+a {
+  text-decoration: none;
+  color: blue;
+  &:hover { color: red; }
+  &:visited { color: #909; }
+}

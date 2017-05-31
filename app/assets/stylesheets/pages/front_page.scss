@@ -1,0 +1,120 @@
+.front-page {
+  .users-side {
+    width: 350px;
+    height: 200px;
+    padding: 0 10px;
+    h6, p {
+      font-size: 14px;
+      margin: 0;
+    }
+    hr {
+      margin: 0;
+      margin-bottom: 5px;
+      border: 1px solid #EEE;
+    }
+    .tags {
+      font-size: 12px;
+      .tag-search {
+        .field-wrapper {
+          width: 100px;
+          input { width: 100%; }
+        }
+        .btn-wrapper {
+          width: 100px;
+          text-align: right;
+          button { width: 80px; }
+        }
+      }
+    }
+    .popular-post {
+      border: 1px solid lighten($help-default, 35%);
+      margin: 10px auto;
+      font-size: 14px;
+      padding: 3px;
+      padding-bottom: 15px;
+      background: linear-gradient(to bottom, lighten($help-default, 35%), white);
+      hr {
+        border-color: $help-default;
+        border-width: 1px;
+      }
+      .avatar {
+        vertical-align: top;
+        img {
+          border: 1px solid #DDD;
+          width: 30px;
+          height: 30px;
+          max-width: 30px;
+          max-height: 30px;
+        }
+      }
+      .words {
+        vertical-align: top;
+        padding-left: 4px;
+        .title {
+          font-size: 18px;
+        }
+        .details {
+          font-size: 12px;
+          color: black;
+        }
+      }
+    }
+    .recent-members {
+      font-size: 0;
+      @include avatar-container(60px);
+    }
+  }
+  .posts-side {
+    padding-left: 10px;
+    padding-right: 20px;
+    .new-post-container {
+      .text-area-wrapper {
+        textarea {
+          resize: vertical;
+          font-size: 21px;
+          width: 100%;
+        }
+      }
+      .post-controls {
+        font-size: 12px;
+        .small-text {
+          vertical-align: top;
+          display: inline-block;
+          font-size: 8px;
+        }
+      }
+    }
+    .posts-wrapper {
+      h3 {}
+      .tags {}
+      .posts-container {
+        .post-container {
+          @include avatar-container(50px);
+          margin: 5px 0;
+          .post-description {
+            padding-left: 3px;
+            .title {
+              font-weight: bold;
+              font-size: 14px;
+              margin-bottom: 3px;
+              letter-spacing: 0.3px;
+            }
+            .post-information {
+              font-size: 10px;
+              color: grey;
+            }
+            .tags {
+              font-size: 10px;
+              color: grey;
+            }
+          }
+          &:visited .post-description .title { color: #909; }
+          &:hover {
+            .post-description .title { color: red; }
+            .avatar-container { border-color: purple; }
+          }
+        }
+      }
+    }
+  }
+}

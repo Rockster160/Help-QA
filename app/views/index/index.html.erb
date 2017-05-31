@@ -1,0 +1,130 @@
+<div class="front-page stretch-children">
+  <div class="users-side">
+    <div class="intro">
+      <h6>Change Your World</h6>
+      <hr>
+      <p>Reach out at Help.com to get personalized solutions to your problems and share your worldly insight with those that need your help.</p>
+      <hr>
+    </div>
+    <div class="tags">
+      <% if @global_tags.any? %>
+        <strong>Tags:</strong> <%= @global_tags.each do |tag| %>
+        <% end %>, or just jump to a tag:
+      <% else %>
+        Jump to a tag:
+      <% end %>
+      <div class="tag-search stretch-children">
+        <div class="field-wrapper">
+          <input type="text" name="" value="">
+        </div>
+        <div class="btn-wrapper">
+          <button type="button" name="button">Goto Tag</button>
+        </div>
+      </div>
+    </div>
+    <div class="popular-post">
+      <span class="text-bold">Currently Popular Post</span>
+      <!-- FIXME off-black color -->
+      <hr>
+      <a href="<%=  %>" class="post stretch-children">
+        <div class="avatar">
+          <img src="https://web.archive.org/web/20080131224341im_/http://help.com/media/ticons/status_offline.png" alt="">
+        </div>
+        <div class="words">
+          <div class="title">
+            What scares you the most?
+          </div>
+          <div class="details">
+            <strong>- 141 replies</strong> to Anonymous @ 01/31, 12:45
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="recent-members">
+      <h6>Most Recent Members Online</h6>
+      <hr>
+      <div class="members">
+        <% @recent_members.each do |person| %>
+          <a href="<%=  %>" class="avatar-container show-tooltip">
+            <div class="tooltip hidden">
+              <div class="name"><%= person.login.username %></div>
+              <% online = person.last_login_at > DateTime.current %>
+              <span class="timestamp">
+                <% if online %>
+                  is online!
+                <% else %>
+                  <% if person.last_login_at > 12.hours.ago %>
+                    last online: <%= timeago(person.last_login_at) %>
+                  <% else %>
+                    last online: <%= person.last_login_at.to_formatted_s(:short_with_time) %>
+                  <% end %>
+                <% end %>
+              </span>
+            </div>
+            <div class="status-indicator <%= person.last_login_at > DateTime.current ? 'online' : 'offline' %>"></div>
+            <div class="img-container">
+              <% if person.picture.present? %>
+                <div class="avatar"><%= image_tag person.picture.thumbnail %></div>
+              <% else %>
+                <div class="letter"><%= (person.try(:login).try(:username)&.gsub(/[^a-z]/i, '').try(:first).presence || "?").upcase %></div>
+              <% end %>
+            </div>
+          </a>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="posts-side">
+    <div class="new-post-container">
+      <div class="text-area-wrapper">
+        <textarea name="name" rows="6"><%= "Start Here.\n\nAsk a question, post a rant, tell us your story.".html_safe %></textarea>
+      </div>
+      <div class="post-controls">
+        <label for="new-post-email">Email: </label>
+        <input type="email" name="new-post-email" value="">
+        <input type="checkbox" name="new-post-anonymous" value="">
+        <label for="new-post-anonymous">Post Anonymously</label>
+        <label for="new-post-submit"></label>
+        <button type="button" name="new-post-submit">Post!</button>
+        <div class="small-text">
+          Email address is required <br>
+          You must be 13 years or older
+        </div>
+      </div>
+    </div>
+    <div class="posts-wrapper">
+      <h3>Most Recent Posts</h3>
+      <div class="tags"></div>
+      <div class="posts-container">
+        <% @recent_posts.each do |post| %>
+          <% author = post.author %>
+          <a href="<%=  %>" class="post-container stretch-children">
+            <div class="avatar-container">
+              <div class="img-container">
+                <% if author.picture.present? %>
+                  <div class="avatar"><%= image_tag author.picture.thumbnail %></div>
+                <% else %>
+                  <div class="letter"><%= (author.try(:login).try(:username)&.gsub(/[^a-z]/i, '').try(:first).presence || "?").upcase %></div>
+                <% end %>
+              </div>
+            </div>
+            <div class="post-description">
+              <div class="title">
+                <%= post.body.split(/\?\.\!\\n/).first.first(100) %>
+              </div>
+              <div class="post-information">
+                by <strong><%= author.login.username %></strong> from <%= author.location.city %>, <%= author.location.state %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize(post.replies, "reply") %> and <%= pluralize(post.views, "view") %>
+              </div>
+              <div class="tags">
+                Tags:
+              </div>
+            </div>
+          </a>
+        <% end %>
+      </div>
+      <div class="history">
+        <a href="" class="underline">View and Search All Posts</a>
+      </div>
+    </div>
+  </div>
+</div>
