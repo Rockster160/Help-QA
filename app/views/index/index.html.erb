@@ -34,7 +34,7 @@
               <% if author.picture.present? %>
                 <div class="avatar"><%= image_tag author.picture.thumbnail %></div>
               <% else %>
-                <div class="letter"><%= (author.try(:login).try(:username)&.gsub(/[^a-z]/i, '').try(:first).presence || "?").upcase %></div>
+                <div class="avatar"><%= image_tag 'status_offline.png' %></div>
               <% end %>
             </div>
           </div>
@@ -43,7 +43,7 @@
               <%= post.body.split(/\?\.\!\\n/).first.first(100) %>
             </div>
             <div class="details">
-              <strong>- <%= pluralize(post.replies, "reply") %></strong> to <%= author.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
+              <strong>- <%= pluralize(post.replies, "reply") %></strong> to <%= author.login.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
             </div>
           </div>
         </a>

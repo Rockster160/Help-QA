@@ -33,16 +33,7 @@
         border-color: $help-default;
         border-width: 1px;
       }
-      .avatar {
-        vertical-align: top;
-        img {
-          border: 1px solid #DDD;
-          width: 30px;
-          height: 30px;
-          max-width: 30px;
-          max-height: 30px;
-        }
-      }
+      @include avatar-container(30px);
       .words {
         vertical-align: top;
         padding-left: 4px;
