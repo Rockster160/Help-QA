@@ -13,6 +13,11 @@
 
 class Post < ApplicationRecord
 
+  belongs_to :author, class_name: "User"
+
+  scope :claimed, -> { where(posted_anonymously: false) }
+  scope :unclaimed, -> { where(posted_anonymously: true) }
+
   # validates presence of title / body
 
   def title

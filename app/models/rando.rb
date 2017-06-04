@@ -1,9 +1,8 @@
-require "net/http"
 class Rando
   class << self
 
     def people(count=1)
-      json_str = Net::HTTP.get(URI("https://randomuser.me/api/?results=#{count}"))
+      json_str = RestClient.get("https://randomuser.me/api/?results=#{count}").body
       persons_json = JSON.parse(json_str)["results"]
       people = []
       persons_json.each do |person_json|

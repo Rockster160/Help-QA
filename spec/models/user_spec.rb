@@ -19,6 +19,9 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  username               :string
+#  last_seen_at           :datetime
+#  avatar_url             :string
 #
 
 require 'rails_helper'

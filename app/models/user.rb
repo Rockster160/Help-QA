@@ -19,13 +19,26 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  username               :string
+#  last_seen_at           :datetime
+#  avatar_url             :string
 #
 
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
+  # has_many :posts
+  # has_many :comments
+  # has_many :post_edits
+  # has_many :post_views
+  # has_many :report_flags
+  # has_many :subscriptions
+
+  scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
+  scope :online_now, -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
+
   def see!
-    # last_seen_at
+    update(last_seen_at: DateTime.current)
   end
 
 end

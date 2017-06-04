@@ -29,6 +29,7 @@ gem 'rspec'
 # / Essentials
 
 gem 'devise'
+gem 'rest_client'
 
 group :development, :test do
   gem 'byebug', platform: :mri
