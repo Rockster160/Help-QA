@@ -12,4 +12,10 @@
 #
 
 class ReportFlag < ApplicationRecord
+  belongs_to :reported_by, class_name: :user
+  belongs_to :user, optional: true
+  belongs_to :comment, optional: true
+  belongs_to :post, optional: true
+
+  # validates belongs to one of the above
 end

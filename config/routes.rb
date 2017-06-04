@@ -4,4 +4,7 @@ Rails.application.routes.draw do
   get :flash_message, controller: "application"
 
   devise_for :users, path: "account"
+
+  resources :posts
+
 end

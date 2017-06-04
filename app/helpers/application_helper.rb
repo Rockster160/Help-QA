@@ -1,5 +1,10 @@
 module ApplicationHelper
 
+  def identicon(ip)
+    base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7)
+    raw "<img src='data:image/png;base64,#{base64_identicon}' class='identicon'>"
+  end
+
   def timeago(time, options = {})
     options[:class] ||= "timeago"
     if options[:strftime].present?

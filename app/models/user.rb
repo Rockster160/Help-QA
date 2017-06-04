@@ -27,12 +27,13 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
-  # has_many :posts
-  # has_many :comments
-  # has_many :post_edits
-  # has_many :post_views
-  # has_many :report_flags
-  # has_many :subscriptions
+  has_many :posts, foreign_key: :author_id
+  has_many :comments, foreign_key: :author_id
+  has_many :post_edits, foreign_key: :edited_by_id
+  has_many :post_views, foreign_key: :viewed_by_id
+  has_many :report_flags
+  has_many :subscriptions
+  has_one :location
 
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now, -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }

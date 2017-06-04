@@ -4,12 +4,17 @@
 #
 #  id                    :integer          not null, primary key
 #  body                  :text
-#  user_id               :integer
+#  author_id             :integer
 #  posted_anonymously    :boolean
 #  has_questionable_text :boolean
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  post_id               :integer
 #
 
 class Comment < ApplicationRecord
+  
+  belongs_to :post
+  belongs_to :author, class_name: :user
+
 end

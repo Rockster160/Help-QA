@@ -19,5 +19,8 @@ class AddAttributesForUser < ActiveRecord::Migration[5.0]
       t.float :latitude
       t.float :longitude
     end
+
+    add_reference :comments, :post
+    rename_column :comments, :user_id, :author_id
   end
 end

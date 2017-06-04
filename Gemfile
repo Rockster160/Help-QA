@@ -30,6 +30,7 @@ gem 'rspec'
 
 gem 'devise'
 gem 'rest_client'
+gem 'ruby_identicon'
 
 group :development, :test do
   gem 'byebug', platform: :mri
