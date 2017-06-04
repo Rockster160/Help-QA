@@ -1,6 +1,7 @@
+require "net/http"
 class Rando
-
   class << self
+
     def people(count=1)
       json_str = Net::HTTP.get(URI("https://randomuser.me/api/?results=#{count}"))
       persons_json = JSON.parse(json_str)["results"]
@@ -40,6 +41,6 @@ class Rando
       end
       obj
     end
-  end
 
+  end
 end

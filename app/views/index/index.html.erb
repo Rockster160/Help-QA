@@ -40,7 +40,7 @@
           </div>
           <div class="words">
             <div class="title">
-              <%= post.body.split(/\?\.\!\\n/).first.first(100) %>
+              <%= short_title(post.body) %>
             </div>
             <div class="details">
               <strong>- <%= pluralize(post.replies, "reply") %></strong> to <%= author.login.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
@@ -86,7 +86,7 @@
   <div class="posts-side">
     <div class="new-post-container">
       <div class="text-area-wrapper">
-        <textarea name="name" rows="6"><%= "Start Here.\n\nAsk a question, post a rant, tell us your story.".html_safe %></textarea>
+        <textarea name="name" rows="6" class="js-clear-text-after-focus"><%= "Start Here.\n\nAsk a question, post a rant, tell us your story.".html_safe %></textarea>
       </div>
       <div class="post-controls">
         <label for="new-post-email">Email: </label>
@@ -120,7 +120,7 @@
             </div>
             <div class="post-description">
               <div class="title">
-                <%= post.body.split(/\?\.\!\\n/).first.first(100) %>
+                <%= short_title(post.body) %>
               </div>
               <div class="post-information">
                 by <strong><%= author.login.username %></strong> from <%= author.location.city %>, <%= author.location.state %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize(post.replies, "reply") %> and <%= pluralize(post.views, "view") %>
