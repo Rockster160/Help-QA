@@ -1,5 +1,6 @@
 def random_time_between_now_and(this_time)
-  rand(1.hour.ago..this_time)
+  times = [1.hour.ago, this_time].sort
+  rand(times[0]..times[1])
 end
 
 def random_body_with_whitespace(paragraph_count)
@@ -13,7 +14,7 @@ def random_body_with_whitespace(paragraph_count)
 end
 
 def print_next_number(num)
-  prev_num = num.to_i - 1
+  prev_num = num.to_i + 1
   prev_num.to_s.length.times { print "\b" }
   print num
 end
@@ -36,13 +37,14 @@ Rando.people(users).each_with_index do |person, person_idx|
   created = random_time_between_now_and(start_date)
   u.created_at = created
   u.remember_created_at = created
+  u.last_seen_at = rand(10) == 0 ? random_time_between_now_and([1.week.ago, created].max) : random_time_between_now_and(created)
 
   u.username = "#{User.count}#{person.login.username}"
   u.avatar_url = rand(3) == 0 ? person.picture.thumbnail : nil
 
   u.save
 
-  location = u.location.new
+  location = u.build_location
   location.ip = (0..255).to_a.sample(4).join(".")
   location.city = person.location.city
   location.zip_code = person.location.postcode
@@ -59,6 +61,7 @@ posts.times do |post_idx|
   post.created_at = random_time_between_now_and(author.created_at)
   post.body = random_body_with_whitespace(10)
   post.posted_anonymously = rand(4) == 0
+  # Should extract Tags here, but how?
 
   post.save
 end

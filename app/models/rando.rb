@@ -8,7 +8,6 @@ class Rando
       persons_json.each do |person_json|
         person = struct_from_json(person_json)
         person.last_login_at = rand(1.week.ago..1.week.from_now)
-        person.picture = nil if rand(3) == 0
         people << person
       end
       people

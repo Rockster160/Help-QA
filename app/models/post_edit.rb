@@ -12,6 +12,6 @@
 class PostEdit < ApplicationRecord
 
   belongs_to :post
-  belongs_to :edited_by, class_name: :user
+  belongs_to :edited_by, class_name: "User"
   
 end

@@ -13,15 +13,16 @@
 
 class Post < ApplicationRecord
 
-  belongs_to :author, class_name: :user
-  has_many :views, class_name: :post_views
-  has_many :edits, class_name: :post_edits
+  belongs_to :author, class_name: "User"
+  has_many :views, class_name: "PostView"
+  has_many :edits, class_name: "PostEdit"
+  has_many :comments
   has_many :report_flags
   has_many :subscriptions
   has_many :post_tags
   has_many :tags, through: :post_tags
 
-  scope :claimed, -> { where(posted_anonymously: false) }
+  scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
 
   # validates presence of title / body
