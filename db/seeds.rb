@@ -1,7 +1,11 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
+# def random_time_between_now_and(this_time)
+#   rand(1.hour.ago..this_time)
+# end
 #
-# Examples:
+# users = 1000
+# posts = 300
+# comments = 2000
 #
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+# users.times do |u|
+#   User.create
+# end

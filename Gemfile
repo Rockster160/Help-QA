@@ -18,6 +18,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'redis', '~> 3.0'
 # /Defaults
 
+# Essentials
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'autoprefixer-rails'
@@ -25,6 +26,9 @@ gem 'font-awesome-rails'
 gem 'colorize'
 gem 'faker'
 gem 'rspec'
+# / Essentials
+
+gem 'devise'
 
 group :development, :test do
   gem 'byebug', platform: :mri
