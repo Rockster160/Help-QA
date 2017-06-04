@@ -26,10 +26,11 @@ gem 'font-awesome-rails'
 gem 'colorize'
 gem 'faker'
 gem 'rspec'
+gem 'factory_girl_rails'
 # / Essentials
 
 gem 'devise'
-gem 'rest_client'
+gem 'rest-client'
 gem 'ruby_identicon'
 
 group :development, :test do

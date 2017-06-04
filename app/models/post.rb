@@ -27,7 +27,7 @@ class Post < ApplicationRecord
 
   after_create :auto_add_tags
 
-  # validates presence of title / body
+  validate :body_has_alpha_characters
 
   def title
     return "BROKEN" unless body.present?
@@ -61,6 +61,12 @@ class Post < ApplicationRecord
   end
 
   private
+
+  def body_has_alpha_characters
+    unless body&.gsub(/[^a-z]/, "").length > 10
+      errors.add(:base, "This post isn't long enough!")
+    end
+  end
 
   def auto_add_tags
     new_tag_strs = Tag.auto_extract_tags_from_body(body).first(5)

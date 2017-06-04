@@ -16,14 +16,14 @@ class Tag < ApplicationRecord
 
   def self.auto_extract_tags_from_body(body)
     stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
-    without_shorts = body.gsub(/\b[a-z]{1,2}\b/i, "")
-    without_stop_words = without_shorts.gsub(/\b(#{stop_word_regex})\b/i, "")
-    without_special_chars = without_stop_words.gsub(/[^a-z| ]/i, "")
-    without_special_chars.squish.split(" ")
+    formatted = body.gsub(/[^a-z| ]/i, "")                 # Without special chars
+                    .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
+                    .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
+    formatted.squish.split(" ")
   end
 
   def self.stop_words
-    @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n")
+    @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject(&:blank?)
   end
 
 end

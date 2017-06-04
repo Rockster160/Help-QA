@@ -36,7 +36,8 @@ class User < ApplicationRecord
   has_one :location
 
   # validates username has at least 1? character
-
+  validates_uniqueness_of :username
+  validate :username_meets_requirements
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now, -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
 
@@ -51,12 +52,29 @@ class User < ApplicationRecord
   end
 
   def ip_address
-    location.try(:ip) || current_sign_in_ip || last_sign_in_ip
+    location.try(:ip) || current_sign_in_ip || last_sign_in_ip || username || email || id
   end
 
   def letter
     return "?" unless username.present?
     (username.gsub(/[^a-z]/i, '').first.presence || "?").upcase
+  end
+
+  private
+
+  def username_meets_requirements
+    self.username ||= email.split("@").first
+    # Profanity filter?
+    username.squish!
+    if username.include?(" ")
+      errors.add(:username, "cannot contain spaces")
+    end
+    unless username.length > 3
+      errors.add(:username, "must be at least 4 characters")
+    end
+    unless username.gsub(/[^a-z]/i, "").length > 1
+      errors.add(:username, "must have at least 2 normal alpha characters (A-Z)")
+    end
   end
 
 end
