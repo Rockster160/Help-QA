@@ -1,11 +1,11 @@
 class IndexController < ApplicationController
 
   def index
-    @global_tags = []
-    @current_tags = []
-    @currently_popular_post = Rando.posts(1).first
-    @recent_members = Rando.people(25).sort { |u1, u2| u2.last_login_at <=> u1.last_login_at }
-    @recent_posts = Rando.posts(10).sort { |p1, p2| p2.created_at <=> p1.created_at }
+    @currently_popular_post = Post.all.sample
+    @recent_members = User.order_by_last_online.first(20)
+    @recent_posts = Post.order(created_at: :desc).first(10)
+    @current_tags = Tag.where(id: @recent_posts.map(&:tag_ids).flatten.uniq).count_order.first(5)
+    @global_tags = Tag.count_order.first(5)
   end
 
 end

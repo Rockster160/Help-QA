@@ -61,7 +61,6 @@ posts.times do |post_idx|
   post.created_at = random_time_between_now_and(author.created_at)
   post.body = random_body_with_whitespace(10)
   post.posted_anonymously = rand(4) == 0
-  # Should extract Tags here, but how?
 
   post.save
 end

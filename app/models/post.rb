@@ -16,7 +16,7 @@ class Post < ApplicationRecord
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
   has_many :edits, class_name: "PostEdit"
-  has_many :comments
+  has_many :replies, class_name: "Comment"
   has_many :report_flags
   has_many :subscriptions
   has_many :post_tags
@@ -25,11 +25,49 @@ class Post < ApplicationRecord
   scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
 
+  after_create :auto_add_tags
+
   # validates presence of title / body
 
   def title
-    first_sentence = body.split(/!|\.|\n|;|\?|\r/).reject(&:blank?).first
+    return "BROKEN" unless body.present?
+    first_sentence = body.split(/[\!|\.|\n|;|\?|\r] /).reject(&:blank?).first
     body[0..first_sentence.try(:length) || -1]
+  end
+
+  def username
+    if posted_anonymously?
+      "Anonymous"
+    else
+      author.username
+    end
+  end
+
+  def avatar
+    if posted_anonymously?
+      identicon_src(author.ip_address)
+    else
+      author.avatar_url
+    end
+  end
+
+  def letter
+    author.try(:letter) || "?"
+  end
+
+  def location
+    return unless author.try(:location)
+    [author.location.city.presence, author.location.region_code.presence, author.location.country_code.presence].compact.join(", ")
+  end
+
+  private
+
+  def auto_add_tags
+    new_tag_strs = Tag.auto_extract_tags_from_body(body).first(5)
+    new_tag_strs.each do |new_tag_str|
+      new_tag = Tag.find_or_create_by(tag_name: new_tag_str.to_s.downcase)
+      post_tags.create(tag: new_tag)
+    end
   end
 
   def short_title
@@ -43,6 +81,11 @@ class Post < ApplicationRecord
     indices_of_letter = str.split("").map.with_index { |l, i| i if l == letter }.compact
     indices_before_index = indices_of_letter.select { |i| i <= idx }
     str[0..indices_before_index.last.to_i - 1]
+  end
+
+  def identicon_src(ip)
+    base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7, background_color: 0xffffffff)
+    "data:image/png;base64,#{base64_identicon}"
   end
 
 end

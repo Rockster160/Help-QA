@@ -7,12 +7,11 @@
       <hr>
     </div>
     <div class="tags">
-      <% if @global_tags.any? %>
-        <strong>Tags:</strong> <%= @global_tags.each do |tag| %>
-        <% end %>, or just jump to a tag:
-      <% else %>
-        Jump to a tag:
+      Tags:
+      <% @global_tags.each do |tag| %>
+        <a href="<%= tag_path(tag.tag_name) %>" class="underline"><%= tag.tag_name %></a>,
       <% end %>
+      <a href="<%= tags_path %>" class="underline">all tags</a>, or just jump to a tag:
       <div class="tag-search stretch-children">
         <div class="field-wrapper">
           <input type="text" name="" value="">
@@ -24,15 +23,14 @@
     </div>
     <% if @currently_popular_post %>
       <% post = @currently_popular_post %>
-      <% author = post.author %>
       <div class="popular-post">
         <span class="text-bold">Currently Popular Post</span>
         <hr>
-        <a href="<%=  %>" class="post stretch-children">
+        <a href="<%= post_path(post) %>" class="post stretch-children">
           <div class="avatar-container">
             <div class="img-container">
-              <% if author.picture.present? %>
-                <div class="avatar"><%= image_tag author.picture.thumbnail %></div>
+              <% if post.avatar %>
+                <div class="avatar"><%= image_tag post.avatar %></div>
               <% else %>
                 <div class="avatar"><%= image_tag 'status_offline.png' %></div>
               <% end %>
@@ -40,10 +38,10 @@
           </div>
           <div class="words">
             <div class="title">
-              <%= short_title(post.body) %>
+              <%= post.title %>
             </div>
             <div class="details">
-              <strong>- <%= pluralize(post.replies, "reply") %></strong> to <%= author.login.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
+              <strong>- <%= pluralize(post.replies.count, "reply") %></strong> to <%= post.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
             </div>
           </div>
         </a>
@@ -53,29 +51,28 @@
       <h6>Most Recent Members Online</h6>
       <hr>
       <div class="members">
-        <% @recent_members.each do |person| %>
-          <a href="<%=  %>" class="avatar-container show-tooltip">
+        <% @recent_members.each do |user| %>
+          <a href="<%= user_path(user) %>" class="avatar-container show-tooltip">
             <div class="tooltip hidden">
-              <div class="name"><%= person.login.username %></div>
-              <% online = person.last_login_at > DateTime.current %>
+              <div class="name"><%= user.username %></div>
               <span class="timestamp">
-                <% if online %>
+                <% if user.online? %>
                   is online!
                 <% else %>
-                  <% if person.last_login_at > 30.hours.ago %>
-                    last online: <%= timeago(person.last_login_at) %>
+                  <% if user.last_seen_at > 30.hours.ago %>
+                    last online: <%= timeago(user.last_seen_at) %>
                   <% else %>
-                    last online: <%= person.last_login_at.to_formatted_s(:short_with_time) %>
+                    last online: <%= user.last_seen_at.to_formatted_s(:short_with_time) %>
                   <% end %>
                 <% end %>
               </span>
             </div>
-            <div class="status-indicator <%= person.last_login_at > DateTime.current ? 'online' : 'offline' %>"></div>
+            <div class="status-indicator <%= user.online? ? 'online' : 'offline' %>"></div>
             <div class="img-container">
-              <% if person.picture.present? %>
-                <div class="avatar"><%= image_tag person.picture.thumbnail %></div>
+              <% if user.avatar_url.present? %>
+                <div class="avatar"><%= image_tag user.avatar_url %></div>
               <% else %>
-                <div class="letter"><%= (person.try(:login).try(:username)&.gsub(/[^a-z]/i, '').try(:first).presence || "?").upcase %></div>
+                <div class="avatar"><%= user.letter %></div>
               <% end %>
             </div>
           </a>
@@ -104,36 +101,41 @@
     <div class="posts-wrapper">
       <h3>Most Recent Posts</h3>
       <hr>
-      <div class="tags"></div>
+      <div class="tags">
+        Topics include:
+        <% @current_tags.each do |tag| %>
+          <a href="<%= tag_path(tag.tag_name) %>" class="underline"><%= tag.tag_name %></a>,
+        <% end %>
+        and <a href="<%= tags_path %>" class="underline">much more</a>...
+      </div>
       <div class="posts-container">
         <% @recent_posts.each do |post| %>
-          <% author = post.author %>
-          <a href="<%=  %>" class="post-container stretch-children">
+          <a href="<%= post_path(post) %>" class="post-container stretch-children">
             <div class="avatar-container">
               <div class="img-container">
-                <% if author.picture.present? %>
-                  <div class="avatar"><%= image_tag author.picture.thumbnail %></div>
+                <% if post.avatar.present? %>
+                  <div class="avatar"><%= image_tag post.avatar %></div>
                 <% else %>
-                  <div class="letter"><%= (author.try(:login).try(:username)&.gsub(/[^a-z]/i, '').try(:first).presence || "?").upcase %></div>
+                  <div class="avatar"><%= post.letter %></div>
                 <% end %>
               </div>
             </div>
             <div class="post-description">
               <div class="title">
-                <%= short_title(post.body) %>
+                <%= post.title %>
               </div>
               <div class="post-information">
-                by <strong><%= author.login.username %></strong> from <%= author.location.city %>, <%= author.location.state %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize(post.replies, "reply") %> and <%= pluralize(post.views, "view") %>
+                by <strong><%= post.username %></strong><%= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize(post.replies.count, "reply") %> and <%= pluralize(post.views.count, "view") %>
               </div>
               <div class="tags">
-                Tags:
+                Tags: <%= post.tags.count_order.first(5).map(&:tag_name).join(", ") %>
               </div>
             </div>
           </a>
         <% end %>
       </div>
       <div class="history">
-        <a href="<%=  %>" class="underline">View and Search All Posts</a>
+        <a href="<%= posts_path %>" class="underline">View and Search All Posts</a>
       </div>
     </div>
   </div>

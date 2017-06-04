@@ -8,6 +8,6 @@
 #
 
 class PostTag < ApplicationRecord
-  belongs_to :tag
+  belongs_to :tag, counter_cache: :tags_count
   belongs_to :post
 end

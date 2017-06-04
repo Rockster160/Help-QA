@@ -35,11 +35,28 @@ class User < ApplicationRecord
   has_many :subscriptions
   has_one :location
 
+  # validates username has at least 1? character
+
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now, -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
 
+  def online?
+    return false unless last_seen_at
+    last_seen_at > 5.minutes.ago
+  end
+  def offline?; !online?; end
+
   def see!
     update(last_seen_at: DateTime.current)
+  end
+
+  def ip_address
+    location.try(:ip) || current_sign_in_ip || last_sign_in_ip
+  end
+
+  def letter
+    return "?" unless username.present?
+    (username.gsub(/[^a-z]/i, '').first.presence || "?").upcase
   end
 
 end
