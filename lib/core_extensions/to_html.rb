@@ -20,7 +20,8 @@ module CoreExtensions
         when :html
           inner_content += hash_val.to_html
         else # assume html attribute name such as class, etc...
-          attributes_hash[hash_key] = (attributes_hash[hash_key].to_s.split(" ") + hash_val.to_html.split(" ")).join(" ").squish
+          hash_val = hash_val.join(" ") if hash_val.is_a?(Array)
+          attributes_hash[hash_key] = (attributes_hash[hash_key].to_s.split(" ") + hash_val.to_s.split(" ")).join(" ").squish
         end
       end
 

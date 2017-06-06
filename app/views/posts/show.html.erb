@@ -1,15 +1,84 @@
 <div class="post-container stretch-children">
-    <div class="avatar-container">
-      <div class="avatar-img-wrapper">
-        <div class="avatar"><%= image_tag @post.avatar %></div>
-      </div>
+  <div class="author-details text-center">
+    <%= avatar(@post.avatar, size: 200) %>
+    <% if @post.posted_anonymously? %>
+      <span class="anonymous">This post left anonymously</span>
+    <% else %>
+      <div class="username"><%= @post.username %></div>
+      <div class="detail-icons"></div>
+      <div class="location"></div>
+    <% end %>
+  </div>
+  <div class="words">
+    <div class="title">
+      <%= @post.title %>
     </div>
-    <div class="words">
-      <div class="title">
-        <%= @post.title %>
-      </div>
-      <div class="details">
-        <strong>- <%= pluralize(@post.replies.count, "reply") %></strong> to <%= @post.username %> @ <%= @post.created_at.to_formatted_s(:short_with_time) %>
-      </div>
+    <div class="body"><%= @post.content %></div>
+    <div class="details">
+      This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> |
+      Views: <%= @post.views.count %>,
+      Subscribers: <%= @post.subscriptions.count %> |
+      <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
+      <a href="#" class="underline" data-scroll-to="">Leave a reply</a> |
+      <a href="<%= post_report_path(@post) %>" class="underline danger">Report Post</a>
     </div>
+  </div>
+</div>
+
+<div class="reciprocity post-section stretch-children">
+  <div class="post-section-detail">Reciprocity (?)</div>
+  <div class="post-section-content">
+    Since writing this post... TODO
+  </div>
+</div>
+
+<div class="tags post-section stretch-children">
+  <div class="post-section-detail">Post Tags (<%= @post.tags.count %>)</div>
+  <div class="post-section-content">
+    <% @post.tags.reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
+      <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+    <% end %>
+  </div>
+</div>
+
+<div class="replies post-section stretch-children">
+  <div class="post-section-detail">Replies (<%= @post.replies.count %>)</div>
+  <div class="post-section-content">
+
+    <div class="replies-container">
+      <% @post.replies.each do |reply| %>
+        <div class="reply-container">
+          <div class="reply-author stretch-children">
+            <%= avatar(reply.avatar, size: 40) %>
+            <div class="reply-author-text">
+              <div class="reply-author-info">
+                <div class="reply-author-name">
+                  <% if reply.posted_anonymously? %>
+                    Anonymous
+                  <% else %>
+                    <a href="<%= user_path(reply.author) %>"><%= reply.username %></a>
+                  <% end %>
+                </div>
+                <div class="reply-author-stats">
+                  <% if reply.location.present? %>
+                    <a href="#"><%= reply.location %></a>
+                  <% else %>
+                    <a href="#">An Undisclosed Location</a>
+                  <% end %>
+                </div>
+              </div>
+              <div class="reply-info">
+
+              </div>
+            </div>
+          </div>
+          <div class="reply-content"><%= reply.content %></div>
+          <% if false # Help Me? %>
+          <div class="reply-reciprocity"></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
 </div>

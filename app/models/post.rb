@@ -35,6 +35,19 @@ class Post < ApplicationRecord
     body[0..first_sentence.try(:length) || -1]
   end
 
+  def open?; !closed?; end
+  def closed?; closed_at?; end
+
+  def content
+    temp_body = body[title.length..-1]
+    temp_body = "<p>#{temp_body}</p>"
+    temp_body.gsub!(/\n[\W|\r]*?\n/, "</p><p>")
+    temp_body.gsub!(/\n/, "<br>")
+    # Prettify links, embed images, do supported markdown, etc
+    # SANITIZE HTML TAGS!
+    temp_body.squish.html_safe
+  end
+
   def username
     if posted_anonymously?
       "Anonymous"
