@@ -47,7 +47,7 @@ class Post < ApplicationRecord
     if posted_anonymously?
       identicon_src(author.ip_address)
     else
-      author.avatar_url
+      author.avatar_url.presence || letter.presence || 'status_offline.png'
     end
   end
 
@@ -58,6 +58,10 @@ class Post < ApplicationRecord
   def location
     return unless author.try(:location)
     [author.location.city.presence, author.location.region_code.presence, author.location.country_code.presence].compact.join(", ")
+  end
+
+  def to_param
+    [id, title.parameterize].join("-")
   end
 
   private

@@ -26,4 +26,8 @@ class Tag < ApplicationRecord
     @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject(&:blank?)
   end
 
+  def to_param
+    tag_name.downcase || id
+  end
+
 end

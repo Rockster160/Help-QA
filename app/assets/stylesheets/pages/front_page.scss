@@ -12,7 +12,8 @@
       font-size: 12px;
       .tag-search {
         .field-wrapper {
-          width: 100px;
+          width: 100%;
+          padding-right: 10px;
           input { width: 100%; }
         }
         .btn-wrapper {
@@ -33,7 +34,6 @@
         border-color: $help-default;
         border-width: 1px;
       }
-      @include avatar-container(30px);
       .words {
         vertical-align: top;
         padding-left: 4px;
@@ -48,7 +48,6 @@
     }
     .recent-members {
       font-size: 0;
-      @include avatar-container(60px);
     }
   }
   .posts-side {
@@ -84,7 +83,6 @@
       }
       .posts-container {
         .post-container {
-          @include avatar-container(50px);
           margin: 5px 0;
           .post-description {
             width: 100%;

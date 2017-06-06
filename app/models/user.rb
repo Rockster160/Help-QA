@@ -35,7 +35,6 @@ class User < ApplicationRecord
   has_many :subscriptions
   has_one :location
 
-  # validates username has at least 1? character
   validates_uniqueness_of :username
   validate :username_meets_requirements
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
@@ -58,6 +57,14 @@ class User < ApplicationRecord
   def letter
     return "?" unless username.present?
     (username.gsub(/[^a-z]/i, '').first.presence || "?").upcase
+  end
+
+  def avatar
+    avatar_url.presence || letter.presence || 'status_offline.png'
+  end
+
+  def to_param
+    username.parameterize || id
   end
 
   private

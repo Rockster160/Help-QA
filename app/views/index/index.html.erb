@@ -9,7 +9,7 @@
     <div class="tags">
       Tags:
       <% @global_tags.each do |tag| %>
-        <a href="<%= tag_path(tag.tag_name) %>" class="underline"><%= tag.tag_name %></a>,
+        <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a>,
       <% end %>
       <a href="<%= tags_path %>" class="underline">all tags</a>, or just jump to a tag:
       <div class="tag-search stretch-children">
@@ -27,15 +27,7 @@
         <span class="text-bold">Currently Popular Post</span>
         <hr>
         <a href="<%= post_path(post) %>" class="post stretch-children">
-          <div class="avatar-container">
-            <div class="img-container">
-              <% if post.avatar %>
-                <div class="avatar"><%= image_tag post.avatar %></div>
-              <% else %>
-                <div class="avatar"><%= image_tag 'status_offline.png' %></div>
-              <% end %>
-            </div>
-          </div>
+          <%= avatar(post.avatar, size: 30) %>
           <div class="words">
             <div class="title">
               <%= post.title %>
@@ -52,30 +44,16 @@
       <hr>
       <div class="members">
         <% @recent_members.each do |user| %>
-          <a href="<%= user_path(user) %>" class="avatar-container show-tooltip">
-            <div class="tooltip hidden">
-              <div class="name"><%= user.username %></div>
-              <span class="timestamp">
-                <% if user.online? %>
-                  is online!
-                <% else %>
-                  <% if user.last_seen_at > 30.hours.ago %>
-                    last online: <%= timeago(user.last_seen_at) %>
-                  <% else %>
-                    last online: <%= user.last_seen_at.to_formatted_s(:short_with_time) %>
-                  <% end %>
-                <% end %>
-              </span>
-            </div>
-            <div class="status-indicator <%= user.online? ? 'online' : 'offline' %>"></div>
-            <div class="img-container">
-              <% if user.avatar_url.present? %>
-                <div class="avatar"><%= image_tag user.avatar_url %></div>
-              <% else %>
-                <div class="avatar"><%= user.letter %></div>
-              <% end %>
-            </div>
-          </a>
+          <%
+            last_online = if user.online?
+              "is online!"
+            elsif user.last_seen_at > 30.hours.ago
+              "last online: #{timeago(user.last_seen_at)}"
+            else
+              "last online: #{user.last_seen_at.to_formatted_s(:short_with_time)}"
+            end
+          %>
+          <%= avatar(user.avatar, { href: user_path(user), size: 60, status: user.online? ? 'online' : 'offline', tooltip: { name: user.username, timestamp: last_online } }) %>
         <% end %>
       </div>
     </div>
@@ -104,22 +82,14 @@
       <div class="tags">
         Topics include:
         <% @current_tags.each do |tag| %>
-          <a href="<%= tag_path(tag.tag_name) %>" class="underline"><%= tag.tag_name %></a>,
+          <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a>,
         <% end %>
         and <a href="<%= tags_path %>" class="underline">much more</a>...
       </div>
       <div class="posts-container">
         <% @recent_posts.each do |post| %>
           <a href="<%= post_path(post) %>" class="post-container stretch-children">
-            <div class="avatar-container">
-              <div class="img-container">
-                <% if post.avatar.present? %>
-                  <div class="avatar"><%= image_tag post.avatar %></div>
-                <% else %>
-                  <div class="avatar"><%= post.letter %></div>
-                <% end %>
-              </div>
-            </div>
+            <%= avatar(post.avatar, size: 50) %>
             <div class="post-description">
               <div class="title">
                 <%= post.title %>

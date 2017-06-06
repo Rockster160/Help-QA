@@ -1,1 +1,15 @@
-<%= identicon((0..255).to_a.sample(4).join(".")) %>
+<div class="post-container stretch-children">
+    <div class="avatar-container">
+      <div class="avatar-img-wrapper">
+        <div class="avatar"><%= image_tag @post.avatar %></div>
+      </div>
+    </div>
+    <div class="words">
+      <div class="title">
+        <%= @post.title %>
+      </div>
+      <div class="details">
+        <strong>- <%= pluralize(@post.replies.count, "reply") %></strong> to <%= @post.username %> @ <%= @post.created_at.to_formatted_s(:short_with_time) %>
+      </div>
+    </div>
+</div>
