@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170604012728) do
+ActiveRecord::Schema.define(version: 20170607015948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,6 +90,16 @@ ActiveRecord::Schema.define(version: 20170604012728) do
     t.index ["user_id"], name: "index_report_flags_on_user_id", using: :btree
   end
 
+  create_table "shouts", force: :cascade do |t|
+    t.integer  "sent_from_id"
+    t.integer  "sent_to_id"
+    t.text     "body"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["sent_from_id"], name: "index_shouts_on_sent_from_id", using: :btree
+    t.index ["sent_to_id"], name: "index_shouts_on_sent_to_id", using: :btree
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.integer  "post_id"
     t.integer  "user_id"
@@ -123,6 +133,7 @@ ActiveRecord::Schema.define(version: 20170604012728) do
     t.string   "username"
     t.datetime "last_seen_at"
     t.string   "avatar_url"
+    t.datetime "verified_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

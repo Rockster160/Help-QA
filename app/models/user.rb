@@ -22,6 +22,7 @@
 #  username               :string
 #  last_seen_at           :datetime
 #  avatar_url             :string
+#  verified_at            :datetime
 #
 
 class User < ApplicationRecord
@@ -31,6 +32,8 @@ class User < ApplicationRecord
   has_many :comments, foreign_key: :author_id
   has_many :post_edits, foreign_key: :edited_by_id
   has_many :post_views, foreign_key: :viewed_by_id
+  has_many :shouts_to, foreign_key: :sent_to_id, class_name: "Shout"
+  has_many :shouts_from, foreign_key: :sent_from_id, class_name: "Shout"
   has_many :report_flags
   has_many :subscriptions
   has_one :location
@@ -45,6 +48,8 @@ class User < ApplicationRecord
     last_seen_at > 5.minutes.ago
   end
   def offline?; !online?; end
+  def verified?; verified_at?; end
+  def long_term_user?; created_at < 1.year.ago; end
 
   def see!
     update(last_seen_at: DateTime.current)

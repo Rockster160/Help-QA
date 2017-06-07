@@ -61,15 +61,19 @@
               padding-left: 5px;
               width: 100%;
               .reply-author-name {
+                display: inline-block;
                 font-weight: bold;
                 font-size: 14px;
+              }
+              .reply-author-stats {
+                display: inline-block;
               }
             }
           }
           .reply-content {
             background: #FAFAFA;
             width: 100%;
-            padding: 8px 3px;
+            padding: 8px 5px;
             box-sizing: border-box;
             p {
               font-size: 12px;

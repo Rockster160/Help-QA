@@ -22,6 +22,7 @@
 #  username               :string
 #  last_seen_at           :datetime
 #  avatar_url             :string
+#  verified_at            :datetime
 #
 
 require 'rails_helper'

@@ -42,42 +42,11 @@
 </div>
 
 <div class="replies post-section stretch-children">
-  <div class="post-section-detail">Replies (<%= @post.replies.count %>)</div>
+  <div class="post-section-detail">Replies (<%= @replies.count %>)</div>
   <div class="post-section-content">
 
     <div class="replies-container">
-      <% @post.replies.each do |reply| %>
-        <div class="reply-container">
-          <div class="reply-author stretch-children">
-            <%= avatar(reply.avatar, size: 40) %>
-            <div class="reply-author-text">
-              <div class="reply-author-info">
-                <div class="reply-author-name">
-                  <% if reply.posted_anonymously? %>
-                    Anonymous
-                  <% else %>
-                    <a href="<%= user_path(reply.author) %>"><%= reply.username %></a>
-                  <% end %>
-                </div>
-                <div class="reply-author-stats">
-                  <% if reply.location.present? %>
-                    <a href="#"><%= reply.location %></a>
-                  <% else %>
-                    <a href="#">An Undisclosed Location</a>
-                  <% end %>
-                </div>
-              </div>
-              <div class="reply-info">
-
-              </div>
-            </div>
-          </div>
-          <div class="reply-content"><%= reply.content %></div>
-          <% if false # Help Me? %>
-          <div class="reply-reciprocity"></div>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render partial: "comments/index", locals: { comments: @replies } %>
     </div>
 
   </div>

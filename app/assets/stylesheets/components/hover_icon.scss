@@ -1,0 +1,60 @@
+.hover-icon {
+  display: inline-block;
+  position: relative;
+  font-weight: bold;
+
+  .icon {
+    background-color: #fff;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    height: 16px;
+    width: 16px;
+
+    &.hourglass    { background-position:      0 0; }
+    &.offline      { background-position:  -16px 0; }
+    &.online       { background-position:  -32px 0; }
+    &.dot-white    { background-position:  -48px 0; }
+    &.lock         { background-position:  -64px 0; }
+    &.lock-t       { background-position:  -80px 0; }
+    &.bin          { background-position:  -96px 0; }
+    &.bin-t        { background-position: -112px 0; }
+    &.bell         { background-position: -128px 0; }
+    &.bell-t       { background-position: -144px 0; }
+    &.link         { background-position: -160px 0; }
+    &.link-t       { background-position: -176px 0; }
+    &.star         { background-position: -192px 0; }
+    &.shield       { background-position: -208px 0; }
+    &.comment-add  { background-position: -224px 0; }
+    &.mail-rem     { background-position: -240px 0; }
+    &.mail-add     { background-position: -256px 0; }
+    &.user-rem     { background-position: -272px 0; }
+    &.user-add     { background-position: -288px 0; }
+    &.user-red     { background-position: -304px 0; }
+    &.user-green   { background-position: -320px 0; }
+    &.flag-red     { background-position: -336px 0; }
+    &.clock        { background-position: -352px 0; }
+    &.help         { background-position: -368px 0; }
+    &.megaphone    { background-position: -384px 0; }
+    &.vcard        { background-position: -400px 0; }
+    &.key          { background-position: -416px 0; }
+    &.ban          { background-position: -432px 0; }
+    &.ban-t        { background-position: -448px 0; }
+    &.chat         { background-position: -464px 0; }
+    &.chat-t       { background-position: -480px 0; }
+    &.cancel       { background-position: -496px 0; }
+    &.door         { background-position: -512px 0; }
+    &.tag-red      { background-position: -528px 0; }
+    &.anon         { background-position: -544px 0; }
+    &.comment-edit { background-position:  560px 0; }
+    &.email-edit   { background-position: -576px 0; }
+    &.script-add   { background-position: -592px 0; }
+    &.new          { background-position: -608px 0; }
+    &.tick         { background-position: -624px 0; }
+    &.cross        { background-position: -640px 0; }
+    &.disable      { background-position: -656px 0; }
+    &.disable-t    { background-position: -672px 0; }
+    &.quote        { background-position: -688px 0; }
+    &.medal-add    { background-position: -704px 0; }
+    &.medal        { background-position: -720px 0; }
+  }
+}

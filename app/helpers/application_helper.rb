@@ -13,6 +13,47 @@ module ApplicationHelper
     content_tag(:time, simple_time, options.merge(datetime: time.to_i, title: simple_time)) if time
   end
 
+  def time_length
+    @time_length ||= begin
+      length = {}
+      length[:second] = 1000
+      length[:minute] = 60 * length[:second]
+      length[:hour] = 60 * length[:minute]
+      length[:day] = 24 * length[:hour]
+      length[:week] = 7 * length[:day]
+      length[:month] = 30 * length[:day]
+      length[:year] = 12 * length[:month]
+      length
+    end
+  end
+
+  def time_difference_in_words(start_time, end_time, options={})
+    word_count = options[:word_count] || 2
+    distanceMs = (start_time.to_f - end_time.to_f).abs * 1000
+    words = []
+
+    time_length.reverse_each do |str, val|
+      if distanceMs > val
+        time_count = (distanceMs / val).floor
+        pluralize = time_count > 1 ? "s" : ""
+        words << "#{time_count} #{str}#{pluralize}"
+        distanceMs = distanceMs % val
+      end
+    end
+
+    words.first(word_count).join(", ")
+  end
+
+  def hover_icon(icon, alt, options={})
+    style = "background-image: url(#{image_url('icon_sheet.png')})"
+    img = image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon}")
+    if options[:href].present?
+      "<a href=\"#{options[:href]}\" class=\"hover-icon\">#{img}#{options[:text]}</a>".html_safe
+    else
+      "<div class=\"hover-icon\">#{img}#{options[:text]}</div>".html_safe
+    end
+  end
+
   def avatar(avatar_src, options={})
     avatar_container_hash = {}
     avatar_container_hash[:tag] = "a" if options[:href].present?

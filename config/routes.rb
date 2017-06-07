@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   end
   get "tags/:tag_name" => "tags#show", as: :tag
   resources :tags, only: [ :index ]
-  resources :users, except: [ :destroy ]
+  resources :users, except: [ :destroy ] do
+    get :shoutbox
+  end
 
 end

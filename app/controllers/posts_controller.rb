@@ -5,6 +5,7 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
+    @replies = @post.replies.order(created_at: :asc)
   end
 
   def edit
