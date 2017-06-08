@@ -43,6 +43,11 @@ class User < ApplicationRecord
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now, -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
 
+  def mod?; false; end # FIXME by adding roles
+  def friends; []; end # FIXME by adding friends
+  def fans; []; end # FIXME by adding friends
+  def favorites; []; end # FIXME by adding friends
+
   def online?
     return false unless last_seen_at
     last_seen_at > 5.minutes.ago
@@ -69,7 +74,7 @@ class User < ApplicationRecord
   end
 
   def to_param
-    username.parameterize || id
+    [id, username.parameterize].join("-")
   end
 
   private

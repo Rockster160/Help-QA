@@ -1,0 +1,50 @@
+<div class="user-page-container">
+
+  <div class="user-info">
+    <div class="username"><%= @user.username %></div>
+    <div class="detail-icons">
+      <% line_status = @user.online? ? "online" : "offline" %>
+      <%= hover_icon(line_status, line_status) %>
+      <%= hover_icon("star", "Help Volunteer Moderator") if @user.mod? %>
+      <% if @user.verified? %>
+        <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, @user.verified_at)})") %>
+      <% else %>
+        <%= hover_icon("user-red", "Not Verified (Joined #{time_difference_in_words(DateTime.current, @user.created_at)} ago)") %>
+      <% end %>
+      <%= hover_icon("hourglass", "Long Term User") if @user.long_term_user? %>
+    </div>
+
+    <div class="location"></div>
+  </div>
+
+  <div class="profile-wrapper stretch-children">
+    <div class="mini-profile">
+      <%= avatar(@user.avatar, size: 200) %>
+      <p>My user description</p>
+      <div class="friends-list-wrapper">
+        <div class="friends-list-title">
+          <%= @user.username %>
+          <% friend_count = @user.friends.count %>
+          <% case friend_count %>
+          <% when 0 %>
+            has no friends yet.
+          <% when 1 %>
+            has 1 friend.
+          <% else %>
+            has <%= friend_count %> friends. Here are <%= friend_count > 30 ? 30 : friend_count %> of them.
+          <% end %>
+        </div>
+        <div class="friends-list">
+          <% @ser.friends.first(30).each do |friend| %>
+            <%= avatar(friend.avatar, size: 20, href: user_path(friend)) %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-activity">
+      Some stuff
+    </div>
+  </div>
+
+</div>

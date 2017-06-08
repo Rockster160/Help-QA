@@ -57,6 +57,7 @@ module ApplicationHelper
   def avatar(avatar_src, options={})
     avatar_container_hash = {}
     avatar_container_hash[:tag] = "a" if options[:href].present?
+    avatar_container_hash[:href] = options[:href] if options[:href].present?
     avatar_container_hash[:class] = ["avatar-container"]
     avatar_container_hash[:style] = []
     avatar_container_hash[:html] = []

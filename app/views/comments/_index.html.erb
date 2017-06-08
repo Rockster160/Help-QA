@@ -17,6 +17,7 @@
             <% unless reply.posted_anonymously? %>
               <% line_status = author.online? ? "online" : "offline" %>
               <%= hover_icon(line_status, line_status) %>
+              <%= hover_icon("star", "Help Volunteer Moderator") if author.mod? %>
               <% if author.verified? %>
                 <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, author.verified_at)})") %>
               <% else %>
