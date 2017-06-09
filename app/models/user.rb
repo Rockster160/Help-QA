@@ -29,7 +29,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
   has_many :posts, foreign_key: :author_id
-  has_many :comments, foreign_key: :author_id
+  has_many :replies, class_name: "Comment", foreign_key: :author_id
+  has_many :tags_from_posts, source: :tags, through: :posts
+  has_many :tags_from_replies, source: :tags, through: :replies
   has_many :post_edits, foreign_key: :edited_by_id
   has_many :post_views, foreign_key: :viewed_by_id
   has_many :shouts_to, foreign_key: :sent_to_id, class_name: "Shout"

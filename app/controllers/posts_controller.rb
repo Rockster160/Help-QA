@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
 
   def index
+    # if user_id, lookup and filter by them
   end
 
   def show

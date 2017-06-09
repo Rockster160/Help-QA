@@ -16,6 +16,7 @@ class Comment < ApplicationRecord
 
   belongs_to :post
   belongs_to :author, class_name: "User"
+  has_many :tags, through: :post
 
   def content
     temp_body = body

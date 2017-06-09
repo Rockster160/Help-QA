@@ -35,9 +35,66 @@
     .mini-profile, .user-activity {
       font-size: 12px;
       font-weight: bold;
+
+      .title { border-bottom: 1px solid #EEE; }
+      .avatar { font-weight: normal; }
+      hr {
+        margin: 0;
+        padding: 0;
+        border-color: #EEE;
+      }
       p {
         font-size: 10px;
         font-weight: normal;
+      }
+      .user-stats {
+        border-collapse: collapse;
+        background: #F3F3F3;
+        width: 100%;
+
+        .user-stat-name, .user-stat-value {
+          text-align: center;
+
+          td {
+            margin-left: 2px;
+            vertical-align: middle;
+            max-width: 150px;
+            border-left: 2px solid white;
+            height: 30px;
+          }
+        }
+        .user-stat-name {}
+        .user-stat-value td {
+          padding: 10px 0;
+          font-weight: normal;
+          font-size: 20px;
+          margin-top: -3px;
+        }
+      }
+      .recent-posts {
+        .recent-post {
+          padding: 5px 0;
+
+          a {
+            font-size: 16px;
+          }
+          i {
+            font-size: 8px;
+            font-weight: normal;
+          }
+          p {
+            margin: 0;
+            text-overflow: ellipsis;
+            width: 100%;
+          }
+        }
+        .post-index-wrapper {
+          text-align: right;
+          padding: 5px 0;
+          a {
+            font-size: 18px;
+          }
+        }
       }
     }
   }

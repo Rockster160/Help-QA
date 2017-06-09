@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
   def timeago(time, options={})
@@ -11,6 +12,10 @@ module ApplicationHelper
       simple_time = time.to_formatted_s(:simple)
     end
     content_tag(:time, simple_time, options.merge(datetime: time.to_i, title: simple_time)) if time
+  end
+
+  def pluralize_with_delimiter(count, word)
+    "#{number_with_delimiter(count)} #{count == 1 ? word : word.pluralize}"
   end
 
   def time_length

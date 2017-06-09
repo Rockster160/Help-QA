@@ -33,7 +33,7 @@
               <%= post.title %>
             </div>
             <div class="details">
-              <strong>- <%= pluralize(post.replies.count, "reply") %></strong> to <%= post.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
+              <strong>- <%= pluralize_with_delimiter(post.replies.count, "reply") %></strong> to <%= post.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
             </div>
           </div>
         </a>
@@ -95,7 +95,7 @@
                 <%= post.title %>
               </div>
               <div class="post-information">
-                by <strong><%= post.username %></strong><%= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize(post.replies.count, "reply") %> and <%= pluralize(post.views.count, "view") %>
+                by <strong><%= post.username %></strong><%= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.replies.count, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
               </div>
               <div class="tags">
                 Tags: <%= post.tags.count_order.first(5).map(&:tag_name).join(", ") %>

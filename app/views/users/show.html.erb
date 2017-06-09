@@ -19,6 +19,7 @@
 
   <div class="profile-wrapper stretch-children">
     <div class="mini-profile">
+      <div class="title">Mini-Profile</div>
       <%= avatar(@user.avatar, size: 200) %>
       <p>My user description</p>
       <div class="friends-list-wrapper">
@@ -35,15 +36,70 @@
           <% end %>
         </div>
         <div class="friends-list">
-          <% @ser.friends.first(30).each do |friend| %>
+          <% @user.friends.first(30).each do |friend| %>
             <%= avatar(friend.avatar, size: 20, href: user_path(friend)) %>
           <% end %>
         </div>
+        <%# TODO: Add AKA list (Previous Usernames, not first one?) %>
       </div>
     </div>
 
     <div class="user-activity">
-      Some stuff
+      <div class="title">User Involvement</div>
+      <table class="user-stats">
+        <tr class="user-stat-name">
+          <td>Posts</td>
+          <td>Subscriptions</td>
+          <td>Replies</td>
+          <td>Shoutouts</td>
+          <td>Tags Followed</td>
+          <td>Posts Touched</td>
+          <td>Favorites, Fans, and Friends</td>
+        </tr>
+        <tr class="user-stat-value">
+          <td><a href="#" class="underline"><%= number_with_delimiter(@user.posts.count) %></a></td> <%# Posts %>
+          <td><%= number_with_delimiter(@user.subscriptions.count) %></td> <%# Subscriptions %>
+          <td><a href="#" class="underline"><%= number_with_delimiter(@user.replies.count) %></a></td> <%# Replies %>
+          <td><a href="#" class="underline"><%= number_with_delimiter(@user.shouts_to.count) %></a></td> <%# Shoutouts %>
+          <td><%= number_with_delimiter(@user.tags_from_posts.count) %></td> <%# Tags Followed %>
+          <td><%= number_with_delimiter(@user.replies.pluck(:post_id).uniq.count) %></td> <%# Posts Touched %>
+          <td><%= number_with_delimiter(@user.favorites.count) %>/<%= number_with_delimiter(@user.fans.count) %>/<%= number_with_delimiter(@user.friends.count) %></td> <%# Favorites, Fans, and Friends %>
+        </tr>
+      </table>
+      <div class="activity-graphs">
+        <div class="title">Activity</div>
+      </div>
+      <div class="recent-posts">
+        <% if @recent_posts.count > 1 %>
+          <div class="title">Last <%= @recent_posts.count %> Posts Authored</div>
+        <% elsif @recent_posts.count == 1 %>
+          <div class="title">Last Post Authored</div>
+        <% elsif @recent_posts.count == 0 %>
+          <div class="title">No Posts Authored</div>
+        <% end %>
+        <% @recent_posts.each do |post| %>
+          <div class="recent-post">
+            <a href="<%= post_path(post) %>"><%= post.title %></a> <i>written (<%= timeago(post.created_at) %>) ago</i>
+            <p><%= post.preview_content %></p>
+          </div>
+          <hr>
+        <% end %>
+        <% if @recent_posts.count > 0 %>
+          <div class="post-index-wrapper">
+            <a href="<%= posts_path(user_id: @user) %>">All Claimed Posts »</a>
+          </div>
+          <hr>
+        <% end %>
+      </div>
+      <%# TODO: Add top replies for user %>
+      <div class="recent-replies">
+        <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="#">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
+        <% @replies.limit(5).each do |reply| %>
+          <%# TODO: Recent replies from user %>
+        <% end %>
+      </div>
+      <%# TODO: Tags in written posts %>
+      <%# TODO: Tags in comments on posts %>
     </div>
   </div>
 

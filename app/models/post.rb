@@ -38,6 +38,10 @@ class Post < ApplicationRecord
   def open?; !closed?; end
   def closed?; closed_at?; end
 
+  def preview_content
+    body[title.length..-1].split("\n").reject(&:blank?).first
+  end
+
   def content
     temp_body = body[title.length..-1]
     temp_body = "<p>#{temp_body}</p>"
