@@ -6,7 +6,7 @@
 #  reported_by_id :integer
 #  user_id        :integer
 #  post_id        :integer
-#  comment_id     :integer
+#  reply_id       :integer
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #

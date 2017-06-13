@@ -10,10 +10,12 @@ Rails.application.routes.draw do
   end
   get "tags/:tag_name" => "tags#show", as: :tag
   resources :tags, only: [ :index ]
+  resources :shouts, only: [ :create ]
   resources :users, except: [ :destroy ] do
-    get :shoutbox
-    resources :posts
-    resources :replies
+    get "shoutbox" => "shouts#index", as: :shouts
+    get "shout-trail/:other_user_id" => "shouts#shouttrail", as: :shouttrail
+    resources :posts, only: [ :index ]
+    resources :replies, only: [ :index ]
   end
 
 end

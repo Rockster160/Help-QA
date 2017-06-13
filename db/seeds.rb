@@ -22,7 +22,7 @@ end
 start_date = 5.years.ago
 users = 1000
 posts = 300
-comments = 2000
+replies = 2000
 
 puts "\nGenerating People...\n"
 Rando.people(users).each_with_index do |person, person_idx|
@@ -65,19 +65,19 @@ posts.times do |post_idx|
   post.save
 end
 
-puts "\nGenerating Post Comments...\n"
-comments.times do |comment_idx|
-  print_next_number(comments - comment_idx)
+puts "\nGenerating Post Replies...\n"
+replies.times do |reply_idx|
+  print_next_number(replies - reply_idx)
 
   author = User.all.sample
   post = Post.all.sample
-  comment = post.comments.new
-  comment.author = author
-  comment.created_at = random_time_between_now_and([post.created_at, author.created_at].max)
-  comment.body = random_body_with_whitespace(6)
-  comment.posted_anonymously = rand(10) == 0
+  reply = post.replies.new
+  reply.author = author
+  reply.created_at = random_time_between_now_and([post.created_at, author.created_at].max)
+  reply.body = random_body_with_whitespace(6)
+  reply.posted_anonymously = rand(10) == 0
 
-  comment.save
+  reply.save
 end
 
 puts "\nGenerating Post Views...\n"

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: comments
+# Table name: replies
 #
 #  id                    :integer          not null, primary key
 #  body                  :text
@@ -12,7 +12,7 @@
 #  post_id               :integer
 #
 
-class Comment < ApplicationRecord
+class Reply < ApplicationRecord
   include FormatContent
 
   belongs_to :post

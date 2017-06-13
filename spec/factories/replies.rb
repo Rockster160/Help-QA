@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: comments
+# Table name: replies
 #
 #  id                    :integer          not null, primary key
 #  body                  :text
@@ -13,7 +13,7 @@
 #
 
 FactoryGirl.define do
-  factory :comment do
+  factory :reply do
     author :user
     body
   end

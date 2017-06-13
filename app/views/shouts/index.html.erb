@@ -1,0 +1,22 @@
+<div class="shout-title">
+  <i>Shoutbox: </i> <a href="<%= user_path(@user) %>"><%= @user.username %></a> is listening
+  <p>Just a simple "Hello", "Thanks", or chat! <a href="<%= user_path(@user) %>">Back to <%= @user.username %>'s profile...</a></p>
+  <hr>
+</div>
+
+<div class="shout-wrapper stretch-children">
+  <div class="shout-list">
+    <%= render partial: "index", locals: { shouts: @shouts } %>
+  </div>
+  <div class="new-shout">
+    <% if @user == current_user %>
+      <p>You're welcome to leave a shout for yourself... But you'll have to provide both sides of the conversation!</p>
+    <% end %>
+    <%= form_for Shout.new do |f| %>
+      <%= f.text_area :body, rows: 10 %>
+      <div class="text-right">
+        <%= f.submit "Shout!" %>
+      </div>
+    <% end %>
+  </div>
+</div>

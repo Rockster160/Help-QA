@@ -17,7 +17,7 @@ class Post < ApplicationRecord
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
   has_many :edits, class_name: "PostEdit"
-  has_many :replies, class_name: "Comment"
+  has_many :replies
   has_many :report_flags
   has_many :subscriptions
   has_many :post_tags

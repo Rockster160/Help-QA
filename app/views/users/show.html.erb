@@ -57,10 +57,10 @@
           <td>Favorites, Fans, and Friends</td>
         </tr>
         <tr class="user-stat-value">
-          <td><a href="#" class="underline"><%= number_with_delimiter(@user.posts.count) %></a></td> <%# Posts %>
+          <td><a href="<%= user_posts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.posts.count) %></a></td> <%# Posts %>
           <td><%= number_with_delimiter(@user.subscriptions.count) %></td> <%# Subscriptions %>
-          <td><a href="#" class="underline"><%= number_with_delimiter(@user.replies.count) %></a></td> <%# Replies %>
-          <td><a href="#" class="underline"><%= number_with_delimiter(@user.shouts_to.count) %></a></td> <%# Shoutouts %>
+          <td><a href="<%= user_replies_path(@user) %>" class="underline"><%= number_with_delimiter(@user.replies.count) %></a></td> <%# Replies %>
+          <td><a href="<%= user_shouts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.shouts_to.count) %></a></td> <%# Shoutouts %>
           <td><%= number_with_delimiter(@user.tags_from_posts.count) %></td> <%# Tags Followed %>
           <td><%= number_with_delimiter(@user.replies.pluck(:post_id).uniq.count) %></td> <%# Posts Touched %>
           <td><%= number_with_delimiter(@user.favorites.count) %>/<%= number_with_delimiter(@user.fans.count) %>/<%= number_with_delimiter(@user.friends.count) %></td> <%# Favorites, Fans, and Friends %>
@@ -86,7 +86,7 @@
         <% end %>
         <% if @recent_posts.count > 0 %>
           <div class="post-index-wrapper">
-            <a href="<%= posts_path(user_id: @user) %>">All Claimed Posts »</a>
+            <a href="<%= user_posts_path(@user) %>">All Claimed Posts »</a>
           </div>
           <hr>
         <% end %>
@@ -108,17 +108,21 @@
       </div>
       <div class="post-tags">
         <div class="title"><%= @user.username %> is tagged...</div>
-        <% tags = @user.tags_from_posts.count_order %>
-        <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
-          <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
-        <% end %>
+        <div class="tags">
+          <% tags = @user.tags_from_posts.count_order %>
+          <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
+            <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+          <% end %>
+        </div>
       </div>
       <div class="reply-tags">
         <div class="title"><%= @user.username %>'s conversations are tagged...</div>
-        <% tags = @user.tags_from_replies.count_order %>
-        <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
-          <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
-        <% end %>
+        <div class="tags">
+          <% tags = @user.tags_from_replies.count_order %>
+          <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
+            <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

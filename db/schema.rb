@@ -10,22 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170607015948) do
+ActiveRecord::Schema.define(version: 20170613015406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "comments", force: :cascade do |t|
-    t.text     "body"
-    t.integer  "author_id"
-    t.boolean  "posted_anonymously"
-    t.boolean  "has_questionable_text"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-    t.integer  "post_id"
-    t.index ["author_id"], name: "index_comments_on_author_id", using: :btree
-    t.index ["post_id"], name: "index_comments_on_post_id", using: :btree
-  end
 
   create_table "locations", force: :cascade do |t|
     t.integer "user_id"
@@ -77,15 +65,27 @@ ActiveRecord::Schema.define(version: 20170607015948) do
     t.index ["author_id"], name: "index_posts_on_author_id", using: :btree
   end
 
+  create_table "replies", force: :cascade do |t|
+    t.text     "body"
+    t.integer  "author_id"
+    t.boolean  "posted_anonymously"
+    t.boolean  "has_questionable_text"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.integer  "post_id"
+    t.index ["author_id"], name: "index_replies_on_author_id", using: :btree
+    t.index ["post_id"], name: "index_replies_on_post_id", using: :btree
+  end
+
   create_table "report_flags", force: :cascade do |t|
     t.integer  "reported_by_id"
     t.integer  "user_id"
     t.integer  "post_id"
-    t.integer  "comment_id"
+    t.integer  "reply_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-    t.index ["comment_id"], name: "index_report_flags_on_comment_id", using: :btree
     t.index ["post_id"], name: "index_report_flags_on_post_id", using: :btree
+    t.index ["reply_id"], name: "index_report_flags_on_reply_id", using: :btree
     t.index ["reported_by_id"], name: "index_report_flags_on_reported_by_id", using: :btree
     t.index ["user_id"], name: "index_report_flags_on_user_id", using: :btree
   end
