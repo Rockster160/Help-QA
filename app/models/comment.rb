@@ -13,19 +13,14 @@
 #
 
 class Comment < ApplicationRecord
+  include FormatContent
 
   belongs_to :post
   belongs_to :author, class_name: "User"
   has_many :tags, through: :post
 
-  def content
-    temp_body = body
-    temp_body = "<p>#{temp_body}</p>"
-    temp_body.gsub!(/\n[\W|\r]*?\n/, "</p><p>")
-    temp_body.gsub!(/\n/, "<br>")
-    # Prettify links, embed images, do supported markdown, etc
-    # SANITIZE HTML TAGS!
-    temp_body.squish.html_safe
+  def content(options={})
+    format_content(body, options)
   end
 
   def username
@@ -51,6 +46,17 @@ class Comment < ApplicationRecord
   def location
     return unless author.try(:location)
     [author.location.city.presence, author.location.region_code.presence, author.location.country_code.presence].compact.join(", ")
+  end
+
+  def same_author_as_post?
+    author_id == post.author_id && posted_anonymously? == post.posted_anonymously?
+  end
+
+  private
+
+  def identicon_src(ip)
+    base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7, background_color: 0xffffffff)
+    "data:image/png;base64,#{base64_identicon}"
   end
 
 end

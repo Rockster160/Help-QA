@@ -1,9 +1,10 @@
 <div class="post-container stretch-children">
   <div class="author-details text-center">
-    <%= avatar(@post.avatar, size: 200) %>
     <% if @post.posted_anonymously? %>
+      <%= avatar(@post.avatar, size: 200) %>
       <span class="anonymous">This post left anonymously</span>
     <% else %>
+      <%= avatar(@post.avatar, size: 200, href: user_path(@post.author)) %>
       <div class="username"><%= @post.username %></div>
       <div class="detail-icons"></div>
       <div class="location"></div>
@@ -13,7 +14,7 @@
     <div class="title">
       <%= @post.title %>
     </div>
-    <div class="body"><%= @post.content %></div>
+    <div class="body"><%= @post.format_body %></div>
     <div class="details">
       This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> |
       Views: <%= @post.views.count %>,

@@ -12,6 +12,7 @@
 #
 
 class Post < ApplicationRecord
+  include FormatContent
 
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
@@ -42,14 +43,8 @@ class Post < ApplicationRecord
     body[title.length..-1].split("\n").reject(&:blank?).first
   end
 
-  def content
-    temp_body = body[title.length..-1]
-    temp_body = "<p>#{temp_body}</p>"
-    temp_body.gsub!(/\n[\W|\r]*?\n/, "</p><p>")
-    temp_body.gsub!(/\n/, "<br>")
-    # Prettify links, embed images, do supported markdown, etc
-    # SANITIZE HTML TAGS!
-    temp_body.squish.html_safe
+  def format_body(options={})
+    format_content(body[title.length..-1], options)
   end
 
   def username

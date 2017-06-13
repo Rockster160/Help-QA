@@ -82,6 +82,14 @@
           }
           .reply-reciprocity {
           }
+          &.highlight {
+            border-top: 3px solid limegreen;
+          }
+          &.original-poster {
+            border-color: $help-default;
+            .reply-author { border-color: $help-default; }
+            .reply-content { background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%)); }
+          }
         }
       }
     }

@@ -30,7 +30,9 @@ inWords = function(from_epoch, options) {
 
 timeago = function(time_ele) {
   $time_ele = $(time_ele);
-  var words = inWords($time_ele.attr('datetime'));
+  var options = {}
+  if ($time_ele.attr("word_count")) { options.word_count = parseInt($time_ele.attr("word_count")); }
+  var words = inWords($time_ele.attr('datetime'), options);
   $time_ele.html(words);
 };
 

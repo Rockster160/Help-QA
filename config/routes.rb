@@ -6,15 +6,14 @@ Rails.application.routes.draw do
   devise_for :users, path: "account"
 
   resources :posts, except: [ :destroy ] do
-    collection do
-      get ":user_id", action: "index"
-    end
     post :report
   end
   get "tags/:tag_name" => "tags#show", as: :tag
   resources :tags, only: [ :index ]
   resources :users, except: [ :destroy ] do
     get :shoutbox
+    resources :posts
+    resources :replies
   end
 
 end

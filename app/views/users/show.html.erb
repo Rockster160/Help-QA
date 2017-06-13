@@ -93,9 +93,17 @@
       </div>
       <%# TODO: Add top replies for user %>
       <div class="recent-replies">
-        <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="#">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
+        <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="<%= user_replies_path(@user) %>">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
         <% @replies.limit(5).each do |reply| %>
-          <%# TODO: Recent replies from user %>
+          <div class="post-container">
+            <div class="post-title"><a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a></div>
+            <div class="reply-text">
+              <div class="quote-container">
+                <%= reply.content %>
+                <i>- written <%= timeago(reply.created_at, word_count: 2) %></i>
+              </div>
+            </div>
+          </div>
         <% end %>
       </div>
       <%# TODO: Tags in written posts %>

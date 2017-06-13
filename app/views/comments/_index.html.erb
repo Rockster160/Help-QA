@@ -1,12 +1,13 @@
 <% comments ||= @comments || [] %>
 <% comments.each do |reply| %>
   <% author = reply.author %>
-  <div class="reply-container" id="reply-<%= reply.id %>">
+  <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %>" id="reply-<%= reply.id %>">
     <div class="reply-author stretch-children">
       <%= avatar(reply.avatar, size: 40) %>
       <div class="reply-author-text">
         <div class="reply-author-info">
           <div class="reply-author-name">
+            <%= hover_icon("vcard", "Original Poster") if reply.same_author_as_post? %>
             <% if reply.posted_anonymously? %>
               Anonymous
             <% else %>
