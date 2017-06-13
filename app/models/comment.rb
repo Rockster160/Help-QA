@@ -19,6 +19,9 @@ class Comment < ApplicationRecord
   belongs_to :author, class_name: "User"
   has_many :tags, through: :post
 
+  scope :claimed, -> { where.not(posted_anonymously: true) }
+  scope :unclaimed, -> { where(posted_anonymously: true) }
+
   def content(options={})
     format_content(body, options)
   end

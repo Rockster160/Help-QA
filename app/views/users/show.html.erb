@@ -106,8 +106,20 @@
           </div>
         <% end %>
       </div>
-      <%# TODO: Tags in written posts %>
-      <%# TODO: Tags in comments on posts %>
+      <div class="post-tags">
+        <div class="title"><%= @user.username %> is tagged...</div>
+        <% tags = @user.tags_from_posts.count_order %>
+        <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
+          <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+        <% end %>
+      </div>
+      <div class="reply-tags">
+        <div class="title"><%= @user.username %>'s conversations are tagged...</div>
+        <% tags = @user.tags_from_replies.count_order %>
+        <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
+          <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+        <% end %>
+      </div>
     </div>
   </div>
 
