@@ -12,7 +12,7 @@ dismissFlash = function() {
     $(this).remove();
   })
 }
-$(document).on('click touchstart', '.dismiss-flash', function() {
+$(document).on('click touchstart', '.flash-banner', function() {
   dismissFlash();
 })
 $(window).scroll(function() { dismissFlash(true) })

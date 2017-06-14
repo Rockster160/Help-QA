@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170613015406) do
+ActiveRecord::Schema.define(version: 20170614031411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,16 @@ ActiveRecord::Schema.define(version: 20170613015406) do
     t.float   "latitude"
     t.float   "longitude"
     t.index ["user_id"], name: "index_locations_on_user_id", using: :btree
+  end
+
+  create_table "notices", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "notice_type"
+    t.string   "title"
+    t.string   "description"
+    t.datetime "read_at"
+    t.datetime "created_at"
+    t.index ["user_id"], name: "index_notices_on_user_id", using: :btree
   end
 
   create_table "post_edits", force: :cascade do |t|

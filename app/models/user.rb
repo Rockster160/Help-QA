@@ -28,6 +28,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :notices
   has_many :posts, foreign_key: :author_id
   has_many :replies, foreign_key: :author_id
   has_many :tags_from_posts, source: :tags, through: :posts

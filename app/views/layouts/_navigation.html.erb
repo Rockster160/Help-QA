@@ -1,12 +1,51 @@
 <div class="navigation-wrapper">
   <div class="navigation-container">
     <a href="<%= root_path %>" class="navigation-head">Help</a>
-    <a href="">About</a>
-    <a href="">Tags</a>
-    <a href="">Search</a>
-    <a href="">FAQ</a>
-    <a href="">Start a New Post</a>
-    <a href="">Chat</a>
-    <a href="">Login & Registration</a>
+    <a href="<%=  %>">About</a>
+    <a href="<%=  %>">Tags</a>
+    <a href="<%=  %>">Search</a>
+    <a href="<%=  %>">FAQ</a>
+    <a href="<%=  %>">Start a New Post</a>
+    <a href="<%=  %>">Chat</a>
+    <% if user_signed_in? %>
+      <div class="profile-tab">
+        <div class="account-wrapper">
+          <small>Logged in as <strong><%= current_user.username %></strong> (<%= link_to "Logout", destroy_user_session_path, method: :delete %>)</small>
+          <div class="account-dropdowns">
+            <div class="dropdown-container">
+              <a href="<%= user_path(current_user) %>" class="dropdown-clickable">Public Profile</a>
+              <ul class="dropdown-list hidden">
+                <a href="<%=  %>">My Posts</a>
+                <a href="<%=  %>">My Replies</a>
+                <a href="<%=  %>">Near Me</a>
+              </ul>
+            </div>
+            <div class="dropdown-container">
+              <a href="<%= user_path(current_user) %>" class="dropdown-clickable">Account Admin</a>
+              <ul class="dropdown-list hidden">
+                <a href="<%=  %>">Main</a>
+                <a href="<%=  %>">Notices</a>
+                <a href="<%=  %>">Subscriptions</a>
+                <a href="<%=  %>">Invites</a>
+                <a href="<%=  %>">My Tags</a>
+                <a href="<%= user_path(current_user) %>">Profile</a>
+                <a href="<%=  %>">Friends</a>
+                <a href="<%=  %>">Avatar</a>
+                <a href="<%=  %>">Settings</a>
+                <a href="<%=  %>">Map</a>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="notices-container">
+          <% notices = current_user.notices.unread %>
+          <a href="<%= account_notices_path %>" class="notice-link">Notices: <%= notices.subscriptions.count %></a>
+          <a href="<%= user_shouts_path(current_user) %>" class="notice-link">Shouts: <%= notices.shouts.count %></a>
+          <a href="<%= account_invites_path %>" class="notice-link">Invites: <%= notices.invites.count %></a>
+        </div>
+      </div>
+    <% else %>
+      <a href="<%= new_user_session_path %>">Login & Registration</a>
+    <% end %>
   </div>
 </div>

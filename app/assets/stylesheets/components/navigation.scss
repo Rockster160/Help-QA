@@ -5,12 +5,15 @@
   z-index: 0;
   border-bottom: 3px solid white;
   box-shadow: 0 0 8px #777;
+
   .navigation-container {
     width: 1000px;
     max-width: 100%;
     margin: 0 auto;
     padding: 5px;
     z-index: 1;
+    position: relative;
+
     a {
       padding: 0 5px;
       font-size: 14px;
@@ -20,6 +23,91 @@
     }
     .navigation-head {
       font-size: 40px;
+    }
+    .profile-tab {
+      position: absolute;
+      background: white;
+      border: 1px solid #222;
+      border-bottom: none;
+
+      right: 20px;
+      bottom: -3px;
+      height: 50px;
+      width: 400px;
+
+      a {
+        color: #009;
+        cursor: pointer;
+        &:hover { color: #900; }
+      }
+      .account-wrapper {
+        height: 100%;
+        position: relative;
+
+        small {
+          position: absolute;
+          top: 3px; left: 3px;
+          font-size: 10px;
+          color: #222;
+
+          a {
+            font-size: 10px;
+            padding: 0;
+          }
+        }
+        .account-dropdowns {
+          position: absolute;
+          top: 25px;
+          left: 20px;
+
+          .dropdown-container {
+            display: inline-block;
+            position: relative;
+
+            .dropdown-clickable {
+              font-size: 18px;
+            }
+
+            .dropdown-list {
+              position: absolute;
+              left: 0;
+              right: 0;
+              top: 20px;
+              background: #FCFCFC;
+              border: 1px solid #BBB;
+              margin: 0;
+              padding: 0;
+
+              a {
+                list-style-type: none;
+                padding: 3px 5px;
+                display: list-item;
+                font-size: 12px;
+
+                &:not(:last-of-type) {
+                  border-bottom: 1px solid #EEE;
+                }
+                &:hover {
+                  background: white;
+                }
+              }
+            }
+          }
+        }
+      }
+      .notices-container {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        bottom: 0;
+        text-align: right;
+
+        a.notice-link {
+          display: block;
+          font-size: 10px;
+          line-height: 15px;
+        }
+      }
     }
   }
 }
