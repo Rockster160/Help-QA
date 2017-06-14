@@ -21,7 +21,8 @@ hr {
   & > * {
     vertical-align: top;
     display: table-cell;
-  }
+    &:last-child { width: 100%; }
+  }  
 }
 
 a {

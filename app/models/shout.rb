@@ -11,6 +11,15 @@
 #
 
 class Shout < ApplicationRecord
+  include FormatContent
+
   belongs_to :sent_from, class_name: "User"
-  belongs_to :sent_to, class_name: "User"
+  belongs_to :sent_to,   class_name: "User"
+
+  scope :between, ->(user1, user2) { where("(sent_from_id = :user1 AND sent_to_id = :user2) OR (sent_from_id = :user2 AND sent_to_id = :user1)", user1: user1, user2: user2) }
+
+  def content(options={})
+    format_content(body, options)
+  end
+
 end

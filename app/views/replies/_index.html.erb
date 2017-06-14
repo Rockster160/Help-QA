@@ -25,7 +25,7 @@
                 <%= hover_icon("user-red", "Not Verified (Joined #{time_difference_in_words(DateTime.current, author.created_at)} ago)") %>
               <% end %>
               <%= hover_icon("hourglass", "Long Term User") if author.long_term_user? %>
-              <%= hover_icon("megaphone", "Shoutout", href: user_shoutbox_path(author), text: author.shouts_to.count) %>
+              <%= hover_icon("megaphone", "Shoutout", href: user_shouts_path(author), text: author.shouts_to.count) %>
             <% end %>
             <%= link_to "#", "#reply-#{reply.id}" %>
           </div>

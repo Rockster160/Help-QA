@@ -1,3 +1,21 @@
+<% hide_shouttrail ||= false %>
 <% shouts.each do |shout| %>
+  <% shouter = shout.sent_from %>
+  <div class="shout-container">
+    <div class="shout-author stretch-children">
+      <%= avatar(shouter.avatar, size: 30) %>
+      <div class="author-details">
+        <div class="author-name">
+          <a href="<%= user_shouts_path(shouter) %>"><%= shouter.username %></a>
+        </div>
+        <div class="timestamp">
+          <%= timeago(shout.created_at) %><% unless hide_shouttrail %>, <a href="<%= user_shouttrail_path(@user, shouter) %>">Shouttrail</a><% end %>
+        </div>
+      </div>
+    </div>
+    <div class="shout-body">
+      <%= shout.content %>
+    </div>
+  </div>
   <hr>
 <% end %>
