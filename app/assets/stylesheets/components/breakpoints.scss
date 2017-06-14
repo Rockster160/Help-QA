@@ -1,3 +1,5 @@
+$screen-xxs-max: 449px;
+$screen-xs-min: 450px;
 $screen-xs-max: 767px;
 $screen-sm-min: 768px;
 $screen-sm-max: 991px;
@@ -5,14 +7,17 @@ $screen-md-min: 992px;
 $screen-md-max: 1199px;
 $screen-lg-min: 1200px;
 
+@mixin xsmall-up  { @include min($screen-xs-min) { @content; } }
 @mixin small-up  { @include min($screen-sm-min) { @content; } }
 @mixin medium-up { @include min($screen-md-min) { @content; } }
-@mixin large-up  { @include min($screen-lg-min) { @content; } }
+// @mixin large-up  { @include min($screen-lg-min) { @content; } }
 
+@mixin xsmall-down  { @include max($screen-xs-max) { @content; } }
 @mixin small-down  { @include max($screen-sm-max) { @content; } }
 @mixin medium-down { @include max($screen-md-max) { @content; } }
 
-@mixin xsmall-only { @include max($screen-xs-max) { @content; } }
+@mixin xxsmall-only { @include max($screen-xxs-max) { @content; } }
+@mixin xsmall-only { @include between($screen-xs-min, $screen-xs-max) { @content; } }
 @mixin small-only  { @include between($screen-sm-min, $screen-sm-max) { @content; } }
 @mixin medium-only { @include between($screen-md-min, $screen-md-max) { @content; } }
 @mixin large-only  { @include min($screen-lg-min) { @content; } }

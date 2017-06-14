@@ -110,4 +110,40 @@
       }
     }
   }
+
+  @include small-down {
+    .navigation-container {
+      padding-bottom: 50px;
+    }
+  }
+  @include xxsmall-only {
+    .navigation-container {
+      padding-bottom: 70px;
+
+      .profile-tab {
+        height: 70px;
+        width: auto;
+        left: 10px;
+
+        .account-wrapper {
+          .account-dropdowns {
+            top: 50px;
+            left: 0;
+            right: 0;
+            text-align: center;
+          }
+        }
+        .notices-container {
+          top: 20px;
+          left: 0;
+          right: 0;
+          text-align: center;
+
+          a.notice-link {
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
 }
