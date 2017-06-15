@@ -9,7 +9,12 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index ]
 
   resources :posts, except: [ :destroy ] do
+    get ":user_id", action: :index, as: :user, on: :collection
     post :report
+  end
+
+  resources :replies, only: [ :index ] do
+    get ":user_id", action: :index, as: :user, on: :collection
   end
 
   resources :shouts, only: [ :create ]

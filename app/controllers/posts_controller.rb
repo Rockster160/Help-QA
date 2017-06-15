@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
 
   def index
-    # if user_id, lookup and filter by them
+    @posts = Post.order(created_at: :desc)
+    @posts = @posts.claimed.where(user_id: params[:user_id]) if params[:user_id].present?
   end
 
   def show
