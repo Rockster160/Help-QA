@@ -28,27 +28,30 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :notices
-  has_many :posts, foreign_key: :author_id
-  has_many :replies, foreign_key: :author_id
-  has_many :tags_from_posts, source: :tags, through: :posts
+  has_many :posts,            foreign_key: :author_id
+  has_many :replies,          foreign_key: :author_id
+  has_many :post_edits,       foreign_key: :edited_by_id
+  has_many :post_views,       foreign_key: :viewed_by_id
+  has_many :shouts_to,        foreign_key: :sent_to_id,      class_name: "Shout"
+  has_many :shouts_from,      foreign_key: :sent_from_id,    class_name: "Shout"
+  has_many :invites_sent,     foreign_key: :from_user_id,    class_name: "Invite"
+  has_many :invites_received, foreign_key: :invited_user_id, class_name: "Invite"
+  has_many :tags_from_posts,   source: :tags, through: :posts
   has_many :tags_from_replies, source: :tags, through: :replies
-  has_many :post_edits, foreign_key: :edited_by_id
-  has_many :post_views, foreign_key: :viewed_by_id
-  has_many :shouts_to, foreign_key: :sent_to_id, class_name: "Shout"
-  has_many :shouts_from, foreign_key: :sent_from_id, class_name: "Shout"
+  has_many :notices
   has_many :report_flags
   has_many :subscriptions
-  has_one :location
+  has_one  :location
 
   validates_uniqueness_of :username
   validate :username_meets_requirements
-  scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
-  scope :online_now, -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
 
-  def mod?; false; end # FIXME by adding roles
-  def friends; []; end # FIXME by adding friends
-  def fans; []; end # FIXME by adding friends
+  scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
+  scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
+
+  def mod?; false;   end # FIXME by adding roles
+  def friends; [];   end # FIXME by adding friends
+  def fans; [];      end # FIXME by adding friends
   def favorites; []; end # FIXME by adding friends
 
   def online?

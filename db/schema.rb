@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170614031411) do
+ActiveRecord::Schema.define(version: 20170615014339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "invites", force: :cascade do |t|
+    t.integer  "from_user_id"
+    t.integer  "invited_user_id"
+    t.integer  "post_id"
+    t.datetime "created_at"
+    t.index ["from_user_id"], name: "index_invites_on_from_user_id", using: :btree
+    t.index ["invited_user_id"], name: "index_invites_on_invited_user_id", using: :btree
+    t.index ["post_id"], name: "index_invites_on_post_id", using: :btree
+  end
 
   create_table "locations", force: :cascade do |t|
     t.integer "user_id"
@@ -36,8 +46,10 @@ ActiveRecord::Schema.define(version: 20170614031411) do
     t.integer  "notice_type"
     t.string   "title"
     t.string   "description"
+    t.integer  "notice_for_id"
     t.datetime "read_at"
     t.datetime "created_at"
+    t.index ["notice_for_id"], name: "index_notices_on_notice_for_id", using: :btree
     t.index ["user_id"], name: "index_notices_on_user_id", using: :btree
   end
 

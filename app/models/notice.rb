@@ -2,13 +2,14 @@
 #
 # Table name: notices
 #
-#  id          :integer          not null, primary key
-#  user_id     :integer
-#  notice_type :integer
-#  title       :string
-#  description :string
-#  read_at     :datetime
-#  created_at  :datetime
+#  id            :integer          not null, primary key
+#  user_id       :integer
+#  notice_type   :integer
+#  title         :string
+#  description   :string
+#  notice_for_id :integer
+#  read_at       :datetime
+#  created_at    :datetime
 #
 
 class Notice < ApplicationRecord
@@ -26,5 +27,18 @@ class Notice < ApplicationRecord
     shouts:        2,
     invites:       3
   }
+
+  def notice_for
+    return unless notice_for_id.present?
+    case notice_type.to_sym
+    when :subscriptions then Subscription.find(notice_for_id)
+    when :shouts        then Shout.find(notice_for_id)
+    when :invites       then Invite.find(notice_for_id)
+    end
+  end
+
+  def read!(now=DateTime.current)
+    update!(read_at: now)
+  end
 
 end
