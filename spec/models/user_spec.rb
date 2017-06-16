@@ -77,6 +77,60 @@ RSpec.describe User, type: :model do
     end
   end
 
+  context "Friendship" do
+    let(:user)     { ::FactoryGirl.create(:user) }
+    let(:friend)   { ::FactoryGirl.create(:user) }
+    let(:favorite) { ::FactoryGirl.create(:user) }
+
+    context "can add friends" do
+      it "can add or be added" do
+        user.add_friend(favorite)
+
+        expect(user.favorites.first).to eq(favorite)
+        expect(favorite.fans.first).to eq(user)
+      end
+
+      it "can complete friendships" do
+        user.add_friend(friend)
+        friend.add_friend(user)
+
+        expect(user.fans.first).to_not        eq(friend)
+        expect(user.favorites.first).to_not   eq(friend)
+        expect(user.friends.first).to         eq(friend)
+
+        expect(friend.fans.first).to_not      eq(user)
+        expect(friend.favorites.first).to_not eq(user)
+        expect(friend.friends.first).to       eq(user)
+      end
+    end
+
+    context "can remove friends" do
+      it "can remove friends when they added me" do
+        user.add_friend(friend)
+        friend.add_friend(user)
+
+        expect(user.friends.first).to eq(friend)
+
+        user.remove_friend(friend)
+        expect(user.friends.first).to be(nil)
+        expect(user.favorites.first).to be(nil)
+        expect(user.fans.first).to eq(friend)
+      end
+
+      it "can remove friends when I added them" do
+        user.add_friend(friend)
+        friend.add_friend(user)
+
+        expect(user.friends.first).to eq(friend)
+
+        user.remove_friend(friend)
+        expect(user.friends.first).to be(nil)
+        expect(user.favorites.first).to be(nil)
+        expect(user.fans.first).to eq(friend)
+      end
+    end
+  end
+
   context "default values" do
     context "username" do
       let(:user) { ::FactoryGirl.create(:user, username: nil, email: "thisismy@email.com") }

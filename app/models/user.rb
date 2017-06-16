@@ -27,6 +27,7 @@
 
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
+  include Friendable
 
   has_many :posts,            foreign_key: :author_id
   has_many :replies,          foreign_key: :author_id
@@ -50,9 +51,6 @@ class User < ApplicationRecord
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
 
   def mod?; false;   end # FIXME by adding roles
-  def friends; [];   end # FIXME by adding friends
-  def fans; [];      end # FIXME by adding friends
-  def favorites; []; end # FIXME by adding friends
 
   def online?
     return false unless last_seen_at

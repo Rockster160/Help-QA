@@ -22,10 +22,11 @@ class Notice < ApplicationRecord
   scope :unread, -> { where(read_at: nil) }
 
   enum notice_type: {
-    other:         0,
-    subscriptions: 1,
-    shouts:        2,
-    invites:       3
+    other:           0,
+    subscriptions:   1,
+    shouts:          2,
+    invites:         3,
+    friend_requests: 4
   }
 
   def notice_for

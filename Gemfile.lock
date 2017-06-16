@@ -89,6 +89,9 @@ GEM
       railties (>= 3.2, < 5.1)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
+    has_friendship (1.1.0)
+      rails (>= 4.0.0, < 5.1.0)
+      stateful_enum
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (0.8.1)
@@ -221,6 +224,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    stateful_enum (0.4.0)
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
@@ -256,6 +260,7 @@ DEPENDENCIES
   factory_girl_rails
   faker
   font-awesome-rails
+  has_friendship
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)

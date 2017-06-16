@@ -32,6 +32,7 @@ gem 'factory_girl_rails'
 gem 'devise'
 gem 'rest-client'
 gem 'ruby_identicon'
+gem 'has_friendship'
 
 group :development, :test do
   gem 'byebug', platform: :mri
