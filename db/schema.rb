@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170615224454) do
+ActiveRecord::Schema.define(version: 20170616041321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,11 +54,9 @@ ActiveRecord::Schema.define(version: 20170615224454) do
     t.integer  "user_id"
     t.integer  "notice_type"
     t.string   "title"
-    t.string   "description"
-    t.integer  "notice_for_id"
     t.datetime "read_at"
     t.datetime "created_at"
-    t.index ["notice_for_id"], name: "index_notices_on_notice_for_id", using: :btree
+    t.string   "url"
     t.index ["user_id"], name: "index_notices_on_user_id", using: :btree
   end
 
@@ -135,6 +133,7 @@ ActiveRecord::Schema.define(version: 20170615224454) do
     t.integer  "post_id"
     t.integer  "user_id"
     t.datetime "created_at"
+    t.boolean  "unsubscribed"
     t.index ["post_id"], name: "index_subscriptions_on_post_id", using: :btree
     t.index ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
   end

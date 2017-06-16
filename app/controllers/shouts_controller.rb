@@ -22,4 +22,11 @@ class ShoutsController < ApplicationController
     end
   end
 
+  def create
+    @user = User.find(params[:user_id])
+    @shout = @user.shouts_to.create(body: params[:shout][:body], sent_from_id: current_user.id)
+
+    redirect_to user_shouttrail(@user, current_user)
+  end
+
 end

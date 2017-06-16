@@ -20,6 +20,7 @@ class Post < ApplicationRecord
   has_many :replies
   has_many :report_flags
   has_many :subscriptions
+  has_many :subscribers, through: :subscriptions, source: :user
   has_many :post_tags
   has_many :tags, through: :post_tags
 
@@ -38,6 +39,13 @@ class Post < ApplicationRecord
 
   def open?; !closed?; end
   def closed?; closed_at?; end
+
+  def notify_subscribers
+    subscribers.each do |subscriber|
+      post_url = Rails.application.routes.url_helpers.post_path(id)
+      subscriber.notices.subscriptions.create(title: "New Comment on #{title}", url: post_url)
+    end
+  end
 
   def preview_content
     body[title.length..-1].split("\n").reject(&:blank?).first

@@ -10,12 +10,11 @@ Rails.application.routes.draw do
 
   resources :posts, except: [ :destroy ] do
     post :report
+    resources :replies, only: [ :create ]
   end
 
   resources :replies, only: [ :index ] do
   end
-
-  resources :shouts, only: [ :create ]
 
   resource :account, only: [ :index ] do
     resources :notices, only: [ :index ]
@@ -31,6 +30,7 @@ Rails.application.routes.draw do
     get "shout-trail/:other_user_id" => "shouts#shouttrail", as: :shouttrail
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
+    resources :shouts, only: [ :create ]
   end
 
 end
