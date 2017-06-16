@@ -1,0 +1,20 @@
+<div class="detail-icons">
+  <% line_status = user.online? ? "online" : "offline" %>
+  <%= hover_icon(line_status, line_status) %>
+  <%= hover_icon("star", "Help Volunteer Moderator") if user.mod? %>
+  <%= hover_icon("shield", "Help Volunteer Admin") if user.admin? %>
+  <% if user.verified? %>
+    <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, user.verified_at)})") %>
+  <% else %>
+    <%= hover_icon("user-red", "Not Verified (Joined #{time_difference_in_words(DateTime.current, user.created_at)} ago)") %>
+  <% end %>
+  <% if user_signed_in? && user != current_user %>
+    <% if current_user.added?(user) %>
+      <%= hover_icon("user-rem", "Remove #{user.username} from your Friends", href: remove_friend_user_path(user), method: :put) %>
+    <% else %>
+      <%= hover_icon("user-add", "Add #{user.username} as your Friend", href: add_friend_user_path(user), method: :put) %>
+    <% end %>
+  <% end %>
+  <%= hover_icon("hourglass", "Long Term User") if user.long_term_user? %>
+  <%= hover_icon("megaphone", "Shoutout", href: user_shouts_path(user), text: user.shouts_to.count) %>
+</div>

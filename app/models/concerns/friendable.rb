@@ -13,7 +13,13 @@ module Friendable
     Friendship.where("(friendships.user_id = :user_id AND friendships.friend_id = :friend_id) OR (friendships.user_id = :friend_id AND friendships.friend_id = :user_id)", user_id: self.id, friend_id: friend.id).first
   end
   def friends?(friend)
-    friendship_with(friend).friends?
+    friendship_with(friend).try(:friends?)
+  end
+  def added?(friend)
+    friends?(friend) || favorites.pluck(:id).include?(friend.id)
+  end
+  def added_by?(friend)
+    friends?(friend) || fans.pluck(:id).include?(friend.id)
   end
 
   def favorites

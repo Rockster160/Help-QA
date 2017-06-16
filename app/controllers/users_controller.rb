@@ -18,4 +18,16 @@ class UsersController < ApplicationController
   def create
   end
 
+  def add_friend
+    friend = User.find(params[:id])
+    current_user.add_friend(friend)
+    redirect_back fallback_location: user_path(friend)
+  end
+
+  def remove_friend
+    friend = User.find(params[:id])
+    current_user.remove_friend(friend)
+    redirect_back fallback_location: user_path(friend)
+  end
+
 end

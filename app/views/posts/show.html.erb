@@ -6,7 +6,7 @@
     <% else %>
       <%= avatar(@post.avatar, size: 200, href: user_path(@post.author)) %>
       <div class="username"><%= @post.username %></div>
-      <div class="detail-icons"></div>
+      <%= render partial: "users/detail_icons", locals: { user: @post.author } %>
       <div class="location"></div>
     <% end %>
   </div>

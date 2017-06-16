@@ -9,12 +9,10 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index ]
 
   resources :posts, except: [ :destroy ] do
-    get ":user_id", action: :index, as: :user, on: :collection
     post :report
   end
 
   resources :replies, only: [ :index ] do
-    get ":user_id", action: :index, as: :user, on: :collection
   end
 
   resources :shouts, only: [ :create ]
@@ -25,6 +23,10 @@ Rails.application.routes.draw do
   end
 
   resources :users, except: [ :destroy ] do
+    member do
+      put :add_friend
+      put :remove_friend
+    end
     get "shoutbox" => "shouts#index", as: :shouts
     get "shout-trail/:other_user_id" => "shouts#shouttrail", as: :shouttrail
     resources :posts, only: [ :index ]

@@ -16,16 +16,7 @@
           </div>
           <div class="reply-author-stats">
             <% unless reply.posted_anonymously? %>
-              <% line_status = author.online? ? "online" : "offline" %>
-              <%= hover_icon(line_status, line_status) %>
-              <%= hover_icon("star", "Help Volunteer Moderator") if author.mod? %>
-              <% if author.verified? %>
-                <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, author.verified_at)})") %>
-              <% else %>
-                <%= hover_icon("user-red", "Not Verified (Joined #{time_difference_in_words(DateTime.current, author.created_at)} ago)") %>
-              <% end %>
-              <%= hover_icon("hourglass", "Long Term User") if author.long_term_user? %>
-              <%= hover_icon("megaphone", "Shoutout", href: user_shouts_path(author), text: author.shouts_to.count) %>
+              <%= render partial: "users/detail_icons", locals: { user: reply.author } %>
             <% end %>
             <%= link_to "#", "#reply-#{reply.id}" %>
           </div>
