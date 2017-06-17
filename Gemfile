@@ -33,6 +33,7 @@ gem 'devise'
 gem 'rest-client'
 gem 'ruby_identicon'
 gem 'has_friendship'
+gem 'chroma'
 
 group :development, :test do
   gem 'byebug', platform: :mri

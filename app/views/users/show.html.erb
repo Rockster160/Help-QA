@@ -26,7 +26,7 @@
         </div>
         <div class="friends-list">
           <% @user.friends.first(30).each do |friend| %>
-            <%= avatar(friend.avatar, size: 40, href: user_path(friend)) %>
+            <%= avatar(friend.avatar, size: 40, href: user_path(friend), title: friend.username) %>
           <% end %>
         </div>
         <%# TODO: Add AKA list (Previous Usernames, not first one?) %>
@@ -49,7 +49,7 @@
           <td><a href="<%= user_posts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.posts.count) %></a></td> <%# Posts %>
           <td><%= number_with_delimiter(@user.subscriptions.count) %></td> <%# Subscriptions %>
           <td><a href="<%= user_replies_path(@user) %>" class="underline"><%= number_with_delimiter(@user.replies.count) %></a></td> <%# Replies %>
-          <td><a href="<%= user_shouts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.shouts_to.count) %></a></td> <%# Shoutouts %>
+          <td><a href="<%= user_shouts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.recent_shouts.count) %></a></td> <%# Shoutouts %>
           <td><%= number_with_delimiter(@user.tags_from_posts.count) %></td> <%# Tags Followed %>
           <td><%= number_with_delimiter(@user.replies.pluck(:post_id).uniq.count) %></td> <%# Posts Touched %>
           <td><%= number_with_delimiter(@user.favorites.count) %>/<%= number_with_delimiter(@user.fans.count) %>/<%= number_with_delimiter(@user.friends.count) %></td> <%# Favorites, Fans, and Friends %>

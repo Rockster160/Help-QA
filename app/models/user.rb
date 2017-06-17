@@ -53,6 +53,10 @@ class User < ApplicationRecord
   def admin?; false; end # FIXME by adding roles
   def mod?;   false; end # FIXME by adding roles
 
+  def recent_shouts
+    shouts_to.where("created_at > ?", 30.days.ago)
+  end
+
   def online?
     return false unless last_seen_at
     last_seen_at > 5.minutes.ago

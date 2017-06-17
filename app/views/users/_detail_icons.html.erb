@@ -16,5 +16,5 @@
     <% end %>
   <% end %>
   <%= hover_icon("hourglass", "Long Term User") if user.long_term_user? %>
-  <%= hover_icon("megaphone", "Shoutout", href: user_shouts_path(user), text: user.shouts_to.count) %>
+  <%= hover_icon("megaphone", "Shoutout", href: user_shouts_path(user), text: user.recent_shouts.count) %>
 </div>

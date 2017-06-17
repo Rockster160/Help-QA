@@ -13,6 +13,7 @@
 
 class Post < ApplicationRecord
   include FormatContent
+  include Identicon
 
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
@@ -114,8 +115,13 @@ class Post < ApplicationRecord
   end
 
   def identicon_src(ip)
-    base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7, background_color: 0xffffffff)
-    "data:image/png;base64,#{base64_identicon}"
+    # base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7, background_color: 0xffffffff)
+    # https://www.gravatar.com/avatar/68003972cd3d14dd87f66f2fa6c7775c?d=identicon
+    # ActiveSupport::Base64.encode64(open("http://image.com/img.jpg") { |io| io.read })
+    # Base64.encode64(File.open("file_path", "rb").read)
+    # Digest::MD5.hexdigest("192.72.183.21") - Always returns 32 characters
+    # "data:image/png;base64,#{base64_identicon}"
+    Identicon.generate(ip)
   end
 
 end

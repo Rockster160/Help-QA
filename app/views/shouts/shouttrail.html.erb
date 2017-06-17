@@ -9,17 +9,20 @@
     <%= render partial: "index", locals: { shouts: @shouts, hide_shouttrail: true } %>
   </div>
   <div class="new-shout">
-    <% if @other_user == current_user %>
-      <p>You're welcome to leave a shout for yourself... But you'll have to provide both sides of the conversation!</p>
+    <% if user_signed_in? %>
+      <% if @other_user == current_user %>
+        <p>You're welcome to leave a shout for yourself... But you'll have to provide both sides of the conversation!</p>
+      <% else %>
+        <p>Leave a shout for <%= @other_user.username %></p>
+      <% end %>
+      <%= form_for [@other_user, Shout.new] do |f| %>
+        <%= f.text_area :body, rows: 10 %>
+        <div class="text-right">
+          <%= f.submit "Shout!" %>
+        </div>
+      <% end %>
     <% else %>
-      <p>Leave a shout for <%= @other_user.username %></p>
-    <% end %>
-    <%= form_for [@other_user, Shout.new] do |f| %>
-    <!-- shout_to other_user -->
-      <%= f.text_area :body, rows: 10 %>
-      <div class="text-right">
-        <%= f.submit "Shout!" %>
-      </div>
+      <p>You must be signed in to leave shouts for Helpers</p>
     <% end %>
   </div>
 </div>

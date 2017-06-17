@@ -100,6 +100,7 @@ module ApplicationHelper
 
     avatar_img = avatar_src && avatar_src.length > 5 ? image_tag(avatar_src) : avatar_src
     avatar_hash[:html] << avatar_img
+    avatar_hash[:title] = options[:title]
 
     avatar_wrapper_hash[:html] << avatar_hash
     avatar_container_hash[:html] << avatar_wrapper_hash

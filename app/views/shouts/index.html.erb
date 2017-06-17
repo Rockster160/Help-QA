@@ -9,20 +9,26 @@
     <%= render partial: "index", locals: { shouts: @shouts } %>
   </div>
   <div class="new-shout">
-    <% if @user == current_user %>
-      <p>You're welcome to leave a shout for yourself... But you'll have to provide both sides of the conversation!</p>
+    <% if user_signed_in? %>
+      <% if @user == current_user %>
+        <p>You're welcome to leave a shout for yourself... But you'll have to provide both sides of the conversation!</p>
+      <% else %>
+        <p>Leave a shout for <%= @user.username %></p>
+      <% end %>
+      <%= form_for [@user, Shout.new] do |f| %>
+        <%= f.text_area :body, rows: 10 %>
+        <div class="text-right">
+          <%= f.submit "Shout!" %>
+        </div>
+      <% end %>
     <% else %>
-      <p>Leave a shout for <%= @user.username %></p>
-    <% end %>
-    <%= form_for [@user, Shout.new] do |f| %>
-      <%= f.text_area :body, rows: 10 %>
-      <div class="text-right">
-        <%= f.submit "Shout!" %>
-      </div>
+      <p>You must be signed in to leave shouts for Helpers</p>
     <% end %>
     <div class="shout-users">
       <div class="title">Shouts From:</div>
-
+      <% @shouts_from.each do |shouter| %>
+        <%= avatar(shouter.avatar, size: 65, href: user_path(shouter), title: shouter.username) %>
+      <% end %>
     </div>
   </div>
 </div>

@@ -3,6 +3,10 @@ class ShoutsController < ApplicationController
   def index
     @user = User.find(params[:user_id])
     @shouts = @user.shouts_to.order(created_at: :desc).first(50)
+    @shouts_from = User.joins(:shouts_from)
+      .where(shouts: { sent_to_id: @user.id })
+      .group("users.id")
+      .order("MAX(shouts.created_at) DESC")
 
     if @user == current_user
       @user.notices.unread.shouts.each(&:read!)
