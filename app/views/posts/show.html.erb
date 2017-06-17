@@ -7,7 +7,7 @@
       <%= avatar(@post.avatar, size: 200, href: user_path(@post.author)) %>
       <div class="username"><%= @post.username %></div>
       <%= render partial: "users/detail_icons", locals: { user: @post.author } %>
-      <div class="location"></div>
+      <%# <div class="location"></div> %>
     <% end %>
   </div>
   <div class="words">

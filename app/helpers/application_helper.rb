@@ -3,6 +3,7 @@ module ApplicationHelper
   using CoreExtensions
 
   def timeago(time, options={})
+    return unless time
     options[:class] ||= "timeago"
     if options[:strftime].present?
       simple_time = time.strftime(options[:strftime])

@@ -18,8 +18,10 @@ inWords = function(from_epoch, options) {
   $(Object.keys(timeago_ms).reverse()).each(function() {
     var msForTime = timeago_ms[this], time = this.toString();
     if (tempMs > msForTime) {
-      var word_count = Math.floor(tempMs / msForTime), pluralize = word_count > 1 ? "s" : ""
-      words.push(" " + word_count + " " + time + pluralize);
+      if (time != "second") {
+        var word_count = Math.floor(tempMs / msForTime), pluralize = word_count > 1 ? "s" : ""
+        words.push(" " + word_count + " " + time + pluralize);
+      }
       tempMs = tempMs % msForTime;
     }
   })
