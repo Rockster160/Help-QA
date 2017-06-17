@@ -2,13 +2,14 @@
 #
 # Table name: notices
 #
-#  id          :integer          not null, primary key
-#  user_id     :integer
-#  notice_type :integer
-#  title       :string
-#  read_at     :datetime
-#  created_at  :datetime
-#  url         :string
+#  id            :integer          not null, primary key
+#  user_id       :integer
+#  notice_type   :integer
+#  title         :string
+#  read_at       :datetime
+#  created_at    :datetime
+#  notice_for_id :integer
+#  url           :string
 #
 
 class Notice < ApplicationRecord

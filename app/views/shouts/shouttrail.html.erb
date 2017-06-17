@@ -14,7 +14,7 @@
     <% else %>
       <p>Leave a shout for <%= @other_user.username %></p>
     <% end %>
-    <%= form_for Shout.new do |f| %>
+    <%= form_for [@other_user, Shout.new] do |f| %>
     <!-- shout_to other_user -->
       <%= f.text_area :body, rows: 10 %>
       <div class="text-right">

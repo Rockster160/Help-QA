@@ -28,6 +28,14 @@ max_friend_count_per_user = 30
 posts = 100
 replies = 500
 
+User.create({
+  email: "rocco11nicholls@gmail.com",
+  password: "password",
+  created_at: 6.months.ago,
+  remember_created_at: 6.months.ago,
+  username: "Rockster160",
+})
+
 Rando.people(users_count).each_with_index do |person, person_idx|
   print_inline("Users: #{users_count - person_idx} / #{users_count}")
   u = User.new
@@ -111,6 +119,7 @@ replies.times do |reply_idx|
   reply.posted_anonymously = rand(10) == 0
 
   reply.save
+  Subscription.find_or_create_by(user_id: author.id, post_id: post.id)
 end
 
 puts "\n"

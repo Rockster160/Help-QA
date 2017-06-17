@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20170616041321) do
     t.string   "title"
     t.datetime "read_at"
     t.datetime "created_at"
+    t.integer  "notice_for_id"
     t.string   "url"
     t.index ["user_id"], name: "index_notices_on_user_id", using: :btree
   end

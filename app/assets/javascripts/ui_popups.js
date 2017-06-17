@@ -4,10 +4,14 @@ $(document).on("mouseenter", ".show-tooltip", function() {
   $(this).find(".tooltip").addClass("hidden");
 });
 
-$(document).on("click tap mouseenter", ".dropdown-clickable", function(evt) {
-  evt.preventDefault();
+$(document).on("mouseenter", ".dropdown-clickable", function(evt) {
   $(this).siblings(".dropdown-list").removeClass("hidden");
-  return false;
+}).on("click tap", ".dropdown-clickable", function(evt) {
+  if ($(this).siblings(".dropdown-list").hasClass("hidden")) {
+    evt.preventDefault();
+    $(this).siblings(".dropdown-list").removeClass("hidden");
+    return false;
+  }
 }).on("mouseleave", ".dropdown-container", function() {
   $(".dropdown-list").addClass("hidden");
 });
