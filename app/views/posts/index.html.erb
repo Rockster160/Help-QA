@@ -1,0 +1,16 @@
+<% @posts.each do |post| %>
+  <a href="<%= post_path(post) %>" class="post-container stretch-children">
+    <%= avatar(post.avatar, size: 50) %>
+    <div class="post-description">
+      <div class="title">
+        <%= post.title %>
+      </div>
+      <div class="post-information">
+        by <strong><%= post.username %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.replies.count, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
+      </div>
+      <div class="tags">
+        Tags: <%= post.tags.count_order.first(5).map(&:tag_name).join(", ") %>
+      </div>
+    </div>
+  </a>
+<% end %>

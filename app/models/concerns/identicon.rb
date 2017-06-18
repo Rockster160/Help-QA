@@ -2,33 +2,25 @@ class Shape
   attr_accessor :relative_poly_coords
 
   POLYGONS = {
-    big_triangle_down_left:  [[  0,   0], [  1,   0], [  0,   1]],
-    big_triangle_down:       [[  0,   0], [  1,   0], [0.5,   1]],
-    big_triangle_down_right: [[  0,   0], [  1,   0], [  1,   1]],
+    big_triangle_down_left:  [[0, 0], [1, 0], [0, 1]],
+    big_triangle_down:       [[0, 0], [1, 0], [0.5, 1]],
+    big_triangle_down_right: [[0, 0], [1, 0], [1, 1]],
 
-    triangle_down_left:      [[  0,   0], [0.5,   0], [  0, 0.5]],
-    triangle_down:           [[  0,   0], [  1,   0], [0.5, 0.5]],
-    triangle_down_right:     [[  0,   0], [0.5,   0], [0.5, 0.5]],
+    triangle_down_left:      [[0, 0], [0.5, 0], [0, 0.5]],
+    triangle_down:           [[0, 0], [1, 0], [0.5, 0.5]],
+    triangle_down_right:     [[0, 0], [0.5, 0], [0.5, 0.5]],
 
     centered_square:         [[0.25, 0.25], [0.75, 0.25], [0.75, 0.75], [0.25, 0.75]],
-    square:                  [[  0,   0], [0.5,   0], [0.5, 0.5], [0, 0.5]],
-    rect:                    [[  0,   0], [  1,   0], [  1, 0.5], [0, 0.5]],
-    big_square:              [[  0,   0], [  1,   0], [  1,   1], [0,   1]],
+    square:                  [[0, 0], [0.5, 0], [0.5, 0.5], [0, 0.5]],
+    rect:                    [[0, 0], [1, 0], [1, 0.5], [0, 0.5]],
+    big_square:              [[0, 0], [1, 0], [1, 1], [0, 1]],
 
-    diag_square:             [[0.5,   0], [  1, 0.5], [0.5,   1], [0, 0.5]]
+    diag_square:             [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]]
   }
-  # 11 shapes
 
-  # Circle, too?
-  # Center shapes?
-
-  def initialize(*allowed_shapes)
-    allowed_shapes = POLYGONS.keys if allowed_shapes.empty?
-    @relative_poly_coords = []
-    shape = allowed_shapes.try(:sample)
-    return unless shape
-    @relative_poly_coords = POLYGONS[shape]
-    self.rotate(rand(4))
+  def initialize(shape, rotation=0)
+    @relative_poly_coords = POLYGONS[shape] || []
+    self.rotate(rotation)
   end
 
   def rotate(turns=0)
@@ -51,21 +43,29 @@ class IdenticonGenerator
   end
 
   def initialize(digest)
-    # "2eeecd72c567401e6988624b179d0b14"
+    color = digest[0..5]
+    center_shape_possibilities = [:big_square, :diag_square, :centered_square, nil]
+    center_shape = center_shape_possibilities[digest[6..8].to_i(16) % center_shape_possibilities.length]
+    middle_shape_possibilities = Shape::POLYGONS.keys
+    middle_shape = middle_shape_possibilities[digest[9..11].to_i(16) % middle_shape_possibilities.length]
+    middle_shape_rotation = (digest[12..14].to_i(16) % 4)
+    corner_shape_possibilities = Shape::POLYGONS.except(:big_square).keys
+    corner_shape = corner_shape_possibilities[digest[15..17].to_i(16) % corner_shape_possibilities.length]
+    corner_shape_rotation = (digest[18..20].to_i(16) % 4)
+    color_rotation = [1, -1][digest[21..24].to_i(16) % 2]
+
     @digest = digest
     @full_size = 255
     @chunk_size = @full_size / 3
     @png = ChunkyPNG::Canvas.new(@full_size + 1, @full_size + 1, ChunkyPNG::Color::WHITE)
-    # Parse the digest, determine the stuffs
-    color_string = "##{'0123456789ABCDEF'.split('').sample(6).join('')}"
 
-    chroma = color_string.paint
+    chroma = "##{color}".paint
     @corner_color = ChunkyPNG::Color.from_hex(chroma.to_s)
-    @middle_color = ChunkyPNG::Color.from_hex([chroma.spin(45).to_s, chroma.spin(-45).to_s].sample)
+    @middle_color = ChunkyPNG::Color.from_hex(chroma.spin(45 * color_rotation).to_s)
 
-    @center = Shape.new(:big_square, :diag_square, :centered_square, nil)
-    @corner = Shape.new
-    @middle = Shape.new
+    @center = Shape.new(center_shape)
+    @corner = Shape.new(corner_shape, corner_shape_rotation)
+    @middle = Shape.new(middle_shape, middle_shape_rotation)
 
     draw_at(1, 1, @center)
 
