@@ -9,11 +9,12 @@
 #  closed_at          :datetime
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  reply_count        :integer
 #
 
 class Post < ApplicationRecord
   include FormatContent
-  include Identicon
+  include Anonicon
 
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
@@ -27,6 +28,11 @@ class Post < ApplicationRecord
 
   scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
+  scope :verified, -> { joins(:author).where.not(verified_at: nil) }
+  scope :unverified, -> { joins(:author).where(verified_at: nil) }
+  scope :no_replies, -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
+  scope :more_replies_than, ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
+  scope :less_replies_than, ->(count_of_replies) { where("posts.reply_count < ?", count_of_replies) }
 
   after_create :auto_add_tags
 
@@ -66,7 +72,7 @@ class Post < ApplicationRecord
 
   def avatar
     if posted_anonymously?
-      identicon_src(author.ip_address)
+      anonicon_src(author.ip_address)
     else
       author.avatar_url.presence || letter.presence || 'status_offline.png'
     end
@@ -114,14 +120,8 @@ class Post < ApplicationRecord
     str[0..indices_before_index.last.to_i - 1]
   end
 
-  def identicon_src(ip)
-    # base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7, background_color: 0xffffffff)
-    # https://www.gravatar.com/avatar/68003972cd3d14dd87f66f2fa6c7775c?d=identicon
-    # ActiveSupport::Base64.encode64(open("http://image.com/img.jpg") { |io| io.read })
-    # Base64.encode64(File.open("file_path", "rb").read)
-    # Digest::MD5.hexdigest("192.72.183.21") - Always returns 32 characters
-    # "data:image/png;base64,#{base64_identicon}"
-    Identicon.generate(ip)
+  def anonicon_src(ip)
+    Anonicon.generate(ip)
   end
 
 end

@@ -1,0 +1,22 @@
+<h1><i>History:</i> <%= pluralize_with_delimiter(@posts.total_count || 0, "post") %>, Posts <%= number_with_delimiter((@posts.limit_value * (@posts.current_page - 1)) + 1) %> to <%= number_with_delimiter(@posts.limit_value * @posts.current_page) %></h1>
+<hr>
+
+<div class="history-page stretch-children">
+  <div class="search-form">
+    <div class="title">Search Text</div>
+    <hr>
+    <input type="text" name="" value="">
+    <button type="button" name="button">Search</button>
+  </div>
+  <div class="search-results">
+    <% total_pages = 5 %>
+    <% window_sizes = {
+      default: (total_pages / 2).floor,
+      low: total_pages - @posts.current_page,
+      high: total_pages - (@posts.total_pages - @posts.current_page) - 1
+    } %>
+
+    <%= paginate @posts, window: window_sizes.values.max, outer_window: 1 %>
+    <%= render partial: "index", locals: { posts: @posts, hide_tags: true } %>
+  </div>
+</div>

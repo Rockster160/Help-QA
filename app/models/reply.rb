@@ -14,8 +14,9 @@
 
 class Reply < ApplicationRecord
   include FormatContent
+  include Anonicon
 
-  belongs_to :post
+  belongs_to :post, counter_cache: :reply_count
   belongs_to :author, class_name: "User"
   has_many :tags, through: :post
 
@@ -36,7 +37,7 @@ class Reply < ApplicationRecord
 
   def avatar
     if posted_anonymously?
-      identicon_src(author.ip_address)
+      anonicon_src(author.ip_address)
     else
       author.avatar_url.presence || letter.presence || 'status_offline.png'
     end
@@ -57,9 +58,8 @@ class Reply < ApplicationRecord
 
   private
 
-  def identicon_src(ip)
-    base64_identicon = RubyIdenticon.create_base64(ip, square_size: 5, border_size: 0, grid_size: 7, background_color: 0xffffffff)
-    "data:image/png;base64,#{base64_identicon}"
+  def anonicon_src(ip)
+    Anonicon.generate(ip)
   end
 
 end

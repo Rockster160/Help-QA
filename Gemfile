@@ -31,9 +31,10 @@ gem 'factory_girl_rails'
 
 gem 'devise'
 gem 'rest-client'
-gem 'ruby_identicon'
 gem 'has_friendship'
 gem 'chroma'
+gem 'oily_png'
+gem 'kaminari'
 
 group :development, :test do
   gem 'byebug', platform: :mri

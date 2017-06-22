@@ -1,0 +1,28 @@
+.post-container {
+  margin: 5px 0;
+  .post-description {
+    width: 100%;
+    padding: 2px 0 0 3px;
+    vertical-align: middle;
+    
+    .title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 3px;
+      letter-spacing: 0.3px;
+    }
+    .post-information {
+      font-size: 10px;
+      color: grey;
+    }
+    .tags {
+      font-size: 10px;
+      color: grey;
+    }
+  }
+  &:visited .post-description .title { color: #909; }
+  &:hover {
+    .post-description .title { color: red; }
+    .avatar-container { border-color: purple; }
+  }
+}

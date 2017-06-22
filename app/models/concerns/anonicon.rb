@@ -34,12 +34,12 @@ class Shape
 
 end
 
-class IdenticonGenerator
+class AnoniconGenerator
   attr_reader :src
 
   def self.generate(str)
-    identicon = new(Digest::MD5.hexdigest(str.to_s))
-    identicon.src
+    anonicon = new(Digest::MD5.hexdigest(str.to_s))
+    anonicon.src
   end
 
   def initialize(digest)
@@ -55,8 +55,8 @@ class IdenticonGenerator
     color_rotation = [1, -1][digest[21..24].to_i(16) % 2]
 
     @digest = digest
-    @full_size = 255
-    @chunk_size = @full_size / 3
+    @chunk_size = 70
+    @full_size = @chunk_size * 3
     @png = ChunkyPNG::Canvas.new(@full_size + 1, @full_size + 1, ChunkyPNG::Color::WHITE)
 
     chroma = "##{color}".paint
@@ -97,8 +97,8 @@ class IdenticonGenerator
 
 end
 
-module Identicon
+module Anonicon
   def self.generate(str)
-    IdenticonGenerator.generate(str)
+    AnoniconGenerator.generate(str)
   end
 end
