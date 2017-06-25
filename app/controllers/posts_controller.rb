@@ -9,13 +9,14 @@ class PostsController < ApplicationController
     set_filter_params
 
     @posts = Post.order(created_at: :desc)
-    @posts = @posts.claimed if @claimed
-    @posts = @posts.unclaimed if @unclaimed
-    @posts = @posts.verified_user if @verified_user
-    @posts = @posts.unverified_user if @unverified_user
-    @posts = @posts.no_replies if @no_replies
-    @posts = @posts.more_replies_than(0).less_replies_than(16) if @few_replies
-    @posts = @posts.more_replies_than(15) if @many_replies
+    @posts = @posts.claimed if @filter_options["claimed"]
+    @posts = @posts.unclaimed if @filter_options["unclaimed"]
+    @posts = @posts.verified_user if @filter_options["verified-user"]
+    @posts = @posts.unverified_user if @filter_options["unverified-user"]
+    @posts = @posts.no_replies if @filter_options["no-replies"]
+    @posts = @posts.more_replies_than(0).less_replies_than_or(16) if @filter_options["some-replies"]
+    @posts = @posts.more_replies_than(16).less_replies_than_or(30) if @filter_options["few-replies"]
+    @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
     @posts = @posts.page(params[:page])#.per(5)
   end
 
@@ -43,15 +44,30 @@ class PostsController < ApplicationController
   def set_filter_params
     filter_values = params.permit(:claimed_status, :reply_count, :user_status, :page).values
 
+    @filter_options = {
+      "claimed"      => false,
+      "unclaimed"    => false,
+      "no-replies"   => false,
+      "some-replies" => false,
+      "few-replies"  => false,
+      "many-replies" => false,
+      "verified"     => false,
+      "unverified"   => false
+    }
+
     filter_values.each do |filter_val|
-      @claimed = true if filter_val == "claimed"
-      @unclaimed = true if filter_val == "unclaimed"
-      @no_replies = true if filter_val == "no-replies"
-      @few_replies = true if filter_val == "few-replies"
-      @many_replies = true if filter_val == "many-replies"
-      @verified_user = true if filter_val == "verified"
-      @unverified_user = true if filter_val == "unverified"
+      @filter_options[filter_val] = true
     end
+
+    @filter_params = {}
+    @filter_params[:claimed_status] = "claimed" if @filter_options["claimed"]
+    @filter_params[:claimed_status] = "unclaimed" if @filter_options["unclaimed"]
+    @filter_params[:reply_count] = "no-replies" if @filter_options["no-replies"]
+    @filter_params[:reply_count] = "some-replies" if @filter_options["some-replies"]
+    @filter_params[:reply_count] = "few-replies" if @filter_options["few-replies"]
+    @filter_params[:reply_count] = "many-replies" if @filter_options["many-replies"]
+    @filter_params[:user_status] = "verified" if @filter_options["verified"]
+    @filter_params[:user_status] = "unverified" if @filter_options["unverified"]
   end
 
 end

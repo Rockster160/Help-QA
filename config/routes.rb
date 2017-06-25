@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index ]
 
 
-  get "history((((/:claimed_status)/:reply_count)/:user_status)/:page)" => "posts#history"
+  get "history((((/:claimed_status)/:reply_count)/:user_status)/:page)" => "posts#history", as: :history
 
   resources :posts, except: [ :destroy ] do
     post :report

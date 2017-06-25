@@ -9,8 +9,10 @@ nav.pagination {
     border: 1px solid #CCC;
     padding: 3px 5px;
   }
+  
   a {
     text-decoration: underline;
+
     &:hover {
       border-color: $help-default;
     }

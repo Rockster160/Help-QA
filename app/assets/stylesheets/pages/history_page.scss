@@ -3,9 +3,48 @@
   .history-page {
     .search-form {
       min-width: 200px;
+      padding: 10px;
+
+      .filters {
+        .filter {
+          font-size: 12px;
+
+          &.reset-filters {
+            margin-top: 10px;
+
+            a {
+              font-size: 14px;
+              font-weight: bold;
+            }
+          }
+          .name {
+            font-weight: bold;
+          }
+          .links {
+            a {
+              text-decoration: underline;
+
+              &.current-filter {
+                text-decoration: none;
+                font-weight: bold;
+                color: red;
+              }
+            }
+          }
+        }
+        a {
+          &:visited { color: blue; }
+          &:hover { color: red; }
+        }
+      }
     }
     .search-results {
       width: 100%;
+
+      nav.pagination {
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
     }
   }
 

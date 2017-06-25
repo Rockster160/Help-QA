@@ -2,6 +2,26 @@ module ApplicationHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
+  def filter_posts_link(link_text, options={})
+    new_filter_options = options.slice(:claimed_status, :reply_count, :user_status)
+
+    current_filters = @filter_params
+
+    selected_filter_key = new_filter_options.keys.first
+    selected_filter_value = new_filter_options.values.first
+    current_filter_value = current_filters[selected_filter_key]
+
+    if current_filters.values.any? { |param_val| new_filter_options.values.include?(param_val) }
+      sorted_class = "current-filter"
+    elsif current_filter_value.nil? && selected_filter_value.nil?
+      sorted_class = "current-filter"
+    end
+
+    current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.nil? }
+
+    link_to link_text, "/#{(['history'] + current_filters.values).join("/")}", class: "#{sorted_class} #{options[:class]}"
+  end
+
   def timeago(time, options={})
     return unless time
     options[:class] ||= "timeago"

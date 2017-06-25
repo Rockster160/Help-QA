@@ -4,10 +4,8 @@
     padding: 0 10px;
     margin: 0 auto;
     margin-bottom: 50px;
-    h6, p {
-      font-size: 14px;
-      margin: 0;
-    }
+    h6, p { font-size: 14px; }
+    p { margin: 0; }
     .tags {
       font-size: 12px;
       .tag-search {
@@ -30,10 +28,7 @@
       padding: 3px;
       padding-bottom: 15px;
       background: linear-gradient(to bottom, lighten($help-default, 35%), white);
-      hr {
-        border-color: $help-default;
-        border-width: 1px;
-      }
+      h6 { border-color: $help-default; }
       .words {
         vertical-align: top;
         padding-left: 4px;
@@ -71,13 +66,7 @@
       }
     }
     .posts-wrapper {
-      h3 {
-        font-size: 32px;
-        font-weight: normal;
-        margin: 0;
-        padding: 0;
-        margin-top: 20px;
-      }
+      h1 { margin-top: 20px; }
       .tags {
         font-size: 10px;
       }

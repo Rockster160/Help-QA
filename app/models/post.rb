@@ -32,7 +32,7 @@ class Post < ApplicationRecord
   scope :unverified, -> { joins(:author).where(verified_at: nil) }
   scope :no_replies, -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
   scope :more_replies_than, ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
-  scope :less_replies_than, ->(count_of_replies) { where("posts.reply_count < ?", count_of_replies) }
+  scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
 
   after_create :auto_add_tags
 

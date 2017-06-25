@@ -1,12 +1,43 @@
-<h1><i>History:</i> <%= pluralize_with_delimiter(@posts.total_count || 0, "post") %>, Posts <%= number_with_delimiter((@posts.limit_value * (@posts.current_page - 1)) + 1) %> to <%= number_with_delimiter(@posts.limit_value * @posts.current_page) %></h1>
-<hr>
+<h2><i>History:</i> <%= pluralize_with_delimiter(@posts.total_count || 0, "post") %>, Posts <%= number_with_delimiter((@posts.limit_value * (@posts.current_page - 1)) + 1) %> to <%= number_with_delimiter(@posts.limit_value * @posts.current_page) %></h2>
 
 <div class="history-page stretch-children">
   <div class="search-form">
-    <div class="title">Search Text</div>
-    <hr>
+    <h6>Search Text</h6>
     <input type="text" name="" value="">
     <button type="button" name="button">Search</button>
+
+    <div class="filters">
+      <h6>Filters</h6>
+      <div class="filter">
+        <div class="name">Question Claimed State:</div>
+        <div class="links">
+          <%= filter_posts_link("Claimed", claimed_status: "claimed") %>,
+          <%= filter_posts_link("Unclaimed", claimed_status: "unclaimed") %>,
+          <%= filter_posts_link("Off", claimed_status: nil) %>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="name">Question Reply Count:</div>
+        <div class="links">
+          <%= filter_posts_link("None", reply_count: "no-replies") %>,
+          <%= filter_posts_link("Some", reply_count: "some-replies") %>,
+          <%= filter_posts_link("A Few", reply_count: "few-replies") %>,
+          <%= filter_posts_link("Many", reply_count: "many-replies") %>,
+          <%= filter_posts_link("Off", reply_count: nil) %>
+        </div>
+      </div>
+      <div class="filter">
+        <div class="name">Posting User Status:</div>
+        <div class="links">
+          <%= filter_posts_link("Verified", user_status: "verified") %>,
+          <%= filter_posts_link("Unverified", user_status: "unverified") %>,
+          <%= filter_posts_link("Off", user_status: nil) %>
+        </div>
+      </div>
+      <div class="filter reset-filters">
+        <a href="<%= history_path %>" class="underline">Reset All Filters</a>
+      </div>
+    </div>
   </div>
   <div class="search-results">
     <% total_pages = 5 %>
@@ -16,7 +47,7 @@
       high: total_pages - (@posts.total_pages - @posts.current_page) - 1
     } %>
 
-    <%= paginate @posts, window: window_sizes.values.max, outer_window: 1 %>
+    <%= paginate @posts, window: window_sizes.values.max, outer_window: 1, params: @filter_params %>
     <%= render partial: "index", locals: { posts: @posts, hide_tags: true } %>
   </div>
 </div>
