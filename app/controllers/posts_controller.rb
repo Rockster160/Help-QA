@@ -5,6 +5,12 @@ class PostsController < ApplicationController
     @posts = @posts.claimed.where(user_id: params[:user_id]) if params[:user_id].present?
   end
 
+  def history_redirect
+    attached_params = params.permit(:claimed_status, :reply_count, :user_status, :page).values.join("/")
+    search_query = params[:search].present? ? "?search=#{params[:search]}" : ""
+    redirect_to "#{history_path}/#{attached_params}#{search_query}"
+  end
+
   def history
     set_filter_params
 
@@ -17,7 +23,8 @@ class PostsController < ApplicationController
     @posts = @posts.more_replies_than(0).less_replies_than_or(16) if @filter_options["some-replies"]
     @posts = @posts.more_replies_than(16).less_replies_than_or(30) if @filter_options["few-replies"]
     @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
-    @posts = @posts.page(params[:page])#.per(5)
+    @posts = @posts.search_for(params[:search]) if params[:search].present?
+    @posts = @posts.page(params[:page]).per(2) # FIXME: Remove per 5
   end
 
   def show
@@ -56,6 +63,7 @@ class PostsController < ApplicationController
     }
 
     filter_values.each do |filter_val|
+      next unless @filter_options.keys.include?(filter_val)
       @filter_options[filter_val] = true
     end
 

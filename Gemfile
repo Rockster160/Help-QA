@@ -35,6 +35,7 @@ gem 'has_friendship'
 gem 'chroma'
 gem 'oily_png'
 gem 'kaminari'
+gem 'pg_search'
 
 group :development, :test do
   gem 'byebug', platform: :mri

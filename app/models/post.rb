@@ -13,6 +13,7 @@
 #
 
 class Post < ApplicationRecord
+  include PgSearch
   include FormatContent
   include Anonicon
 
@@ -26,10 +27,11 @@ class Post < ApplicationRecord
   has_many :post_tags
   has_many :tags, through: :post_tags
 
+  pg_search_scope :search_for, against: :body
   scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
-  scope :verified, -> { joins(:author).where.not(verified_at: nil) }
-  scope :unverified, -> { joins(:author).where(verified_at: nil) }
+  scope :verified, -> { joins(:author).where.not(users: { verified_at: nil }) }
+  scope :unverified, -> { joins(:author).where(users: { verified_at: nil }) }
   scope :no_replies, -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
   scope :more_replies_than, ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }

@@ -18,8 +18,20 @@ module ApplicationHelper
     end
 
     current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.nil? }
+    search_query = params[:search].present? ? "?search=#{params[:search]}" : ""
 
-    link_to link_text, "/#{(['history'] + current_filters.values).join("/")}", class: "#{sorted_class} #{options[:class]}"
+    link_to link_text, "/#{(['history'] + current_filters.values).join("/")}#{search_query}", class: "#{sorted_class} #{options[:class]}"
+  end
+
+  def pagination(association, options={})
+    current_filters = @filter_options.select { |param_key, param_val| param_val }
+    current_filter_str = (['history'] + current_filters.keys).join("/")
+    search_query = params[:search].present? ? "?search=#{params[:search]}" : ""
+    paginate(association, options).gsub(/history.*?\d?"/) do |found_match|
+      puts "Found: #{found_match}".colorize(:red)
+      page = found_match.scan(/\/\d+/).first.presence || "/1"
+      "#{current_filter_str}#{page}#{search_query}\""
+    end.html_safe
   end
 
   def timeago(time, options={})

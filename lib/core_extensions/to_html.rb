@@ -3,6 +3,14 @@ module CoreExtensions
     def to_html; self.to_s; end
   end
   refine Hash do
+    def deep_set(path, new_value)
+      return self unless path.any?
+      new_hash = new_value
+      path.reverse.each do |path_key|
+        new_hash = {path_key => new_hash}
+      end
+      self.deep_merge!(new_hash) { |key, this_val, other_val| this_val + other_val }
+    end
     def to_html
       self.symbolize_keys!
       tag = "div"

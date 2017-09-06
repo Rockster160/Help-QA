@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index ]
 
 
+  post "history" => "posts#history_redirect", as: :history_redirect
   get "history((((/:claimed_status)/:reply_count)/:user_status)/:page)" => "posts#history", as: :history
 
   resources :posts, except: [ :destroy ] do
