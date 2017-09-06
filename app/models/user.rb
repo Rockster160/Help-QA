@@ -49,6 +49,9 @@ class User < ApplicationRecord
 
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
+  scope :unverified,           -> { where(verified_at: nil) }
+  scope :verified,             -> { where.not(verified_at: nil) }
+  scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
 
   def admin?; false; end # FIXME by adding roles
   def mod?;   false; end # FIXME by adding roles

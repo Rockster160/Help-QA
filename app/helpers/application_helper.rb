@@ -18,19 +18,24 @@ module ApplicationHelper
     end
 
     current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.nil? }
-    search_query = params[:search].present? ? "?search=#{params[:search]}" : ""
 
-    link_to link_text, "/#{(['history'] + current_filters.values).join("/")}#{search_query}", class: "#{sorted_class} #{options[:class]}"
+    link_to link_text, "/#{(['history'] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
+  end
+
+  def filter_query_string
+    additional_queries = []
+    additional_queries << "search=#{params[:search]}" if params[:search].present?
+    additional_queries << "by_user=#{params[:by_user]}" if params[:by_user].present?
+    additional_queries.any? ? "?#{additional_queries.join('&')}" : ""
   end
 
   def pagination(association, options={})
     current_filters = @filter_options.select { |param_key, param_val| param_val }
     current_filter_str = (['history'] + current_filters.keys).join("/")
-    search_query = params[:search].present? ? "?search=#{params[:search]}" : ""
+
     paginate(association, options).gsub(/history.*?\d?"/) do |found_match|
-      puts "Found: #{found_match}".colorize(:red)
       page = found_match.scan(/\/\d+/).first.presence || "/1"
-      "#{current_filter_str}#{page}#{search_query}\""
+      "#{current_filter_str}#{page}#{filter_query_string}\""
     end.html_safe
   end
 

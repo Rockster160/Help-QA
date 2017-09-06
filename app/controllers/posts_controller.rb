@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  include ApplicationHelper
 
   def index
     @posts = Post.order(created_at: :desc)
@@ -7,8 +8,8 @@ class PostsController < ApplicationController
 
   def history_redirect
     attached_params = params.permit(:claimed_status, :reply_count, :user_status, :page).values.join("/")
-    search_query = params[:search].present? ? "?search=#{params[:search]}" : ""
-    redirect_to "#{history_path}/#{attached_params}#{search_query}"
+
+    redirect_to "#{history_path}/#{attached_params}#{filter_query_string}"
   end
 
   def history
@@ -17,13 +18,14 @@ class PostsController < ApplicationController
     @posts = Post.order(created_at: :desc)
     @posts = @posts.claimed if @filter_options["claimed"]
     @posts = @posts.unclaimed if @filter_options["unclaimed"]
-    @posts = @posts.verified_user if @filter_options["verified-user"]
-    @posts = @posts.unverified_user if @filter_options["unverified-user"]
+    @posts = @posts.verified_user if @filter_options["verified"]
+    @posts = @posts.unverified_user if @filter_options["unverified"]
     @posts = @posts.no_replies if @filter_options["no-replies"]
     @posts = @posts.more_replies_than(0).less_replies_than_or(16) if @filter_options["some-replies"]
     @posts = @posts.more_replies_than(16).less_replies_than_or(30) if @filter_options["few-replies"]
     @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
     @posts = @posts.search_for(params[:search]) if params[:search].present?
+    @posts = @posts.by_username(params[:by_user]) if params[:by_user].present?
     @posts = @posts.page(params[:page]).per(2) # FIXME: Remove per 5
   end
 

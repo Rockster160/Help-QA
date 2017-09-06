@@ -5,6 +5,7 @@
       min-width: 200px;
       padding: 10px;
 
+      h6 { margin-top: 20px; }
       .filters {
         .filter {
           font-size: 12px;
@@ -17,9 +18,7 @@
               font-weight: bold;
             }
           }
-          .name {
-            font-weight: bold;
-          }
+          .name { font-weight: bold; }
           .links {
             a {
               text-decoration: underline;

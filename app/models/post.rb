@@ -28,13 +28,14 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags
 
   pg_search_scope :search_for, against: :body
-  scope :claimed, -> { where.not(posted_anonymously: true) }
-  scope :unclaimed, -> { where(posted_anonymously: true) }
-  scope :verified, -> { joins(:author).where.not(users: { verified_at: nil }) }
-  scope :unverified, -> { joins(:author).where(users: { verified_at: nil }) }
-  scope :no_replies, -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
-  scope :more_replies_than, ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
+  scope :claimed,              -> { where.not(posted_anonymously: true) }
+  scope :unclaimed,            -> { where(posted_anonymously: true) }
+  scope :verified_user,        -> { joins(:author).where.not(users: { verified_at: nil }) }
+  scope :unverified_user,      -> { joins(:author).where(users: { verified_at: nil }) }
+  scope :no_replies,           -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
+  scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
+  scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
 
   after_create :auto_add_tags
 

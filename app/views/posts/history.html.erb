@@ -1,49 +1,55 @@
 <h2><i>History:</i> <%= pluralize_with_delimiter(@posts.total_count || 0, "post") %>, Posts <%= number_with_delimiter((@posts.limit_value * (@posts.current_page - 1)) + 1) %> to <%= number_with_delimiter(@posts.limit_value * @posts.current_page) %></h2>
 
 <div class="history-page stretch-children">
-  <div class="search-form">
-    <h6>Search Text</h6>
-    <%= form_tag do %>
-      <%= hidden_field_tag :claimed_status, @filter_params[:claimed_status] if @filter_params[:claimed_status].present? %>
-      <%= hidden_field_tag :reply_count, @filter_params[:reply_count] if @filter_params[:reply_count].present? %>
-      <%= hidden_field_tag :user_status, @filter_params[:user_status] if @filter_params[:user_status].present? %>
+  <%= form_tag do %>
+    <%= hidden_field_tag :claimed_status, @filter_params[:claimed_status] if @filter_params[:claimed_status].present? %>
+    <%= hidden_field_tag :reply_count, @filter_params[:reply_count] if @filter_params[:reply_count].present? %>
+    <%= hidden_field_tag :user_status, @filter_params[:user_status] if @filter_params[:user_status].present? %>
+    <div class="search-form">
+      <h6>Search Text</h6>
       <input type="text" name="search" value="<%= params[:search] %>">
       <%= submit_tag "Search" %>
-    <% end %>
 
-    <div class="filters">
-      <h6>Filters</h6>
-      <div class="filter">
-        <div class="name">Question Claimed State:</div>
-        <div class="links">
-          <%= filter_posts_link("Claimed", claimed_status: "claimed") %>,
-          <%= filter_posts_link("Unclaimed", claimed_status: "unclaimed") %>,
-          <%= filter_posts_link("Off", claimed_status: nil) %>
+      <div class="filters">
+        <h6>Filters</h6>
+        <div class="filter">
+          <div class="name">Question Claimed State:</div>
+          <div class="links">
+            <%= filter_posts_link("Claimed", claimed_status: "claimed") %>,
+            <%= filter_posts_link("Unclaimed", claimed_status: "unclaimed") %>,
+            <%= filter_posts_link("Off", claimed_status: nil) %>
+          </div>
+        </div>
+        <div class="filter">
+          <div class="name">Question Reply Count:</div>
+          <div class="links">
+            <%= filter_posts_link("None", reply_count: "no-replies") %>,
+            <%= filter_posts_link("Some", reply_count: "some-replies") %>,
+            <%= filter_posts_link("A Few", reply_count: "few-replies") %>,
+            <%= filter_posts_link("Many", reply_count: "many-replies") %>,
+            <%= filter_posts_link("Off", reply_count: nil) %>
+          </div>
+        </div>
+        <div class="filter">
+          <div class="name">Posting User Status:</div>
+          <div class="links">
+            <%= filter_posts_link("Verified", user_status: "verified") %>,
+            <%= filter_posts_link("Unverified", user_status: "unverified") %>,
+            <%= filter_posts_link("Off", user_status: nil) %>
+          </div>
+        </div>
+        <div class="filter reset-filters">
+          <a href="<%= history_path %>" class="underline">Reset All Filters</a>
         </div>
       </div>
-      <div class="filter">
-        <div class="name">Question Reply Count:</div>
-        <div class="links">
-          <%= filter_posts_link("None", reply_count: "no-replies") %>,
-          <%= filter_posts_link("Some", reply_count: "some-replies") %>,
-          <%= filter_posts_link("A Few", reply_count: "few-replies") %>,
-          <%= filter_posts_link("Many", reply_count: "many-replies") %>,
-          <%= filter_posts_link("Off", reply_count: nil) %>
-        </div>
-      </div>
-      <div class="filter">
-        <div class="name">Posting User Status:</div>
-        <div class="links">
-          <%= filter_posts_link("Verified", user_status: "verified") %>,
-          <%= filter_posts_link("Unverified", user_status: "unverified") %>,
-          <%= filter_posts_link("Off", user_status: nil) %>
-        </div>
-      </div>
-      <div class="filter reset-filters">
-        <a href="<%= history_path %>" class="underline">Reset All Filters</a>
+
+      <div class="by-user">
+        <h6>Search By Username</h6>
+        <input type="text" name="by_user" value="<%= params[:by_user] %>">
+        <%= submit_tag "Search" %>
       </div>
     </div>
-  </div>
+  <% end %>
   <div class="search-results">
     <% total_pages = 5 %>
     <% window_sizes = {
