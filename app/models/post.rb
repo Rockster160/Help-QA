@@ -41,6 +41,10 @@ class Post < ApplicationRecord
 
   validate :body_has_alpha_characters
 
+  def self.currently_popular
+    all.sample # FIXME - How do we calculate this?
+  end
+
   def title
     return "BROKEN" unless body.present?
     first_sentence = body.split(/[\!|\.|\n|;|\?|\r] /).reject(&:blank?).first

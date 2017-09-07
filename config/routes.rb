@@ -6,8 +6,9 @@ Rails.application.routes.draw do
   devise_for :users, path: "account", path_names: { sign_in: "login", sign_out: "logout" }
 
   get "tags/:tag_name" => "tags#show", as: :tag
-  resources :tags, only: [ :index ]
-
+  resources :tags, only: [ :index ] do
+    post :redirect, on: :collection
+  end
 
   post "history" => "posts#history_redirect", as: :history_redirect
   get "history((((/:claimed_status)/:reply_count)/:user_status)/:page)" => "posts#history", as: :history

@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>HelperNow</title>
+    <title><%= yield(:title).presence || 'HelperNow' %></title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-106090486-1', 'auto');
+      ga('send', 'pageview');
+    </script>
   </head>
 
   <body class="ctr-<%= controller_name %> act-<%= action_name %> <%= content_for :body_classes %>">
@@ -17,11 +26,7 @@
     <div class="footer">
       <p>To use this site you must be 13 years or older and occasionally submit your email address. Your email address is only shared with your explicit permission.</p>
     </div>
-  <% if content_for?(:modals) %>
     <%= yield(:modals) %>
-  <% end %>
-  <% if content_for?(:post_body_scripts) %>
     <%= yield(:post_body_scripts) %>
-  <% end %>
   </body>
 </html>

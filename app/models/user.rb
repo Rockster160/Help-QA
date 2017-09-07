@@ -28,6 +28,8 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
   include Friendable
+  has_paper_trail
+  # before_action :set_paper_trail_whodunnit - Add to controller
 
   has_many :posts,            foreign_key: :author_id
   has_many :replies,          foreign_key: :author_id

@@ -36,6 +36,7 @@ gem 'chroma'
 gem 'oily_png'
 gem 'kaminari'
 gem 'pg_search'
+gem 'paper_trail'
 
 group :development, :test do
   gem 'byebug', platform: :mri

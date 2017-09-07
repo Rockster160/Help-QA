@@ -2,6 +2,20 @@ module ApplicationHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
+  def tags_container(tags, min:, max:)
+    max_tag_count = tags.count_order.first.tags_count
+    min_tag_count = tags.count_order.last.tags_count
+
+    tags.map do |tag|
+      size = range_map(tag.tags_count, min_tag_count, max_tag_count, min, max)
+      "<a href=\"#{tag_path(tag)}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{tag.tags_count} posts\">#{tag.tag_name}</a>"
+    end.join(", ").html_safe
+  end
+
+  def range_map(input, input_start, input_end, output_start, output_end)
+    output_start + ((output_end - output_start) / (input_end - input_start).to_f) * (input - input_start)
+  end
+
   def filter_posts_link(link_text, options={})
     new_filter_options = options.slice(:claimed_status, :reply_count, :user_status)
 

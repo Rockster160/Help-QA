@@ -7,18 +7,16 @@
     </div>
     <div class="tags">
       Tags:
-      <% @global_tags.each do |tag| %>
-        <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a>,
-      <% end %>
+      <%= tags_container(@global_tags, min: 12, max: 12) %>,
       <a href="<%= tags_path %>" class="underline">all tags</a>, or just jump to a tag:
-      <div class="tag-search stretch-children">
+      <%= form_tag redirect_tags_path, class: "tag-search stretch-children" do %>
         <div class="field-wrapper">
-          <input type="text" name="" value="">
+          <input type="text" name="tag_name">
         </div>
         <div class="btn-wrapper">
           <button type="button" name="button">Goto Tag</button>
         </div>
-      </div>
+      <% end %>
     </div>
     <% if @currently_popular_post %>
       <% post = @currently_popular_post %>
