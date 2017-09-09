@@ -16,6 +16,7 @@ class Post < ApplicationRecord
   include PgSearch
   include FormatContent
   include Anonicon
+  include Defaults
 
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
@@ -38,6 +39,8 @@ class Post < ApplicationRecord
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
 
   after_create :auto_add_tags
+  defaults reply_count: 0
+  defaults posted_anonymously: false
 
   validate :body_has_alpha_characters
 
@@ -101,7 +104,7 @@ class Post < ApplicationRecord
   private
 
   def body_has_alpha_characters
-    unless body&.gsub(/[^a-z]/, "").length > 10
+    unless body.present? && body.gsub(/[^a-z]/, "").length > 10
       errors.add(:base, "This post isn't long enough!")
     end
   end

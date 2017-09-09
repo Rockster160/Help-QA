@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   include ApplicationHelper
+  include PostsHelper
 
   def index
     @posts = Post.order(created_at: :desc)
@@ -44,43 +45,6 @@ class PostsController < ApplicationController
   end
 
   def create
-  end
-
-  private
-
-  def set_filter_params
-    filter_values = params.permit(:claimed_status, :reply_count, :user_status, :tags, :page, :new_tag).values
-
-    @filter_options = {
-      "claimed"      => false,
-      "unclaimed"    => false,
-      "no-replies"   => false,
-      "some-replies" => false,
-      "few-replies"  => false,
-      "many-replies" => false,
-      "verified"     => false,
-      "unverified"   => false
-    }
-
-    filter_values.each do |filter_val|
-      if @filter_options.keys.include?(filter_val)
-        @filter_options[filter_val] = true
-      else
-        @filter_options[:tags] ||= []
-        @filter_options[:tags] += filter_val.split(",").map(&:squish)
-      end
-    end
-
-    @filter_params = {}
-    @filter_params[:claimed_status] = "claimed" if @filter_options["claimed"]
-    @filter_params[:claimed_status] = "unclaimed" if @filter_options["unclaimed"]
-    @filter_params[:reply_count] = "no-replies" if @filter_options["no-replies"]
-    @filter_params[:reply_count] = "some-replies" if @filter_options["some-replies"]
-    @filter_params[:reply_count] = "few-replies" if @filter_options["few-replies"]
-    @filter_params[:reply_count] = "many-replies" if @filter_options["many-replies"]
-    @filter_params[:user_status] = "verified" if @filter_options["verified"]
-    @filter_params[:user_status] = "unverified" if @filter_options["unverified"]
-    @filter_params[:tags] = @filter_options[:tags] if @filter_options[:tags].present?
   end
 
 end
