@@ -8,11 +8,16 @@
 #
 
 class Tag < ApplicationRecord
+  include Defaults
+
+  defaults tags_count: 0
 
   has_many :post_tags
   has_many :posts, through: :post_tags
+  has_many :user_tags
+  has_many :users, through: :user_tags
 
-  scope :count_order, -> { order(tags_count: :desc) }
+  scope :count_order, -> { order("tags.tags_count DESC NULLS LAST") }
 
   def self.auto_extract_tags_from_body(body)
     stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")

@@ -6,6 +6,20 @@
       padding: 10px;
 
       h6 { margin-top: 20px; }
+      ul.tags {
+        padding: 0;
+        margin: 20px;
+
+        li {
+          list-style-type: decimal;
+          font-size: 12px;
+
+          .danger {
+            color: red;
+            font-size: 10px;
+          }
+        }
+      }
       .filters {
         .filter {
           font-size: 12px;

@@ -13,6 +13,7 @@ module ApplicationHelper
   end
 
   def range_map(input, input_start, input_end, output_start, output_end)
+    input, input_start, input_end, output_start, output_end = [input, input_start, input_end, output_start, output_end].map(&:to_i)
     output_start + ((output_end - output_start) / (input_end - input_start).to_f) * (input - input_start)
   end
 
@@ -25,27 +26,44 @@ module ApplicationHelper
     selected_filter_value = new_filter_options.values.first
     current_filter_value = current_filters[selected_filter_key]
 
-    if current_filters.values.any? { |param_val| new_filter_options.values.include?(param_val) }
-      sorted_class = "current-filter"
-    elsif current_filter_value.nil? && selected_filter_value.nil?
+    current_filter_is_selected = current_filters.values.any? { |param_val| new_filter_options.values.include?(param_val) }
+    if current_filter_is_selected || current_filter_value.nil? && selected_filter_value.nil?
       sorted_class = "current-filter"
     end
 
-    current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.nil? }
+    current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.blank? }
+    current_filters[:tags] = current_filters[:tags].join(",") if current_filters[:tags].present?
 
     link_to link_text, "/#{(['history'] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
+  end
+
+  def build_history_path(workable_params=params)
+    if workable_params.is_a?(ActionController::Parameters)
+      workable_params[:tags] = workable_params.permit(:tags, :new_tag).values.join(",")
+      workable_params.delete(:tags) unless workable_params[:tags].present?
+      workable_params.delete(:new_tag)
+      attached_params = workable_params.permit(:claimed_status, :reply_count, :user_status, :tags, :page).values.join("/")
+    else
+      workable_params[:tags] = workable_params.slice(:tags, :new_tag).values.join(",")
+      workable_params.delete(:tags) unless workable_params[:tags].present?
+      workable_params.delete(:new_tag)
+      attached_params = workable_params.slice(:claimed_status, :reply_count, :user_status, :tags, :page).values.join("/")
+    end
+    "#{history_path}/#{attached_params}#{filter_query_string}"
   end
 
   def filter_query_string
     additional_queries = []
     additional_queries << "search=#{params[:search]}" if params[:search].present?
     additional_queries << "by_user=#{params[:by_user]}" if params[:by_user].present?
+    additional_queries << "new_tag=#{params[:new_tag]}" if params[:new_tag].present?
     additional_queries.any? ? "?#{additional_queries.join('&')}" : ""
   end
 
   def pagination(association, options={})
-    current_filters = @filter_options.select { |param_key, param_val| param_val }
-    current_filter_str = (['history'] + current_filters.keys).join("/")
+    current_filters = @filter_options.reject { |param_key, param_val| param_val.blank? }
+    tags = current_filters.delete(:tags)
+    current_filter_str = (['history'] + current_filters.keys + [tags&.join(",")]).compact.join("/")
 
     paginate(association, options).gsub(/history.*?\d?"/) do |found_match|
       page = found_match.scan(/\/\d+/).first.presence || "/1"

@@ -7,9 +7,7 @@ class PostsController < ApplicationController
   end
 
   def history_redirect
-    attached_params = params.permit(:claimed_status, :reply_count, :user_status, :page).values.join("/")
-
-    redirect_to "#{history_path}/#{attached_params}#{filter_query_string}"
+    redirect_to build_history_path
   end
 
   def history
@@ -26,7 +24,7 @@ class PostsController < ApplicationController
     @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
     @posts = @posts.search_for(params[:search]) if params[:search].present?
     @posts = @posts.by_username(params[:by_user]) if params[:by_user].present?
-    @posts = @posts.page(params[:page]).per(2) # FIXME: Remove per 5
+    @posts = @posts.page(params[:page]).per(2) # FIXME: Remove per
   end
 
   def show
@@ -51,7 +49,7 @@ class PostsController < ApplicationController
   private
 
   def set_filter_params
-    filter_values = params.permit(:claimed_status, :reply_count, :user_status, :page).values
+    filter_values = params.permit(:claimed_status, :reply_count, :user_status, :tags, :page, :new_tag).values
 
     @filter_options = {
       "claimed"      => false,
@@ -65,8 +63,12 @@ class PostsController < ApplicationController
     }
 
     filter_values.each do |filter_val|
-      next unless @filter_options.keys.include?(filter_val)
-      @filter_options[filter_val] = true
+      if @filter_options.keys.include?(filter_val)
+        @filter_options[filter_val] = true
+      else
+        @filter_options[:tags] ||= []
+        @filter_options[:tags] += filter_val.split(",").map(&:squish)
+      end
     end
 
     @filter_params = {}
@@ -78,6 +80,7 @@ class PostsController < ApplicationController
     @filter_params[:reply_count] = "many-replies" if @filter_options["many-replies"]
     @filter_params[:user_status] = "verified" if @filter_options["verified"]
     @filter_params[:user_status] = "unverified" if @filter_options["unverified"]
+    @filter_params[:tags] = @filter_options[:tags] if @filter_options[:tags].present?
   end
 
 end

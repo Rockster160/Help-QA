@@ -1,14 +1,32 @@
-<h2><i>History:</i> <%= pluralize_with_delimiter(@posts.total_count || 0, "post") %>, Posts <%= number_with_delimiter((@posts.limit_value * (@posts.current_page - 1)) + 1) %> to <%= number_with_delimiter(@posts.limit_value * @posts.current_page) %></h2>
+<% total_posts = @posts.total_count || 0 %>
+<% first_post = [(@posts.limit_value * (@posts.current_page - 1)) + 1, total_posts, 0].sort[1] %>
+<% last_post = [@posts.limit_value * @posts.current_page, total_posts, 0].sort[1] %>
+<h2><i>History:</i> <%= pluralize_with_delimiter(total_posts, "post") %>, Posts <%= number_with_delimiter(first_post) %> to <%= number_with_delimiter(last_post) %></h2>
 
 <div class="history-page stretch-children">
   <%= form_tag do %>
     <%= hidden_field_tag :claimed_status, @filter_params[:claimed_status] if @filter_params[:claimed_status].present? %>
     <%= hidden_field_tag :reply_count, @filter_params[:reply_count] if @filter_params[:reply_count].present? %>
     <%= hidden_field_tag :user_status, @filter_params[:user_status] if @filter_params[:user_status].present? %>
+    <%= hidden_field_tag :tags, @filter_params[:tags].join(",") if @filter_params[:tags].present? %>
+
     <div class="search-form">
       <h6>Search Text</h6>
       <input type="text" name="search" value="<%= params[:search] %>">
       <%= submit_tag "Search" %>
+
+      <h6>Tags</h6>
+      <ul class="tags">
+        <% (@filter_params[:tags] || []).each do |tag_name| %>
+          <% new_params = @filter_params.dup %>
+          <% new_params[:tags] -= [tag_name] %>
+          <% remove_link = build_history_path(new_params) %>
+          <% solo_link = tag_path(tag_name) %>
+          <li><a href="<%= solo_link %>" class="underline"><%= tag_name %></a> (<a href="<%= remove_link %>" class="danger">remove</a>)</li>
+        <% end %>
+      </ul>
+      <input type="text" name="new_tag" value="">
+      <%= submit_tag "Add Tag" %>
 
       <div class="filters">
         <h6>Filters</h6>
