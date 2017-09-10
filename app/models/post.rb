@@ -37,6 +37,7 @@ class Post < ApplicationRecord
   scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
+  scope :by_tags,          ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
 
   after_create :auto_add_tags
   defaults reply_count: 0

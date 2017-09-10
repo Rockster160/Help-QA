@@ -12,6 +12,8 @@ class Tag < ApplicationRecord
 
   defaults tags_count: 0
 
+  before_save :format_name
+
   has_many :post_tags
   has_many :posts, through: :post_tags
   has_many :user_tags
@@ -33,6 +35,12 @@ class Tag < ApplicationRecord
 
   def to_param
     tag_name.downcase || id
+  end
+
+  private
+
+  def format_name
+    tag_name = tag_name.downcase.squish
   end
 
 end

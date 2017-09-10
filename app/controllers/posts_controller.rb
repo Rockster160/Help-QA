@@ -25,6 +25,7 @@ class PostsController < ApplicationController
     @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
     @posts = @posts.search_for(params[:search]) if params[:search].present?
     @posts = @posts.by_username(params[:by_user]) if params[:by_user].present?
+    @posts = @posts.by_tags(@filter_options[:tags]) if @filter_options[:tags].present?
     @posts = @posts.page(params[:page]).per(2) # FIXME: Remove per
   end
 

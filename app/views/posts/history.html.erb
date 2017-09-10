@@ -77,6 +77,6 @@
     } %>
 
     <%= pagination @posts, window: window_sizes.values.max, outer_window: 1, params: @filter_params %>
-    <%= render partial: "index", locals: { posts: @posts, hide_tags: true } %>
+    <%= render partial: "index", locals: { posts: @posts } %>
   </div>
 </div>
