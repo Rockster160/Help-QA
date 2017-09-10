@@ -9,6 +9,12 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def create_and_sign_in_user_by_email(email)
+    user = User.create(email: email)
+    sign_in(user) if user.persisted?
+    user
+  end
+
   def see_current_user
     Rails.logger.silence do
       if user_signed_in?

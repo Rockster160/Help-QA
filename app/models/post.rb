@@ -18,6 +18,8 @@ class Post < ApplicationRecord
   include Anonicon
   include Defaults
 
+  DEFAULT_POST_TEXT = "Start Here.\n\nAsk a question, post a rant, tell us your story.".freeze
+
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"
   has_many :edits, class_name: "PostEdit"
@@ -37,12 +39,13 @@ class Post < ApplicationRecord
   scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
-  scope :by_tags,          ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
+  scope :by_tags,              ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
 
   after_create :auto_add_tags
   defaults reply_count: 0
   defaults posted_anonymously: false
 
+  validate :body_is_not_default
   validate :body_has_alpha_characters
 
   def self.currently_popular
@@ -103,6 +106,15 @@ class Post < ApplicationRecord
   end
 
   private
+
+  def body_is_not_default
+    stripped_default_text = DEFAULT_POST_TEXT.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
+    stripped_body_text = body.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
+    
+    if stripped_default_text.include?(stripped_body_text) || stripped_body_text.include?(stripped_default_text)
+      errors.add(:base, "Try asking a question!")
+    end
+  end
 
   def body_has_alpha_characters
     unless body.present? && body.gsub(/[^a-z]/, "").length > 10

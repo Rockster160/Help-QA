@@ -23,7 +23,8 @@ class Tag < ApplicationRecord
 
   def self.auto_extract_tags_from_body(body)
     stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
-    formatted = body.gsub(/[^a-z| ]/i, "")                 # Without special chars
+    formatted = body.gsub("\n", " ")                       # Spaces instead of newlines
+                    .gsub(/[^a-z| ]/i, "")                 # Without special chars
                     .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
                     .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
     formatted.squish.split(" ")
@@ -40,7 +41,7 @@ class Tag < ApplicationRecord
   private
 
   def format_name
-    tag_name = tag_name.downcase.squish
+    tag_name = self.tag_name.downcase.squish
   end
 
 end

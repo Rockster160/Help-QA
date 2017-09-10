@@ -46,6 +46,27 @@ class PostsController < ApplicationController
   end
 
   def create
+    user = current_user || create_and_sign_in_user_by_email(params.dig(:new_user, :email))
+
+    unless user.try(:persisted?)
+      # flash.now[:alert] =
+      return redirect_to root_path, post_text: post_params[:body], anonymous: post_params[:posted_anonymously], alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
+    end
+
+    @post = user.posts.create(post_params)
+
+    if @post.persisted?
+      redirect_to post_path(@post), notice: "Successfully created post! While you're waiting for replies, consider viewing other posts and helping others."
+    else
+      # flash.now[:alert] =
+      redirect_to root_path, post_text: post_params[:body], anonymous: post_params[:posted_anonymously], alert: @post.errors.full_messages.first || "Something went wrong creating your post. Please make sure our post consists of words."
+    end
+  end
+
+  private
+
+  def post_params
+    params.require(:post).permit(:body, :posted_anonymously)
   end
 
 end

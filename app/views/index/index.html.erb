@@ -55,21 +55,26 @@
   </div>
   <div class="posts-side">
     <div class="new-post-container">
-      <div class="text-area-wrapper">
-        <textarea name="name" rows="6" class="js-clear-text-after-focus"><%= "Start Here.\n\nAsk a question, post a rant, tell us your story.".html_safe %></textarea>
-      </div>
-      <div class="post-controls">
-        <label for="new-post-email">Email: </label>
-        <input type="email" name="new-post-email" value="">
-        <input type="checkbox" name="new-post-anonymous" value="">
-        <label for="new-post-anonymous">Post Anonymously</label>
-        <label for="new-post-submit"></label>
-        <button type="button" name="new-post-submit">Post!</button>
-        <div class="small-text">
-          Email address is required <br>
-          You must be 13 years or older
+      <%= form_for @post || Post.new do |f| %>
+        <div class="text-area-wrapper">
+          <%= f.text_area :body, rows: 6, class: "js-clear-text-after-focus", value: params[:post_text] || Post::DEFAULT_POST_TEXT.html_safe %>
         </div>
-      </div>
+        <div class="post-controls">
+          <% unless user_signed_in? %>
+            <label for="new-post-email">Email: </label>
+            <input type="new-post-email" name="new_user[email]" value="">
+          <% end %>
+          <%= f.check_box :posted_anonymously, checked: params[:anonymous] %>
+          <%= f.label :posted_anonymously, "Post Anonymously" %>
+          <%= f.submit "Post!" %>
+          <% unless user_signed_in? %>
+            <div class="small-text">
+              Email address is required <br>
+              You must be 13 years or older
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
     <div class="posts-wrapper">
       <h1>Most Recent Posts</h1>

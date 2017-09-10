@@ -28,6 +28,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
   include Friendable
+  include DeviseOverrides
   has_paper_trail
   # before_action :set_paper_trail_whodunnit - Add to controller
 
@@ -46,6 +47,7 @@ class User < ApplicationRecord
   has_many :subscriptions
   has_one  :location
 
+  before_validation :set_default_username
   validates_uniqueness_of :username
   validate :username_meets_requirements
 
@@ -93,15 +95,31 @@ class User < ApplicationRecord
 
   private
 
+  def set_default_username
+    t = 0
+    base_username = email.split("@").first
+    self.username ||= loop do
+      try_username = t == 0 ? base_username : "#{base_username}#{t + 1}"
+      t += 1
+      break try_username if User.where(username: try_username).none?
+    end
+    username.try(:squish!)
+  end
+
   def username_meets_requirements
-    self.username ||= email.split("@").first
     # Profanity filter?
-    username.squish!
+
+    if username.blank?
+      return errors.add(:username, "must be at least 4 characters.")
+    end
     if username.include?(" ")
       errors.add(:username, "cannot contain spaces")
     end
     unless username.length > 3
       errors.add(:username, "must be at least 4 characters")
+    end
+    unless username.length < 25
+      errors.add(:username, "must be less than 25 characters")
     end
     unless username.gsub(/[^a-z]/i, "").length > 1
       errors.add(:username, "must have at least 2 normal alpha characters (A-Z)")
