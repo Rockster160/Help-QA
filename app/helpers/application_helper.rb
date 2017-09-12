@@ -2,6 +2,15 @@ module ApplicationHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
+  def errors(resource, error_messages=nil, title: nil)
+    if resource.is_a?(String)
+      resource_class = resource
+      resource = nil
+    end
+
+    render partial: "layouts/errors_container", locals: { resource: resource, resource_class: resource_class, error_title: title, error_messages: error_messages }
+  end
+
   def timeago(time, options={})
     return unless time
     options[:class] ||= "timeago"

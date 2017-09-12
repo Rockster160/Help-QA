@@ -1,0 +1,21 @@
+<h1>Account Confirmation</h1>
+<p>In order to complete your account, please enter a password that can be used to access your account in the future.</p>
+
+<%= form_for @user, url: confirm_account_path do |f| %>
+  <%= errors(@user, title: "Failed to add password:") %>
+  <%= f.hidden_field :confirmation_token %>
+
+  <div class="field">
+    <%= f.label :password, "Set password:" %> <br/>
+    <%= f.password_field :password, autofocus: true, autocomplete: "off" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation, "Confirm password:" %> <br/>
+    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Set password" %>
+  </div>
+<% end %>
