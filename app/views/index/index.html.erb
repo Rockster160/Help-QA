@@ -57,14 +57,15 @@
     <div class="new-post-container">
       <%= form_for @post || Post.new do |f| %>
         <div class="text-area-wrapper">
-          <%= f.text_area :body, rows: 6, class: "js-clear-text-after-focus", value: params[:post_text] || Post::DEFAULT_POST_TEXT.html_safe %>
+          <% should_show_default_text = params[:post_text].blank? || Post.text_matches_default_text?(params[:post_text]) %>
+          <%= f.text_area :body, rows: 6, class: "#{'js-clear-text-after-focus' if should_show_default_text}", value: params[:post_text].presence || Post::DEFAULT_POST_TEXT.html_safe %>
         </div>
         <div class="post-controls">
           <% unless user_signed_in? %>
             <label for="new-post-email">Email: </label>
-            <input type="new-post-email" name="new_user[email]" value="">
+            <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) %>">
           <% end %>
-          <%= f.check_box :posted_anonymously, checked: params[:anonymous] %>
+          <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" %>
           <%= f.label :posted_anonymously, "Post Anonymously" %>
           <%= f.submit "Post!" %>
           <% unless user_signed_in? %>

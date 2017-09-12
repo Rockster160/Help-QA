@@ -48,6 +48,13 @@ class Post < ApplicationRecord
   validate :body_is_not_default
   validate :body_has_alpha_characters
 
+  def self.text_matches_default_text?(text)
+    stripped_default_text = DEFAULT_POST_TEXT.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
+    stripped_body_text = text.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
+
+    stripped_default_text.include?(stripped_body_text) || stripped_body_text.include?(stripped_default_text)
+  end
+
   def self.currently_popular
     all.sample # FIXME - How do we calculate this?
   end
@@ -108,10 +115,7 @@ class Post < ApplicationRecord
   private
 
   def body_is_not_default
-    stripped_default_text = DEFAULT_POST_TEXT.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
-    stripped_body_text = body.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
-    
-    if stripped_default_text.include?(stripped_body_text) || stripped_body_text.include?(stripped_default_text)
+    if Post.text_matches_default_text?(body)
       errors.add(:base, "Try asking a question!")
     end
   end
