@@ -1,12 +1,12 @@
 <div class="navigation-wrapper">
   <div class="navigation-container">
     <a href="<%= root_path %>" class="navigation-head">HelperNow</a>
-    <a href="<%=  %>">About</a>
-    <a href="<%=  %>">Tags</a>
-    <a href="<%=  %>">Search</a>
-    <a href="<%=  %>">FAQ</a>
-    <a href="<%=  %>">Start a New Post</a>
-    <a href="<%=  %>">Chat</a>
+    <!-- <a href="<%=  %>">About</a> -->
+    <a href="<%= tags_path %>">Tags</a>
+    <a href="<%= history_path %>">Search</a>
+    <!-- <a href="<%=  %>">FAQ</a> -->
+    <a href="<%= new_post_path %>">Start a New Post</a>
+    <!-- <a href="<%=  %>">Chat</a> -->
     <% if user_signed_in? %>
       <div class="profile-tab">
         <div class="account-wrapper">
@@ -17,22 +17,22 @@
               <ul class="dropdown-list hidden">
                 <a href="<%= user_posts_path(current_user) %>">My Posts</a>
                 <a href="<%= user_replies_path(current_user) %>">My Replies</a>
-                <a href="<%=  %>">Near Me</a>
+                <!-- <a href="<%=  %>">Near Me</a> -->
               </ul>
             </div>
             <div class="dropdown-container">
               <a href="<%= user_path(current_user) %>" class="dropdown-clickable">Account Admin</a>
               <ul class="dropdown-list hidden">
-                <a href="<%=  %>">Main</a>
-                <a href="<%=  %>">Notices</a>
-                <a href="<%=  %>">Subscriptions</a>
-                <a href="<%=  %>">Invites</a>
-                <a href="<%=  %>">My Tags</a>
+                <a href="<%= edit_account_path %>">Main</a>
+                <a href="<%= account_notices_path %>">Notices</a>
+                <a href="<%= account_subscriptions_path %>">Subscriptions</a>
+                <a href="<%= account_invites_path %>">Invites</a>
+                <!-- <a href="<%=  %>">My Tags</a> -->
                 <a href="<%= user_path(current_user) %>">Profile</a>
-                <a href="<%=  %>">Friends</a>
-                <a href="<%=  %>">Avatar</a>
-                <a href="<%=  %>">Settings</a>
-                <a href="<%=  %>">Map</a>
+                <a href="<%= account_friends_path %>">Friends</a>
+                <a href="<%= avatar_account_path %>">Avatar</a>
+                <a href="<%= account_settings_path %>">Settings</a>
+                <!-- <a href="<%=  %>">Map</a> -->
               </ul>
             </div>
           </div>

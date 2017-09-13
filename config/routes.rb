@@ -24,25 +24,12 @@ Rails.application.routes.draw do
   resource :account, only: [ :index, :edit, :update ] do
     get :confirm
     patch :confirm, action: :set_confirmation
-    get :notices
-    patch :notices, action: :set_notices
-    get :subscriptions
-    patch :subscriptions, action: :set_subscriptions
-    get :invites
-    patch :invites, action: :set_invites
-    get :"my-tags"
-    patch :"my-tags", action: :set_tags
-    get :profile
-    patch :profile, action: :set_profile
-    get :friends
-    patch :friends, action: :set_friends
     get :avatar
-    patch :avatar, action: :set_avatar
-    get :settings
-    patch :settings, action: :set_settings
-    get :map
-    patch :map, action: :set_map
+    post :avatar, action: :update
 
+    resources :subscriptions, only: [ :index ]
+    resources :friends, only: [ :index ]
+    resources :settings, only: [ :index ]
     resources :notices, only: [ :index ]
     resources :invites, only: [ :index ]
   end

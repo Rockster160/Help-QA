@@ -23,6 +23,7 @@
 #  last_seen_at           :datetime
 #  avatar_url             :string
 #  verified_at            :datetime
+#  date_of_birth          :date
 #
 
 class User < ApplicationRecord
@@ -80,6 +81,13 @@ class User < ApplicationRecord
     location.try(:ip) || current_sign_in_ip || last_sign_in_ip || username || email || id
   end
 
+  def age
+    return unless date_of_birth.present?
+    now = Time.now.utc.to_date
+    dob = date_of_birth
+    now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
+  end
+
   def letter
     return "?" unless username.present?
     (username.gsub(/[^a-z]/i, '').first.presence || "?").upcase
@@ -114,6 +122,9 @@ class User < ApplicationRecord
     end
     if username.include?(" ")
       errors.add(:username, "cannot contain spaces")
+    end
+    if username.include?("@")
+      errors.add(:username, "cannot contain @'s'")
     end
     unless username.length > 3
       errors.add(:username, "must be at least 4 characters")

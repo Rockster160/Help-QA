@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
   before_action :see_current_user, :logit
 
@@ -27,6 +28,11 @@ class ApplicationController < ActionController::Base
   def logit
     # return CustomLogger.log_blip! if params[:checker]
     # CustomLogger.log_request(request, current_user)
+  end
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :password, :password_confirmation])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:username, :email, :password, :password_confirmation, :current_password])
   end
 
 end

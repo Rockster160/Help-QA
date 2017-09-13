@@ -23,6 +23,7 @@
 #  last_seen_at           :datetime
 #  avatar_url             :string
 #  verified_at            :datetime
+#  date_of_birth          :date
 #
 
 FactoryGirl.define do
