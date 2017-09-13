@@ -102,6 +102,9 @@
           <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
             <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
           <% end %>
+          <% if tags.length > 50 %>
+            and <%= number_with_delimiter(tags.length - 50) %> more...
+          <% end %>
         </div>
       </div>
       <div class="reply-tags">
@@ -110,6 +113,9 @@
           <% tags = @user.tags_from_replies.count_order %>
           <% tags.first(50).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
             <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+          <% end %>
+          <% if tags.length > 50 %>
+            and <%= number_with_delimiter(tags.length - 50) %> more...
           <% end %>
         </div>
       </div>

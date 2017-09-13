@@ -1,0 +1,12 @@
+<ul class="account-completion">
+  <% completion.each do |achievement, completed| %>
+    <li class="achievment-<%= completed ? 'complete' : 'incomplete' %>">
+      <% if completed %>
+        <%= hover_icon("check", "complete") %>
+      <% else %>
+        <%= hover_icon("cross", "incomplete") %>
+      <% end %>
+      <%= achievement %>
+    </li>
+  <% end %>
+</ul>

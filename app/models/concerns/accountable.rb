@@ -20,6 +20,17 @@ module Accountable
     update(last_seen_at: DateTime.current)
   end
 
+  def account_completion
+    {
+      "Confirm account (Verify email and add password)" => verified? && encrypted_password.present?,
+      "Update Username" => false,
+      "Upload Avatar" => avatar_url.present?,
+      "Update Bio" => false,
+      "Make your first post" => posts.count.positive?,
+      "Help somebody (Comment on a post)" => replies.joins(:post).where.not(posts: { author_id: id }).count.positive?
+    }
+  end
+
   def ip_address
     location.try(:ip) || current_sign_in_ip || last_sign_in_ip || username || email || id
   end

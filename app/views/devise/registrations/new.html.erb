@@ -5,18 +5,22 @@
 
   <div class="field">
     <%= f.label :email, "Your Email:" %><br />
-    <%= f.email_field :email, autofocus: true, value: Faker::Internet.email %>
+    <%= f.email_field :email, autofocus: true %>
+    <%# , value: Faker::Internet.email %>
   </div>
 
   <div class="field">
     <%= f.label :date_of_birth, "Your birthday:" %>
     <em>ex: Month/Day/Year like <strong>02/02/2010</strong></em> <br />
-    <%= f.text_field :date_of_birth, value: "#{rand(12).to_s.rjust(2, "0")}/#{rand(30).to_s.rjust(2, "0")}/#{1990 + rand(30)}" %>
+    <%= f.text_field :date_of_birth %>
+    <%# , value: "#{rand(12).to_s.rjust(2, "0")}/#{rand(30).to_s.rjust(2, "0")}/#{1990 + rand(30)}" %>
   </div>
 
   <div class="actions">
     <%= f.submit "I submit this to be my true birthday" %>
   </div>
 <% end %>
+
+<small><em>WARNING: If you lie on this form you risk your account being banned.</em></small>
 
 <%= render "devise/shared/links" %>
