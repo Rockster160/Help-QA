@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_one  :location
 
   before_validation :set_default_username
+  validates_presence_of :date_of_birth
   validates_uniqueness_of :username
   validate :username_meets_requirements
 
@@ -88,6 +89,20 @@ class User < ApplicationRecord
     now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
   end
 
+  def date_of_birth=(dob)
+    begin
+      if dob.is_a?(Date)
+        super(dob)
+      elsif dob.is_a?(String)
+        super(Date.strptime(dob, "%m/%d/%Y"))
+      else
+        super(Date.parse(dob))
+      end
+    rescue ArgumentError
+      nil
+    end
+  end
+
   def letter
     return "?" unless username.present?
     (username.gsub(/[^a-z]/i, '').first.presence || "?").upcase
@@ -106,6 +121,10 @@ class User < ApplicationRecord
   def set_default_username
     t = 0
     base_username = email.split("@").first
+    loop do
+      break if base_username.length >= 4
+      base_username = "#{base_username}#{base_username}"
+    end
     self.username ||= loop do
       try_username = t == 0 ? base_username : "#{base_username}#{t + 1}"
       t += 1
@@ -115,6 +134,7 @@ class User < ApplicationRecord
   end
 
   def username_meets_requirements
+    return unless email.present?
     # Profanity filter?
 
     if username.blank?

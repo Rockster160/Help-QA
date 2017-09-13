@@ -55,6 +55,11 @@ module DeviseOverrides
     super if confirmed?
   end
 
+  def confirm
+    assign_attributes(verified_at: DateTime.current)
+    super
+  end
+
   def confirm_with_password(params)
     errors.add(:password, "cannot be blank") if params[:password].blank?
     errors.add(:password_confirmation, "cannot be blank") if params[:password_confirmation].blank?
@@ -62,7 +67,7 @@ module DeviseOverrides
 
     return false if errors.any?
 
-    update(params) && assign_attributes(verified_at: DateTime.current) && confirm
+    update(params) && confirm
   end
 
   def login=(login)

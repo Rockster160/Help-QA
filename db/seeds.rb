@@ -28,13 +28,15 @@ max_friend_count_per_user = 30
 posts = 100
 replies = 500
 
-User.create({
+u = User.create({
   email: "rocco11nicholls@gmail.com",
   password: "password",
   created_at: 6.months.ago,
   remember_created_at: 6.months.ago,
   username: "Rockster160",
+  date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y")
 })
+u.confirm
 
 Rando.people(users_count).each_with_index do |person, person_idx|
   print_inline("Users: #{users_count - person_idx} / #{users_count}")
@@ -51,9 +53,16 @@ Rando.people(users_count).each_with_index do |person, person_idx|
   u.last_seen_at = rand(10) == 0 ? random_time_between_now_and([1.week.ago, created].max) : random_time_between_now_and(created)
 
   u.username = "#{person.login.username.gsub(/\d/, '')}#{User.count}"
+  u.date_of_birth = random_time_between_now_and(50.years.ago, 10.years.ago).to_date
   u.avatar_url = rand(3) == 0 ? person.picture.thumbnail : nil
 
   u.save
+
+  if rand(3) == 0
+    u.confirm
+    verify_date = random_time_between_now_and(u.created_at)
+    u.update(confirmed_at: verify_date, verified_at: verify_date)
+  end
 
   location = u.build_location
   location.ip = (0..255).to_a.sample(4).join(".")

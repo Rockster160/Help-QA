@@ -1,28 +1,21 @@
-<h2>Sign up</h2>
+<h1>Sign up</h1>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
 
   <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
+    <%= f.label :email, "Your Email:" %><br />
+    <%= f.email_field :email, autofocus: true, value: Faker::Internet.email %>
   </div>
 
   <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    <%= f.label :date_of_birth, "Your birthday:" %>
+    <em>ex: Month/Day/Year like <strong>02/02/2010</strong></em> <br />
+    <%= f.text_field :date_of_birth, value: "#{rand(12).to_s.rjust(2, "0")}/#{rand(30).to_s.rjust(2, "0")}/#{1990 + rand(30)}" %>
   </div>
 
   <div class="actions">
-    <%= f.submit "Sign up" %>
+    <%= f.submit "I submit this to be my true birthday" %>
   </div>
 <% end %>
 

@@ -3,6 +3,7 @@ module PostsHelper
   using CoreExtensions
 
   def tags_container(tags, min:, max:)
+    return if tags.none?
     max_tag_count = tags.count_order.first.tags_count
     min_tag_count = tags.count_order.last.tags_count
 

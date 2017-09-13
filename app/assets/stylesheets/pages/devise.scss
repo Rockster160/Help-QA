@@ -1,0 +1,18 @@
+.field {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  * { font-size: 10px; }
+  label {
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+.auth-links {
+  margin-top: 10px;
+  a {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+}

@@ -45,7 +45,7 @@
             elsif (user.last_seen_at || user.created_at) > 30.hours.ago
               "last online: #{timeago(user.last_seen_at)}"
             else
-              "last online: #{user.last_seen_at.to_formatted_s(:short_with_time)}"
+              "last online: #{(user.last_seen_at || user.created_at).to_formatted_s(:short_with_time)}"
             end
           %>
           <%= avatar(user.avatar, { href: user_path(user), size: 60, status: user.online? ? 'online' : 'offline', tooltip: { name: user.username, timestamp: last_online } }) %>
