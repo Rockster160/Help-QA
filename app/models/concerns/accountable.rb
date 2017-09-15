@@ -3,7 +3,6 @@ module Accountable
 
   included do
     before_validation :set_default_username
-    validates_presence_of :date_of_birth
     validates_uniqueness_of :username
     validate :username_meets_requirements
   end
@@ -63,17 +62,27 @@ module Accountable
         super(Date.parse(dob))
       end
     rescue ArgumentError
-      nil
     end
   end
 
   def letter
     return "?" unless username.present?
-    (username.gsub(/[^a-z]/i, '').first.presence || "?").upcase
+    (username.gsub(/[^a-z]/i, "").first.presence || "?").upcase
+  end
+
+  def gravatar?(options={})
+    hash = Digest::MD5.hexdigest(email.to_s.downcase)
+    options = { rating: "pg", timeout: 2 }.merge(options)
+    http = Net::HTTP.new("www.gravatar.com", 80)
+    http.read_timeout = options[:timeout]
+    response = http.request_head("/avatar/#{hash}?rating=#{options[:rating]}&default=http://gravatar.com/avatar")
+    response.code != "302"
+  rescue StandardError, Timeout::Error
+    false  # Show "no gravatar" if the service is down or slow
   end
 
   def avatar
-    avatar_url.presence || letter.presence || 'status_offline.png'
+    avatar_url.presence || letter.presence || "status_offline.png"
   end
 
   def to_param
@@ -82,7 +91,14 @@ module Accountable
 
   private
 
+  def set_gravatar_if_exists
+    return unless gravatar?
+    hash = Digest::MD5.hexdigest(email.to_s.downcase)
+    update(avatar_url: "https://www.gravatar.com/avatar/#{hash}?rating=pg")
+  end
+
   def set_default_username
+    return if email.blank?
     t = 0
     base_username = email.split("@").first
     loop do

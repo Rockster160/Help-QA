@@ -49,6 +49,8 @@ class User < ApplicationRecord
   has_many :subscriptions
   has_one  :location
 
+  after_create :set_gravatar_if_exists
+
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
   scope :unverified,           -> { where(verified_at: nil) }
