@@ -37,7 +37,7 @@ module Friendable
   def add_friend(friend)
     existing_friendship = friendship_with(friend)
 
-    if existing_friendship.try(:friend_id) == self.id #they requested to be my friend already, so I can accept the request.
+    if existing_friendship.try(:friend_id) == self.id # They requested to be my friend already, so I can accept the request.
       existing_friendship.update(accepted_at: DateTime.current)
     elsif existing_friendship.nil?
       friendships.create(user_id: self.id, friend_id: friend.id)
