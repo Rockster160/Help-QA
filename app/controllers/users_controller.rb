@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  helper PostsHelper
 
   def show
     @user = User.find(params[:id])
