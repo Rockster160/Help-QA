@@ -24,6 +24,8 @@
 #  avatar_url             :string
 #  verified_at            :datetime
 #  date_of_birth          :date
+#  has_updated_username   :boolean          default("false")
+#  bio                    :text
 #
 
 class User < ApplicationRecord
@@ -31,23 +33,12 @@ class User < ApplicationRecord
   include Friendable
   include DeviseOverrides
   include Accountable
+  include Postable
   has_paper_trail
   # before_action :set_paper_trail_whodunnit - Add to controller
 
-  has_many :posts,            foreign_key: :author_id
-  has_many :replies,          foreign_key: :author_id
-  has_many :post_edits,       foreign_key: :edited_by_id
-  has_many :post_views,       foreign_key: :viewed_by_id
-  has_many :shouts_to,        foreign_key: :sent_to_id,      class_name: "Shout"
-  has_many :shouts_from,      foreign_key: :sent_from_id,    class_name: "Shout"
-  has_many :invites_sent,     foreign_key: :from_user_id,    class_name: "Invite"
-  has_many :invites_received, foreign_key: :invited_user_id, class_name: "Invite"
-  has_many :tags_from_posts,   source: :tags, through: :posts
-  has_many :tags_from_replies, source: :tags, through: :replies
-  has_many :notices
-  has_many :report_flags
-  has_many :subscriptions
   has_one  :location
+  has_many :report_flags
 
   after_create :set_gravatar_if_exists
 

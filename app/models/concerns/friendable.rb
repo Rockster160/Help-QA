@@ -2,6 +2,8 @@ module Friendable
   extend ActiveSupport::Concern
 
   included do
+    has_many :shouts_to,        foreign_key: :sent_to_id,      class_name: "Shout"
+    has_many :shouts_from,      foreign_key: :sent_from_id,    class_name: "Shout"
     has_many :requested_friendships, class_name: "Friendship", foreign_key: "user_id"
     has_many :pending_friendships, class_name: "Friendship", foreign_key: "friend_id"
   end

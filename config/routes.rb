@@ -3,7 +3,14 @@ Rails.application.routes.draw do
 
   get :flash_message, controller: "application"
 
-  devise_for :users, path: :account, path_names: { sign_in: "login", sign_out: "logout" }
+  devise_for :users, path: :account, path_names: { sign_in: "login", sign_out: "logout" }, controllers: {
+    confirmations: "devise/user/confirmations",
+    # omniauth_callbacks: "devise/user/omniauth_callbacks",
+    passwords: "devise/user/passwords",
+    registrations: "devise/user/registrations",
+    sessions: "devise/user/sessions",
+    unlocks: "devise/user/unlocks"
+  }
 
   get "tags/:tags" => "tags#show", as: :tag
   resources :tags, only: [ :index ] do

@@ -24,6 +24,8 @@
 #  avatar_url             :string
 #  verified_at            :datetime
 #  date_of_birth          :date
+#  has_updated_username   :boolean          default("false")
+#  bio                    :text
 #
 
 require 'rails_helper'

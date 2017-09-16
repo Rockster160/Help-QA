@@ -22,23 +22,12 @@ module Accountable
   def account_completion
     {
       "Confirm account (Verify email and add password)" => verified? && encrypted_password.present?,
-      "Update Username" => false,
+      "Update Username" => has_updated_username?,
       "Upload Avatar" => avatar_url.present?,
-      "Update Bio" => false,
+      "Add Bio" => bio?,
       "Make your first post" => posts.count.positive?,
       "Help somebody (Comment on a post)" => replies.joins(:post).where.not(posts: { author_id: id }).count.positive?
     }
-  end
-
-  def activity(day_count)
-    activity_hash = {}
-    day_count.times do |t|
-      date = (t + 1).days.ago
-      posts_on_date = posts.where(created_at: date.beginning_of_day..date.end_of_day)
-      replies_on_date = replies.where(created_at: date.beginning_of_day..date.end_of_day)
-      activity_hash[date.to_date.to_s] = {posts: posts_on_date.length, replies: replies_on_date.length}
-    end
-    activity_hash
   end
 
   def ip_address
@@ -63,11 +52,6 @@ module Accountable
       end
     rescue ArgumentError
     end
-  end
-
-  def letter
-    return "?" unless username.present?
-    (username.gsub(/[^a-z]/i, "").first.presence || "?").upcase
   end
 
   def gravatar?(options={})
@@ -98,13 +82,14 @@ module Accountable
   end
 
   def set_default_username
-    return if email.blank?
-    t = 0
+    self.has_updated_username = true if username_changed?
+    return if email.blank? || username.present?
     base_username = email.split("@").first
     loop do
       break if base_username.length >= 4
       base_username = "#{base_username}#{base_username}"
     end
+    t = 0
     self.username ||= loop do
       try_username = t == 0 ? base_username : "#{base_username}#{t + 1}"
       t += 1

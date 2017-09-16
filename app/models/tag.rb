@@ -16,8 +16,6 @@ class Tag < ApplicationRecord
 
   has_many :post_tags
   has_many :posts, through: :post_tags
-  has_many :user_tags
-  has_many :users, through: :user_tags
 
   scope :count_order, -> { order("tags.tags_count DESC NULLS LAST") }
 
@@ -39,7 +37,7 @@ class Tag < ApplicationRecord
     tag_occurence_counter = all_tag_ids_used_in_posts.each_with_object(Hash.new(0)) { |instance, count_hash| count_hash[instance] += 1 }
     strong_matches = tag_occurence_counter.reject { |tag_id, similar_count| similar_count <= required_to_match }
     return Tag.none if strong_matches.none?
-    
+
     sorted_occurences = Hash[strong_matches.sort_by { |tag_id, similar_count| -similar_count }]
     psql_order_str = ["CASE"] + sorted_occurences.keys.map.with_index { |tag_id, idx| "WHEN id='#{tag_id}' THEN #{idx}" } + ["END"]
     Tag.where(id: sorted_occurences.keys).order(psql_order_str.join(" "))

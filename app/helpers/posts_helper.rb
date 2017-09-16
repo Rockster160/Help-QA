@@ -2,10 +2,10 @@ module PostsHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
-  def tags_container(tags, min:, max:)
+  def tags_container(tags, min:, max:, min_tag_count: nil, max_tag_count: nil)
     return if tags.none?
-    max_tag_count = tags.count_order.first.tags_count
-    min_tag_count = tags.count_order.last.tags_count
+    max_tag_count ||= tags.count_order.first.tags_count
+    min_tag_count ||= tags.count_order.last.tags_count
 
     tags.map do |tag|
       size = range_map(tag.tags_count, min_tag_count, max_tag_count, min, max)
