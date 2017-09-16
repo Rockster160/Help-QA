@@ -34,6 +34,17 @@ class Tag < ApplicationRecord
     @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject(&:blank?)
   end
 
+  def similar_tags(required_to_match=2)
+    all_tag_ids_used_in_posts = posts.map(&:tag_ids).flatten - [id]
+    tag_occurence_counter = all_tag_ids_used_in_posts.each_with_object(Hash.new(0)) { |instance, count_hash| count_hash[instance] += 1 }
+    strong_matches = tag_occurence_counter.reject { |tag_id, similar_count| similar_count <= required_to_match }
+    return Tag.none if strong_matches.none?
+    
+    sorted_occurences = Hash[strong_matches.sort_by { |tag_id, similar_count| -similar_count }]
+    psql_order_str = ["CASE"] + sorted_occurences.keys.map.with_index { |tag_id, idx| "WHEN id='#{tag_id}' THEN #{idx}" } + ["END"]
+    Tag.where(id: sorted_occurences.keys).order(psql_order_str.join(" "))
+  end
+
   def to_param
     tag_name.downcase || id
   end

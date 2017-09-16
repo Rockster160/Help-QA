@@ -14,7 +14,7 @@
 
 FactoryGirl.define do
   factory :post do
-    author :user
+    author { ::FactoryGirl.create(:user) }
     body
   end
 end

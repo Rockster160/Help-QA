@@ -1,5 +1,6 @@
 class TagsController < ApplicationController
   include ApplicationHelper
+  include PostsHelper
 
   def index
   end

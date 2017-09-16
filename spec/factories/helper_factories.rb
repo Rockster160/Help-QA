@@ -12,10 +12,10 @@ FactoryGirl.define do
   end
 
   sequence :body do
-    raw_body = Faker::Lorem.paragraph(2, true, paragraph_count)
+    raw_body = Faker::Lorem.paragraph(2, true, rand(3))
     body_pieces = raw_body.split(". ")
     body_pieces.map do |body_piece|
-      body += body_piece + ". " + ("\n"*rand(3))
+      "#{body_piece}. " + ("\n"*rand(3))
     end.join("")
   end
 end
