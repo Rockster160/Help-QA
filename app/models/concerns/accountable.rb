@@ -101,6 +101,7 @@ module Accountable
   def username_meets_requirements
     return unless email.present?
     # Profanity filter?
+    # Username cannot be "anonymous" or some other reserved words?
 
     if username.blank?
       return errors.add(:username, "must be at least 4 characters.")

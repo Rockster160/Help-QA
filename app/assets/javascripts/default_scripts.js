@@ -1,4 +1,4 @@
-$('.ctr-index.act-index').ready(function() {
+$(document).ready(function() {
 
   $('.js-clear-text-after-focus').focus(function() {
     if (!$(this).attr("data-has-focused")) {

@@ -45,10 +45,31 @@
 <div class="replies post-section stretch-children">
   <div class="post-section-detail">Replies (<%= @replies.count %>)</div>
   <div class="post-section-content">
-
     <div class="replies-container">
       <%= render partial: "replies/index", locals: { replies: @replies } %>
     </div>
+    <div class="new-reply-container">
+      <%= form_for [@post, Reply.new] do |f| %>
+        <%= f.label :body, "Reply:" %>
+        <%= f.text_area :body, rows: 12, class: "js-clear-text-after-focus", value: "Post a reply" %>
+        <% if user_signed_in? %>
+          Post as <strong><%= current_user.username %></strong> (No? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)
+        <% else %>
+          <%= label_tag "new_user[email]", "Your Email:" %>
+          <%= text_field_tag "new_user[email]", "", class: "full-width" %>
+        <% end %>
 
+        <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" %>
+        <%= f.label :posted_anonymously, "Post Anonymously?" %>
+        <%= f.submit "Send Reply" %>
+      <% end %>
+    </div>
   </div>
+</div>
+
+<div class="invites post-section stretch-children">
+  <div class="post-section-detail">
+    Invite Others to Help
+  </div>
+  <div class="post-section-content"></div>
 </div>

@@ -4,8 +4,10 @@
   }
   .post-container {
     margin-bottom: 30px;
+
     .author-details {
       font-size: 12px;
+
       .avatar-container { border-color: #999; }
       .username { font-weight: bold; }
     }
@@ -17,6 +19,7 @@
       }
       .body {
         min-height: 50px;
+
         p {
           font-size: 12px;
           line-height: 1.5;
@@ -34,6 +37,7 @@
     border-top: 1px solid #CCC;
     padding-top: 3px;
     margin-top: 10px;
+
     .post-section-detail {
       font-size: 12px;
       font-weight: bold;
@@ -44,13 +48,16 @@
 
       .replies-container {
         padding: 5px;
+
         .reply-container {
           border: 1px solid #999;
           margin-bottom: 10px;
+
           .reply-author {
             padding: 5px;
             border-bottom: 1px solid #999;
-            box-sizing: border-box;
+            width: 100%;
+
             .avatar-container {
               border-color: black;
               margin: 0;
@@ -59,6 +66,7 @@
               padding-top: 4px;
               padding-left: 5px;
               width: 100%;
+
               .reply-author-name {
                 display: inline-block;
                 font-weight: bold;
@@ -66,6 +74,7 @@
               }
               .reply-author-stats {
                 display: inline-block;
+
                 .detail-icons {
                   display: inline-block;
                 }
@@ -76,22 +85,35 @@
             background: #FAFAFA;
             width: 100%;
             padding: 8px 5px;
-            box-sizing: border-box;
+
             p {
               font-size: 12px;
               line-height: 1.5;
             }
           }
-          .reply-reciprocity {
-          }
+          .reply-reciprocity {}
           &.highlight {
             border-top: 3px solid limegreen;
           }
           &.original-poster {
             border-color: $help-default;
+
             .reply-author { border-color: $help-default; }
             .reply-content { background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%)); }
           }
+        }
+      }
+      .new-reply-container {
+        padding-right: 10px;
+        padding-left: 5px;
+        margin-bottom: 30px;
+
+        label {
+          font-weight: bold;
+        }
+        textarea {
+          width: 100%;
+          resize: vertical;
         }
       }
     }

@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
   root to: 'index#index'
 
-  get :flash_message, controller: "application"
+  get :flash_message, controller: :application
+  get :"terms-of-service", controller: :static_pages
+  get :"privacy-policy", controller: :static_pages
+  get :feedback, controller: :application # FIXME: Give this it's own controller
 
   devise_for :users, path: :account, path_names: { sign_in: "login", sign_out: "logout" }, controllers: {
     confirmations: "devise/user/confirmations",

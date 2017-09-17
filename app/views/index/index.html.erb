@@ -85,7 +85,7 @@
             <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) %>">
           <% end %>
           <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" %>
-          <%= f.label :posted_anonymously, "Post Anonymously" %>
+          <%= f.label :posted_anonymously, "Post Anonymously?" %>
           <%= f.submit "Post!" %>
           <% unless user_signed_in? %>
             <div class="small-text">
