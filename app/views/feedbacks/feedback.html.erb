@@ -1,0 +1,49 @@
+<% content_for(:title) { "Feedback" } %>
+
+<h1>File a Report</h1>
+
+<div class="stretch-children">
+  <%= form_for @feedback do |f| %>
+    <p>Have a question? Found a bug? Missing something? Found a post/reply that broke our TOS?</p>
+    <p>Let us know about problems, bad users, broken pages, offensive posts/replies, bugs, &amp; errors.</p>
+
+    <%= errors(@feedback, title: "Failed to submit Feedback:") %>
+
+    <% if user_signed_in? %>
+      <p>While responding to a question, or if we need additional information, we will communicate through the email address you have on file: <br><strong><%= current_user.email %></strong></p>
+    <% else %>
+      <p>In case we need to follow up or respond to your question, please provide your email below:</p>
+      <div class="form-field">
+        <%= f.label :email, "Email:" %>
+        <%= f.email_field :email, class: "full-width"  %>
+      </div>
+    <% end %>
+
+    <div class="form-field">
+      <%= f.label :body, "Why are you reporting this?" %>
+      <%= f.text_area :body, rows: 10, class: "full-width" %>
+    </div>
+
+    <div class="form-field">
+      <%= f.label :url do %>
+      URL <small><i>(If this is a report concerning a post or user, please leave a link for us to investigate)</i></small>
+      <% end %>
+      <%= f.text_field :url, value: @feedback.url || params[:report_url], class: "full-width" %>
+    </div>
+
+    <div class="form-field">
+      <p></p>
+      <%= f.submit "Send it off" %>
+    </div>
+  <% end %>
+
+  <div class="warning">
+    <p>
+      <strong>PLEASE NOTE:</strong> <br>
+      Do NOT use this to reply to a post or ask for assistance, you will get no reply.
+    </p>
+    <p>
+      This form is only for contacting admins about site problems or reporting users for breaking our TOS.
+    </p>
+  </div>
+</div>

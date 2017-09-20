@@ -24,7 +24,6 @@ class Post < ApplicationRecord
   has_many :views, class_name: "PostView"
   has_many :edits, class_name: "PostEdit"
   has_many :replies
-  has_many :report_flags
   has_many :subscriptions
   has_many :subscribers, through: :subscriptions, source: :user
   has_many :post_tags

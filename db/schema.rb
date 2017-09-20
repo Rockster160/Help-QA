@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170916145905) do
+ActiveRecord::Schema.define(version: 20170919232239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "email"
+    t.text     "body"
+    t.string   "url"
+    t.datetime "completed_at"
+    t.integer  "completed_by_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["completed_by_id"], name: "index_feedbacks_on_completed_by_id", using: :btree
+    t.index ["user_id"], name: "index_feedbacks_on_user_id", using: :btree
+  end
 
   create_table "friendships", force: :cascade do |t|
     t.integer  "user_id"
@@ -106,19 +119,6 @@ ActiveRecord::Schema.define(version: 20170916145905) do
     t.integer  "post_id"
     t.index ["author_id"], name: "index_replies_on_author_id", using: :btree
     t.index ["post_id"], name: "index_replies_on_post_id", using: :btree
-  end
-
-  create_table "report_flags", force: :cascade do |t|
-    t.integer  "reported_by_id"
-    t.integer  "user_id"
-    t.integer  "post_id"
-    t.integer  "reply_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.index ["post_id"], name: "index_report_flags_on_post_id", using: :btree
-    t.index ["reply_id"], name: "index_report_flags_on_reply_id", using: :btree
-    t.index ["reported_by_id"], name: "index_report_flags_on_reported_by_id", using: :btree
-    t.index ["user_id"], name: "index_report_flags_on_user_id", using: :btree
   end
 
   create_table "shouts", force: :cascade do |t|

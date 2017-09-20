@@ -5,6 +5,7 @@ module Accountable
     before_validation :set_default_username
     validates_uniqueness_of :username
     validate :username_meets_requirements
+    validate :at_least_13_years_of_age
   end
 
   def online?
@@ -96,6 +97,13 @@ module Accountable
       break try_username if User.where(username: try_username).none?
     end
     username.try(:squish!)
+  end
+
+  def at_least_13_years_of_age
+    return unless date_of_birth.present?
+    return if age >= 13
+
+    errors.add(:base, "We're sorry- you must be 13 years of age or older to use this site.")
   end
 
   def username_meets_requirements

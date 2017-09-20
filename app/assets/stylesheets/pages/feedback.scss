@@ -1,0 +1,24 @@
+.ctr-feedbacks {
+  .warning {
+    width: 350px;
+    color: maroon;
+    vertical-align: middle;
+    padding: 0 20px;
+
+    p { font-size: 16px; }
+  }
+  form {
+    p { font-size: 12px; }
+
+    .form-field {
+      padding-left: 20px;
+
+      label {
+        font-weight: bold;
+        font-size: 12px;
+        margin-left: -20px;
+      }
+      textarea { resize: vertical; }
+    }
+  }
+}

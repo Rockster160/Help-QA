@@ -34,11 +34,11 @@ class User < ApplicationRecord
   include DeviseOverrides
   include Accountable
   include Postable
+  include Moddable
   has_paper_trail
   # before_action :set_paper_trail_whodunnit - Add to controller
 
   has_one  :location
-  has_many :report_flags
 
   after_create :set_gravatar_if_exists
 
@@ -47,12 +47,5 @@ class User < ApplicationRecord
   scope :unverified,           -> { where(verified_at: nil) }
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
-
-  def admin?; false; end # FIXME by adding roles
-  def mod?;   false; end # FIXME by adding roles
-
-  def recent_shouts
-    shouts_to.where("created_at > ?", 30.days.ago)
-  end
 
 end

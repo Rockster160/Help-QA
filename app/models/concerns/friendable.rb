@@ -8,6 +8,10 @@ module Friendable
     has_many :pending_friendships, class_name: "Friendship", foreign_key: "friend_id"
   end
 
+  def recent_shouts
+    shouts_to.where("created_at > ?", 30.days.ago)
+  end
+
   def friendships
     Friendship.where("user_id = :user_id OR friend_id = :user_id", user_id: self.id)
   end

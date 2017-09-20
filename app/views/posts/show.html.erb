@@ -21,7 +21,7 @@
       Subscribers: <%= @post.subscriptions.count %> |
       <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
       <a href="#" class="underline" data-scroll-to="">Leave a reply</a> |
-      <a href="<%= post_report_path(@post) %>" class="underline danger">Report Post</a>
+      <a href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
     </div>
   </div>
 </div>

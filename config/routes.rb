@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   get :flash_message, controller: :application
   get :"terms-of-service", controller: :static_pages
   get :"privacy-policy", controller: :static_pages
-  get :feedback, controller: :application # FIXME: Give this it's own controller
+
+  get :feedback, controller: :feedbacks
+  resources :feedbacks, only: [:create]
 
   devise_for :users, path: :account, path_names: { sign_in: "login", sign_out: "logout" }, controllers: {
     confirmations: "devise/user/confirmations",
@@ -24,7 +26,6 @@ Rails.application.routes.draw do
   get "history(((((/:claimed_status)/:reply_count)/:user_status)/:tags)/:page)" => "posts#history", as: :history
 
   resources :posts, except: [ :destroy ] do
-    post :report
     resources :replies, only: [ :create ]
   end
 
