@@ -37,6 +37,7 @@ gem 'oily_png'
 gem 'kaminari'
 gem 'pg_search'
 gem 'paper_trail'
+gem 'slack-notifier'
 
 group :development, :test do
   gem 'byebug', platform: :mri

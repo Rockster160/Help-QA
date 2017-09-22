@@ -56,5 +56,8 @@ Rails.application.routes.draw do
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
   end
+  
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
 end
