@@ -9,7 +9,10 @@
           <a href="<%= user_shouts_path(shouter) %>"><%= shouter.username %></a>
         </div>
         <div class="timestamp">
-          <%= timeago(shout.created_at) %><% unless hide_shouttrail %>, <a href="<%= user_shouttrail_path(@user, shouter) %>">Shouttrail</a><% end %>
+          <%= timeago(shout.created_at) %>
+          <% unless hide_shouttrail %>
+            - <a href="<%= user_shouttrail_path(@user, shouter) %>">Shouttrail</a>
+          <% end %>
         </div>
       </div>
     </div>

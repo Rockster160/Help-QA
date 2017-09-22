@@ -1,3 +1,5 @@
+<% content_for(:title) { "#{@user.username}'s ShoutBox &bull; HelperNow.co".html_safe } %>
+
 <div class="shout-title">
   <i>Shoutbox: </i> <a href="<%= user_path(@user) %>" class="underline"><%= @user.username %></a> is listening
   <p>Just a simple "Hello", "Thanks", or chat! <a href="<%= user_path(@user) %>" class="underline">Back to <%= @user.username %>'s profile...</a></p>

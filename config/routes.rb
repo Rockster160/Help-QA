@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get :"privacy-policy", controller: :static_pages
 
   get :feedback, controller: :feedbacks
-  resources :feedbacks, only: [:create]
+  resource :feedback, only: [:create]
 
   devise_for :users, path: :account, path_names: { sign_in: "login", sign_out: "logout" }, controllers: {
     confirmations: "devise/user/confirmations",
@@ -51,10 +51,10 @@ Rails.application.routes.draw do
       put :remove_friend
     end
     get "shoutbox" => "shouts#index", as: :shouts
+    post "shoutbox" => "shouts#create"
     get "shout-trail/:other_user_id" => "shouts#shouttrail", as: :shouttrail
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
-    resources :shouts, only: [ :create ]
   end
 
 end

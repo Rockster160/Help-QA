@@ -7,4 +7,10 @@ $(document).ready(function() {
     }
   })
 
+  $("textarea").keydown(function (e) {
+    if (e.keyCode == 13 && (e.metaKey || e.ctrlKey)) {
+      $(this).parents("form").submit()
+    }
+  });
+
 })

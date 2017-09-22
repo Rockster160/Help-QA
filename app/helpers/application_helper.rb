@@ -19,7 +19,7 @@ module ApplicationHelper
     elsif options[:to_formatted_s].present?
       simple_time = time.to_formatted_s(options[:to_formatted_s])
     else
-      simple_time = time.to_formatted_s(:simple)
+      simple_time = time.to_formatted_s(:simple_with_time)
     end
     content_tag(:time, simple_time, options.merge(datetime: time.to_i, title: simple_time)) if time
   end

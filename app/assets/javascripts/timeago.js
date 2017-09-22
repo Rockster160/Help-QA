@@ -18,7 +18,7 @@ inWords = function(from_epoch, options) {
   $(Object.keys(timeago_ms).reverse()).each(function() {
     var msForTime = timeago_ms[this], time = this.toString();
     if (tempMs > msForTime) {
-      if (time != "second") {
+      if (time != "second") { // Do not display seconds
         var word_count = Math.floor(tempMs / msForTime), pluralize = word_count > 1 ? "s" : ""
         words.push(" " + word_count + " " + time + pluralize);
       }
@@ -26,6 +26,7 @@ inWords = function(from_epoch, options) {
     }
   })
 
+  if (distanceMs < timeago_ms.minute) { return "Just now" } // Do not display seconds
   var suffix = distanceMs < 0 ? "from now" : "ago"
   return $.trim([words.slice(0, word_count), suffix].join(" "));
 }
