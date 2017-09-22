@@ -7,6 +7,6 @@ module Moddable
   end
 
   def admin?; false; end # FIXME by adding roles
-  def mod?;   false; end # FIXME by adding roles
+  def mod?;   true; end # FIXME by adding roles
 
 end

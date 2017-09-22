@@ -1,64 +1,60 @@
-.ctr-posts.act-history {
+.history-page {
+  .search-form {
+    min-width: 200px;
+    padding: 10px;
 
-  .history-page {
-    .search-form {
-      min-width: 200px;
-      padding: 10px;
+    h6 { margin-top: 20px; }
+    ul.tags {
+      padding: 0;
+      margin: 20px;
 
-      h6 { margin-top: 20px; }
-      ul.tags {
-        padding: 0;
-        margin: 20px;
+      li {
+        list-style-type: decimal;
+        font-size: 12px;
 
-        li {
-          list-style-type: decimal;
-          font-size: 12px;
-
-          .danger {
-            color: red;
-            font-size: 10px;
-          }
-        }
-      }
-      .filters {
-        .filter {
-          font-size: 12px;
-
-          &.reset-filters {
-            margin-top: 10px;
-
-            a {
-              font-size: 14px;
-              font-weight: bold;
-            }
-          }
-          .name { font-weight: bold; }
-          .links {
-            a {
-              text-decoration: underline;
-
-              &.current-filter {
-                text-decoration: none;
-                font-weight: bold;
-                color: red;
-              }
-            }
-          }
-        }
-        a {
-          &:visited { color: blue; }
-          &:hover { color: red; }
+        .danger {
+          color: red;
+          font-size: 10px;
         }
       }
     }
-    .search-results {
-      width: 100%;
+    .filters {
+      .filter {
+        font-size: 12px;
 
-      nav.pagination {
-        margin-top: 15px;
-        margin-bottom: 10px;
+        &.reset-filters {
+          margin-top: 10px;
+
+          a {
+            font-size: 14px;
+            font-weight: bold;
+          }
+        }
+        .name { font-weight: bold; }
+        .links {
+          a {
+            text-decoration: underline;
+
+            &.current-filter {
+              text-decoration: none;
+              font-weight: bold;
+              color: red;
+            }
+          }
+        }
+      }
+      a {
+        &:visited { color: blue; }
+        &:hover { color: red; }
       }
     }
   }
+  .search-results {
+    width: 100%;
 
+    nav.pagination {
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+  }
 }

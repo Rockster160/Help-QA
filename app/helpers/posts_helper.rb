@@ -18,6 +18,15 @@ module PostsHelper
     output_start + ((output_end - output_start) / (input_end - input_start).to_f) * (input - input_start)
   end
 
+  def filter_feedback_link(link_text, resolution_status:)
+    filtered_params = params.permit(:search, :by_user)
+    if params[:resolution_status].to_s == resolution_status.to_s
+      sorted_class = "current-filter"
+    end
+
+    link_to link_text, all_feedback_path(filtered_params.merge(resolution_status: resolution_status)), class: "#{sorted_class}"
+  end
+
   def filter_posts_link(link_text, options={})
     new_filter_options = options.slice(:claimed_status, :reply_count, :user_status)
 
@@ -65,6 +74,15 @@ module PostsHelper
     additional_queries.any? ? "?#{additional_queries.join('&')}" : ""
   end
 
+  def feedback_pagination(association, options={})
+    new_params = params.permit(:search, :by_user, :resolution_status)
+
+    paginate(association, options).gsub(/href=".*?"/) do |found_href|
+      page = found_href.scan(/page=\d+/).first&.gsub("page=", "") || "1"
+      found_href.split("?").first + "?#{URI.encode_www_form(new_params.merge(page: page))}\""
+    end.html_safe
+  end
+
   def pagination(association, options={})
     current_filters = @filter_options.reject { |param_key, param_val| param_val.blank? }
     tags = current_filters.delete(:tags)
@@ -74,6 +92,21 @@ module PostsHelper
       page = found_match.scan(/\/\d+/).first.presence || "/1"
       "#{current_filter_str}#{page}#{filter_query_string}\""
     end.html_safe
+  end
+
+  def set_feedback_filters
+    filter_values = params.permit(:resolution_status)
+
+    @filter_options = {
+      "resolved" => false,
+      "unresolved" => false
+    }
+
+    filter_values.each do |filter_val|
+
+    end
+
+    @filter_params = {}
   end
 
   def set_filter_params
@@ -91,7 +124,6 @@ module PostsHelper
     }
 
     filter_values.each do |filter_val|
-      puts "#Filter: #{filter_val}".colorize(:red)
       if @filter_options.keys.include?(filter_val)
         @filter_options[filter_val] = true
       elsif filter_val =~ /[^0-9]+/

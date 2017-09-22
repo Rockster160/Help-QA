@@ -1,0 +1,19 @@
+<h1>Feedback from <%= @feedback.display_name %></h1>
+
+<% if @feedback.user.present? %>
+  <p>User Profile: <%= link_to @feedback.display_name, user_path(@feedback.user) %></p>
+<% end %>
+
+<% if @feedback.url.present? %>
+  <p>Problem URL: <a href="<%= @feedback.url %>"><%= @feedback.url %></a></p>
+<% end %>
+
+<hr>
+
+<pre><%= @feedback.body %></pre>
+
+<% if @feedback.resolved? %>
+  Resolved by <%= @feedback.completed_by.try(:username) %> on <%= @feedback.completed_at.to_formatted_s(:simple_with_time) %>
+<% else %>
+  <%= button_to "Mark as Resolved", complete_feedback_path, method: :post %>
+<% end %>

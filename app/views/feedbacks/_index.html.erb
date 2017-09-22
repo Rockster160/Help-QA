@@ -1,0 +1,17 @@
+<% hide_tags ||= false %>
+
+<% feedbacks.each do |feedback| %>
+  <a href="<%= edit_feedback_path(feedback) %>" class="post-container stretch-children">
+    <div class="post-description">
+      <div class="title">
+        <small><%= feedback.body.squish.first(50) %></small>
+      </div>
+      <div class="post-information">
+        by <strong><%= feedback.display_name %></strong> on <%= feedback.created_at.to_formatted_s(:short_with_time) %>
+        <% if feedback.resolved? %>
+          - Resolved by <%= feedback.completed_by.try(:username) %> on <%= feedback.completed_at.to_formatted_s(:simple_with_time) %>
+        <% end %>
+      </div>
+    </div>
+  </a>
+<% end %>

@@ -1,7 +1,24 @@
 class FeedbacksController < ApplicationController
+  before_action :authenticate_mod, only: [:index, :show, :complete]
 
-  def feedback
+  def redirect_all
+    redirect_to all_feedback_path(params.permit(:search, :by_user, :resolution_status))
+  end
+
+  def index
+    @feedbacks = Feedback.order(created_at: :desc).page(params[:page]).per(2)
+    @feedbacks = @feedbacks.resolved if params[:resolution_status].to_s.to_sym == :resolved
+    @feedbacks = @feedbacks.unresolved if params[:resolution_status].to_s.to_sym == :unresolved
+    @feedbacks = @feedbacks.search_for(params[:search]) if params[:search].present?
+    @feedbacks = @feedbacks.by_username(params[:by_user]) if params[:by_user].present?
+  end
+
+  def show
     @feedback = Feedback.new
+  end
+
+  def edit
+    @feedback = Feedback.find(params[:id])
   end
 
   def create
@@ -14,6 +31,13 @@ class FeedbacksController < ApplicationController
       flash.now[:alert] = "Failed to submit your Feedback. Please fix the problems listed below and try again."
       render :feedback
     end
+  end
+
+  def complete
+    @feedback = Feedback.find(params[:id])
+    @feedback.resolve(current_user)
+
+    redirect_to edit_feedback_path(@feedback)
   end
 
   private

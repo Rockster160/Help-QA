@@ -5,8 +5,12 @@ Rails.application.routes.draw do
   get :"terms-of-service", controller: :static_pages
   get :"privacy-policy", controller: :static_pages
 
-  get :feedback, controller: :feedbacks
-  resource :feedback, only: [:create]
+  resource :feedback, path: "feedback", only: [:show, :create] do
+    get ":id/edit", action: :edit, as: :edit
+    post ":id/complete", action: :complete, as: :complete
+    get :all, action: :index
+    post :all, action: :redirect_all
+  end
 
   devise_for :users, path: :account, path_names: { sign_in: "login", sign_out: "logout" }, controllers: {
     confirmations: "devise/user/confirmations",
@@ -56,7 +60,7 @@ Rails.application.routes.draw do
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
   end
-  
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 

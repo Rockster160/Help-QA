@@ -1,0 +1,52 @@
+<% total_posts = @feedbacks.total_count || 0 %>
+<% first_post = [(@feedbacks.limit_value * (@feedbacks.current_page - 1)) + 1, total_posts, 0].sort[1] %>
+<% last_post = [@feedbacks.limit_value * @feedbacks.current_page, total_posts, 0].sort[1] %>
+<% title = "#{pluralize_with_delimiter(total_posts, 'post')}, Posts #{number_with_delimiter(first_post)} to #{number_with_delimiter(last_post)}" %>
+<% content_for(:title) { title } %>
+<h2><i>History:</i> <%= title %></h2>
+
+<div class="history-page stretch-children">
+  <%= form_tag url: all_feedback_path do %>
+    <%= hidden_field_tag :resolution_status, params[:resolution_status] %>
+    <%= hidden_field_tag :by_user, params[:by_user] %>
+    <%= hidden_field_tag :search, params[:search] %>
+
+    <div class="search-form">
+      <h6>Search Text</h6>
+      <input type="text" name="search" value="<%= params[:search] %>">
+      <%= submit_tag "Search" %>
+
+      <div class="filters">
+        <h6>Filters</h6>
+        <div class="filter">
+          <div class="name">Resolution State:</div>
+          <div class="links">
+            <%= filter_feedback_link("Resolved", resolution_status: :resolved) %>,
+            <%= filter_feedback_link("Unresolved", resolution_status: :unresolved) %>,
+            <%= filter_feedback_link("Off", resolution_status: nil) %>
+          </div>
+        </div>
+        <div class="filter reset-filters">
+          <a href="<%= all_feedback_path %>" class="underline">Reset All Filters</a>
+        </div>
+      </div>
+
+      <div class="by-user">
+        <h6>Search By Username</h6>
+        <input type="text" name="by_user" value="<%= params[:by_user] %>">
+        <%= submit_tag "Search" %>
+      </div>
+    </div>
+  <% end %>
+  <div class="search-results">
+    <% total_pages = 5 %>
+    <% window_sizes = {
+      default: (total_pages / 2).floor,
+      low: total_pages - @feedbacks.current_page,
+      high: total_pages - (@feedbacks.total_pages - @feedbacks.current_page) - 1
+    } %>
+
+    <%= feedback_pagination @feedbacks, window: window_sizes.values.max, outer_window: 1, params: {} %>
+    <%= render partial: "index", locals: { feedbacks: @feedbacks } %>
+  </div>
+</div>

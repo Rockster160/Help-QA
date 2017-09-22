@@ -35,6 +35,8 @@ module Accountable
     location.try(:ip) || current_sign_in_ip || last_sign_in_ip || username || email || id
   end
 
+  def adult?; age.present? && age >= 18; end
+  def child?; age.nil? || age < 18; end
   def age
     return unless date_of_birth.present?
     now = Time.now.utc.to_date

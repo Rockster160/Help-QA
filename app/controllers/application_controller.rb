@@ -10,6 +10,35 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def authenticate_user
+    unless user_signed_in?
+      redirect_to new_user_session_path, alert: "Please sign in before continuing."
+    end
+  end
+
+  def authenticate_mod
+    unless user_signed_in? && current_user.mod?
+      redirect_to root_path, alert: "Sorry, you do not have access to this page."
+    end
+  end
+
+  def authenticate_admin
+    unless user_signed_in? && current_user.admin?
+      redirect_to root_path, alert: "Sorry, you do not have access to this page."
+    end
+  end
+
+  def authenticate_adult
+    if user_signed_in?
+      if current_user.child?
+        redirect_to root_path, alert: "Sorry, this post contains inappropriate material."
+      end
+    else
+      # FIXME: Redirect to Age Authentication/Sign Up page
+      redirect_to root_path, alert: "Sorry, this post contains inappropriate material."
+    end
+  end
+
   def create_and_sign_in_user_by_email(email)
     user = User.create(email: email)
     sign_in(user) if user.persisted?
