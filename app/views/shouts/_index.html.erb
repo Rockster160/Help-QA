@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="shout-body">
-      <%= shout.content %>
+      <%= markdown(posted_by_user: shouter) { shout.body } %>
     </div>
   </div>
   <hr>

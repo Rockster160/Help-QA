@@ -57,6 +57,7 @@
             padding: 5px;
             border-bottom: 1px solid #999;
             width: 100%;
+            position: relative;
 
             .avatar-container {
               border-color: black;
@@ -79,6 +80,17 @@
                   display: inline-block;
                 }
               }
+            }
+            .reply-options {
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              width: auto;
+              height: auto;
+              border-top: 1px solid #CCC;
+              border-left: 1px solid #CCC;
+
+              .hover-icon { padding: 5px 3px; }
             }
           }
           .reply-content {

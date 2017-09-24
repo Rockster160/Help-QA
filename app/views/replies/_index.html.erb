@@ -9,9 +9,9 @@
           <div class="reply-author-name">
             <%= hover_icon("vcard", "Original Poster") if reply.same_author_as_post? %>
             <% if reply.posted_anonymously? %>
-              Anonymous
+              <span class="reply-username">Anonymous</span>
             <% else %>
-              <a href="<%= user_path(reply.author) %>"><%= reply.username %></a>
+              <a href="<%= user_path(reply.author) %>"><span class="reply-username"><%= reply.username %></span></a>
             <% end %>
           </div>
           <div class="reply-author-stats">
@@ -30,8 +30,16 @@
           <%= timeago(reply.created_at) %> (<%= time_difference_in_words(reply.created_at, reply.post.created_at, word_count: 1) %> after post)
         </div>
       </div>
+      <div class="reply-options">
+        <% if user_signed_in? && current_user.verified? %>
+          <!-- TODO: Make this work - Can only favorite 1 reply per post? Then hide the icon -->
+          <%#= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.", href: "#{}") %>
+        <% end %>
+        <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>
+        <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>
+      </div>
     </div>
-    <div class="reply-content"><%= reply.content %></div>
+    <div class="reply-content" data-original-content="<%= reply.body %>"><%= markdown(posted_by_user: author) { reply.body } %></div>
     <% if false # TODO: Help Me? %>
       <div class="reply-reciprocity"></div>
     <% end %>

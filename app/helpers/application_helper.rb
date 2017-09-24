@@ -64,10 +64,10 @@ module ApplicationHelper
     style = "background-image: url(#{image_url('icon_sheet.png')})"
     img = image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon}")
     if options[:href].present?
-      "<a href=\"#{options[:href]}\" class=\"hover-icon\" data-method=\"#{options[:method] || "GET"}\">#{img}#{options[:text]}</a>".html_safe
+      "<a href=\"#{options[:href]}\" class=\"hover-icon #{options[:class]}\" data-method=\"#{options[:method] || "GET"}\">#{img}#{options[:text]}</a>".html_safe
     else
       options[:tag] ||= "div"
-      "<#{options[:tag]} class=\"hover-icon\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
+      "<#{options[:tag]} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
     end
   end
 

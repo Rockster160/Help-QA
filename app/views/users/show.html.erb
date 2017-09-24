@@ -96,7 +96,7 @@
             <div class="post-title"><a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a></div>
             <div class="reply-text">
               <div class="quote-container">
-                <%= reply.content %>
+                <%= markdown(posted_by_user: @user) { reply.body } %>
                 <i>- written <%= timeago(reply.created_at, word_count: 2) %></i>
               </div>
             </div>

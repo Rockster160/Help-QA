@@ -14,7 +14,6 @@
 
 class Post < ApplicationRecord
   include PgSearch
-  include FormatContent
   include Anonicon
   include Defaults
 
@@ -67,8 +66,9 @@ class Post < ApplicationRecord
   def open?; !closed?; end
   def closed?; closed_at?; end
 
-  def notify_subscribers
+  def notify_subscribers(not_user: nil)
     subscribers.each do |subscriber|
+      next if subscriber == not_user
       post_url = Rails.application.routes.url_helpers.post_path(id)
       subscriber.notices.subscriptions.create(title: "New Comment on #{title}", url: post_url)
     end
@@ -76,10 +76,6 @@ class Post < ApplicationRecord
 
   def preview_content
     body[title.length..-1].split("\n").reject(&:blank?).first
-  end
-
-  def format_body(options={})
-    format_content(body[title.length..-1], options)
   end
 
   def username

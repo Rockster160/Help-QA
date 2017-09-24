@@ -13,7 +13,6 @@
 #
 
 class Reply < ApplicationRecord
-  include FormatContent
   include Anonicon
 
   belongs_to :post, counter_cache: :reply_count
@@ -23,10 +22,6 @@ class Reply < ApplicationRecord
   scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
   # TODO Add validation requiring text, cannot be blank, cannot be "Leave a reply" or similar
-
-  def content(options={})
-    format_content(body, options)
-  end
 
   def username
     if posted_anonymously?
