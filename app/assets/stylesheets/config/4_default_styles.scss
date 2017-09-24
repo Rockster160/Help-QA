@@ -35,20 +35,6 @@ hr {
   border: 1px solid #EEE;
 }
 
-.stretch-children {
-  display: table;
-  max-width: 100%;
-  overflow: hidden;
-
-  & > * {
-    vertical-align: top;
-    display: table-cell;
-    position: relative;
-
-    &:last-child { width: 100%; }
-  }
-}
-
 a {
   text-decoration: none;
   color: blue;

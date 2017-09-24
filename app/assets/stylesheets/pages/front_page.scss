@@ -1,6 +1,7 @@
 .front-page {
+  @include split-page(350px);
+
   .users-side {
-    min-width: 350px;
     padding: 0 10px;
     margin: 0 auto;
     margin-bottom: 50px;
@@ -28,16 +29,20 @@
       padding: 3px;
       padding-bottom: 15px;
       background: linear-gradient(to bottom, lighten($help-default, 35%), white);
+
       h6 { border-color: $help-default; }
-      .words {
-        vertical-align: top;
-        padding-left: 4px;
-        .title {
-          font-size: 18px;
-        }
-        .details {
-          font-size: 12px;
-          color: black;
+      .post {
+        @include split-page(25px);
+        .words {
+          vertical-align: top;
+          padding-left: 4px;
+          .title {
+            font-size: 18px;
+          }
+          .details {
+            font-size: 12px;
+            color: black;
+          }
         }
       }
     }

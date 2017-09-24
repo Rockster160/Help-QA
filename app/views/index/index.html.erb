@@ -1,4 +1,4 @@
-<div class="front-page stretch-children">
+<div class="front-page split-page">
   <div class="users-side">
     <div class="intro">
       <h6>Change Your World</h6>
@@ -9,7 +9,7 @@
       Tags:
       <%= tags_container(@global_tags, min: 12, max: 12) %>,
       <a href="<%= tags_path %>" class="underline">all tags</a>, or just jump to a tag:
-      <%= form_tag redirect_tags_path, class: "tag-search stretch-children" do %>
+      <%= form_tag redirect_tags_path, class: "tag-search split-page" do %>
         <div class="field-wrapper">
           <input type="text" name="tag_name">
         </div>
@@ -22,7 +22,7 @@
       <% post = @currently_popular_post %>
       <div class="popular-post">
         <h6>Currently Popular Post</h6>
-        <a href="<%= post_path(post) %>" class="post stretch-children">
+        <a href="<%= post_path(post) %>" class="post split-page">
           <%= avatar(post.avatar, size: 30) %>
           <div class="words">
             <div class="title">

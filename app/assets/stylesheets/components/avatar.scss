@@ -6,6 +6,7 @@
   display: inline-block;
   vertical-align: top;
   margin: 3px;
+
   .status-indicator {
     position: absolute;
     z-index: 1;
@@ -14,6 +15,7 @@
     width: 7px;
     height: 7px;
     border-radius: 100%;
+
     &.online {
       background: green;
       background: linear-gradient(135deg, white, green);
@@ -26,6 +28,7 @@
   .avatar-img-wrapper {
     width: 100%;
     height: 100%;
+
     .avatar {
       width: 100%;
       height: 100%;
@@ -36,6 +39,7 @@
       font-size: 35px;
       line-height: 40px;
       text-align: center;
+      
       img {
         position: absolute;
         min-width: 100%;

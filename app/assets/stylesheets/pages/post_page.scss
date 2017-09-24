@@ -1,7 +1,6 @@
 .ctr-posts.act-show {
-  .body-wrapper > .stretch-children {
-    & > *:first-child { min-width: 210px; }
-  }
+  @include split-page(210px);
+
   .post-container {
     margin-bottom: 30px;
 
@@ -13,6 +12,7 @@
     }
     .words {
       padding-left: 10px;
+
       .title {
         font-size: 25px;
         margin-bottom: 15px;
@@ -37,6 +37,7 @@
     border-top: 1px solid #CCC;
     padding-top: 3px;
     margin-top: 10px;
+    text-align: left;
 
     .post-section-detail {
       font-size: 12px;
@@ -48,6 +49,7 @@
 
       .replies-container {
         padding: 5px;
+        padding-right: 0;
 
         .reply-container {
           border: 1px solid #999;
@@ -56,8 +58,8 @@
           .reply-author {
             padding: 5px;
             border-bottom: 1px solid #999;
-            width: 100%;
             position: relative;
+            @include split-page(40px);
 
             .avatar-container {
               border-color: black;

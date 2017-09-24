@@ -1,0 +1,21 @@
+@mixin split-page($left_width) {
+  display: table;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  & > * {
+    vertical-align: top;
+    display: table-cell;
+    position: relative;
+
+    &:first-child {
+      min-width: $left_width;
+      width: $left_width;
+    }
+    &:last-child {
+      width: calc(100% - $left_width);
+      max-width: calc(100% - $left_width);
+    }
+  }
+}

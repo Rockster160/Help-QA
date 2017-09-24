@@ -9,7 +9,9 @@
   .sub-section { font-style: italic; }
 
   &.act-faq {
-    .stretch-children {
+    .faq-wrapper {
+      @include split-page(350px);
+
       margin-top: 50px;
       display: flex;
       flex-direction: row-reverse;

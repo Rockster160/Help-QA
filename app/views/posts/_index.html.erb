@@ -1,7 +1,7 @@
 <% hide_tags ||= false %>
 
 <% posts.each do |post| %>
-  <a href="<%= post_path(post) %>" class="post-container stretch-children">
+  <a href="<%= post_path(post) %>" class="post-container split-page">
     <%= avatar(post.avatar, size: 50) %>
     <div class="post-description">
       <div class="title">

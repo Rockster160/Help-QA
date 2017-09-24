@@ -5,7 +5,7 @@
 <% content_for(:title) { title } %>
 <h2><i>History:</i> <%= title %></h2>
 
-<div class="history-page stretch-children">
+<div class="history-page split-page">
   <%= form_tag url: all_feedback_path do %>
     <%= hidden_field_tag :resolution_status, params[:resolution_status] %>
     <%= hidden_field_tag :by_user, params[:by_user] %>
