@@ -66,7 +66,8 @@ module ApplicationHelper
     if options[:href].present?
       "<a href=\"#{options[:href]}\" class=\"hover-icon\" data-method=\"#{options[:method] || "GET"}\">#{img}#{options[:text]}</a>".html_safe
     else
-      "<div class=\"hover-icon\">#{img}#{options[:text]}</div>".html_safe
+      options[:tag] ||= "div"
+      "<#{options[:tag]} class=\"hover-icon\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
     end
   end
 

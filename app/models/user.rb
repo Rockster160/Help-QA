@@ -26,6 +26,7 @@
 #  date_of_birth          :date
 #  has_updated_username   :boolean          default("false")
 #  bio                    :text
+#  slug                   :string
 #
 
 class User < ApplicationRecord
@@ -47,5 +48,13 @@ class User < ApplicationRecord
   scope :unverified,           -> { where(verified_at: nil) }
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
+
+  def self.help_bot
+    by_username("HelpBot")
+  end
+
+  def self.by_username(username)
+    find_by("users.slug = ?", username.parameterize)
+  end
 
 end

@@ -1,3 +1,5 @@
+<% content_for(:title) { "Frequently Asked Questions at HelperNow.co" } %>
+
 <h1>Everything a New User Needs to Know</h1>
 
 <div class="stretch-children">
@@ -58,7 +60,7 @@
         <li>Notification every time a new question is posted in a category of special interest to you. </li>
         <li>A "Shoutbox" where you can receive messages from users and friends</li>
         <li>Ability to build a "friends list" of fellow users you think are helpful</li>
-        <li>Invite links you can use to ask individual friends for help answering posts</li>
+        <li>Ability to invite your friends to a specific post you feel they may be able to help out on.</li>
       </ul>
     </div>
 
@@ -212,77 +214,7 @@
       <p>HelperNow.co does NOT support HTML tags in posts or replies in order to protect our user's security. However, there are a variety of provided formatting tools that can be used to apply many of the same functionality.</p>
       <p>We will automatically detect links, as well as urls to images and videos- and will automatically show previews when added to your posts or replies.</p>
       <p>HelperNow.co supports basic Markdown and a few special "directives" to add to replies and posts:</p>
-      <%= markdown(html_safe: true) do %>
-        <h4>Markdown</h4>
-        <p>In order to apply markdown to your text, simple put the character(s) before and after the word or phrase, and we'll do the rest!</p>
-        <p>When applying Markdown, always make sure that you put the first character against the front of the word or phrase you're using, and the last character against the last word, otherwise we assume that you are just trying to display the raw character.</p>
-        <p>If you would like to disable markdown for any character, simply add a backslash `\` before the character, like this: \* This is a star without being bold. (Don't worry, we'll hide the '\' so it doesn't mess up your post.)</p>
-        <ul class="no-list">
-          <li>
-            <h6>Bold</h6>
-            <div class="indent">
-              <p>Use `*` (Star) to create *bold lettering*. Bold text is helpful when adding *important* messages.</p>
-              <p>`\*This is my bold text\*`</p>
-            </div>
-          </li>
-          <li>
-            <h6>Italics</h6>
-            <div class="indent">
-              <p>Use `_` (Underscore) to create _italic lettering_. Italics are helpful for adding _particular_ emphasis on a word or phrase.</p>
-              <p>\_This is my italic text.\_</p>
-            </div>
-          </li>
-          <li>
-            <h6>Strike through text</h6>
-            <div class="indent">
-              <p>Use `~` (Tilde) to create ~striked text~. Striked text is useful ~for everything~ when you want to show a changed direction in your message.</p>
-              <p>\~This is striked through text.\~</p>
-            </div>
-          </li>
-          <li>
-            <h6>Code</h6>
-            <div class="indent">
-              <p>Use `\`` (Back tick) to create `inline code`.</p>
-              <p>\`This is my inline code.\`</p>
-            </div>
-          </li>
-          <li>
-            <h6>Code Block</h6>
-            <div class="indent">
-              Use `\`\`\`` (3 backticks) to create a code block. Other than using 3 characters as the open and close, these act the same as the other Markdown symbols.
-              ```
-              This is my block of code or text.
-              This is more text that's included on another line.
-              *Other Markdown is supported within this block, _however_, you cannot nest multiple code blocks within each other.*
-              ```
-            </div>
-          </li>
-        </ul>
-        <h4>Directives</h4>
-        <p>In addition to the Markdown commands, we've also included a few easy commands that you can include in posts and replies to add enhanced functions to your text.</p>
-        <ul>
-          <li>
-            <h6>Polls</h6>
-            <p>Polls are the word `poll` wrapped in square brackets (`[]`) with any number of options following, each of which should be separated with a comma.</p>
-            <p>In order to create a poll, simply enter this text on it's own line within your post:</p>
-            <p>`[poll: option1, option2, option3, optionN]`</p>
-            <ul>
-              <li>Polls MUST have at least 2 options. However, polls can have any number of selectable options.</li>
-              <li>Only 1 poll may be added to a Post.</li>
-              <li>Currently, polls are limited to Posts. They cannot be added to comments.</li>
-              <li>Each user may only vote on a poll once. Until a user has voted, the results of the poll are hidden.</li>
-              <li>In order to vote on a poll, a user must have a verified account and be logged in.</li>
-            </ul>
-          </li>
-          <li>
-            <h6>Quotes</h6>
-            <p>Quotes can be used to show the text of another specific comment that you are replying to. </p>
-            <ul>
-              <li>Quotes can only be nested a maximum of 3 levels deep. After that, the rest of the messages will be compressed and can be viewed alternatively.</li>
-            </ul>
-          </li>
-        </ul>
-      <% end %>
+      <%= markdown(should_render_html: true, posted_by_user: User.help_bot) { File.read("lib/assets/raw_markdown.html").gsub("{{quote-icon}}", hover_icon("quote", "Quote this reply", tag: "i")) } %>
     </div>
 
     <div id="sect22">

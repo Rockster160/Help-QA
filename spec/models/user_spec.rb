@@ -26,6 +26,7 @@
 #  date_of_birth          :date
 #  has_updated_username   :boolean          default("false")
 #  bio                    :text
+#  slug                   :string
 #
 
 require 'rails_helper'

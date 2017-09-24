@@ -1,0 +1,40 @@
+quote {
+  display: block;
+  margin: 3px 0 3px 15px;
+  padding: 0 10px;
+  background: #F6F6FF;
+  border: 1px solid #99C;
+  border-left: 4px solid #009;
+}
+
+.tagged-user {
+  display: inline;
+  white-space: nowrap;
+  font-family: monospace;
+  background: #F0FAFF;
+  padding: 0 3px;
+  color: #3D94F6 !important;
+}
+
+code {
+  display: inline;
+  font-family: monospace;
+  background: #E0E0E5;
+  padding: 0 3px;
+}
+
+blockquote {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  font-family: monospace;
+  background: #E0E0E5;
+  position: relative;
+
+  .wrapper {
+    white-space: pre-wrap;
+    max-width: 100%;
+    overflow-x: scroll;
+    overflow-y: visible;
+  }
+}

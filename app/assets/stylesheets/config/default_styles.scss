@@ -43,6 +43,8 @@ hr {
   & > * {
     vertical-align: top;
     display: table-cell;
+    position: relative;
+
     &:last-child { width: 100%; }
   }
 }

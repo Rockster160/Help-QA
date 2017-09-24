@@ -2,8 +2,8 @@ module Accountable
   extend ActiveSupport::Concern
 
   included do
-    before_validation :set_default_username
-    validates_uniqueness_of :username
+    before_validation :set_default_username, :set_slug
+    validates_uniqueness_of :username, :slug, message: "Sorry, that Username has already been taken."
     validate :username_meets_requirements
     validate :at_least_13_years_of_age
   end
@@ -99,6 +99,10 @@ module Accountable
       break try_username if User.where(username: try_username).none?
     end
     username.try(:squish!)
+  end
+
+  def set_slug
+    self.slug = username.parameterize
   end
 
   def at_least_13_years_of_age

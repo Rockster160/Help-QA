@@ -1,0 +1,80 @@
+<h4>Markdown</h4>
+<p>In order to apply markdown to your text, simple put the character(s) before and after the word or phrase, and we'll do the rest!</p>
+<p>When applying Markdown, always make sure that you put the first character against the front of the word or phrase you're using, and the last character against the last word, otherwise we assume that you are just trying to display the raw character.</p>
+<p>If you would like to disable markdown for any character, simply add a backslash `\\` before the character, like this: `\\* This is an asterisk without being bold.` (Don't worry, we'll hide the `\\` so it doesn't mess up your post.)</p>
+<ul class="no-list">
+  <li>
+    <h6>Bold</h6>
+    <div class="indent">
+      <p>Use `\*` (Asterisk) to create *bold lettering*. Bold text is helpful when adding *important* messages.</p>
+      <p>`\*This is my bold text\*`</p>
+    </div>
+  </li>
+  <li>
+    <h6>Italics</h6>
+    <div class="indent">
+      <p>Use `\_` (Underscore) to create _italic lettering_. Italics are helpful for adding _particular_ emphasis on a word or phrase.</p>
+      <p>`\_This is my italic text.\_`</p>
+    </div>
+  </li>
+  <li>
+    <h6>Strike through</h6>
+    <div class="indent">
+      <p>Use `\~` (Tilde) to create ~striked text~. Striked text is useful ~for everything~ when you want to show a changed direction in your message.</p>
+      <p>`\~This is striked through text.\~`</p>
+    </div>
+  </li>
+  <li>
+    <h6>Code</h6>
+    <div class="indent">
+      <p>Use `\`` (Back tick) to create `inline code`.</p>
+      <p>`\`This is my inline code.\``</p>
+    </div>
+  </li>
+  <li>
+    <h6>Code Block</h6>
+    <div class="indent">
+      Use `\```` (3 backticks) to create a code block. Other than using 3 characters as the open and close, these act the same as the other Markdown symbols.
+      ```
+\```
+This is my block of code or text.
+This is more text that's included on another line.
+
+_Other Markdown is supported within this block, *however*, you cannot nest multiple code blocks within each other._
+\```
+      ```
+      <p>Be careful when using Code Blocks, as any white space you add before strings will be shown.</p>
+    </div>
+  </li>
+</ul>
+<h4>Directives</h4>
+<p>In addition to the Markdown commands, we've also included a few easy commands that you can include in posts and replies to add enhanced functions to your text.</p>
+<ul>
+  <li>
+    <h6>Polls</h6>
+    <p>Polls can be created in order to get feedback from users.</p>
+    <p>In order to create a poll, simply enter this text on it's own line within your post:</p>
+    <p>`[poll: option1, option2, option3, optionN]`</p>
+    <p>Replace the `option` numbers with any number of the possible options.</p>
+    <ul>
+      <li>Polls MUST have at least 2 options. However, polls can have any number of selectable options.</li>
+      <li>Only 1 poll may be added to a Post.</li>
+      <li>Currently, polls are limited to Posts. They cannot be added to comments.</li>
+      <li>Each user may only vote on a poll once. Until a user has voted, the results of the poll are hidden.</li>
+      <li>In order to vote on a poll, a user must have a verified account and be logged in.</li>
+    </ul>
+  </li>
+  <li>
+    <h6>Quotes</h6>
+    <p>Quotes can be used to show the text of another specific comment that you are replying to. </p>
+    <p>Quotes can only be nested a maximum of 3 levels deep. After that, the rest of the messages will be compressed and can be viewed alternatively.</p>
+    <p>In order to display a quote, enter `\[quote Bob]This is Bob's Text\[/quote]`. Adding the username is option, but recommended.</p>
+    [quote Bob]This is Bob's text.[/quote]
+    <p>This is made easier by using the quote button on the edge of a reply. ({{quote-icon}})</p>
+  </li>
+  <li>
+    <h6>Invites</h6>
+    <p>You can invite a friend to a post by entering their username preceeded by an `@` sign.</p>
+    <p>Hey @helpbot! We need you!</p>
+  </li>
+</ul>

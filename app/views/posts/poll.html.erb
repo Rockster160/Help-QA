@@ -1,0 +1,12 @@
+<% poll ||= nil %>
+<% return unless poll %>
+
+<% if user_signed_in? && current_user.verified? %>
+  <% if poll.answered_by?(user) %>
+    Show poll Results
+  <% else %>
+    Show poll questions, along with buttons to allow the user to answer the poll.
+  <% end %>
+<% else %>
+  Show poll questions, along with text saying they must sign in and verify their account before responding to the poll.
+<% end %>
