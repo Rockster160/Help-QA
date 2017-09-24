@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include MarkdownHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 

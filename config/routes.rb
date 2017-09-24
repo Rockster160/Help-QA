@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get :flash_message, controller: :application
   get :"terms-of-service", controller: :static_pages
   get :"privacy-policy", controller: :static_pages
+  get :faq, controller: :static_pages
 
   resource :feedback, path: "feedback", only: [:show, :create] do
     get ":id/edit", action: :edit, as: :edit

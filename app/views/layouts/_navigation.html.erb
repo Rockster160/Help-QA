@@ -4,7 +4,7 @@
     <!-- <a href="/about">About</a> -->
     <a href="<%= tags_path %>">Tags</a>
     <a href="<%= history_path %>">Search</a>
-    <!-- <a href="/faq">FAQ</a> -->
+    <a href="<%= faq_path %>">FAQ</a>
     <a href="<%= new_post_path %>">Start a New Post</a>
     <!-- <a href="/chat">Chat</a> -->
     <% if user_signed_in? %>
@@ -33,6 +33,10 @@
                 <a href="<%= avatar_account_path %>">Avatar</a>
                 <a href="<%= account_settings_path %>">Settings</a>
                 <!-- <a href="/map">Map</a> -->
+                <% if current_user.mod? %>
+                  <h6>Mod Tools</h6>
+                  <a href="<%= all_feedback_path(resolution_status: :unresolved) %>">Feedback</a>
+                <% end %>
               </ul>
             </div>
           </div>

@@ -7,4 +7,17 @@
     font-size: 12px;
   }
   .sub-section { font-style: italic; }
+
+  &.act-faq {
+    .stretch-children {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: row-reverse;
+
+      .new-user-nav {
+        width: 300px;
+      }
+      .new-user-sections {}
+    }
+  }
 }
