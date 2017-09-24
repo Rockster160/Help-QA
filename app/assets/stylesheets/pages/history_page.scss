@@ -1,4 +1,6 @@
 .history-page {
+  @include split-page(200px);
+
   .search-form {
     padding: 10px;
 

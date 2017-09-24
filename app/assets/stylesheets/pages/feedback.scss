@@ -1,6 +1,12 @@
 .ctr-feedbacks {
+
+  .feedback-wrapper {
+    @include split-page(350px);
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+  }
   .warning {
-    width: 350px;
     color: maroon;
     vertical-align: middle;
     padding: 0 20px;

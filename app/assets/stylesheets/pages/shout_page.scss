@@ -25,8 +25,11 @@
 
       .shout-container {
         .shout-author {
+          @include split-page(30px);
+
           .author-details {
             vertical-align: middle;
+            width: 100%;
             padding-left: 5px;
 
             .author-name {

@@ -2,7 +2,7 @@ module MarkdownHelper
   def markdown(should_render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
     @markdown_posted_by_user = posted_by_user
     @markdown_post = Post.find_by(id: poll_post_id)
-    @markdown_text = yield.to_s.dup
+    @markdown_text = Reply.new(body: yield.to_s.dup).send(:format_body)
 
     escape_html_characters(should_render_html)
     escape_markdown_characters
@@ -141,5 +141,8 @@ module MarkdownHelper
     at_least_one_character_group = "((.|\n)*?)"
 
     / #{regex_safe_character}(#{not_space}.*?#{not_space}?)#{regex_safe_character}/m
+  end
+
+  def generate_unique_token(text)
   end
 end

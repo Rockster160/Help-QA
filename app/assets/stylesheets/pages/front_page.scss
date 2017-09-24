@@ -9,14 +9,17 @@
     p { margin: 0; }
     .tags {
       font-size: 12px;
+
       .tag-search {
+        @include split-page(80px);
+        display: flex;
+        flex-direction: row-reverse;
+
         .field-wrapper {
-          width: 100%;
           padding-right: 10px;
           input { width: 100%; }
         }
         .btn-wrapper {
-          width: 100px;
           text-align: right;
           button { width: 80px; }
         }

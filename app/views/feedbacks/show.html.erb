@@ -2,7 +2,17 @@
 
 <h1>File a Report</h1>
 
-<div class="split-page">
+<div class="feedback-wrapper">
+  <div class="warning">
+    <p>
+      <strong>PLEASE NOTE:</strong> <br>
+      Do NOT use this to reply to a post or ask for assistance, you will get no reply.
+    </p>
+    <p>
+      This form is only for contacting admins about site problems or reporting users for breaking our TOS.
+    </p>
+  </div>
+
   <%= form_for @feedback, url: feedback_path do |f| %>
     <p>Have a question? Found a bug? Missing something? Found a post/reply that broke our TOS?</p>
     <p>Let us know about problems, bad users, broken pages, offensive posts/replies, bugs, &amp; errors.</p>
@@ -36,14 +46,4 @@
       <%= f.submit "Send it off" %>
     </div>
   <% end %>
-
-  <div class="warning">
-    <p>
-      <strong>PLEASE NOTE:</strong> <br>
-      Do NOT use this to reply to a post or ask for assistance, you will get no reply.
-    </p>
-    <p>
-      This form is only for contacting admins about site problems or reporting users for breaking our TOS.
-    </p>
-  </div>
 </div>

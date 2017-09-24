@@ -1,4 +1,4 @@
-<div class="post-container split-page">
+<div class="post-container">
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
       <%= avatar(@post.avatar, size: 200) %>
@@ -26,14 +26,14 @@
   </div>
 </div>
 
-<div class="reciprocity post-section split-page">
+<div class="reciprocity post-section">
   <div class="post-section-detail">Reciprocity (?)</div>
   <div class="post-section-content">
     Since writing this post... TODO
   </div>
 </div>
 
-<div class="tags post-section split-page">
+<div class="tags post-section">
   <div class="post-section-detail">Post Tags (<%= @post.tags.count %>)</div>
   <div class="post-section-content">
     <% @post.tags.reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
@@ -42,7 +42,7 @@
   </div>
 </div>
 
-<div class="replies post-section split-page">
+<div class="replies post-section">
   <div class="post-section-detail">Replies (<%= @replies.count %>)</div>
   <div class="post-section-content">
     <div class="replies-container">
@@ -67,7 +67,7 @@
   </div>
 </div>
 
-<div class="invites post-section split-page">
+<div class="invites post-section">
   <div class="post-section-detail"></div>
   <div class="post-section-content">
     <p><small>HelperNow supports basic <a href="<%= faq_path(anchor: 'sect-21') %>">markdown</a>. <br>

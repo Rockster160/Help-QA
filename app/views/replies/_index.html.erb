@@ -2,7 +2,7 @@
 <% replies.each do |reply| %>
   <% author = reply.author %>
   <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %>" id="reply-<%= reply.id %>">
-    <div class="reply-author split-page">
+    <div class="reply-author">
       <%= avatar(reply.avatar, size: 40) %>
       <div class="reply-author-text">
         <div class="reply-author-info">

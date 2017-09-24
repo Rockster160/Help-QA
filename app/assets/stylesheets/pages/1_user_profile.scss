@@ -20,8 +20,9 @@
   }
 
   .profile-wrapper {
+    @include split-page(200px);
+
     .mini-profile {
-      height: 200px;
       padding-left: 5px;
     }
 
@@ -94,12 +95,12 @@
         }
       }
       .recent-replies {
-        .post-container {
+        .post-reply-container {
           margin-top: 10px;
           background: #F9F9F9;
           border: 1px solid #EEE;
 
-          .post-title {
+          .post-reply-title {
             font-weight: normal;
             background: #EEE;
             padding: 5px;

@@ -3,7 +3,7 @@
   height: 40px;
   border: 1px solid #DDD;
   position: relative;
-  display: inline-block;
+  display: inline-block !important;
   vertical-align: top;
   margin: 3px;
 
@@ -39,7 +39,7 @@
       font-size: 35px;
       line-height: 40px;
       text-align: center;
-      
+
       img {
         position: absolute;
         min-width: 100%;

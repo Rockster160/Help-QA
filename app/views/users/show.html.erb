@@ -13,7 +13,7 @@
     <%# <div class="location"></div> %>
   </div>
 
-  <div class="profile-wrapper split-page">
+  <div class="profile-wrapper">
     <div class="mini-profile">
       <div class="title">Mini-Profile</div>
       <%= avatar(@user.avatar, size: 200) %>
@@ -92,8 +92,8 @@
       <div class="recent-replies">
         <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="<%= user_replies_path(@user) %>">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
         <% @replies.limit(5).each do |reply| %>
-          <div class="post-container">
-            <div class="post-title"><a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a></div>
+          <div class="post-reply-container">
+            <div class="post-reply-title"><a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a></div>
             <div class="reply-text">
               <div class="quote-container">
                 <%= markdown(posted_by_user: @user) { reply.body } %>

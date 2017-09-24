@@ -14,8 +14,8 @@
       width: $left_width;
     }
     &:last-child {
-      width: calc(100% - $left_width);
-      max-width: calc(100% - $left_width);
+      width: calc(100% - #{$left_width});
+      max-width: calc(100% - #{$left_width});
     }
   }
 }

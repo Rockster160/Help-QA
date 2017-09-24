@@ -1,5 +1,8 @@
 .ctr-posts.act-show {
-  @include split-page(210px);
+
+  .body-wrapper > * {
+    @include split-page(210px);
+  }
 
   .post-container {
     margin-bottom: 30px;
@@ -98,6 +101,7 @@
           .reply-content {
             background: #FAFAFA;
             width: 100%;
+            max-width: 745px;
             padding: 8px 5px;
 
             p {
