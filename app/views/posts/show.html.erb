@@ -1,3 +1,5 @@
+<% content_for(:title) { "#{@post.tags.count_order.first.try(:tag_name)} help: #{@post.title}" } %>
+
 <div class="post-container">
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
@@ -36,7 +38,7 @@
 <div class="tags post-section">
   <div class="post-section-detail">Post Tags (<%= @post.tags.count %>)</div>
   <div class="post-section-content">
-    <% @post.tags.reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
+    <% @post.tags.count_order.reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
       <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
     <% end %>
   </div>
