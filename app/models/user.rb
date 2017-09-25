@@ -39,7 +39,7 @@ class User < ApplicationRecord
   has_paper_trail
   # before_action :set_paper_trail_whodunnit - Add to controller
 
-  has_one  :location
+  has_one :location
 
   after_create :set_gravatar_if_exists
 

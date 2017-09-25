@@ -26,30 +26,9 @@ module MarkdownHelper
   end
 
   def parse_directive_poll(text, post:)
-    # When Post is updated, need to make sure to find the poll and
-    # Should have 2 different methods. One that gets run when the post is created/updated, which looks for options
-    # When editing a post, should generate it's own markdown by adding the options to the [poll: ] tag
-    # The other method should only parse based on [poll#post_id]
-    # text.sub!(/\[poll(.*?)\]/) do |found_match|
-    #   poll_args = $1
-    #
-    #   if poll_args =~ /^#\d+/
-    #     render_poll(poll_args.gsub(/[^0-9]/, ""))
-    #   else
-    #     new_poll = @markdown_post.build_poll
-    #     poll_options = poll_args.split(",").map(&:squish).map(&:presence).compact
-    #
-    #     if poll_options.length >= 2
-    #       return unless new_poll.save
-    #
-    #       poll_options.each do |poll_option_text|
-    #         new_poll.options.create(option_text: )
-    #       end
-    #     else
-    #     end
-    #   end
-    # end
-    text
+    text.sub("[poll]") do
+      PostsController.render(template: 'posts/poll', layout: false, assigns: { post: post, user: current_user })
+    end
   end
 
   def render_poll(post_id)

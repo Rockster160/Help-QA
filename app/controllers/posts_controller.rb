@@ -34,6 +34,17 @@ class PostsController < ApplicationController
     @replies = @post.replies.order(created_at: :asc)
   end
 
+  def vote
+    poll = Post.find(params[:post_id]).poll
+    vote = poll.options.find(params[:option]).votes.create(user: current_user)
+
+    unless vote.persisted?
+      flash.now[:alert] = "Failed to vote for Post. Please try again."
+    end
+
+    redirect_to post_path(poll.post)
+  end
+
   def edit
     @post = Post.find(params[:id])
     render layout: false

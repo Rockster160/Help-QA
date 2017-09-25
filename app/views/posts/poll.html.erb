@@ -1,12 +1,35 @@
-<% poll ||= nil %>
-<% return unless poll %>
+<% @post %>
+<% @user %>
+<% poll = @post.poll %>
 
-<% if user_signed_in? && current_user.verified? %>
-  <% if poll.answered_by?(user) %>
-    Show poll Results
-  <% else %>
-    Show poll questions, along with buttons to allow the user to answer the poll.
+<% if poll.present? %>
+
+  <% if @user.present? && !@user.verified? %>
+    <i>Please verify your account before voting:</i>
   <% end %>
-<% else %>
-  Show poll questions, along with text saying they must sign in and verify their account before responding to the poll.
+  <% if @user.nil? %>
+    <i>You must be <a href="<%= new_user_session_path %>" class="underline">logged in</a> to vote:</i>
+  <% end %>
+
+  <ol class="poll">
+    <% poll.options.each do |option| %>
+      <% total_votes = poll.votes.count %>
+      <li>
+        <% if @user.try(:verified?) && !poll.answered_by?(@user) %>
+          <a href="<%= post_vote_path(@post, option: option) %>"><button>Vote</button></a>
+        <% end %>
+        <%= option.body %>
+        <% if poll.answered_by?(@user) %>
+          <% votes_for_option = option.votes.count %>
+          <div class="poll-results">
+            <span><%= pluralize(votes_for_option, "vote") %></span>
+            <div class="vote-bar-wrapper">
+              <div class="vote-bar" style="width: <%= (votes_for_option / total_votes.to_f) * 100 %>%;"></div>
+            </div>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ol>
+
 <% end %>

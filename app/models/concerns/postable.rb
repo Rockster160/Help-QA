@@ -6,6 +6,7 @@ module Postable
     has_many :replies,          foreign_key: :author_id
     has_many :post_edits,       foreign_key: :edited_by_id
     has_many :post_views,       foreign_key: :viewed_by_id
+    has_many :votes, class_name: "UserPollVote"
     # has_many :user_tags
 
     has_many :invites_sent,     foreign_key: :from_user_id,    class_name: "Invite"

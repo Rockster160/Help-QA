@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   get "history(((((/:claimed_status)/:reply_count)/:user_status)/:tags)/:page)" => "posts#history", as: :history
 
   resources :posts, except: [ :destroy ] do
+    get :vote
     resources :replies, only: [ :create ]
   end
 

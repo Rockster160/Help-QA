@@ -27,6 +27,7 @@ class Post < ApplicationRecord
   has_many :subscribers, through: :subscriptions, source: :user
   has_many :post_tags
   has_many :tags, through: :post_tags
+  has_one :poll
 
   pg_search_scope :search_for, against: :body
   scope :claimed,              -> { where.not(posted_anonymously: true) }
@@ -40,6 +41,7 @@ class Post < ApplicationRecord
   scope :by_tags,              ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
 
   after_create :auto_add_tags
+  after_create :generate_poll
   defaults reply_count: 0
   defaults posted_anonymously: false
 
@@ -60,7 +62,7 @@ class Post < ApplicationRecord
   def title
     return "BROKEN" unless body.present?
     first_sentence = body.split(/[\!|\.|\n|;|\?|\r] /).reject(&:blank?).first
-    body[0..first_sentence.try(:length) || -1]
+    body[0..first_sentence.try(:length) || -1].gsub(/\[poll\]/, "")
   end
 
   def open?; !closed?; end
@@ -108,6 +110,24 @@ class Post < ApplicationRecord
   end
 
   private
+
+  def generate_poll
+    poll_regex = /\[poll (.*?)\]/
+    poll_markdown = body[poll_regex]
+    return unless poll_markdown.present?
+
+    options_text = poll_markdown[6..-2].to_s
+    options = options_text.split(",").map(&:presence).compact
+    return unless options.length >= 2
+
+    poll = build_poll
+    poll.save
+    options.each do |option|
+      poll.options.create(body: option)
+    end
+
+    update(body: body.sub(poll_regex, "[poll]"))
+  end
 
   def body_is_not_default
     if Post.text_matches_default_text?(body)

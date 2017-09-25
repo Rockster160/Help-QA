@@ -22,10 +22,33 @@
       }
       .body {
         min-height: 50px;
+        font-size: 10px;
 
         p {
-          font-size: 12px;
+          font-size: 10px;
           line-height: 1.5;
+        }
+        .poll {
+          line-height: 2;
+          padding-right: 50px;
+
+          .poll-results {
+            display: table;
+            width: 100%;
+
+            span {
+              display: table-cell;
+              width: 50px;
+            }
+            .vote-bar-wrapper {
+              display: table-cell;
+
+              .vote-bar {
+                height: 5px;
+                background: green;
+              }
+            }
+          }
         }
       }
       .details {
