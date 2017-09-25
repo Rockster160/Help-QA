@@ -49,7 +49,7 @@ class User < ApplicationRecord
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
 
-  def self.help_bot
+  def self.helpbot
     by_username("HelpBot")
   end
 

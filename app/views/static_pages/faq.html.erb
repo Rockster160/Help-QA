@@ -214,7 +214,7 @@
       <p>HelperNow.co does NOT support HTML tags in posts or replies in order to protect our user's security. However, there are a variety of provided formatting tools that can be used to apply many of the same functionality.</p>
       <p>We will automatically detect links, as well as urls to images and videos- and will automatically show previews when added to your posts or replies.</p>
       <p>HelperNow.co supports basic Markdown and a few special "directives" to add to replies and posts:</p>
-      <%= markdown(should_render_html: true, posted_by_user: User.help_bot) { File.read("lib/assets/raw_markdown.html").gsub("{{quote-icon}}", hover_icon("quote", "Quote this reply", tag: "i")) } %>
+      <%= markdown(render_html: true, posted_by_user: User.helpbot) { File.read("lib/assets/raw_markdown.html").gsub("{{quote-icon}}", hover_icon("quote", "Quote this reply", tag: "i")) } %>
     </div>
 
     <div id="sect22">
