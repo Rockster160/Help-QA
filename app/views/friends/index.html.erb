@@ -1,1 +1,22 @@
 <% content_for(:title) { "Friends List &bull; HelperNow.co".html_safe } %>
+
+<h3>Fans</h3>
+<div class="friends-container">
+  <% @fans.each do |fan| %>
+    <%= render partial: "friend_box", locals: { user: fan } %>
+  <% end %>
+</div>
+
+<h3>Favorites</h3>
+<div class="friends-container">
+  <% @favorites.each do |favorite| %>
+    <%= render partial: "friend_box", locals: { user: favorite } %>
+  <% end %>
+</div>
+
+<h3>Friends</h3>
+<div class="friends-container">
+  <% @friends.each do |friend| %>
+    <%= render partial: "friend_box", locals: { user: friend } %>
+  <% end %>
+</div>

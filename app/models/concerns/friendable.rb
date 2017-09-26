@@ -55,11 +55,14 @@ module Friendable
     return unless existing_friendship.present?
     request_at = existing_friendship.created_at
     accepted_at = existing_friendship.accepted_at
+    previously_friends = existing_friendship.friends?
 
     if existing_friendship.user_id == self.id # I was the initial requester
       existing_friendship.destroy
-      new_friendship = friend.add_friend(self)
-      new_friendship.update(created_at: accepted_at)
+      if previously_friends # They should now be my fan
+        new_friendship = friend.add_friend(self)
+        new_friendship.update(created_at: accepted_at)
+      end
     elsif existing_friendship.friend_id == self.id # They made the request first
       existing_friendship.update(accepted_at: nil)
     end

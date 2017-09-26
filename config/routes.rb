@@ -48,7 +48,7 @@ Rails.application.routes.draw do
     post :avatar, action: :update
 
     resources :subscriptions, only: [ :index, :destroy ]
-    resources :friends, only: [ :index ]
+    resources :friends, only: [ :index, :update, :destroy ]
     resources :settings, only: [ :index ]
     resources :notices, only: [ :index ]
     resources :invites, only: [ :index ]

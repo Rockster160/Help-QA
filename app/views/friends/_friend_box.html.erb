@@ -1,0 +1,18 @@
+<%
+  last_online = if user.online?
+    "Online Now!"
+  else
+    "Last online: #{(user.last_seen_at || user.created_at).to_formatted_s(:short_with_time)}"
+  end
+%>
+<div class="friend-container">
+  <%= avatar(user.avatar, { href: user_path(user), size: 60, status: user.online? ? 'online' : 'offline', title: last_online }) %>
+  <div class="username">
+    <% if current_user.added?(user) %>
+      <%= hover_icon("user-rem", "Remove Friend", href: account_friend_path(user), method: :delete) %>
+    <% else %>
+      <%= hover_icon("user-add", "Add as Friend", href: account_friend_path(user), method: :patch) %>
+    <% end %>
+    <%= user.username %>
+  </div>
+</div>
