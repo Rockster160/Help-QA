@@ -57,7 +57,11 @@ class Post < ApplicationRecord
   end
 
   def self.currently_popular
-    all.sample # FIXME - How do we calculate this?
+    uniq_replies_by_author_for_posts = Reply.order(created_at: :desc).limit(100).pluck(:post_id, :author_id).uniq
+    counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
+    post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)
+    most_popular_post_id = post_ids_sorted_by_uniq_author_count.last
+    Post.find(most_popular_post_id)
   end
 
   def title
