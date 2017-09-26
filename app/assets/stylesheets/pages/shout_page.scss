@@ -43,6 +43,9 @@
         .shout-body {
           p { font-size: 12px; }
         }
+        &.highlight {
+          background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%));
+        }
       }
     }
     .new-shout {

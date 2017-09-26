@@ -1,7 +1,7 @@
 <% hide_shouttrail ||= false %>
 <% shouts.each do |shout| %>
   <% shouter = shout.sent_from %>
-  <div class="shout-container">
+  <div class="shout-container" id="shout-<%= shout.id %>">
     <div class="shout-author">
       <%= avatar(shouter.avatar, size: 30) %>
       <div class="author-details">
@@ -14,6 +14,9 @@
             - <a href="<%= user_shouttrail_path(@user, shouter) %>">Shouttrail</a>
           <% end %>
         </div>
+      </div>
+      <div class="report-flag">
+        <%= hover_icon("flag-red", "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shout.sent_to, anchor: "shout-#{shout.id}"))) %>
       </div>
     </div>
     <div class="shout-body">

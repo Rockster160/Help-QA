@@ -1,5 +1,15 @@
 $(document).ready(function() {
 
+  function showSelectedHash() {
+    var withoutTag = window.location.hash;
+    if (withoutTag.length != 0) {
+      $(".highlight").removeClass("highlight");
+      $(withoutTag).addClass("highlight");
+    }
+  }
+  $(window).on("hashchange", showSelectedHash);
+  showSelectedHash()
+
   $('.js-clear-text-after-focus').focus(function() {
     if (!$(this).attr("data-has-focused")) {
       $(this).html("");
