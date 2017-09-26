@@ -54,7 +54,7 @@ module MarkdownHelper
     text
   end
 
-  def escape_html_characters(text, render_html: render_html)
+  def escape_html_characters(text, render_html: false)
     text = text.gsub("&", "&amp;") # Escape ALL & - prevent Unicode injection / unexpected character behavior
     text = text.gsub("<script", "&lt;script") # Escape <script> Tags
 

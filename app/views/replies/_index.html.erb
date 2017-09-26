@@ -32,8 +32,14 @@
       </div>
       <div class="reply-options">
         <% if user_signed_in? && current_user.verified? %>
-          <!-- TODO: Make this work - Can only favorite 1 reply per post? Then hide the icon -->
-          <%#= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.", href: "#{}") %>
+          <% previous_favorite = current_user.favorite_reply_for_post(reply.post) %>
+          <% if previous_favorite.nil? %>
+            <%= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.", href: post_reply_favorite_path(reply.post, reply)) %>
+          <% elsif previous_favorite.reply == reply %>
+            <%= hover_icon("medal", "Changed your mind? Unmark this as your favorite.", href: post_reply_unfavorite_path(reply.post, reply)) %>
+          <% else %>
+            <%= hover_icon("medal-add", "You've already favorited a reply for this post.", href: "#reply-#{reply.id}", class: "grayscale") %>
+          <% end %>
         <% end %>
         <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>
         <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>

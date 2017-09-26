@@ -29,6 +29,30 @@ class RepliesController < ApplicationController
     end
   end
 
+  def favorite
+    post = Post.find(params[:post_id])
+    reply = post.replies.find(params[:reply_id])
+    favorited = current_user.favorite_replies.create(reply: reply, post: post)
+
+    if favorited.persisted?
+      redirect_to post_path(post, anchor: "reply-#{reply.id}")
+    else
+      redirect_to post_path(post, anchor: "reply-#{reply.id}"), alert: favorited.errors.full_messages.first || "Failed to save favorite. Please try again."
+    end
+  end
+
+  def unfavorite
+    post = Post.find(params[:post_id])
+    reply = post.replies.find(params[:reply_id])
+    favorited = current_user.favorite_replies.find_by(reply: reply, post: post)
+
+    if favorited.destroy
+      redirect_to post_path(post, anchor: "reply-#{reply.id}")
+    else
+      redirect_to post_path(post, anchor: "reply-#{reply.id}"), alert: favorited.errors.full_messages.first || "Failed to save favorite. Please try again."
+    end
+  end
+
   private
 
   def reply_params

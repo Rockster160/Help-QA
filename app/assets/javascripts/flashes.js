@@ -15,7 +15,7 @@ dismissFlash = function() {
 $(document).on('click touchstart', '.flash-banner', function() {
   dismissFlash();
 })
-$(window).scroll(function() { dismissFlash(true) })
+// $(window).scroll(function() { dismissFlash(true) })
 
 addFlash = function(message, type, delay) {
   $.get('/flash_message', {message: message, flash_type: type}, function(data) {

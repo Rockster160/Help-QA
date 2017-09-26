@@ -19,6 +19,8 @@ class Reply < ApplicationRecord
   belongs_to :post, counter_cache: :reply_count
   belongs_to :author, class_name: "User"
   has_many :tags, through: :post
+  has_many :favorite_replies
+  has_many :favorited_by, class_name: "User", through: :favorite_replies
 
   before_validation :format_body
 

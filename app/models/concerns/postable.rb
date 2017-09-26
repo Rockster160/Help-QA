@@ -7,6 +7,7 @@ module Postable
     has_many :post_edits,       foreign_key: :edited_by_id
     has_many :post_views,       foreign_key: :viewed_by_id
     has_many :votes, class_name: "UserPollVote"
+    has_many :favorite_replies
     # has_many :user_tags
 
     has_many :invites_sent,     foreign_key: :from_user_id,    class_name: "Invite"
@@ -16,6 +17,10 @@ module Postable
     # has_many :tags,             through: :user_tags
     has_many :notices
     has_many :subscriptions
+  end
+
+  def favorite_reply_for_post(post)
+    favorite_replies.find_by(post: post)
   end
 
   def activity(day_count)

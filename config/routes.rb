@@ -32,7 +32,10 @@ Rails.application.routes.draw do
 
   resources :posts, except: [ :destroy ] do
     get :vote
-    resources :replies, only: [ :create ]
+    resources :replies, only: [ :create ] do
+      get :favorite
+      get :unfavorite
+    end
   end
 
   resources :replies, only: [ :index ] do

@@ -20,7 +20,7 @@ class UserPollVote < ApplicationRecord
   private
 
   def not_voted_multiple_times
-    return if poll.votes.where(user_id: user_id).none?
+    return if poll.votes.where(user_id: user_id).where.not(id: id).none?
 
     errors.add(:base, "You have already voted on this poll!")
   end

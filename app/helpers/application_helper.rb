@@ -63,8 +63,10 @@ module ApplicationHelper
   def hover_icon(icon, alt, options={})
     style = "background-image: url(#{image_url('icon_sheet.png')})"
     img = image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon}")
+
     if options[:href].present?
-      "<a href=\"#{options[:href]}\" class=\"hover-icon #{options[:class]}\" data-method=\"#{options[:method] || "GET"}\">#{img}#{options[:text]}</a>".html_safe
+      method = options[:method].present? ? "data-method=\"#{options[:method]}\"" : ""
+      "<a href=\"#{options[:href]}\" class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
     else
       options[:tag] ||= "div"
       "<#{options[:tag]} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
