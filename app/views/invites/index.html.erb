@@ -1,1 +1,15 @@
 <% content_for(:title) { "Account Invites &bull; HelperNow.co".html_safe } %>
+
+<% if @unread_only %>
+  <%= link_to "Show All", {} %>
+<% else %>
+  <%= link_to "Show Unread Only", {show: :unread} %>
+<% end %>
+
+<%= paginate @invites %>
+
+<% @invites.each do |invite| %>
+  <p><%= hover_icon("new", "New Notice!") if invite.unread? %> <%= invite.notice_message %></p>
+<% end %>
+
+<%= paginate @invites %>

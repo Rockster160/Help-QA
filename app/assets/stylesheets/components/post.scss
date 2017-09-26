@@ -28,3 +28,16 @@
     .avatar-container { border-color: purple; }
   }
 }
+
+.unsubscribe-wrapper {
+  position: relative;
+
+  .unsubscribe-btn-container {
+    position: absolute;
+    top: 5px;
+    left: 0;
+  }
+  .post-container {
+    padding-left: 100px;
+  }
+}

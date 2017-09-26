@@ -102,7 +102,7 @@ module Accountable
   end
 
   def set_slug
-    self.slug = username.parameterize
+    self.slug = username.try(:parameterize)
   end
 
   def at_least_13_years_of_age

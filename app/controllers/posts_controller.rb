@@ -34,6 +34,7 @@ class PostsController < ApplicationController
     @replies = @post.replies.order(created_at: :asc)
     if user_signed_in?
       current_user.invites.unread.where(post_id: @post.id).each(&:read)
+      current_user.notices.subscription.unread.where(notice_for_id: @post.id).each(&:read)
     end
   end
 

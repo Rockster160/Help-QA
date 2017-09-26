@@ -72,8 +72,7 @@ class Post < ApplicationRecord
   def notify_subscribers(not_user: nil)
     subscribers.each do |subscriber|
       next if subscriber == not_user
-      post_url = Rails.application.routes.url_helpers.post_path(id)
-      subscriber.notices.subscriptions.create(title: "New Comment on #{title}", url: post_url)
+      subscriber.notices.subscription.create(notice_for_id: id, notice_type: :subscription)
     end
   end
 

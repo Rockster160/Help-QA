@@ -19,8 +19,8 @@ class Invite < ApplicationRecord
   belongs_to :post
   belongs_to :reply
 
-  def notice_text
-    "#{from_user.username} invited you to the post <a href=\"#{link_to_reply}\">#{post.title}</a>.".html_safe
+  def notice_message
+    "#{from_user.username} invited you to the post <a href=\"#{link_to_reply}\">#{post.title}</a>".html_safe
   end
 
   private

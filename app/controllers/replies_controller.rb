@@ -17,13 +17,6 @@ class RepliesController < ApplicationController
       @errors = user.try(:errors).try(:full_messages) || "Failed to submit Reply."
     end
 
-    if @errors.none? && reply.persisted?
-      post.notify_subscribers(not_user: current_user)
-
-      subscription = Subscription.find_or_create_by(user_id: current_user.id, post_id: post.id)
-      current_user.notices.subscriptions.create if subscription.try(:subscribed?)
-    end
-
     respond_to do |format|
       format.json { render json: {errors: @errors} }
       format.html { redirect_to post_path(post) }

@@ -47,7 +47,7 @@ Rails.application.routes.draw do
     get :avatar
     post :avatar, action: :update
 
-    resources :subscriptions, only: [ :index ]
+    resources :subscriptions, only: [ :index, :destroy ]
     resources :friends, only: [ :index ]
     resources :settings, only: [ :index ]
     resources :notices, only: [ :index ]

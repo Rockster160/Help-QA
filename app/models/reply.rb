@@ -24,7 +24,7 @@ class Reply < ApplicationRecord
 
   before_validation :format_body
 
-  after_create :invite_users
+  after_create :invite_users, :notify_subscribers
 
   scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
@@ -60,6 +60,11 @@ class Reply < ApplicationRecord
   end
 
   private
+
+  def notify_subscribers
+    subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id)
+    post.notify_subscribers(not_user: author)
+  end
 
   def invite_users
     return if posted_anonymously?
