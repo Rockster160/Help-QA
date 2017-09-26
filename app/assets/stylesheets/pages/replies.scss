@@ -1,0 +1,29 @@
+.recent-replies {
+
+  * { font-size: 12px; }
+
+  .post-reply-container {
+    margin-top: 10px;
+    background: #F9F9F9;
+    border: 1px solid #EEE;
+
+    .post-reply-title {
+      font-weight: normal;
+      background: #EEE;
+      padding: 5px;
+    }
+    .reply-text {
+      padding-left: 8px;
+
+      .quote-container {
+        padding-left: 8px;
+        border-left: 1px solid #999;
+
+        .timestamp, .timestamp * {
+          font-weight: normal;
+          font-size: 8px;
+        }
+      }
+    }
+  }
+}

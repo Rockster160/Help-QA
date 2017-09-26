@@ -79,7 +79,7 @@ module MarkdownHelper
   end
 
   def invite_tagged_users(text, author:)
-    return unless author.present?
+    return text unless author.present?
     text.gsub(/@([^ \`\@]+)/) do |username_tag|
       tagged_user = User.by_username($1)
       if tagged_user.present? && (tagged_user.friends?(author) || tagged_user == author)

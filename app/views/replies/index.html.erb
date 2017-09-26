@@ -1,0 +1,35 @@
+<% total_replies = @replies.total_count || 0 %>
+<% first_reply = [(@replies.limit_value * (@replies.current_page - 1)) + 1, total_replies, 0].sort[1] %>
+<% last_reply = [@replies.limit_value * @replies.current_page, total_replies, 0].sort[1] %>
+<% title = "#{pluralize_with_delimiter(total_replies, 'reply')}, Replies #{number_with_delimiter(first_reply)} to #{number_with_delimiter(last_reply)}" %>
+<% content_for(:title) { title } %>
+<h2><%= title %></h2>
+
+<%= paginate @replies %>
+
+<div class="recent-replies">
+  <% @replies.each do |reply| %>
+    <div class="post-reply-container" style="margin-bottom: 30px;">
+      <div class="post-reply-title">
+        <% if @user.nil? %>
+          By
+          <% if reply.posted_anonymously? %>
+            <strong>Anonymous</strong>
+          <% else %>
+            <a href="<%= user_path(reply.author) %>" class="underline"><%= reply.author.username %></a>
+          <% end %>
+          for
+        <% end %>
+        <a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a>
+      </div>
+      <div class="reply-text">
+        <div class="quote-container">
+          <%= markdown(posted_by_user: reply.author) { reply.body } %>
+          <i class="timestamp">- written <%= timeago(reply.created_at, word_count: 2) %></i>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= paginate @replies %>
