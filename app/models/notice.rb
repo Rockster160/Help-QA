@@ -14,6 +14,7 @@
 
 class Notice < ApplicationRecord
   include Defaults
+  include Readable
 
   belongs_to :user
 
@@ -24,13 +25,7 @@ class Notice < ApplicationRecord
   enum notice_type: {
     other:           0,
     subscriptions:   1,
-    shouts:          2,
-    invites:         3,
-    friend_requests: 4
+    friend_requests: 2
   }
-
-  def read!(now=DateTime.current)
-    update!(read_at: now)
-  end
 
 end

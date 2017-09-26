@@ -8,9 +8,11 @@
 #  body         :text
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  read_at      :datetime
 #
 
 class Shout < ApplicationRecord
+  include Readable
   belongs_to :sent_from, class_name: "User"
   belongs_to :sent_to,   class_name: "User"
 

@@ -10,8 +10,8 @@ module Postable
     has_many :favorite_replies
     # has_many :user_tags
 
-    has_many :invites_sent,     foreign_key: :from_user_id,    class_name: "Invite"
-    has_many :invites_received, foreign_key: :invited_user_id, class_name: "Invite"
+    has_many :invites_sent, foreign_key: :from_user_id,    class_name: "Invite"
+    has_many :invites,      foreign_key: :invited_user_id, class_name: "Invite"
     has_many :tags_from_posts,   through: :posts,   source: :tags
     has_many :tags_from_replies, through: :replies, source: :tags
     # has_many :tags,             through: :user_tags

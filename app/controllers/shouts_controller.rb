@@ -9,7 +9,7 @@ class ShoutsController < ApplicationController
       .order("MAX(shouts.created_at) DESC")
 
     if @user == current_user
-      @user.notices.unread.shouts.each(&:read!)
+      @user.shouts.unread.each(&:read)
     end
   end
 
@@ -20,9 +20,9 @@ class ShoutsController < ApplicationController
     @shouts = Shout.between(@user, @other_user).order(created_at: :desc).first(50)
 
     if @user == current_user
-      @user.notices.unread.where(notice_for_id: @shouts.pluck(:id)).shouts.each(&:read!)
+      @user.shouts_to.unread.where(sent_from_id: @other_user.id).each(&:read)
     elsif @other_user == current_user
-      @other_user.notices.unread.where(notice_for_id: @shouts.pluck(:id)).shouts.each(&:read!)
+      @other_user.shouts_to.unread.where(sent_from_id: @user.id).each(&:read)
     end
   end
 

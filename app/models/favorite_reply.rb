@@ -15,9 +15,6 @@ class FavoriteReply < ApplicationRecord
   belongs_to :post
   belongs_to :reply
 
-  # Hide the icons / grey them out once a reply has been chosen
-  # Show a X favorite to unmark a reply as favorite.
-
   validate :can_only_favorite_one_reply_per_post
 
   private

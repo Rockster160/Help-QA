@@ -44,12 +44,12 @@
         <div class="notices-container">
           <% notices = current_user.notices.unread %>
           <a href="<%= account_notices_path %>" class="notice-link">Notices: <%= notices.subscriptions.count %></a>
-          <a href="<%= user_shouts_path(current_user) %>" class="notice-link">Shouts: <%= notices.shouts.count %></a>
-          <a href="<%= account_invites_path %>" class="notice-link">Invites: <%= notices.invites.count %></a>
+          <a href="<%= user_shouts_path(current_user) %>" class="notice-link">Shouts: <%= current_user.shouts.unread.count %></a>
+          <a href="<%= account_invites_path %>" class="notice-link">Invites: <%= current_user.invites.unread.count %></a>
         </div>
       </div>
     <% else %>
-      <a href="<%= new_user_session_path %>">Login & Registration</a>
+      <a href="<%= new_user_session_path %>">Login &amp; Registration</a>
     <% end %>
   </div>
 </div>

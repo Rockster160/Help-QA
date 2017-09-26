@@ -81,7 +81,8 @@ module MarkdownHelper
   def invite_tagged_users(text, author:)
     return text unless author.present?
     text.gsub(/@([^ \`\@]+)/) do |username_tag|
-      tagged_user = User.by_username($1)
+      username = $1.gsub(/\<.*?\>/, "")
+      tagged_user = User.by_username(username)
       if tagged_user.present? && (tagged_user.friends?(author) || tagged_user == author)
         leftovers = username_tag.gsub(/[@#{Regexp.escape(tagged_user.username)}]/i, "")
         "<a href=\"#{user_path(tagged_user)}\" class=\"tagged-user\">@#{tagged_user.username}</a>#{leftovers}"

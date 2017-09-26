@@ -24,6 +24,8 @@ class Reply < ApplicationRecord
 
   before_validation :format_body
 
+  after_create :invite_users
+
   scope :claimed, -> { where.not(posted_anonymously: true) }
   scope :unclaimed, -> { where(posted_anonymously: true) }
   # TODO Add validation requiring text, cannot be blank, cannot be "Leave a reply" or similar
@@ -58,6 +60,16 @@ class Reply < ApplicationRecord
   end
 
   private
+
+  def invite_users
+    return if posted_anonymously?
+    invited_friends = []
+    body.scan(/@([^ \`\@]+)/) do |username_tag|
+      friend = author.friends.by_username($1)
+      invite = friend.invites.create(post: post, reply: self, from_user: author) if friend && invited_friends.exclude?(friend.id)
+      invited_friends << friend.try(:id)
+    end
+  end
 
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)

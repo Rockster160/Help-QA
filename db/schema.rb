@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170925231125) do
+ActiveRecord::Schema.define(version: 20170926024742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,9 +53,12 @@ ActiveRecord::Schema.define(version: 20170925231125) do
     t.integer  "invited_user_id"
     t.integer  "post_id"
     t.datetime "created_at"
+    t.integer  "reply_id"
+    t.datetime "read_at"
     t.index ["from_user_id"], name: "index_invites_on_from_user_id", using: :btree
     t.index ["invited_user_id"], name: "index_invites_on_invited_user_id", using: :btree
     t.index ["post_id"], name: "index_invites_on_post_id", using: :btree
+    t.index ["reply_id"], name: "index_invites_on_reply_id", using: :btree
   end
 
   create_table "locations", force: :cascade do |t|
@@ -153,6 +156,7 @@ ActiveRecord::Schema.define(version: 20170925231125) do
     t.text     "body"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.datetime "read_at"
     t.index ["sent_from_id"], name: "index_shouts_on_sent_from_id", using: :btree
     t.index ["sent_to_id"], name: "index_shouts_on_sent_to_id", using: :btree
   end
