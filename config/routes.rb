@@ -54,6 +54,7 @@ Rails.application.routes.draw do
     resources :invites, only: [ :index ]
   end
 
+  post "update_user_search" => "users#update_user_search", as: :update_user_search
   resources :users, except: [ :destroy ] do
     member do
       put :add_friend

@@ -22,7 +22,7 @@
         <% (@filter_params[:tags] || []).each do |tag_name| %>
           <% new_params = @filter_params.dup %>
           <% new_params[:tags] -= [tag_name] %>
-          <% remove_link = build_history_path(new_params) %>
+          <% remove_link = build_filtered_path(new_params) %>
           <% solo_link = tag_path(tag_name) %>
           <li><a href="<%= solo_link %>" class="underline"><%= tag_name %></a> (<a href="<%= remove_link %>" class="danger">remove</a>)</li>
         <% end %>

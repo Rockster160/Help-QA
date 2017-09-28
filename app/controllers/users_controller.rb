@@ -1,5 +1,17 @@
 class UsersController < ApplicationController
-  helper PostsHelper
+  include PostsHelper
+
+  def index
+    @users = User.order(created_at: :desc)
+    @users = @users.verified if params[:status] == "verified"
+    @users = @users.unverified if params[:status] == "unverified"
+    @users = @users.search_username(params[:search]) if params[:search].present?
+    @users = @users.page(params[:page])
+  end
+
+  def update_user_search
+    redirect_to users_path(params.permit(:search, :status))
+  end
 
   def show
     @user = User.find(params[:id])

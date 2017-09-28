@@ -6,7 +6,7 @@ class TagsController < ApplicationController
   end
 
   def show
-    redirect_to build_history_path
+    redirect_to build_filtered_path(path_root: "/history")
   end
 
   def redirect

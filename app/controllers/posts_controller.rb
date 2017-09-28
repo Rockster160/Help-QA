@@ -8,11 +8,11 @@ class PostsController < ApplicationController
   end
 
   def history_redirect
-    redirect_to build_history_path
+    redirect_to build_filtered_path(path_root: "/history")
   end
 
   def history
-    set_filter_params
+    set_post_filter_params
 
     @posts = Post.order(created_at: :desc)
     @posts = @posts.claimed if @filter_options["claimed"]

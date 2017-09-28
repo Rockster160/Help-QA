@@ -1,0 +1,16 @@
+<% users.each do |user| %>
+  <a href="<%= user_path(user) %>" class="post-container">
+    <%= avatar(user.avatar, size: 50) %>
+    <div class="post-description">
+      <div class="title">
+        <%= user.username %>
+      </div>
+      <div class="post-information">
+        Joined <%= user.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(user.posts.count || 0, "Post") %> and <%= pluralize_with_delimiter(user.replies.count, "Reply") %>
+      </div>
+      <div class="tags">
+        Tags: <%= user.tags_from_posts.count_order.first(5).map(&:tag_name).join(", ") %>
+      </div>
+    </div>
+  </a>
+<% end %>

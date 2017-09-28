@@ -44,14 +44,18 @@ module PostsHelper
     current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.blank? }
     current_filters[:tags] = current_filters[:tags].join(",") if current_filters[:tags].present?
 
-    link_to link_text, "/#{(['history'] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
+    link_to link_text, "/#{([page_root_path] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
   end
 
   def current_tags(workable_params=params)
     workable_params.permit(:tags, :new_tag)
   end
 
-  def build_history_path(workable_params=params)
+  def page_root_path
+    request.path.split("/")[1]
+  end
+
+  def build_filtered_path(workable_params=params, path_root: page_root_path)
     if workable_params.is_a?(ActionController::Parameters)
       workable_params[:tags] = workable_params.permit(:tags, :new_tag).values.join(",")
       workable_params.delete(:tags) unless workable_params[:tags].present?
@@ -63,7 +67,7 @@ module PostsHelper
       workable_params.delete(:new_tag)
       attached_params = workable_params.slice(:claimed_status, :reply_count, :user_status, :tags, :page).values.join("/")
     end
-    "#{history_path}/#{attached_params}#{filter_query_string}"
+    "#{page_root_path}/#{attached_params}#{filter_query_string}"
   end
 
   def filter_query_string
@@ -83,10 +87,29 @@ module PostsHelper
     end.html_safe
   end
 
+  def filter_users_link(link_text, options={})
+    new_filter_options = options.slice(:status, :search)
+
+    current_filters = params.permit(:status, :search)
+
+    selected_filter_key = new_filter_options.keys.first
+    selected_filter_value = new_filter_options.values.first
+    current_filter_value = current_filters[selected_filter_key]
+
+    current_filter_is_selected = current_filters.values.any? { |param_val| new_filter_options.values.include?(param_val) }
+    if current_filter_is_selected || current_filter_value.nil? && selected_filter_value.nil?
+      sorted_class = "current-filter"
+    end
+
+    current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.blank? }
+
+    link_to link_text, users_path(current_filters), class: "#{sorted_class} #{options[:class]}"
+  end
+
   def pagination(association, options={})
     current_filters = @filter_options.reject { |param_key, param_val| param_val.blank? }
     tags = current_filters.delete(:tags)
-    current_filter_str = (['history'] + current_filters.keys + [tags.try(:compact)&.join(",")]).compact.join("/")
+    current_filter_str = ([page_root_path] + current_filters.keys + [tags.try(:compact)&.join(",")]).compact.join("/")
 
     paginate(association, options).gsub(/history.*?\d?"/) do |found_match|
       page = found_match.scan(/\/\d+/).first.presence || "/1"
@@ -109,7 +132,7 @@ module PostsHelper
     @filter_params = {}
   end
 
-  def set_filter_params
+  def set_post_filter_params
     filter_values = params.permit(:claimed_status, :reply_count, :user_status, :tags, :page, :new_tag).values
 
     @filter_options = {

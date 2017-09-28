@@ -1,0 +1,45 @@
+<% total_users = @users.total_count || 0 %>
+<% first_user = [(@users.limit_value * (@users.current_page - 1)) + 1, total_users, 0].sort[1] %>
+<% last_user = [@users.limit_value * @users.current_page, total_users, 0].sort[1] %>
+<% title = "#{pluralize_with_delimiter(total_users, 'user')}, Users #{number_with_delimiter(first_user)} to #{number_with_delimiter(last_user)}" %>
+<% content_for(:title) { title } %>
+<h2><i>Users:</i> <%= title %></h2>
+
+<div class="history-page">
+  <%= form_tag update_user_search_path do %>
+    <%= hidden_field_tag :status, params[:status] if params[:status].present? %>
+    <%= hidden_field_tag :search, params[:search] if params[:search].present? %>
+
+    <div class="search-form">
+      <h6>Search by Username</h6>
+      <input type="text" name="search" value="<%= params[:search] %>">
+      <%= submit_tag "Search" %>
+
+      <div class="filters">
+        <h6>Filters</h6>
+        <div class="filter">
+          <div class="name">User Status:</div>
+          <div class="links">
+            <%= filter_users_link("Verified", status: "verified") %>,
+            <%= filter_users_link("Unverified", status: "unverified") %>,
+            <%= filter_users_link("Off", status: nil) %>
+          </div>
+        </div>
+        <div class="filter reset-filters">
+          <a href="<%= history_path %>" class="underline">Reset All Filters</a>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="search-results">
+    <% total_pages = 5 %>
+    <% window_sizes = {
+      default: (total_pages / 2).floor,
+      low: total_pages - @users.current_page,
+      high: total_pages - (@users.total_pages - @users.current_page) - 1
+    } %>
+
+    <%= paginate @users, window: window_sizes.values.max, outer_window: 1, params_on_first_page: true, params: params %>
+    <%= render partial: "index", locals: { users: @users } %>
+  </div>
+</div>

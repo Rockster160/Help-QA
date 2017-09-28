@@ -5,7 +5,8 @@ User.create({
   remember_created_at: 1.year.ago,
   username: "HelpBot",
   confirmed_at: 1.year.ago,
-  date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y")
+  date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),
+  avatar_url: ActionController::Base.helpers.asset_path("HelpBotjpg")
 })
 
 unless Rails.env.production?
