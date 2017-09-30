@@ -59,6 +59,7 @@ loadLinkImages = function(link_container) {
 }
 
 loadNextLink = function() {
+  if ($.active != 0) { return }
   var $link = $("[data-load-link]").first()
 
   if ($link.length == 0) { return }

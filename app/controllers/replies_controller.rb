@@ -50,7 +50,7 @@ class RepliesController < ApplicationController
   def meta
     meta_data = Rails.cache.fetch(params[:url]) do
       puts "Running Cache Fetch for: #{params[:url]}".colorize(:yellow)
-      res = RestClient.get(params[:url], timeout: 5)
+      res = RestClient.get(params[:url])
       doc = Nokogiri::HTML(res.body)
       only_image = MIME::Types.type_for(params[:url]).first.try(:content_type)&.starts_with?("image")
 
@@ -63,7 +63,14 @@ class RepliesController < ApplicationController
       end
       favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first
 
+      video_url = tags["twitter:player"]
+      iframe_video_url = video_url if video_url.present? && (video_url.include?("player.vimeo") || video_url.include?("youtube.com/embed"))
+      iframe_video_url ||= params[:url] if params[:url].present? && (params[:url].include?("player.vimeo") || params[:url].include?("youtube.com/embed"))
+      iframe_video_url ||= "https://player.vimeo.com/video/#{params[:url][/\d+$/]}" if params[:url] =~ /vimeo.com\/\d+$/
+
       pp meta_data = {
+        iframe_video_url: iframe_video_url,
+        video_url: iframe_video_url.presence || video_url.presence,
         only_image: only_image,
         url: params[:url],
         favicon: favicon_element.present? ? favicon_element["href"] : nil,
