@@ -22,14 +22,51 @@ class Tag < ApplicationRecord
   def self.auto_extract_tags_from_body(body)
     stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
     formatted = body.gsub("\n", " ")                       # Spaces instead of newlines
-                    .gsub(/[^a-z| ]/i, "")                 # Without special chars
+                    .gsub(/[^a-z \-]/i, "")                # Without special chars (Include alpha, spaces, and hyphens)
                     .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
+                    .gsub(/ \-|\- /i, "")                  # Remove hyphens at beginning and end of words
                     .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
-    formatted.squish.split(" ")
+    tags = formatted.squish.split(" ")
+    add_similar_common_tags_to_tags_list(tags)
   end
 
   def self.stop_words
-    @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject(&:blank?)
+    @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject { |word| word.to_s.length < 2 }
+  end
+
+  def self.adult_words
+    @@adult_words ||= File.read("lib/adult_words.txt").split("\n").reject { |word| word.to_s.length < 2 }
+  end
+
+  def self.auto_mapper_hash
+    {
+      depression: [
+        :sad,
+        :crying,
+      ],
+      suicide: [
+        :"self-harm"
+      ]
+    }
+  end
+
+  def self.add_similar_common_tags_to_tags_list(tags)
+    auto_mapper_hash.each do |mapped_to, mapped_from|
+      tags.push(mapped_to.to_s) if tags.include?(mapped_from.to_s)
+    end
+    tags
+  end
+
+  def self.adult_words_in_body(body)
+    auto_extract_tags_from_body(body) & adult_words
+  end
+  
+  def self.adult_words_in_list(list)
+    list & adult_words
+  end
+
+  def self.tags_list_contains_adult_words?(tags)
+    adult_words_in_list(tags).any?
   end
 
   def similar_tags(required_to_match=2)

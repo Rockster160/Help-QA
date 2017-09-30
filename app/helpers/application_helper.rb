@@ -12,6 +12,22 @@ module ApplicationHelper
     render partial: "layouts/errors_container", locals: { resource: resource, resource_class: resource_class, error_title: title, error_messages: error_messages }
   end
 
+  def hash_of_url_parts(url)
+    split_regex = /^((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/
+    hash = {}
+    url.scan(split_regex) do
+      hash = {
+        protocol: $1,
+        host: $3,
+        path: $4,
+        file: $7,
+        query: $7,
+        hash: $8
+      }
+    end
+    hash
+  end
+
   def timeago(time, options={})
     return unless time
     options[:class] ||= "timeago"

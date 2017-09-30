@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   post "history" => "posts#history_redirect", as: :history_redirect
   get "history(((((/:claimed_status)/:reply_count)/:user_status)/:tags)/:page)" => "posts#history", as: :history
 
+  get "url" => "replies#meta", as: :get_meta
   resources :posts, except: [ :destroy ] do
     get :vote
     resources :replies, only: [ :create ] do

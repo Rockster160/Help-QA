@@ -47,6 +47,37 @@ class RepliesController < ApplicationController
     end
   end
 
+  def meta
+    meta_data = Rails.cache.fetch(params[:url]) do
+      puts "Running Cache Fetch for: #{params[:url]}".colorize(:yellow)
+      res = RestClient.get(params[:url], timeout: 5)
+      doc = Nokogiri::HTML(res.body)
+      only_image = MIME::Types.type_for(params[:url]).first.try(:content_type)&.starts_with?("image")
+
+      tags = {}
+      doc.search("meta").each do |meta_tag|
+        meta_type = meta_tag["property"].presence || meta_tag["name"].presence
+        next unless meta_type.present?
+
+        tags[meta_type] = meta_tag["content"]
+      end
+      favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first
+
+      pp meta_data = {
+        only_image: only_image,
+        url: params[:url],
+        favicon: favicon_element.present? ? favicon_element["href"] : nil,
+        title: doc.title,
+        description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
+        image: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
+      }
+
+      meta_data
+    end
+
+    render partial: "layouts/link_preview", locals: meta_data
+  end
+
   private
 
   def reply_params

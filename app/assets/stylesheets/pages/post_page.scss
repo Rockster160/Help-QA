@@ -131,6 +131,54 @@
               font-size: 12px;
               line-height: 1.5;
             }
+
+            .link-img img {
+              width: 100%;
+              max-width: 300px;
+              height: auto;
+            }
+            .link-preview {
+              background: rgba(209, 209, 223, 0.5);
+              display: block;
+              max-width: 150px;
+              border-radius: 8px;
+              overflow: hidden;
+              color: black;
+              position: relative;
+
+              .hide-img {
+                position: absolute;
+                top: -5px;
+                right: 0;
+                line-height: 1;
+                text-align: center;
+                padding: 5px;
+                font-size: 30px;
+                color: #EEF;
+                opacity: 0.7;
+                text-shadow: 1px 1px 2px black;
+
+                &:hover {
+                  color: white;
+                  opacity: 1;
+                }
+              }
+              .link-preview-img {
+                width: 100%;
+                height: auto;
+              }
+              .title {
+                padding: 5px 5px 0;
+              }
+              .original-page {
+                padding: 0 5px 5px;
+                color: grey;
+
+                img {
+                  vertical-align: middle;
+                }
+              }
+            }
           }
           .reply-reciprocity {}
           &.highlight {

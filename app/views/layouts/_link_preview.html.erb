@@ -1,0 +1,15 @@
+<% if only_image %>
+  <a href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
+    <img src="<%= url %>" alt="<%= title || url %>">
+  </a>
+<% else %>
+  <a href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image %>" target="_blank">
+    <div class="title">
+      <%= truncate(title.to_s, length: 50, omission: "...") %>
+    </div>
+    <div class="original-page">
+      <%= image_tag favicon if favicon.present? %>
+      <%= hash_of_url_parts(url)[:host].to_s.gsub("www.", "") %>
+    </div>
+  </a>
+<% end %>
