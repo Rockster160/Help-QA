@@ -161,12 +161,14 @@
             .link-preview {
               background: rgba(209, 209, 223, 0.5);
               display: inline-block;
-              vertical-align: middle;
-              max-width: 150px;
+              vertical-align: top;
+              max-width: 137px;
               border-radius: 8px;
               overflow: hidden;
               color: black;
               position: relative;
+              margin: 5px;
+              font-size: 12px;
 
               .hide-img {
                 position: absolute;
@@ -190,14 +192,16 @@
                 height: auto;
               }
               .title {
-                padding: 5px 5px 0;
+                padding: 5px 10px 0;
               }
               .original-page {
-                padding: 0 5px 5px;
+                padding: 0 10px 5px;
                 color: grey;
+                font-size: 10px;
 
                 img {
                   vertical-align: middle;
+                  width: 22px;
                 }
               }
             }

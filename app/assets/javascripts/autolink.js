@@ -37,53 +37,58 @@ $(document).on("click", ".hide-img", function(evt) {
   return false
 })
 
-loadLinkImages = function(link_container) {
-  link_container.find("[data-img-src]").each(function() {
-    var link = $(this), src = link.attr("data-img-src")
-    link.removeAttr("data-img-src")
+loadLinkImages = function(link) {
+  var $link = $(link), src = $link.attr("data-img-src")
+  if (!src) { return }
+  $link.removeAttr("data-img-src")
 
-    var close_btn = $("<i>", {class: "fa fa-close"})
-    var close_container = $("<div>", {class: "hide-img"}).html(close_btn)
+  var close_btn = $("<i>", {class: "fa fa-close"})
+  var close_container = $("<div>", {class: "hide-img"}).html(close_btn)
 
-    if (!src.match(url_regex)) { return }
+  if (!src.match(url_regex)) { return }
 
-    $("<img>", {
-      src: src,
-      class: "link-preview-img",
-      load: function() {
-        link.prepend(this)
-        link.prepend(close_container)
-      }
-    })
+  $("<img>", {
+    src: src,
+    class: "link-preview-img",
+    load: function() {
+      $link.prepend(this)
+      $link.prepend(close_container)
+    }
   })
 }
 
 loadNextLink = function() {
   if ($.active != 0) { return }
-  var $link = $("[data-load-link]").first()
+  var $link = $("[data-load-link]").first(), new_link
 
   if ($link.length == 0) { return }
 
   $link.removeAttr("data-load-link")
-  var link_container = $link, link = $link.html()
+  var link_text = $link.html()
 
-  if (email_regex.test(link)) { return }
+  if (email_regex.test(link_text)) { return }
   var max_link_length = 60
-  var short_text_link = link.length > max_link_length ? (link.substr(0, max_link_length) + "...") : link
+  var short_text_link = link_text.length > max_link_length ? (link_text.substr(0, max_link_length) + "...") : link_text
 
-  $link.html("<a href=\"" + link + "\">" + short_text_link + "</a>")
+  $link.html('<a rel="nofollow" href="' + link_text + '">' + short_text_link + "</a>")
 
   $.ajax({
     url: "/url",
     type: "GET",
     timeout: 5000,
-    data: {url: link},
+    data: {url: link_text},
     success: function(data) {
-      link_container.html(data)
-      loadLinkImages(link_container)
+      if (data.inline) {
+        $link.html(data.html)
+      } else {
+        $link.html('<a rel="nofollow" href="' + link_text + '">[' + data.title + "]</a>")
+        new_link = $(data.html)
+        $link.closest("quote, .reply-content").append(new_link)
+      }
+      loadLinkImages(new_link)
     },
     error: function(data) {
-      console.log("Failed to load preview:", link);
+      console.log("Failed to load preview:", link_text);
     }
   })
 }

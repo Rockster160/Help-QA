@@ -82,7 +82,15 @@ class RepliesController < ApplicationController
       meta_data
     end
 
-    render partial: "layouts/link_preview", locals: meta_data
+    response_data = {
+      title: meta_data[:title].presence || meta_data[:url],
+      inline: meta_data[:video_url].present? || meta_data[:only_image],
+      html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
+    }
+
+    respond_to do |format|
+      format.json { render json: response_data }
+    end
   end
 
   private

@@ -9,12 +9,12 @@
     </div>
   </div>
 <% elsif only_image %>
-  <a href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
+  <a rel="nofollow" href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
     <span class="hidden"><%= truncate(url, length: 50, omission: "...") %></span>
     <img src="<%= url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
   </a>
 <% else %>
-  <a href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image %>" target="_blank">
+  <a rel="nofollow" href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image %>" target="_blank">
     <div class="title">
       <%= truncate(title.to_s, length: 50, omission: "...") %>
     </div>
