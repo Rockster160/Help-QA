@@ -38,8 +38,8 @@ hr {
 a {
   text-decoration: none;
   color: blue;
+  &:visited { color: #90C; }
   &:hover { color: red; }
-  &:visited { color: #909; }
 }
 
 .footer .links {

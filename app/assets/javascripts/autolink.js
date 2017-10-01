@@ -19,9 +19,9 @@ $(".ctr-posts.act-show").ready(function() {
 
     $(document).ajaxSend(registerJqxhr);
     $(document).ajaxComplete(unregisterJqxhr);
-  };
+  }
 
-  setTimeout(parseLinks, 1000)
+  setInterval(autolinkTick, 500)
 })
 
 var url_regex = /.(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
@@ -37,69 +37,87 @@ $(document).on("click", ".hide-img", function(evt) {
   return false
 })
 
-loadLinkImages = function(link) {
-  var $link = $(link), src = $link.attr("data-img-src")
-  if (!src) { return }
-  $link.removeAttr("data-img-src")
+loadImages = function() {
+  $("[data-img-src]").each(function() {
+    var $link = $(this), src = $link.attr("data-img-src")
+    if (!src) { return }
 
-  var close_btn = $("<i>", {class: "fa fa-close"})
-  var close_container = $("<div>", {class: "hide-img"}).html(close_btn)
+    $link.removeAttr("data-img-src")
 
-  if (!src.match(url_regex)) { return }
+    var close_btn = $("<i>", {class: "fa fa-close"})
+    var close_container = $("<div>", {class: "hide-img"}).html(close_btn)
 
-  $("<img>", {
-    src: src,
-    class: "link-preview-img",
-    load: function() {
-      $link.prepend(this)
-      $link.prepend(close_container)
+    if (!src.match(url_regex)) { return }
+
+    $("<img>", {
+      src: src,
+      class: "link-preview-img",
+      load: function() {
+        $link.prepend(this)
+        $link.prepend(close_container)
+      }
+    })
+  })
+}
+
+addCards = function(cards_data) {
+  $(cards_data).each(function() {
+    var card = this
+    var $link = $('[data-loading-preview] > a[href="' + card.url + '"]')
+
+    if (card.inline) {
+      $link.html(card.html)
+    } else {
+      $link.html('<a rel="nofollow" href="' + card.url + '">[' + card.title + "]</a>")
+      new_link = $(card.html)
+      $link.closest("quote, .reply-content").append(new_link)
     }
   })
 }
 
-loadNextLink = function() {
+loadAllLinks = function() {
   if ($.active != 0) { return }
-  var $link = $("[data-load-link]").first(), new_link
+  var $links = $("[data-load-link]"), links_to_generate = []
 
-  if ($link.length == 0) { return }
+  if ($links.length == 0) { return }
 
-  $link.removeAttr("data-load-link")
-  var link_text = $link.html()
+  $links.removeAttr("data-load-link").attr("data-loading-preview", "")
 
-  if (email_regex.test(link_text)) { return }
-  var max_link_length = 60
-  var short_text_link = link_text.length > max_link_length ? (link_text.substr(0, max_link_length) + "...") : link_text
+  $links.each(function() {
+    var $link = $(this), link_href = $link.html()
 
-  $link.html('<a rel="nofollow" href="' + link_text + '">' + short_text_link + "</a>")
+    if (email_regex.test(link_href)) { return }
+    var max_link_length = 60
+    var short_text_link = link_href.length > max_link_length ? (link_href.substr(0, max_link_length) + "...") : link_href
+
+    $link.html('<a rel="nofollow" style="white-space: nowrap;" href="' + link_href + '"><i class="fa fa-spinner fa-spin"></i> ' + short_text_link + "</a>")
+
+    links_to_generate.push(link_href)
+  })
+  // links_to_generate.filter(function(link) { return link.indexOf("wcgw") >= 0 })
 
   $.ajax({
-    url: "/url",
+    url: "/url?" + $.param({urls: links_to_generate}),
     type: "GET",
-    timeout: 5000,
-    data: {url: link_text},
     success: function(data) {
-      if (data.inline) {
-        $link.html(data.html)
-      } else {
-        $link.html('<a rel="nofollow" href="' + link_text + '">[' + data.title + "]</a>")
-        new_link = $(data.html)
-        $link.closest("quote, .reply-content").append(new_link)
-      }
-      loadLinkImages(new_link)
+      addCards(data)
     },
     error: function(data) {
-      console.log("Failed to load preview:", link_text);
+      console.log("Failed to load previews");
     }
   })
 }
 
 parseLinks = function() {
-  $(".reply-content").each(function() {
-    var new_body = $(this).html()
+  $(".reply-content").not("[data-parsed-links]").each(function() {
+    $(this).attr("data-parsed-links", "")
+    var new_body = $(this).html()//.attr("data-original-content")
 
     new_body = new_body.replace(/\<a.*?\<\/a\>/, function(found) {
-      return found
+      return found // This does nothing?
     })
+
+    new_body = new_body.replace(/\&amp\;/, "&") // Hack because for some reason JS is picking up the escaped codes
 
     new_body = new_body.replace(url_regex, function(found) {
       var pre_char = found.charAt(0)
@@ -108,14 +126,15 @@ parseLinks = function() {
       if (pre_char === "\"") { return pre_char + found }
       if (pre_char === "\\") { return found }
 
-      return pre_char + "<span data-load-link>" + found + "</span>"
+      return pre_char + ' <span data-load-link>' + found + "</span>"
     })
 
     $(this).html(new_body)
   })
 }
 
-tick = function() {
-  loadNextLink()
+autolinkTick = function() {
+  parseLinks()
+  loadAllLinks()
+  loadImages()
 }
-setInterval(tick, 500)

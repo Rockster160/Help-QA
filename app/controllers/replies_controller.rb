@@ -1,4 +1,5 @@
 class RepliesController < ApplicationController
+  include LinkPreviewHelper
 
   def index
     @replies = Reply.order(created_at: :desc).page(params[:page]).per(10)
@@ -48,48 +49,8 @@ class RepliesController < ApplicationController
   end
 
   def meta
-    meta_data = Rails.cache.fetch(params[:url]) do
-      puts "Running Cache Fetch for: #{params[:url]}".colorize(:yellow)
-      res = RestClient.get(params[:url])
-      doc = Nokogiri::HTML(res.body)
-      only_image = MIME::Types.type_for(params[:url]).first.try(:content_type)&.starts_with?("image")
-
-      tags = {}
-      doc.search("meta").each do |meta_tag|
-        meta_type = meta_tag["property"].presence || meta_tag["name"].presence
-        next unless meta_type.present?
-
-        tags[meta_type] = meta_tag["content"]
-      end
-      favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first
-
-      video_url = tags["twitter:player"]
-      iframe_video_url = video_url if video_url.present? && (video_url.include?("player.vimeo") || video_url.include?("youtube.com/embed"))
-      iframe_video_url ||= params[:url] if params[:url].present? && (params[:url].include?("player.vimeo") || params[:url].include?("youtube.com/embed"))
-      iframe_video_url ||= "https://player.vimeo.com/video/#{params[:url][/\d+$/]}" if params[:url] =~ /vimeo.com\/\d+$/
-
-      pp meta_data = {
-        iframe_video_url: iframe_video_url,
-        video_url: iframe_video_url.presence || video_url.presence,
-        only_image: only_image,
-        url: params[:url],
-        favicon: favicon_element.present? ? favicon_element["href"] : nil,
-        title: doc.title,
-        description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
-        image: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
-      }
-
-      meta_data
-    end
-
-    response_data = {
-      title: meta_data[:title].presence || meta_data[:url],
-      inline: meta_data[:video_url].present? || meta_data[:only_image],
-      html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
-    }
-
     respond_to do |format|
-      format.json { render json: response_data }
+      format.json { render json: generate_previews_for_urls }
     end
   end
 
