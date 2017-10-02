@@ -1,0 +1,20 @@
+$emojiSheetIconSize: 54px;
+$largeEmojiSize: 64px;
+$smallEmojiSize: 20px;
+
+@mixin spriteSheet($x, $y, $px-to-block) {
+  background-position: ($x * $px-to-block * -1) ($y * $px-to-block * -1);
+}
+@mixin emojiSheet($x, $y) {
+  background-image: image-url("emoji_sheet.png");
+
+  $ratio: $smallEmojiSize / $emojiSheetIconSize;
+  zoom: $ratio;
+  @include spriteSheet($x, $y, $emojiSheetIconSize);
+
+  &.large {
+    $ratio: $largeEmojiSize / $emojiSheetIconSize;
+    zoom: $ratio;
+    @include spriteSheet($x, $y, $emojiSheetIconSize);
+  }
+}

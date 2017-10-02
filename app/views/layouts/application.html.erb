@@ -32,7 +32,9 @@
         <a href="<%= feedback_path %>">Feedback</a>
       </div>
     </div>
-    <div id="pre-load" class="hidden"></div>
+    <div id="pre-load" class="hidden">
+      <%= emoji("blank") %>
+    </div>
     <%= yield(:modals) %>
     <%= yield(:post_body_scripts) %>
   </body>

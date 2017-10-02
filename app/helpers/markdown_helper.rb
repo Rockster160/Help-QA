@@ -12,6 +12,7 @@ module MarkdownHelper
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present?
+    text = parse_emoji(text)
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -23,6 +24,17 @@ module MarkdownHelper
     text[-1] = "" while text[-1] =~ / \n\r/ # Remove New Lines after post.
     text[0..text.index("</p>") + 3] = "" if text.index(/<p>[ |\n|\r]*?<\/p>/).try(:zero?) # Remove empty paragraph tags before post.
     text
+  end
+
+  def parse_emoji(text)
+    not_between_carrots_regex = /[^<>]+(?![^<]*>)/
+    emoji_regex = /([^a-zA-Z0-9\\]?)\:([^ \n]+?)\:/
+
+    text.gsub(not_between_carrots_regex) do |found_match|
+      found_match.gsub(emoji_regex) do |found_emoji|
+        "#{$1}#{emoji($2)}"
+      end
+    end
   end
 
   def parse_directive_poll(text, post:)
