@@ -127,19 +127,19 @@
     "mischievous",
     "secret"
   ],
-  "stuck_out_tongue_winking_eye": [
+  "playful": [
     "face",
     "prank",
     "childish",
-    "playful",
     "mischievous",
+    "stuck_out_tongue_winking_eye",
     "smile"
   ],
-  "stuck_out_tongue_closed_eyes": [
+  "mischievous": [
     "face",
     "prank",
     "playful",
-    "mischievous",
+    "stuck_out_tongue_closed_eyes",
     "smile"
   ],
   "grinning": [
@@ -356,12 +356,6 @@
     "munch",
     "omg"
   ],
-  "neckbeard": [
-    "nerd",
-    "geek",
-    "nerdy",
-    "face"
-  ],
   "tired_face": [
     "sick",
     "whine",
@@ -574,18 +568,18 @@
     "bomb",
     "explode",
     "collision",
-    "blown"
-  ],
-  "collision": [
-    "accident,fight,boom"
+    "blown",
+    "fight",
+    "accident"
   ],
   "anger": [
     "angry",
     "mad",
     "frustrated"
   ],
-  "exclamation": [
+  "red_exclamation": [
     "heavy_exclamation_mark",
+    "shocked",
     "danger",
     "surprise",
     "punctuation",
@@ -647,23 +641,17 @@
     "cook",
     "flame"
   ],
-  "hankey": [
-    "poop",
+  "poop": [
+    "shit",
+    "hankey",
     "shitface",
     "fail",
     "turd"
   ],
-  "poop": [
-    "shit",
-    "turd"
-  ],
-  "shit": [
-    "poop"
-  ],
-  "plus_one": [
+  "thumbsup": [
     "+1",
     "plus_1",
-    "thumbsup",
+    "plus_one",
     "yes",
     "awesome",
     "good",
@@ -673,31 +661,24 @@
     "hand",
     "like"
   ],
-  "thumbsup": [
-    "like"
-  ],
-  "minus_one": [
+  "thumbsdown": [
     "-1",
     "minus_1",
-    "thumbsdown",
+    "minus_one",
     "no",
     "dislike",
     "hand"
-  ],
-  "thumbsdown": [
-    "dislike"
   ],
   "ok_hand": [
     "fingers",
     "limbs",
     "perfect"
   ],
-  "punch": [
-    "pound"
-  ],
   "facepunch": [
     "angry",
     "violence",
+    "pound",
+    "punch",
     "fist",
     "hit",
     "attack",
@@ -736,9 +717,6 @@
     "ban",
     "raised_hand"
   ],
-  "raised_hand": [
-    "stop"
-  ],
   "open_hands": [
     "fingers",
     "butterfly"
@@ -776,11 +754,6 @@
     "namaste",
     "highfive"
   ],
-  "point_up_2": [
-    "fingers",
-    "hand",
-    "direction"
-  ],
   "clap": [
     "hands",
     "praise",
@@ -795,20 +768,6 @@
     "summer",
     "strong"
   ],
-  "metal": [
-    "fingers",
-    "rocknroll",
-    "concert",
-    "band"
-  ],
-  "fu": [
-    "fuck",
-    "finger",
-    "dislike",
-    "thumbsdown",
-    "disapprove",
-    "no"
-  ],
   "runner": [
     "sport",
     "man",
@@ -816,9 +775,6 @@
     "exercise",
     "race",
     "running"
-  ],
-  "running": [
-    "sport"
   ],
   "couple": [
     "pair",
@@ -843,7 +799,8 @@
     "people",
     "human"
   ],
-  "two_men_holding_hands": [
+  "male_couple": [
+    "two_men_holding_hands",
     "gay",
     "pair",
     "couple",
@@ -854,7 +811,8 @@
     "people",
     "human"
   ],
-  "two_women_holding_hands": [
+  "female_couple": [
+    "two_women_holding_hands",
     "gay",
     "pair",
     "friendship",
@@ -893,7 +851,8 @@
     "woman",
     "nope"
   ],
-  "information_desk_person": [
+  "info_person": [
+    "information_desk",
     "female",
     "girl",
     "woman",
@@ -904,12 +863,12 @@
     "girl",
     "woman"
   ],
-  "bride_with_veil": [
+  "bride_veil": [
     "couple",
     "marriage",
     "wedding"
   ],
-  "person_with_pouting_face": [
+  "person_pouting": [
     "female",
     "girl",
     "woman"
@@ -936,7 +895,7 @@
     "dating",
     "marriage"
   ],
-  "couple_with_heart": [
+  "couple_heart": [
     "heart",
     "pair",
     "love",
@@ -1011,19 +970,20 @@
     "male",
     "men"
   ],
-  "person_with_blond_hair": [
+  "blond_hair": [
+    "person_blond_hair",
     "man",
     "male",
     "boy",
     "blonde",
     "guy",
-    "man_with_blonde_hair"
+    "man_blonde_hair"
   ],
-  "man_with_gua_pi_mao": [
+  "gua_pi_mao": [
     "male",
     "boy"
   ],
-  "man_with_turban": [
+  "man_turban": [
     "male",
     "indian",
     "hinduism",
@@ -1249,61 +1209,6 @@
     "speech",
     "thinking"
   ],
-  "feelsgood": [
-    "doom",
-    "oldschool"
-  ],
-  "finnadie": [
-    "doom",
-    "oldschool"
-  ],
-  "goberserk": [
-    "doom",
-    "rage",
-    "bloody",
-    "hurt"
-  ],
-  "godmode": [
-    "doom",
-    "oldschool"
-  ],
-  "hurtrealbad": [
-    "mad",
-    "injured",
-    "doom",
-    "oldschool"
-  ],
-  "rage1": [
-    "angry",
-    "mad",
-    "hate",
-    "despise"
-  ],
-  "rage2": [
-    "angry",
-    "mad",
-    "hate",
-    "despise"
-  ],
-  "rage3": [
-    "angry",
-    "mad",
-    "hate",
-    "despise"
-  ],
-  "rage4": [
-    "angry",
-    "mad",
-    "hate",
-    "despise"
-  ],
-  "suspect": [
-    "mad"
-  ],
-  "trollface": [
-    "internet",
-    "meme"
-  ],
   "sunny": [
     "weather",
     "sun",
@@ -1347,12 +1252,6 @@
     "thunder",
     "lightning bolt",
     "fast"
-  ],
-  "cyclone": [
-    "weather",
-    "swirl",
-    "blue",
-    "cloud"
   ],
   "foggy": [
     "weather",
@@ -1399,13 +1298,13 @@
     "rodent",
     "mouse"
   ],
-  "rabbit_face": [
+  "bunny_face": [
     "animal",
     "nature",
     "pet",
     "spring",
     "magic",
-    "bunny_face"
+    "rabbit_face"
   ],
   "wolf_face": [
     "dog",
@@ -1686,7 +1585,7 @@
     "chicken",
     "nature"
   ],
-  "dog2": [
+  "dog": [
     "animal",
     "nature",
     "friend",
@@ -1884,7 +1783,7 @@
     "sea",
     "beach"
   ],
-  "globe_with_meridians": [
+  "globe_meridians": [
     "earth",
     "international",
     "world",
@@ -1892,12 +1791,12 @@
     "interweb",
     "i18n"
   ],
-  "sun_with_face": [
+  "sun_face": [
     "nature",
     "morning",
     "sky"
   ],
-  "full_moon_with_face": [
+  "full_moon_face": [
     "nature",
     "twilight",
     "planet",
@@ -1906,7 +1805,7 @@
     "evening",
     "sleep"
   ],
-  "new_moon_with_face": [
+  "new_moon_face": [
     "nature",
     "twilight",
     "planet",
@@ -1943,7 +1842,6 @@
     "sleep"
   ],
   "waxing_gibbous_moon": [
-    ""
   ],
   "full_moon": [
     "nature",
@@ -1983,7 +1881,7 @@
     "evening",
     "sleep"
   ],
-  "last_quarter_moon_with_face": [
+  "waning_moon_face": [
     "nature",
     "twilight",
     "planet",
@@ -1992,7 +1890,7 @@
     "evening",
     "sleep"
   ],
-  "first_quarter_moon_with_face": [
+  "waxing_moon_face": [
     "nature",
     "twilight",
     "planet",
@@ -2044,14 +1942,6 @@
     "morning",
     "fall",
     "spring"
-  ],
-  "octocat": [
-    "github",
-    "animal",
-    "octopus"
-  ],
-  "squirrel": [
-    "animal"
   ],
   "bamboo": [
     "plant",
@@ -2256,13 +2146,10 @@
     "gadgets",
     "dial"
   ],
-  "phone": [
+  "telephone": [
     "technology",
     "communication",
     "dial",
-    "telephone"
-  ],
-  "telephone": [
     "calling"
   ],
   "telephone_receiver": [
@@ -2360,7 +2247,7 @@
     "tape",
     "cassette"
   ],
-  "mag": [
+  "mag_left": [
     "magnifying",
     "glass",
     "search",
@@ -2385,11 +2272,11 @@
     "password",
     "padlock"
   ],
-  "lock_with_ink_pen": [
+  "lock_ink_pen": [
     "security",
     "secret"
   ],
-  "closed_lock_with_key": [
+  "closed_lock_key": [
     "security",
     "privacy"
   ],
@@ -2434,6 +2321,7 @@
     "phone"
   ],
   "email": [
+    "send",
     "envelope",
     "letter",
     "postal",
@@ -2551,19 +2439,12 @@
     "payment",
     "shopping"
   ],
-  "money_with_wings": [
+  "money_wings": [
     "money",
     "dollar",
     "bills",
     "payment",
     "sale"
-  ],
-  "e_mail": [
-    "mail",
-    "send",
-    "communication",
-    "inbox",
-    "email"
   ],
   "inbox_tray": [
     "email",
@@ -2589,12 +2470,12 @@
     "communication",
     "inbox"
   ],
-  "mailbox_with_mail": [
+  "mailbox_mail": [
     "email",
     "inbox",
     "communication"
   ],
-  "mailbox_with_no_mail": [
+  "mailbox_no_mail": [
     "email",
     "inbox"
   ],
@@ -2610,11 +2491,11 @@
     "entry",
     "exit"
   ],
-  "smoking": [
+  "cigarette": [
     "smoke",
     "kills",
     "tobacco",
-    "cigarette",
+    "smoking",
     "joint"
   ],
   "bomb": [
@@ -2629,8 +2510,8 @@
     "pistol",
     "revolver"
   ],
-  "hocho": [
-    "knife",
+  "knife": [
+    "hocho",
     "blade",
     "cutlery",
     "kitchen",
@@ -2660,7 +2541,7 @@
     "paper",
     "information"
   ],
-  "page_with_curl": [
+  "page_curl": [
     "documents",
     "office",
     "paper"
@@ -2677,9 +2558,10 @@
     "presentation",
     "stats"
   ],
-  "chart_with_upwards_trend": [
+  "upwards_trend": [
     "graph",
-    "presenetation",
+    "chart",
+    "presentation",
     "stats",
     "recovery",
     "business",
@@ -2689,8 +2571,9 @@
     "good",
     "success"
   ],
-  "chart_with_downwards_trend": [
+  "downwards_trend": [
     "graph",
+    "chart",
     "presentation",
     "stats",
     "recession",
@@ -2814,7 +2697,7 @@
     "paper",
     "study"
   ],
-  "notebook_with_decorative_cover": [
+  "brown_notebook": [
     "classroom",
     "notes",
     "record",
@@ -3059,14 +2942,15 @@
     "play",
     "magic"
   ],
-  "flower_playing_cards": [
+  "flower_cards": [
     "floral",
+    "playing_cards",
     "game",
     "sunset",
     "red"
   ],
-  "game_die": [
-    "dice",
+  "dice": [
+    "game_die",
     "random",
     "tabbletop",
     "play",
@@ -3088,11 +2972,11 @@
     "film",
     "record"
   ],
-  "memo": [
+  "pencil": [
     "write",
     "documents",
     "stationery",
-    "pencil",
+    "memo",
     "paper",
     "writing",
     "legal",
@@ -3100,9 +2984,6 @@
     "quiz",
     "test",
     "study"
-  ],
-  "pencil": [
-    "write"
   ],
   "book": [
     "open_book",
@@ -3144,7 +3025,6 @@
     "instrument"
   ],
   "shoe": [
-    ""
   ],
   "sandal": [
     "shoes",
@@ -3169,12 +3049,10 @@
     "fashion"
   ],
   "shirt": [
-    "fashion",
-    "cloth,formal"
-  ],
-  "tshirt": [
+    "tshirt",
     "fashion",
     "cloth",
+    "cloth,formal",
     "casual,tee"
   ],
   "necktie": [
@@ -3195,7 +3073,7 @@
     "fashion",
     "shopping"
   ],
-  "running_shirt_with_sash": [
+  "running_shirt_sash": [
     "play",
     "pageant"
   ],
@@ -3294,7 +3172,7 @@
     "dork",
     "geek"
   ],
-  "fishing_pole_and_fish": [
+  "fishing_pole": [
     "food",
     "hobby",
     "summer"
@@ -3664,7 +3542,7 @@
     "building",
     "home"
   ],
-  "house_with_garden": [
+  "house_garden": [
     "building",
     "home",
     "plant",
@@ -3861,7 +3739,8 @@
     "transportation",
     "titanic",
     "deploy",
-    "cruise"
+    "cruise",
+    "shipit"
   ],
   "speedboat": [
     "vehicle",
@@ -3877,9 +3756,6 @@
     "water",
     "sailing",
     "sailboat"
-  ],
-  "sailboat": [
-    "vehicle"
   ],
   "rowboat": [
     "vehicle",
@@ -3975,14 +3851,9 @@
     "transportation",
     "blue_car_front"
   ],
-  "car": [
-    "vehicle",
-    "car",
-    "red",
-    "transportation"
-  ],
   "red_car": [
-    "vehicle"
+    "vehicle",
+    "transportation"
   ],
   "taxi": [
     "vehicle",
@@ -4068,6 +3939,7 @@
     "transportation",
     "carriage",
     "public",
+    "railway_car",
     "travel"
   ],
   "station": [
@@ -4076,13 +3948,9 @@
     "public",
     "train_station"
   ],
-  "train2": [
+  "oncoming_train": [
     "vehicle",
-    "transportation"
-  ],
-  "bullettrain_front": [
-    "vehicle",
-    "oncoming_train",
+    "bullettrain_front",
     "transportation",
     "speed",
     "fast",
@@ -4100,12 +3968,6 @@
     "train"
   ],
   "monorail": [
-    "vehicle",
-    "transportation",
-    "tram",
-    "train"
-  ],
-  "railway_car": [
     "vehicle",
     "transportation",
     "tram",
@@ -4230,7 +4092,9 @@
     "here",
     "drop"
   ],
-  "triangular_flag_on_post": [
+  "flagpole": [
+    "triangular_flag_on_post",
+    "red_flag",
     "mark",
     "milestone",
     "place"
@@ -4304,9 +4168,10 @@
     "country",
     "banner"
   ],
-  "gb": [
+  "uk": [
     "great britain",
     "united kingdom",
+    "gb",
     "banner",
     "nation",
     "flag",
@@ -4316,10 +4181,6 @@
     "english",
     "england",
     "union jack"
-  ],
-  "uk": [
-    "great britain",
-    "united kingdom"
   ],
   "de": [
     "germany",
@@ -4492,19 +4353,16 @@
     "direction",
     "top"
   ],
-  "leftwards_arrow_with_hook": [
-    "back",
-    "return",
-    "blue_square",
-    "undo"
-  ],
   "arrow_right_hook": [
     "blue_square",
+    "leftwards_arrow_hook",
     "return",
-    "rotade",
+    "undo",
+    "back",
+    "rotate",
     "direction"
   ],
-  "left_right_arrow": [
+  "arrow_left_right": [
     "shape",
     "direction"
   ],
@@ -4527,17 +4385,19 @@
     "round",
     "repeat"
   ],
-  "arrows_counterclockwise": [
+  "sync": [
     "blue_square",
-    "sync",
+    "arrows_counterclockwise",
     "cycle"
   ],
   "rewind": [
     "play",
+    "arrow_double_left",
     "blue_square"
   ],
   "fast_forward": [
     "blue_square",
+    "arrow_double_right",
     "play",
     "speed",
     "continue"
@@ -4553,9 +4413,9 @@
     "yes",
     "blue_square"
   ],
-  "twisted_rightwards_arrows": [
+  "shuffle": [
     "blue_square",
-    "shuffle",
+    "twisted_rightwards_arrows",
     "music",
     "random"
   ],
@@ -4571,10 +4431,6 @@
     "blue_square",
     "words",
     "start"
-  ],
-  "top_square": [
-    "words",
-    "blue_square"
   ],
   "up": [
     "blue_square",
@@ -4647,16 +4503,6 @@
     "chinese",
     "point",
     "green_square",
-    "kanji"
-  ],
-  "u6708": [
-    "yuè",
-    "yue",
-    "chinese",
-    "month",
-    "moon",
-    "japanese",
-    "orange_square",
     "kanji"
   ],
   "u6709": [
@@ -4764,18 +4610,6 @@
     "a11y",
     "accessibility"
   ],
-  "metro": [
-    "transportation",
-    "blue_square",
-    "mrt",
-    "underground",
-    "tube"
-  ],
-  "baggage_claim": [
-    "blue_square",
-    "airport",
-    "transport"
-  ],
   "accept": [
     "ok",
     "good",
@@ -4797,7 +4631,8 @@
     "cleaning",
     "faucet"
   ],
-  "put_litter_in_its_place": [
+  "litter_sign": [
+    "put_litter_in_its_place",
     "trash",
     "blue_square",
     "sign",
@@ -4825,10 +4660,6 @@
   "passport_control": [
     "custom",
     "blue_square"
-  ],
-  "left_luggage": [
-    "blue_square",
-    "travel"
   ],
   "customs": [
     "passport",
@@ -4921,7 +4752,8 @@
     "stop",
     "circle"
   ],
-  "eight_spoked_asterisk": [
+  "green_asterisk": [
+    "eight_spoked",
     "star",
     "sparkle",
     "green_square"
@@ -4933,9 +4765,9 @@
     "good",
     "fireworks"
   ],
-  "eight_pointed_black_star": [
+  "orange_arrows": [
     "orange_square",
-    "orange_arrows",
+    "eight_pointed_black_star",
     "shape",
     "polygon"
   ],
@@ -5072,7 +4904,8 @@
     "jewish",
     "hexagram"
   ],
-  "negative_squared_cross_mark": [
+  "green_cross": [
+    "negative_squared_cross_mark",
     "x",
     "green_square",
     "no",
@@ -5097,11 +4930,11 @@
     "red_square",
     "letter"
   ],
-  "diamond_shape_with_a_dot_inside": [
+  "crystal": [
     "jewel",
     "blue",
     "gem",
-    "crystal",
+    "diamond_shape_a_dot_inside",
     "fancy"
   ],
   "recycle": [
@@ -5303,11 +5136,6 @@
     "delete",
     "remove"
   ],
-  "red_exclamation": [
-    "heavy_exclamation_mark",
-    "shocked",
-    "surprised"
-  ],
   "bangbang": [
     "exclamation",
     "surprise"
@@ -5352,7 +5180,7 @@
     "ok",
     "nike"
   ],
-  "ballot_box_with_check": [
+  "ballot_box_check": [
     "ok",
     "agree",
     "confirm",
@@ -5408,17 +5236,6 @@
     "shape",
     "icon"
   ],
-  "black_medium_small_square": [
-    "icon",
-    "shape",
-    "button"
-  ],
-  "white_medium_small_square": [
-    "shape",
-    "stone",
-    "icon",
-    "button"
-  ],
   "black_medium_square": [
     "shape",
     "button",
@@ -5470,7 +5287,7 @@
     "error",
     "danger"
   ],
-  "large_blue_circle": [
+  "blue_circle": [
     "shape",
     "icon",
     "button"
@@ -5495,24 +5312,16 @@
     "jewel",
     "gem"
   ],
-  "small_red_triangle": [
+  "red_triangle_up": [
     "shape",
     "direction",
     "up",
     "top"
   ],
-  "small_red_triangle_down": [
+  "red_triangle_down": [
     "shape",
     "direction",
     "bottom"
-  ],
-  "shipit": [
-    "squirrel",
-    "detective",
-    "animal",
-    "sherlock",
-    "inspector",
-    "boat"
   ],
   "tunnel_train": [
     "transportation",
