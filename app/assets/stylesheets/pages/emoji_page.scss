@@ -1,0 +1,18 @@
+.act-emoji {
+  .emoji-loader {
+    .emoji-container {
+      display: inline-block;
+      vertical-align: top;
+      width: 200px;
+      margin: 10px;
+      text-align: center;
+
+      .emoji-wrapper {
+        .emoji, .emoji-name { vertical-align: middle; }
+      }
+      .aliases {
+        font-size: 10px;
+      }
+    }
+  }
+}

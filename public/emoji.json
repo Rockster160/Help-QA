@@ -14,16 +14,6 @@
     "numbers",
     "blue_square"
   ],
-  "bowtie": [
-    "classy",
-    "bow",
-    "face",
-    "formal",
-    "fashion",
-    "suit",
-    "magic",
-    "circus"
-  ],
   "smile": [
     "happy",
     "cheerful",
@@ -32,13 +22,8 @@
     "funny",
     "haha",
     "laugh",
-    "like"
-  ],
-  "simple_smile": [
-    "smile",
+    "like",
     "guy",
-    "happy",
-    "cheerful",
     "smiling"
   ],
   "laughing": [
@@ -126,9 +111,7 @@
     "phew",
     "massage",
     "happiness",
-    "satisfied"
-  ],
-  "satisfied": [
+    "satisfied",
     "contented"
   ],
   "grin": [

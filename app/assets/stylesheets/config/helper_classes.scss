@@ -6,7 +6,7 @@
 
 .no-list { list-style-type: none; }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 .full-width { width: 100%; }
 
 .grayscale { filter: grayscale(100%); }
