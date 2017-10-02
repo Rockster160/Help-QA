@@ -2,7 +2,6 @@
   display: inline-block;
   position: relative;
   font-weight: bold;
-  background-color: #fff;
   background-repeat: no-repeat;
   overflow: hidden;
   height: $emojiSheetIconSize;
@@ -335,7 +334,7 @@
   &.kimono                 { @include emojiSheet(24, 10); }
   &.dress                  { @include emojiSheet(25, 10); }
   &.jeans                  { @include emojiSheet(26, 10); }
-  &.tshirt                 { @include emojiSheet(27, 10); }
+  &.shirt                  { @include emojiSheet(27, 10); }
   &.necktie                { @include emojiSheet(28, 10); }
 
   &.arrow_heading_up       { @include emojiSheet(0, 11); }
