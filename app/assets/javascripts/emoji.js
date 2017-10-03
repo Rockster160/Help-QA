@@ -75,6 +75,34 @@ $(document).ready(function() {
     filterEmojiFromText(search_text)
   })
 
+  function setSelectionRange(input, selectionStart, selectionEnd) {
+    if (input.setSelectionRange) {
+      input.focus();
+      input.setSelectionRange(selectionStart, selectionEnd);
+    } else if (input.createTextRange) {
+      var range = input.createTextRange();
+      range.collapse(true);
+      range.moveEnd('character', selectionEnd);
+      range.moveStart('character', selectionStart);
+      range.select();
+    }
+  }
+
+  getCoordsOfCaretInField = function(field) {
+    var selPos = caretPositionInField(field)
+    var lines = $(field).val().split("\n")
+    var currentLine = 0, currentCol = selPos
+    lines.find(function(line) {
+      if (line.length >= currentCol) {
+        return true
+      } else {
+        currentCol -= line.length + 1
+        currentLine += 1
+      }
+    })
+    return [currentCol, currentLine]
+  }
+
   caretPositionInField = function(text_field) {
     var caretPos = 0
     if (document.selection) {
@@ -89,14 +117,10 @@ $(document).ready(function() {
   }
 
   wordFromPosition = function(text, caretPos) {
-    var index = text.indexOf(caretPos)
-    var preText = text.substring(0, caretPos)
-    if (preText.indexOf(" ") > 0) {
-      var words = preText.split(" ")
-      return words[words.length - 1]
-    } else {
-      return preText
-    }
+    var startIdx = caretPos - 1, endIdx = caretPos - 1
+    while (text[endIdx] != undefined && text[endIdx] != " " && text[endIdx] != "\n") { endIdx += 1; }
+    while (text[startIdx] != undefined && text[startIdx] != " " && text[startIdx] != "\n") { startIdx -= 1 }
+    return text.substring(startIdx + 1, endIdx)
   }
 
   currentWordForField = function(field) {
@@ -107,35 +131,203 @@ $(document).ready(function() {
   alignAutoFillerToFocusedField = function() {
     var focusedField = $(document.activeElement)
     if (!focusedField.hasClass("emoji-field")) { return }
-    var fieldPos = focusedField.position()
+    var fieldPos = focusedField.offset()
     var popup = $(".field-autofiller")
     var popupHeight = popup.height()
     popup.css({ top: fieldPos.top - popupHeight, left: fieldPos.left, width: focusedField.outerWidth() })
   }
 
+  emojiPopupVisible = function() {
+    return !$(".field-autofiller").hasClass("hidden")
+  }
+
+  getVisibleEmoji = function() {
+    if (!emojiPopupVisible()) { return $("") }
+    var parentBB = $(".field-autofiller").get(0).getBoundingClientRect()
+    return $(".emoji-container:not(.hidden)").filter(function() {
+      var emojiBB = this.getBoundingClientRect()
+      return emojiBB.top + emojiBB.height < parentBB.top + parentBB.height
+    })
+  }
+
+  selectEmoji = function(emoji) {
+    $(".emoji-container").removeClass("selected")
+    $(emoji).addClass("selected")
+  }
+
+  getEmojiAtPoint = function(emojis, point) {
+    return emojis.toArray().find(function(emoji) {
+      var thisBB = emoji.getBoundingClientRect()
+      return thisBB.left < point.left && thisBB.top < point.top &&
+        thisBB.right > point.left && thisBB.bottom > point.top
+    })
+  }
+
+  getEmojiAroundPoint = function(emojis, point) {
+    var withRadius = 5
+    var emoji
+    var nextPoint = point
+
+    emoji = getEmojiAtPoint(emojis, nextPoint)
+    if ($(emoji).length > 0) { return emoji }
+
+    nextPoint = point
+    nextPoint.left = point.left - withRadius
+    emoji = getEmojiAtPoint(emojis, nextPoint)
+    if ($(emoji).length > 0) { return emoji }
+
+    nextPoint = point
+    nextPoint.right = point.right - withRadius
+    emoji = getEmojiAtPoint(emojis, nextPoint)
+    if ($(emoji).length > 0) { return emoji }
+  }
+
+  selectNextEmoji = function() {
+    var visibleEmoji = getVisibleEmoji()
+    var currentEmoji = $(".emoji-container.selected")
+    var selectedIdx = visibleEmoji.index(currentEmoji)
+    var newEmoji = visibleEmoji[selectedIdx + 1] || getVisibleEmoji().first()
+    selectEmoji(newEmoji)
+  }
+
+  selectPrevEmoji = function() {
+    var visibleEmoji = getVisibleEmoji()
+    var currentEmoji = $(".emoji-container.selected")
+    var selectedIdx = visibleEmoji.index(currentEmoji)
+    var newEmoji = visibleEmoji[selectedIdx - 1] || getVisibleEmoji().last()
+    selectEmoji(newEmoji)
+  }
+
+  selectDownRowEmoji = function() {
+    var visibleEmoji = getVisibleEmoji()
+    var currentEmoji = $(".emoji-container.selected")
+    var emojiBB = currentEmoji.get(0).getBoundingClientRect()
+    var centerPoint = { left: emojiBB.left + (emojiBB.width / 2), top: emojiBB.top + (emojiBB.height / 2) }
+    var newEmoji
+    // Below - Default, check next row down
+    var belowPoint = { left: centerPoint.left, top: centerPoint.top + emojiBB.height }
+    newEmoji = getEmojiAroundPoint(visibleEmoji, belowPoint)
+    if (newEmoji) { return selectEmoji(newEmoji) }
+    // Top - Already at the bottom, move to the top
+    var topPoint = { left: centerPoint.left, top: centerPoint.top - (emojiBB.height * 2) }
+    newEmoji = getEmojiAroundPoint(visibleEmoji, topPoint)
+    if (newEmoji) { return selectEmoji(newEmoji) }
+    // Above - Covers case where there are only 2 rows, get the "next" top
+    var abovePoint = { left: centerPoint.left, top: centerPoint.top - emojiBB.height }
+    newEmoji = getEmojiAroundPoint(visibleEmoji, abovePoint)
+    if (newEmoji) { return selectEmoji(newEmoji) }
+  }
+
+  selectUpRowEmoji = function() {
+    var visibleEmoji = getVisibleEmoji()
+    var currentEmoji = $(".emoji-container.selected")
+    var emojiBB = currentEmoji.get(0).getBoundingClientRect()
+    var centerPoint = { left: emojiBB.left + (emojiBB.width / 2), top: emojiBB.top + (emojiBB.height / 2) }
+    var newEmoji
+    // Above - Default, check next row up
+    var abovePoint = { left: centerPoint.left, top: centerPoint.top - emojiBB.height }
+    newEmoji = getEmojiAroundPoint(visibleEmoji, abovePoint)
+    if (newEmoji) { return selectEmoji(newEmoji) }
+    // Bottom - Already at the top, move to the bottom
+    var topPoint = { left: centerPoint.left, top: centerPoint.top + (emojiBB.height * 2) }
+    newEmoji = getEmojiAroundPoint(visibleEmoji, topPoint)
+    if (newEmoji) { return selectEmoji(newEmoji) }
+    // Below - Covers case where there are only 2 rows, get the "next" bottom
+    var belowPoint = { left: centerPoint.left, top: centerPoint.top + emojiBB.height }
+    newEmoji = getEmojiAroundPoint(visibleEmoji, belowPoint)
+    if (newEmoji) { return selectEmoji(newEmoji) }
+  }
+
+  confirmEmoji = function() {
+    var currentEmoji = $(".emoji-container.selected")
+    var emoji_name = currentEmoji.find(".emoji-name").text()
+    var field = $(document.activeElement).focus()
+    var text = field.val()
+    var pos = currentCaretPos, startIdx = pos - 1, endIdx = pos
+    while (text[startIdx] != undefined && text[startIdx] != " " && text[startIdx] != "\n") { startIdx -= 1; }
+    while (text[endIdx] != undefined && text[endIdx] != " " && text[endIdx] != "\n") { endIdx += 1; }
+
+    field.val(
+      field.val().substring(0, startIdx + 1) +
+      ":" + emoji_name + ": " +
+      field.val().substring(endIdx + 1, field.val().length)
+    )
+
+    $(".field-autofiller").addClass("hidden")
+    setSelectionRange(field, endIdx + 1, endIdx + 1)
+  }
+
+  pressedEmojiNavigationKey = function(key) {
+    switch(key.which) {
+      case keyEvent("ENTER"):
+      case keyEvent("LEFT"):
+      case keyEvent("UP"):
+      case keyEvent("TAB"):
+      case keyEvent("RIGHT"):
+      case keyEvent("DOWN"):
+        return true
+      default:
+        return false
+    }
+  }
+
   $(window).scroll(function() {
-    if (!$(".field-autofiller").hasClass("hidden")) {
+    if (emojiPopupVisible()) {
       alignAutoFillerToFocusedField()
     }
   })
 
-  $(".emoji-container").click(function() {
-    // replace current word with emoji syntax
-    // Hide popup
-    // move cursor to end of emoji?
+  $(document).on("mouseenter", ".emoji-container", function() {
+    selectEmoji(this)
+  }).on("mousedown", ".emoji-container", function(evt) {
+    evt.preventDefault()
+    return false
+  }).on("mouseup", ".emoji-container", function() {
+    confirmEmoji()
   })
 
-  $(".emoji-field").on("keyup", function() {
-    // TODO: Interrupt all non character events while popup is shown (Enter, Esc, Tab, arrow keys)
-    //  Navigate currently shown emojis with those keys instead
+  var currentCaretPos = 0
+  $(".emoji-field").on("keydown", function(evt) {
+    if (!$(".field-autofiller").hasClass("hidden")) {
+      switch(evt.which) {
+        case keyEvent("ENTER"):
+          confirmEmoji()
+          evt.preventDefault()
+          return false
+        case keyEvent("LEFT"):
+          selectPrevEmoji()
+          evt.preventDefault()
+          return false
+        case keyEvent("UP"):
+          selectUpRowEmoji()
+          evt.preventDefault()
+          return false
+        case keyEvent("TAB"):
+        case keyEvent("RIGHT"):
+          selectNextEmoji()
+          evt.preventDefault()
+          return false
+        case keyEvent("DOWN"):
+          selectDownRowEmoji()
+          evt.preventDefault()
+          return false
+      }
+    }
+  }).on("keyup focus mouseup", function(evt) {
+    if (pressedEmojiNavigationKey(evt)) { return }
+    currentCaretPos = caretPositionInField(this)
     var currentWord = currentWordForField(this)
+    console.log("Word:", currentWord);
+    console.log("Char:", currentWord[0]);
+    console.log("Last:", currentWord[currentWord.length - 1]);
     if (currentWord[0] == ":" && currentWord[currentWord.length - 1] != ":") {
       filterEmojiFromText(currentWord)
       $(".field-autofiller").removeClass("hidden")
+      alignAutoFillerToFocusedField()
     } else {
       $(".field-autofiller").addClass("hidden")
     }
-    alignAutoFillerToFocusedField()
+    selectEmoji(getVisibleEmoji().first())
   }).on("blur", function() {
     $(".field-autofiller").addClass("hidden")
   })

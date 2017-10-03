@@ -13,3 +13,28 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+// http://keycode.info
+keyEvent = function(char) {
+  var upChar = char.toUpperCase()
+  switch(upChar) {
+    case "ENTER":
+      return 13;
+    case "TAB":
+      return 9;
+    case "SPACE":
+      return 32;
+    case "ESC":
+      return 27;
+    case "LEFT":
+      return 37;
+    case "UP":
+      return 38;
+    case "DOWN":
+      return 40;
+    case "RIGHT":
+      return 39;
+    default:
+      return char.charCodeAt(0)
+  }
+}

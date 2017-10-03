@@ -20,11 +20,11 @@
 .field-autofiller {
   position: absolute;
   background: white;
-  border: 1px solid #CCC;
   height: auto;
   z-index: 1000;
   max-height: 90px;
   overflow: hidden;
+  box-shadow: 2px 1px 5px #AAC;
 
   .emoji-container {
     display: inline-block;
@@ -34,7 +34,7 @@
     padding: 3px;
     border-radius: 100px;
 
-    &:hover {
+    &.selected {
       background: #CCF;
       cursor: pointer;
     }
