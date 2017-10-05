@@ -1,5 +1,6 @@
 $emojiSheetIconSize: 54px;
 $largeEmojiSize: 64px;
+$bigEmojiSize: 40px;
 $mediumEmojiSize: 20px;
 $smallEmojiSize: 10px;
 
@@ -15,6 +16,11 @@ $smallEmojiSize: 10px;
 
   &.large {
     $ratio: $largeEmojiSize / $emojiSheetIconSize;
+    zoom: $ratio;
+    @include spriteSheet($x, $y, $emojiSheetIconSize);
+  }
+  &.big {
+    $ratio: $bigEmojiSize / $emojiSheetIconSize;
     zoom: $ratio;
     @include spriteSheet($x, $y, $emojiSheetIconSize);
   }

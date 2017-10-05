@@ -13,9 +13,7 @@
     <% end %>
   </div>
   <div class="words">
-    <div class="title">
-      <%= @post.title %>
-    </div>
+    <div class="title"><%= markdown(only: :emoji) { @post.title } %></div>
     <div class="body"><%= markdown(poll_post_id: @post.id, posted_by_user: @post.author) { @post.body[@post.title.length..-1] } %></div>
     <div class="details">
       This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> |

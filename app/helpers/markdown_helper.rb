@@ -1,5 +1,13 @@
 module MarkdownHelper
-  def markdown(render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
+  def markdown(only: nil, except: [], render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
+    only = [only].flatten
+    except = [except].flatten
+
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :emoji]
+    default_markdown_options = only if only.any?
+    default_markdown_options -= except
+    @markdown_options = Hash[default_markdown_options.product([true])]
+
     user = posted_by_user
     post = Post.find_by(id: poll_post_id)
     text = yield.to_s.dup
@@ -8,11 +16,11 @@ module MarkdownHelper
     text = escape_markdown_characters(text)
     text = filter_nested_quotes(text, max_nest_level: 3)
     text = escape_markdown_characters(text)
-    text = invite_tagged_users(text, author: user)
+    text = invite_tagged_users(text, author: user) if @markdown_options[:tags]
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
-    text = parse_directive_poll(text, post: post) if post.present?
-    text = parse_emoji(text)
+    text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
+    text = parse_emoji(text) if @markdown_options[:emoji]
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -118,12 +126,12 @@ module MarkdownHelper
       end
       inner_text.gsub("</p><p>", "<br>")
       "<blockquote><div class=\"wrapper\">#{inner_text}</div></blockquote>"
-    end
+    end if @markdown_options[:codeblock]
 
-    text = parse_markdown_character_with("*", text) { "<strong>$1</strong>" }
-    text = parse_markdown_character_with("`", text) { "<code>$1</code>" }
-    text = parse_markdown_character_with("_", text) { "<i>$1</i>" }
-    text = parse_markdown_character_with("~", text) { "<strike>$1</strike>" }
+    text = parse_markdown_character_with("*", text) { "<strong>$1</strong>" }  if @markdown_options[:bold]
+    text = parse_markdown_character_with("`", text) { "<code>$1</code>" }  if @markdown_options[:code]
+    text = parse_markdown_character_with("_", text) { "<i>$1</i>" }  if @markdown_options[:italic]
+    text = parse_markdown_character_with("~", text) { "<strike>$1</strike>" }  if @markdown_options[:strike]
     text
   end
 
