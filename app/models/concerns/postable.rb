@@ -19,6 +19,12 @@ module Postable
     has_many :subscriptions
   end
 
+  def can_view?(postable)
+    return true unless postable.marked_as_adult?
+    return true if adult?
+    self == postable.author
+  end
+
   def favorite_reply_for_post(post)
     favorite_replies.find_by(post: post)
   end

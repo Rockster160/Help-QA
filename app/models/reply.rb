@@ -28,9 +28,17 @@ class Reply < ApplicationRecord
 
   after_create :invite_users, :notify_subscribers
 
-  scope :claimed, -> { where.not(posted_anonymously: true) }
-  scope :unclaimed, -> { where(posted_anonymously: true) }
+  scope :claimed,      -> { where.not(posted_anonymously: true) }
+  scope :unclaimed,    -> { where(posted_anonymously: true) }
+  scope :not_removed,  -> { where(removed_at: nil) }
+  scope :removed,      -> { where.not(removed_at: nil) }
+  scope :adult,        -> { where(marked_as_adult: true) }
+  scope :safe,         -> { where(marked_as_adult: [nil, false]) }
+  scope :questionable, -> { where(has_questionable_text: true) }
   # TODO Add validation requiring text, cannot be blank, cannot be "Leave a reply" or similar
+
+  def safe?; !marked_as_adult?; end
+  def removed?; removed_at?; end
 
   def username
     if posted_anonymously?
@@ -80,7 +88,7 @@ class Reply < ApplicationRecord
 
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
-    self.has_questionable_text = Tag.adult_words_in_body(body).any?
+    self.has_questionable_text = Tag.adult_words_in_body(body).any? if new_record?
   end
 
   def anonicon_src(ip)

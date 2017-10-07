@@ -81,10 +81,14 @@
           border: 1px solid #999;
           margin-bottom: 10px;
 
+          &.attached {
+            margin-top: -13px;
+          }
           .reply-author {
             padding: 5px;
             border-bottom: 1px solid #999;
             position: relative;
+            background: white;
             @include split-page(40px);
 
             .avatar-container {
@@ -215,6 +219,18 @@
 
             .reply-author { border-color: $help-default; }
             .reply-content { background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%)); }
+          }
+        }
+        .pending-reply {
+          border: 2px solid $help-default;
+          background: lighten($help-default, 40%);
+          color: black;
+          margin-bottom: 10px;
+          padding: 10px;
+
+          &.removed {
+            border-color: red;
+            background-color: lighten(red, 40%);
           }
         }
       }

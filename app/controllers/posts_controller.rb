@@ -37,7 +37,7 @@ class PostsController < ApplicationController
       current_user.notices.subscription.unread.where(notice_for_id: @post.id).each(&:read)
     end
 
-    authenticate_adult if @post.marked_as_adult? && current_user != @post.author
+    authenticate_adult unless current_user&.can_view?(@post)
   end
 
   def vote

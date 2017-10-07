@@ -7,6 +7,7 @@ class ShoutsController < ApplicationController
       .where(shouts: { sent_to_id: @user.id })
       .group("users.id")
       .order("MAX(shouts.created_at) DESC")
+      .limit(50)
 
     if @user == current_user
       @user.shouts.unread.each(&:read)

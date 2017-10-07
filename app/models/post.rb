@@ -48,7 +48,7 @@ class Post < ApplicationRecord
   defaults reply_count: 0
   defaults posted_anonymously: false
 
-  before_validation :auto_adult
+  before_validation :auto_adult, on: :create
   validate :body_is_not_default, :body_has_alpha_characters
 
   def self.text_matches_default_text?(text)

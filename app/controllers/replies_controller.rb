@@ -24,6 +24,23 @@ class RepliesController < ApplicationController
     end
   end
 
+  def mod
+    post = Post.find(params[:post_id])
+    reply = post.replies.find(params[:reply_id])
+
+    modded_attrs = {has_questionable_text: false}
+    modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
+    modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
+    modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
+    modded_attrs[:removed_at] = nil if params[:remove].present? && params[:remove] == "false"
+
+    if reply.update(modded_attrs)
+      redirect_to post_path(post, anchor: "reply-#{reply.id}")
+    else
+      redirect_to post_path(post, anchor: "reply-#{reply.id}"), alert: reply.errors.full_messages.first || "Failed to save Reply. Please try again."
+    end
+  end
+
   def favorite
     post = Post.find(params[:post_id])
     reply = post.replies.find(params[:reply_id])
