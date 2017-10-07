@@ -6,6 +6,9 @@
     <div class="post-description">
       <div class="title"><%= markdown(only: :emoji) { post.title } %></div>
       <div class="post-information">
+        <% if post.marked_as_adult? %>
+          <div class="nsfw" title="Not Safe For Work / children - This post will not show up on the home page.">NSFW</div>
+        <% end %>
         by <strong><%= post.username %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.reply_count || 0, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
       </div>
       <% unless hide_tags %>

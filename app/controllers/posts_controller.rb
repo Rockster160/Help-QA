@@ -26,7 +26,7 @@ class PostsController < ApplicationController
     @posts = @posts.search_for(params[:search]) if params[:search].present?
     @posts = @posts.by_username(params[:by_user]) if params[:by_user].present?
     @posts = @posts.by_tags(@filter_options[:tags]) if @filter_options[:tags].present?
-    @posts = @posts.page(params[:page]).per(2) # FIXME: Remove per
+    @posts = @posts.page(params[:page])
   end
 
   def show
@@ -36,6 +36,8 @@ class PostsController < ApplicationController
       current_user.invites.unread.where(post_id: @post.id).each(&:read)
       current_user.notices.subscription.unread.where(notice_for_id: @post.id).each(&:read)
     end
+
+    authenticate_adult if @post.marked_as_adult? && current_user != @post.author
   end
 
   def vote

@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
   before_action :see_current_user, :logit, :preload_emojis
@@ -45,8 +46,7 @@ class ApplicationController < ActionController::Base
         redirect_to root_path, alert: "Sorry, this post contains inappropriate material."
       end
     else
-      # FIXME: Redirect to Age Authentication/Sign Up page
-      redirect_to root_path, alert: "Sorry, this post contains inappropriate material."
+      redirect_to new_user_registration_path, alert: "Please verify your age before continuing."
     end
   end
 
@@ -68,6 +68,14 @@ class ApplicationController < ActionController::Base
   def logit
     # return CustomLogger.log_blip! if params[:checker]
     # CustomLogger.log_request(request, current_user)
+  end
+
+  def storable_location?
+    request.get? && is_navigational_format? && !devise_controller? && !request.xhr?
+  end
+
+  def store_user_location!
+    store_location_for(:user, request.fullpath)
   end
 
   def configure_permitted_parameters
