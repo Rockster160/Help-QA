@@ -12,8 +12,8 @@ module Postable
 
     has_many :invites_sent, foreign_key: :from_user_id,    class_name: "Invite"
     has_many :invites,      foreign_key: :invited_user_id, class_name: "Invite"
-    has_many :tags_from_posts,   through: :posts,   source: :tags
-    has_many :tags_from_replies, through: :replies, source: :tags
+    has_many :tags_from_posts,   -> { distinct }, through: :posts,   source: :tags
+    has_many :tags_from_replies, -> { distinct }, through: :replies, source: :tags
     # has_many :tags,             through: :user_tags
     has_many :notices
     has_many :subscriptions

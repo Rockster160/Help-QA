@@ -77,7 +77,7 @@
       <%= form_for @post || Post.new do |f| %>
         <div class="text-area-wrapper">
           <% should_show_default_text = params[:post_text].blank? || Post.text_matches_default_text?(params[:post_text]) %>
-          <%= f.text_area :body, rows: 6, class: "emoji-field #{'js-clear-text-after-focus' if should_show_default_text}", value: params[:post_text].presence || Post::DEFAULT_POST_TEXT.html_safe %>
+          <%= f.text_area :body, rows: 6, class: "autofillable-field #{'js-clear-text-after-focus' if should_show_default_text}", value: params[:post_text].presence || Post::DEFAULT_POST_TEXT.html_safe %>
         </div>
         <div class="post-controls">
           <% unless user_signed_in? %>

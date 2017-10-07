@@ -56,7 +56,7 @@
   "imp":                    [ "face", "devil", "angry", "horns" ],
   "smiling_imp":            [ "face", "devil", "horns" ],
   "neutral_face":           [ "face", "indifference", "meh" ],
-  "no_mouth":               [ "face", "hellokitty", "silent" ],
+  "no_mouth":               [ "face", "silent" ],
   "innocent":               [ "face", "angel", "heaven", "halo" ],
   "alien":                  [ "face", "extraterrestrial", "UFO", "paul", "weird", "outer_space" ],
 

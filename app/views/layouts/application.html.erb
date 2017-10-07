@@ -32,9 +32,16 @@
         <a href="<%= feedback_path %>">Feedback</a>
       </div>
     </div>
-    <div id="pre-load" class="hidden">
-      <%= emoji("blank") %>
-    </div>
+    <div id="pre-load" class="hidden"></div>
+    <% if user_signed_in? %>
+      <div class="field-autofiller username-loader hidden">
+        <% current_user.friends.each do |friend| %>
+          <div class="searchable-container" data-type="username" data-searchable-by="<%= friend.username %>">
+            <div class="option-name">@<%= friend.username %></div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
     <%= yield(:modals) %>
     <%= yield(:post_body_scripts) %>
   </body>

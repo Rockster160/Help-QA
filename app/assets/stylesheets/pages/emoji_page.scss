@@ -1,6 +1,6 @@
 .act-emoji {
   .emoji-loader {
-    .emoji-container {
+    .searchable-container {
       display: inline-block;
       vertical-align: top;
       width: 200px;
@@ -8,47 +8,11 @@
       text-align: center;
 
       .emoji-wrapper {
-        .emoji, .emoji-name { vertical-align: middle; }
+        .emoji, .option-name { vertical-align: middle; }
       }
       .aliases {
         font-size: 10px;
       }
     }
-  }
-}
-
-.field-autofiller {
-  position: absolute;
-  background: white;
-  height: auto;
-  z-index: 1000;
-  max-height: 90px;
-  overflow: hidden;
-  box-shadow: 2px 1px 5px #AAC;
-
-  .emoji-container {
-    display: inline-block;
-    width: auto;
-    text-align: left;
-    margin: 2px;
-    padding: 3px;
-    border-radius: 100px;
-
-    &.selected {
-      background: #CCF;
-      cursor: pointer;
-    }
-
-    .emoji-wrapper {
-      font-size: 8px;
-      white-space: nowrap;
-
-      .emoji, .emoji-name {
-        vertical-align: middle;
-        display: inline-block;
-      }
-      .emoji-name { padding-left: 3px; }
-    }
-    .aliases { display: none; }
   }
 }
