@@ -34,7 +34,9 @@
     </div>
     <div id="pre-load" class="hidden"></div>
     <%= render partial: "layouts/friend_loader" %>
-    <%= render partial: "layouts/emoji_loader" %>
+    <% cache "emoji_loader" do %>
+      <%= render partial: "layouts/emoji_loader" %>
+    <% end %>
     <%= yield(:modals) %>
     <%= yield(:post_body_scripts) %>
   </body>

@@ -10,15 +10,15 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def emoji_names
+  def reload_emoji_cache
+    Rails.cache.delete("emoji_list")
+    Rails.cache.delete("emoji_names")
+    Rails.cache.delete("emoji_loader")
   end
 
   def preload_emojis
-    @emoji_list ||= begin
-      emoji_json = JSON.parse(File.read("lib/emoji.json"))
-      @emoji_names = emoji_json.keys
-      emoji_json
-    end
+    @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji.json")) }
+    @emoji_names = Rails.cache.fetch("emoji_names") { @emoji_list.keys }
   end
 
   def authenticate_user
