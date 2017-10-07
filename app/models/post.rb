@@ -10,6 +10,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  reply_count        :integer
+#  marked_as_adult    :boolean
 #
 
 class Post < ApplicationRecord
@@ -40,14 +41,15 @@ class Post < ApplicationRecord
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
   scope :by_tags,              ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
+  scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
+  scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) }
 
-  after_create :auto_add_tags
-  after_create :generate_poll
+  after_create :auto_add_tags, :generate_poll
   defaults reply_count: 0
   defaults posted_anonymously: false
 
-  validate :body_is_not_default
-  validate :body_has_alpha_characters
+  before_validation :auto_adult
+  validate :body_is_not_default, :body_has_alpha_characters
 
   def self.text_matches_default_text?(text)
     stripped_default_text = DEFAULT_POST_TEXT.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
@@ -63,6 +65,12 @@ class Post < ApplicationRecord
     post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)
     most_popular_post_id = post_ids_sorted_by_uniq_author_count.last
     Post.find(most_popular_post_id)
+  end
+
+  def recreate
+    new_post = Post.create(attributes.slice("body", "author_id", "posted_anonymously", "closed_at", "marked_as_adult"))
+    destroy
+    new_post
   end
 
   def title
@@ -146,6 +154,10 @@ class Post < ApplicationRecord
     end
   end
 
+  def auto_adult
+    self.marked_as_adult = Tag.adult_words_in_body(body).any?
+  end
+
   def auto_add_tags
     new_tag_strs = Tag.auto_extract_tags_from_body(body).first(5)
     new_tag_strs.each do |new_tag_str|
@@ -162,7 +174,7 @@ class Post < ApplicationRecord
 
   def cut_string_before_index_at_char(str, idx, letter=" ")
     # Cuts the string at the given index,
-    #   then finds the LAST occurrence of the letter in that string, 
+    #   then finds the LAST occurrence of the letter in that string,
     #   and cuts there.
     return str if str.length <= idx
     indices_of_letter = str.split("").map.with_index { |l, i| i if l == letter }.compact

@@ -112,7 +112,7 @@ loadAllLinks = function() {
 parseLinks = function() {
   $(".reply-content").not("[data-parsed-links]").each(function() {
     $(this).attr("data-parsed-links", "")
-    var new_body = $(this).html()//.attr("data-original-content")
+    var new_body = $(this).html()
 
     new_body = new_body.replace(/\<a.*?\<\/a\>/, function(found) {
       return found // This does nothing?

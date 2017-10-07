@@ -14,7 +14,7 @@ class PostsController < ApplicationController
   def history
     set_post_filter_params
 
-    @posts = Post.order(created_at: :desc)
+    @posts = Post.conditional_adult(current_user).order(created_at: :desc)
     @posts = @posts.claimed if @filter_options["claimed"]
     @posts = @posts.unclaimed if @filter_options["unclaimed"]
     @posts = @posts.verified_user if @filter_options["verified"]

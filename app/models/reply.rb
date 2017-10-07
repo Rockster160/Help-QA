@@ -10,6 +10,8 @@
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  post_id               :integer
+#  removed_at            :datetime
+#  marked_as_adult       :boolean
 #
 
 class Reply < ApplicationRecord
@@ -78,6 +80,7 @@ class Reply < ApplicationRecord
 
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
+    self.has_questionable_text = Tag.adult_words_in_body(body).any?
   end
 
   def anonicon_src(ip)

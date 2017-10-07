@@ -10,6 +10,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  reply_count        :integer
+#  marked_as_adult    :boolean
 #
 
 FactoryGirl.define do

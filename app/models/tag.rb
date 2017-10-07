@@ -28,6 +28,7 @@ class Tag < ApplicationRecord
                     .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
     tags = formatted.squish.split(" ")
     add_similar_common_tags_to_tags_list(tags)
+    # Sort tags by how often then occur
   end
 
   def self.stop_words
@@ -54,13 +55,13 @@ class Tag < ApplicationRecord
     auto_mapper_hash.each do |mapped_to, mapped_from|
       tags.push(mapped_to.to_s) if tags.include?(mapped_from.to_s)
     end
-    tags
+    tags.reverse
   end
 
   def self.adult_words_in_body(body)
     auto_extract_tags_from_body(body) & adult_words
   end
-  
+
   def self.adult_words_in_list(list)
     list & adult_words
   end

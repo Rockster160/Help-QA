@@ -10,6 +10,8 @@
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  post_id               :integer
+#  removed_at            :datetime
+#  marked_as_adult       :boolean
 #
 
 FactoryGirl.define do
