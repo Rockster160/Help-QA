@@ -1,31 +1,5 @@
 $(document).ready(function() {
 
-  var emoji_data
-  addEmojiToLoader = function(name, aliases) {
-    var colon_name = ":" + name + ":"
-    var list_names = [name].concat(aliases).join(" ")
-    var emoji = $("<i>", { alt: colon_name, title: colon_name, class: "emoji " + name })
-    var emoji_name = $("<div>", { class: "option-name" }).html(name)
-    var emoji_wrapper = $("<div>", { class: "emoji-wrapper" }).append(emoji, emoji_name)
-    var alias_list = $("<span>", { class: "aliases" }).html(aliases.join(", "))
-    var emoji_container = $("<div>", { class: "searchable-container", "data-searchable-by": list_names, "data-type": "emoji" }).append(emoji_wrapper, alias_list)
-    $(".emoji-loader").append(emoji_container)
-  }
-
-  setTimeout(function() {
-    if ($(".autofillable-field").length > 0) {
-      $("body").append($("<div>", { class: "emoji-loader small field-autofiller hidden" }))
-    }
-    $.getJSON("/emoji.json", function(data) {
-      emoji_data = data
-      for (var emojiName in emoji_data) {
-        addEmojiToLoader(emojiName, emoji_data[emojiName])
-        if ($(".emoji-loader").hasClass("large")) { $(".emoji").addClass("large") }
-      }
-    })
-  }, 10)
-
-  // Searchable Box
   filterOptionsFromText = function(loader, search_text) {
     search_text = search_text.toLowerCase().replace(/[ \_\-\:\@]/, "")
     if (search_text.length == 0) {
@@ -167,6 +141,7 @@ $(document).ready(function() {
   selectNextOption = function() {
     var visibleOption = getVisibleOptions()
     var currentOption = $(".searchable-container.selected")
+    if (currentOption.length == 0) { return }
     var selectedIdx = visibleOption.index(currentOption)
     var newOption = visibleOption[selectedIdx + 1] || getVisibleOptions().first()
     selectOption(newOption)
@@ -175,6 +150,7 @@ $(document).ready(function() {
   selectPrevOption = function() {
     var visibleOption = getVisibleOptions()
     var currentOption = $(".searchable-container.selected")
+    if (currentOption.length == 0) { return }
     var selectedIdx = visibleOption.index(currentOption)
     var newOption = visibleOption[selectedIdx - 1] || getVisibleOptions().last()
     selectOption(newOption)
@@ -183,6 +159,7 @@ $(document).ready(function() {
   selectDownRowOption = function() {
     var visibleOption = getVisibleOptions()
     var currentOption = $(".searchable-container.selected")
+    if (currentOption.length == 0) { return }
     var optionBB = currentOption.get(0).getBoundingClientRect()
     var centerPoint = { left: optionBB.left + (optionBB.width / 2), top: optionBB.top + (optionBB.height / 2) }
     var newOption
@@ -203,6 +180,7 @@ $(document).ready(function() {
   selectUpRowOption = function() {
     var visibleOption = getVisibleOptions()
     var currentOption = $(".searchable-container.selected")
+    if (currentOption.length == 0) { return }
     var optionBB = currentOption.get(0).getBoundingClientRect()
     var centerPoint = { left: optionBB.left + (optionBB.width / 2), top: optionBB.top + (optionBB.height / 2) }
     var newOption
@@ -222,6 +200,8 @@ $(document).ready(function() {
 
   confirmOption = function() {
     var currentOption = $(".searchable-container.selected")
+    if (currentOption.length == 0) { return }
+    if (currentOption.length == 0) { return }
     var option_name = currentOption.find(".option-name").text()
     var field = $(document.activeElement).focus()
     var text = field.val()

@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
-  before_action :see_current_user, :logit
+  before_action :see_current_user, :logit, :preload_emojis
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message]
@@ -9,6 +9,17 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def emoji_names
+  end
+
+  def preload_emojis
+    @emoji_list ||= begin
+      emoji_json = JSON.parse(File.read("lib/emoji.json"))
+      @emoji_names = emoji_json.keys
+      emoji_json
+    end
+  end
 
   def authenticate_user
     unless user_signed_in?

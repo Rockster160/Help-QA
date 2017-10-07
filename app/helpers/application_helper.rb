@@ -89,11 +89,10 @@ module ApplicationHelper
     end
   end
 
-  def emoji(icon)
-    @emoji_list ||= File.read("public/emoji_names.txt").split("\n")
-    return icon unless icon.present? && icon.to_s.gsub(":", "").in?(@emoji_list)
+  def emoji(icon, classes: nil)
+    return icon unless icon.present? && icon.to_s.gsub(":", "").in?(@emoji_names)
 
-    "<i class=\"emoji #{icon}\" alt=\":#{icon}:\" title=\":#{icon}:\"></i>".html_safe
+    "<i class=\"emoji #{icon} #{classes}\" alt=\":#{icon}:\" title=\":#{icon}:\"></i>".html_safe
   end
 
   def avatar(avatar_src, options={})

@@ -8,4 +8,15 @@
 
 <input type="text" autofocus="true" autocomplete="off" placeholder="Quick Search" class="emoji-quick-search">
 
-<div class="emoji-loader large"></div>
+<div class="emoji-loader">
+  <% @emoji_list.each do |emoji_name, aliases| %>
+    <% list_names = [emoji_name] + aliases %>
+    <div class="searchable-container" data-type="emoji" data-searchable-by="<%= list_names.join(" ") %>">
+      <div class="emoji-wrapper">
+        <%= emoji(emoji_name, classes: "large") %>
+        <div class="option-name"><%= emoji_name %></div>
+      </div>
+      <div class="aliases"><%= aliases.join(", ") %></div>
+    </div>
+  <% end %>
+</div>
