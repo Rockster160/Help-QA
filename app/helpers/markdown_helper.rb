@@ -67,8 +67,11 @@ module MarkdownHelper
       next_end_quote_idx += last_start_quote_idx + 7
 
       text[last_start_quote_idx..next_end_quote_idx] = text[last_start_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do
-        quote_string = $1.present? ? "<strong>#{$1.squish} wrote:</strong><br>" : ""
-        "</p><quote><p>#{quote_string}#{$2}</p></quote><p>"
+        quote_text = $2
+        quote_author = $1.squish.gsub(":", "&#58;")
+
+        quote_string = quote_author.present? ? "<strong>#{quote_author} wrote:</strong><br>" : ""
+        "</p><quote><p>#{quote_string}#{quote_text}</p></quote><p>"
       end
     end
     text
@@ -105,7 +108,7 @@ module MarkdownHelper
       tagged_user = User.by_username(username)
       if tagged_user.present? && (tagged_user.friends?(author) || tagged_user == author)
         leftovers = username_tag.gsub(/[@#{Regexp.escape(tagged_user.username)}]/i, "")
-        "<a href=\"#{user_path(tagged_user)}\" class=\"tagged-user\">@#{tagged_user.username}</a>#{leftovers}"
+        "<a href=\"#{user_path(tagged_user)}\" class=\"tagged-user\">@#{tagged_user.username.gsub(':', '&#58;')}</a>#{leftovers}"
       else
         username_tag
       end
@@ -184,7 +187,7 @@ module MarkdownHelper
         unwrap_quotes(quote_to_unwrap, depth: depth + 1, quotes: quotes, max_nest_level: max_nest_level)
       else
         quote_author = quote_to_unwrap[/\[quote(.*?)\]/][7..-2]
-        quote_from = quote_author.presence ? " from #{quote_author}" : ""
+        quote_from = quote_author.presence ? " from #{quote_author.gsub(':', '&#58;')}" : ""
         "_*\\[quote#{quote_from}]*_\n"
       end
     end
