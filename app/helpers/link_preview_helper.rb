@@ -3,6 +3,7 @@ module LinkPreviewHelper
   def generate_previews_for_urls
     [params[:urls]].flatten.compact.uniq.map do |url|
       url = url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
+      next if url[/^\w+(\.){2,}\w+$/]
       meta_data = Rails.cache.fetch(url) do
         puts "Running Cache Fetch for: #{url}".colorize(:yellow)
         res = RestClient.get(url)
@@ -44,6 +45,6 @@ module LinkPreviewHelper
         html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
       }
     end
-
   end
+
 end

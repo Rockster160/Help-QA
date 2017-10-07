@@ -26,6 +26,7 @@ $(".ctr-posts.act-show").ready(function() {
 
 var url_regex = /.(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
 var email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+var last_catch_url_regex = /^\w+(\.){2,}\w+$/
 
 shortToken = function() { return Math.random().toString(36).substr(2) }
 randomToken = function() { return shortToken() + shortToken() + shortToken() }
@@ -120,6 +121,7 @@ parseLinks = function() {
     new_body = new_body.replace(/\&amp\;/, "&") // Hack because for some reason JS is picking up the escaped codes
 
     new_body = new_body.replace(url_regex, function(found) {
+      if (last_catch_url_regex.test(found.trim())) { return found }
       var pre_char = found.charAt(0)
       found = found.substr(1)
 

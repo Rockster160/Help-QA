@@ -90,7 +90,7 @@ module ApplicationHelper
   end
 
   def emoji(icon, classes: nil)
-    return icon unless icon.present? && icon.to_s.gsub(":", "").in?(@emoji_names)
+    return ":#{icon}:" unless icon.present? && icon.to_s.gsub(":", "").in?(@emoji_names)
 
     "<i class=\"emoji #{icon} #{classes}\" alt=\":#{icon}:\" title=\":#{icon}:\"></i>".html_safe
   end
