@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   get "url" => "replies#meta", as: :get_meta
   resources :posts, except: [ :destroy ] do
     get :vote
+    post :mod
     resources :replies, only: [ :create ] do
       post :mod
       get :favorite

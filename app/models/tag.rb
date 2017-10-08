@@ -9,6 +9,7 @@
 
 class Tag < ApplicationRecord
   include Defaults
+  include Frequency
 
   defaults tags_count: 0
 
@@ -21,14 +22,16 @@ class Tag < ApplicationRecord
 
   def self.auto_extract_tags_from_body(body)
     stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
-    formatted = body.gsub("\n", " ")                       # Spaces instead of newlines
+    split_regex = /((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/
+    formatted = body.gsub(split_regex) { $3.split(".")[-2] || $3 } # Replace URL with just the Host for tagging purposes
+                    .gsub("\n", " ")                       # Spaces instead of newlines
                     .gsub(/[^a-z \-]/i, "")                # Without special chars (Include alpha, spaces, and hyphens)
                     .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
                     .gsub(/ \-|\- /i, "")                  # Remove hyphens at beginning and end of words
                     .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
     tags = formatted.squish.split(" ")
-    add_similar_common_tags_to_tags_list(tags)
-    # Sort tags by how often then occur
+    tags = add_similar_common_tags_to_tags_list(tags)
+    sort_frequency(tags)
   end
 
   def self.stop_words
