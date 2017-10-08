@@ -1,7 +1,7 @@
 <div class="detail-icons">
   <% line_status = user.online? ? "online" : "offline" %>
   <%= hover_icon(line_status, line_status) %>
-  <%= hover_icon("star", "HelperNow Volunteer Moderator") if user.mod? %>
+  <%= hover_icon("star", "HelperNow Volunteer Moderator") if user.mod? && !user.admin? %>
   <%= hover_icon("shield", "HelperNow Admin") if user.admin? %>
   <% if user.verified? %>
     <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, user.verified_at)})") %>

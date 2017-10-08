@@ -2,11 +2,24 @@ module Moddable
   extend ActiveSupport::Concern
 
   included do
-    # Add role enum
     has_many :feedbacks
+
+    enum role: {
+      default: 0,
+      mod: 3,
+      admin: 4,
+      dev: 5
+    }
+
+    self.defined_enums["role"].each do |initial_enum_str_val, initial_enum_int_val|
+      define_method("#{initial_enum_str_val}?") do
+        user_role_val = self.class.roles[self.role] || 0
+
+        user_role_val >= initial_enum_int_val
+      end
+    end
   end
 
-  def admin?; false; end # FIXME by adding roles
-  def mod?;   true; end # FIXME by adding roles
+  def become!(new_role); update(role: self.class.roles[new_role]); end
 
 end

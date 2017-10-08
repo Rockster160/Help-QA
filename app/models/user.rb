@@ -27,6 +27,7 @@
 #  has_updated_username   :boolean          default("false")
 #  bio                    :text
 #  slug                   :string
+#  role                   :integer          default("0")
 #
 
 class User < ApplicationRecord
