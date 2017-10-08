@@ -63,8 +63,12 @@ class Post < ApplicationRecord
     uniq_replies_by_author_for_posts = Reply.order(created_at: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
     counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
     post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)
-    most_popular_post_id = post_ids_sorted_by_uniq_author_count.last
-    Post.find(most_popular_post_id)
+    most_popular_post = nil
+    post_ids_sorted_by_uniq_author_count.reverse.each do |post_id|
+      most_popular_post = Post.find(post_id)
+      break most_popular_post unless most_popular_post.marked_as_adult?
+    end
+    most_popular_post
   end
 
   def recreate

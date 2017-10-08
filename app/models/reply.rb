@@ -29,13 +29,16 @@ class Reply < ApplicationRecord
   after_create :invite_users, :notify_subscribers
   after_update :read_questionable_text
 
-  scope :claimed,      -> { where.not(posted_anonymously: true) }
-  scope :unclaimed,    -> { where(posted_anonymously: true) }
-  scope :not_removed,  -> { where(removed_at: nil) }
-  scope :removed,      -> { where.not(removed_at: nil) }
-  scope :adult,        -> { where(marked_as_adult: true) }
-  scope :safe,         -> { where(marked_as_adult: [nil, false]) }
-  scope :questionable, -> { where(has_questionable_text: true) }
+  scope :claimed,           -> { where.not(posted_anonymously: true) }
+  scope :unclaimed,         -> { where(posted_anonymously: true) }
+  scope :not_removed,       -> { where(removed_at: nil) }
+  scope :removed,           -> { where.not(removed_at: nil) }
+  scope :adult,             -> { where(marked_as_adult: true) }
+  scope :safe,              -> { where(marked_as_adult: [nil, false]) }
+  scope :questionable,      -> { where(has_questionable_text: true) }
+  scope :verified_by_mod,   -> { where(has_questionable_text: [nil, false]) }
+  scope :without_adult,     -> { where(replies: { marked_as_adult: [nil, false] }) }
+  scope :conditional_adult, ->(user) { verified_by_mod.without_adult unless user.try(:adult?) }
   # TODO Add validation requiring text, cannot be blank, cannot be "Leave a reply" or similar
 
   def safe?; !marked_as_adult?; end

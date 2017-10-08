@@ -2,7 +2,7 @@ class RepliesController < ApplicationController
   include LinkPreviewHelper
 
   def index
-    @replies = Reply.order(created_at: :desc).page(params[:page]).per(10)
+    @replies = Reply.conditional_adult(current_user).order(created_at: :desc).page(params[:page]).per(10)
     @replies = @replies.claimed.where(author_id: params[:user_id]) if params[:user_id].present?
     @user = User.find(params[:user_id]) if params[:user_id].present?
   end
