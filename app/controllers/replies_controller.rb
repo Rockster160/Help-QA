@@ -17,10 +17,11 @@ class RepliesController < ApplicationController
     else
       @errors = user.try(:errors).try(:full_messages) || "Failed to submit Reply."
     end
+    flash_hash = @errors.any? ? {alert: @errors.first} : {}
 
     respond_to do |format|
       format.json { render json: {errors: @errors} }
-      format.html { redirect_to post_path(post) }
+      format.html { redirect_to post_path(post), flash_hash }
     end
   end
 

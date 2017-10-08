@@ -85,6 +85,8 @@ class Post < ApplicationRecord
 
   def open?; !closed?; end
   def closed?; closed_at?; end
+  def safe?; !nsfw?; end
+  def nsfw?; marked_as_adult?; end
 
   def notify_subscribers(not_user: nil)
     subscribers.each do |subscriber|

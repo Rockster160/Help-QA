@@ -29,6 +29,22 @@ class PostsController < ApplicationController
     @posts = @posts.page(params[:page])
   end
 
+  def mod
+    post = Post.find(params[:post_id])
+
+    modded_attrs = {}
+    modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
+    modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
+    modded_attrs[:closed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
+    modded_attrs[:closed_at] = nil if params[:remove].present? && params[:remove] == "false"
+
+    if post.update(modded_attrs)
+      redirect_to post_path(post)
+    else
+      redirect_to post_path(post), alert: post.errors.full_messages.first || "Failed to save Post. Please try again."
+    end
+  end
+
   def show
     @post = Post.find(params[:id])
     @replies = @post.replies.order(created_at: :asc)

@@ -25,6 +25,19 @@
       <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
       <a href="#" class="underline" data-scroll-to="">Leave a reply</a> |
       <a href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
+
+      <% if current_user.try(:mod?) %>
+        <% if @post.nsfw? %>
+          | <a href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><%= emoji(:baby, title: "Mark post as Safe") %></a>
+        <% else %>
+          | <a href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><%= emoji(:underage, title: "Mark post as NSFW/Adult") %></a>
+        <% end %>
+        <% if @post.closed? %>
+          | <a href="<%= post_mod_path(@post, remove: false) %>" data-method="POST"><%= emoji(:sync, title: "Reopen Post") %></a>
+        <% else %>
+          | <a href="<%= post_mod_path(@post, remove: true) %>" data-method="POST"><%= emoji(:x, title: "Close Post") %></a>
+        <% end %>
+      <% end %>
     </div>
   </div>
 </div>
@@ -50,23 +63,28 @@
   <div class="post-section-content">
     <div class="replies-container">
       <%= render partial: "replies/index", locals: { replies: @replies } %>
-    </div>
-    <div class="new-reply-container">
-      <%= form_for [@post, Reply.new] do |f| %>
-        <%= f.label :body, "Reply:" %>
-        <%= f.text_area :body, rows: 12, class: "js-clear-text-after-focus autofillable-field", value: "Post a reply" %>
-        <% if user_signed_in? %>
-          Post as <strong><%= current_user.username %></strong> (No? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)
-        <% else %>
-          <%= label_tag "new_user[email]", "Your Email:" %>
-          <%= text_field_tag "new_user[email]", "", class: "full-width" %>
-        <% end %>
-
-        <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" %>
-        <%= f.label :posted_anonymously, "Post Anonymously?" %>
-        <%= f.submit "Send Reply" %>
+      <% if @post.closed? %>
+        <div class="pending-reply closed">This post has been closed. Thanks for stopping by!</div>
       <% end %>
     </div>
+    <% if @post.open? %>
+      <div class="new-reply-container">
+        <%= form_for [@post, Reply.new] do |f| %>
+          <%= f.label :body, "Reply:" %>
+          <%= f.text_area :body, rows: 12, class: "js-clear-text-after-focus autofillable-field", value: "Post a reply" %>
+          <% if user_signed_in? %>
+            Post as <strong><%= current_user.username %></strong> (No? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)
+          <% else %>
+            <%= label_tag "new_user[email]", "Your Email:" %>
+            <%= text_field_tag "new_user[email]", "", class: "full-width" %>
+          <% end %>
+
+          <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" %>
+          <%= f.label :posted_anonymously, "Post Anonymously?" %>
+          <%= f.submit "Send Reply" %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>
 

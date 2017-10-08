@@ -26,6 +26,8 @@ class Reply < ApplicationRecord
 
   before_validation :format_body
 
+  validate :post_is_open
+
   after_create :invite_users, :notify_subscribers
   after_update :read_questionable_text
 
@@ -74,6 +76,12 @@ class Reply < ApplicationRecord
   end
 
   private
+
+  def post_is_open
+    return if post.open?
+
+    errors.add(:base, "We're very sorry- but this post has been closed.")
+  end
 
   def notify_subscribers
     subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id)
