@@ -15,6 +15,7 @@
 class Notice < ApplicationRecord
   include Defaults
   include Readable
+  include UrlHelper
 
   belongs_to :user
 
@@ -59,10 +60,6 @@ class Notice < ApplicationRecord
     read unless reply.has_questionable_text?
     reply_path = Rails.application.routes.url_helpers.post_path(post) + "#reply-#{notice_for_id}"
     "Questionable Reply on #{link_to(post.title, reply_path)}".html_safe
-  end
-
-  def link_to(text, link_url)
-    "<a href=\"#{link_url}\">#{text}</a>"
   end
 
 end
