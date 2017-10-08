@@ -2,20 +2,30 @@ class Shape
   attr_accessor :relative_poly_coords
 
   POLYGONS = {
-    big_triangle_down_left:  [[0, 0], [1, 0], [0, 1]],
-    big_triangle_down:       [[0, 0], [1, 0], [0.5, 1]],
-    big_triangle_down_right: [[0, 0], [1, 0], [1, 1]],
+    big_triangle_down_left:   [[0, 0], [1, 0], [0, 1]],
+    big_triangle_down:        [[0, 0], [1, 0], [0.5, 1]],
+    big_triangle_down_right:  [[0, 0], [1, 0], [1, 1]],
 
-    triangle_down_left:      [[0, 0], [0.5, 0], [0, 0.5]],
-    triangle_down:           [[0, 0], [1, 0], [0.5, 0.5]],
-    triangle_down_right:     [[0, 0], [0.5, 0], [0.5, 0.5]],
+    triangle_down_left:       [[0, 0], [0.5, 0], [0, 0.5]],
+    triangle_down:            [[0, 0], [1, 0], [0.5, 0.5]],
+    triangle_down_right:      [[0, 0], [0.5, 0], [0.5, 0.5]],
 
-    centered_square:         [[0.25, 0.25], [0.75, 0.25], [0.75, 0.75], [0.25, 0.75]],
-    square:                  [[0, 0], [0.5, 0], [0.5, 0.5], [0, 0.5]],
-    rect:                    [[0, 0], [1, 0], [1, 0.5], [0, 0.5]],
-    big_square:              [[0, 0], [1, 0], [1, 1], [0, 1]],
+    long_triangle_down_right: [[1, 1], [1, 0.5], [0, 1]],
+    long_triangle_down_left:  [[0, 1], [0, 0.5], [1, 1]],
+    long_triangle_diag_in:    [[0.5, 0], [1, 1], [0, 0.5]],
+    long_triangle_diag_out:   [[0.5, 1], [0, 0], [1, 0.5]],
 
-    diag_square:             [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]]
+    centered_square:          [[0.25, 0.25], [0.75, 0.25], [0.75, 0.75], [0.25, 0.75]],
+    square:                   [[0, 0], [0.5, 0], [0.5, 0.5], [0, 0.5]],
+    rect:                     [[0, 0], [1, 0], [1, 0.5], [0, 0.5]],
+    big_square:               [[0, 0], [1, 0], [1, 1], [0, 1]],
+    diag_square:              [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+
+    diag_spikes:              [[0, 1], [1, 0], [1, 0.5], [0.5, 0.5], [0.5, 1]],
+    spikes:                   [[0, 0], [1, 0], [0.75, 0.5], [0.5, 0], [0.25, 0.5]],
+    long_spikes:              [[0, 0], [1, 0], [0.75, 1], [0.5, 0], [0.25, 1]],
+
+    diamond:                  [[0, 0.25], [0.5, 0], [1, 0.25], [0.5, 0.5]]
   }
 
   def initialize(shape, rotation=0)
