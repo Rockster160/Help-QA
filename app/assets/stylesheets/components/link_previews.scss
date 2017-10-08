@@ -1,0 +1,48 @@
+.link-preview {
+  background: rgba(209, 209, 223, 0.5);
+  display: inline-block;
+  vertical-align: top;
+  max-width: 137px;
+  border-radius: 8px;
+  overflow: hidden;
+  color: black;
+  position: relative;
+  margin: 5px;
+  font-size: 12px;
+
+  .hide-img {
+    position: absolute;
+    top: -5px;
+    right: 0;
+    line-height: 1;
+    text-align: center;
+    padding: 5px;
+    font-size: 30px;
+    color: #EEF;
+    opacity: 0.7;
+    text-shadow: 1px 1px 2px black;
+
+    &:hover {
+      color: white;
+      opacity: 1;
+    }
+  }
+  .link-preview-img {
+    width: 100%;
+    height: auto;
+  }
+  .title {
+    padding: 5px 10px 0;
+    white-space: normal;
+  }
+  .original-page {
+    padding: 0 10px 5px;
+    color: grey;
+    font-size: 10px;
+
+    img {
+      vertical-align: middle;
+      width: 22px;
+    }
+  }
+}

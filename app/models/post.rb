@@ -79,7 +79,7 @@ class Post < ApplicationRecord
 
   def title
     return "BROKEN" unless body.present?
-    first_sentence = body.split(/[\!|\.|\n|;|\?|\r] /).reject(&:blank?).first
+    first_sentence = body.split(/[\!\.\n\;\?\r]/).reject(&:blank?).first
     body[0..first_sentence.try(:length) || -1].gsub(/\[poll\]/, "")
   end
 

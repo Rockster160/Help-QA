@@ -64,9 +64,9 @@ loadImages = function() {
 addCards = function(cards_data) {
   $(cards_data).each(function() {
     var card = this
-    var $link = $('[data-loading-preview] > a[href="' + card.url + '"]')
+    var $link = $('[data-loading-preview] > a[href="' + card.url + '"]'), $wrapper = $link.parent()
 
-    if (card.inline) {
+    if (card.inline || $link.parents(".post-container .body").length > 0) {
       $link.html(card.html)
     } else {
       $link.html('<a rel="nofollow" href="' + card.url + '">[' + card.title + "]</a>")
@@ -95,7 +95,6 @@ loadAllLinks = function() {
 
     links_to_generate.push(link_href)
   })
-  // links_to_generate.filter(function(link) { return link.indexOf("wcgw") >= 0 })
 
   $.ajax({
     url: "/url?" + $.param({urls: links_to_generate}),
@@ -110,7 +109,7 @@ loadAllLinks = function() {
 }
 
 parseLinks = function() {
-  $(".reply-content").not("[data-parsed-links]").each(function() {
+  $(".reply-content, .post-container .body").not("[data-parsed-links]").each(function() {
     $(this).attr("data-parsed-links", "")
     var new_body = $(this).html()
 
