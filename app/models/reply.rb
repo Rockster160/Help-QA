@@ -27,6 +27,7 @@ class Reply < ApplicationRecord
   before_validation :format_body
 
   after_create :invite_users, :notify_subscribers
+  after_update :read_questionable_text
 
   scope :claimed,      -> { where.not(posted_anonymously: true) }
   scope :unclaimed,    -> { where(posted_anonymously: true) }
@@ -74,6 +75,12 @@ class Reply < ApplicationRecord
   def notify_subscribers
     subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id)
     post.notify_subscribers(not_user: author)
+
+    if has_questionable_text?
+      User.mod.each do |mod|
+        mod.notices.questionable_reply.create(notice_for_id: self.id)
+      end
+    end
   end
 
   def invite_users
@@ -88,7 +95,13 @@ class Reply < ApplicationRecord
 
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
-    self.has_questionable_text = Tag.adult_words_in_body(body).any? if new_record?
+    if new_record? # && user has not been around long enough
+      self.has_questionable_text = Tag.adult_words_in_body(body).any?
+    end
+  end
+
+  def read_questionable_text
+    Notice.questionable_reply.where(notice_for_id: self.id).each(&:read)
   end
 
   def anonicon_src(ip)

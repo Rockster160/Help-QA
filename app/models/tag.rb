@@ -59,7 +59,7 @@ class Tag < ApplicationRecord
   end
 
   def self.adult_words_in_body(body)
-    auto_extract_tags_from_body(body) & adult_words
+    auto_extract_tags_from_body(body).map(&:downcase) & adult_words
   end
 
   def self.adult_words_in_list(list)

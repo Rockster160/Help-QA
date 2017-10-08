@@ -21,16 +21,18 @@ class Notice < ApplicationRecord
   defaults notice_type: :other
 
   enum notice_type: {
-    other:          0,
-    subscription:   1,
-    friend_request: 2
+    other:              0,
+    subscription:       1,
+    friend_request:     2,
+    questionable_reply: 3
   }
 
   def notice_message
     case notice_type.to_sym
-    when :other then generic_message
-    when :subscription then subscription_message
-    when :friend_request then friend_message
+    when :other              then generic_message
+    when :subscription       then subscription_message
+    when :friend_request     then friend_message
+    when :questionable_reply then questionable_message
     else "[INVALID]"
     end
   end
@@ -42,7 +44,7 @@ class Notice < ApplicationRecord
   def subscription_message
     post = Post.find(notice_for_id)
     post_path = Rails.application.routes.url_helpers.post_path(post)
-    "New Comment on <a href=\"#{post_path}\">#{post.title}</a>".html_safe
+    "New Comment on #{link_to(post.title, post_path)}".html_safe
   end
 
   def friend_message
@@ -51,8 +53,16 @@ class Notice < ApplicationRecord
     "New Friend Request from #{link_to(new_fan.username, user_path)}".html_safe
   end
 
-  def link_to(text, url)
-    "<a href=\"#{url}\">#{title}</a>"
+  def questionable_message
+    reply = Reply.find(notice_for_id)
+    post = reply.post
+    read unless reply.has_questionable_text?
+    reply_path = Rails.application.routes.url_helpers.post_path(post) + "#reply-#{notice_for_id}"
+    "Questionable Reply on #{link_to(post.title, reply_path)}".html_safe
+  end
+
+  def link_to(text, link_url)
+    "<a href=\"#{link_url}\">#{text}</a>"
   end
 
 end
