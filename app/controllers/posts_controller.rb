@@ -69,10 +69,19 @@ class PostsController < ApplicationController
 
   def edit
     @post = Post.find(params[:id])
-    render layout: false
+    unless user_signed_in? && (@post.author == current_user || @post.mod? || current_user.can_edit_posts?)
+      redirect_to post_path(@post), alert: "You do not have permission to edit this post."
+    end
   end
 
   def update
+    @post = Post.find(params[:id])
+
+    if @post.update(post_params)
+      redirect_to post_path(@post)
+    else
+      render :edit
+    end
   end
 
   def new

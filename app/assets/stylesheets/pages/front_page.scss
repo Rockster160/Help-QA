@@ -56,23 +56,6 @@
   .posts-side {
     padding-left: 10px;
     padding-right: 20px;
-    .new-post-container {
-      .text-area-wrapper {
-        textarea {
-          resize: vertical;
-          font-size: 21px;
-          width: 100%;
-        }
-      }
-      .post-controls {
-        font-size: 12px;
-        .small-text {
-          vertical-align: middle;
-          display: inline-block;
-          font-size: 8px;
-        }
-      }
-    }
     .posts-wrapper {
       h1 { margin-top: 20px; }
       .tags {

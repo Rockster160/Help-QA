@@ -15,6 +15,7 @@ module Accountable
   def offline?; !online?; end
   def verified?; verified_at?; end
   def long_term_user?; created_at < 1.year.ago; end
+  def long_time_user?; long_term_user?; end
 
   def see!
     update(last_seen_at: DateTime.current)

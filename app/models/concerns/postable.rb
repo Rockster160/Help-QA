@@ -25,6 +25,10 @@ module Postable
     self == postable.author
   end
 
+  def can_edit_posts?
+    long_time_user?
+  end
+
   def favorite_reply_for_post(post)
     favorite_replies.find_by(post: post)
   end
