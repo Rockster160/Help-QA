@@ -31,12 +31,13 @@ class PostsController < ApplicationController
 
   def mod
     post = Post.find(params[:post_id])
+    return redirect_to post_path(post) unless current_user.try(:mod?)
 
     modded_attrs = {}
     modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
     modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
-    modded_attrs[:closed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
-    modded_attrs[:closed_at] = nil if params[:remove].present? && params[:remove] == "false"
+    modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
+    modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
 
     if Sherlock.update_by(current_user, post, modded_attrs)
       redirect_to post_path(post)

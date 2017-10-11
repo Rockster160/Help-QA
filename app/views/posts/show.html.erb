@@ -33,9 +33,9 @@
           | <a href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><%= emoji(:underage, title: "Mark post as NSFW/Adult") %></a>
         <% end %>
         <% if @post.closed? %>
-          | <a href="<%= post_mod_path(@post, remove: false) %>" data-method="POST"><%= emoji(:sync, title: "Reopen Post") %></a>
+          | <a href="<%= post_mod_path(@post, close: false) %>" data-method="POST"><%= emoji(:sync, title: "Reopen Post") %></a>
         <% else %>
-          | <a href="<%= post_mod_path(@post, remove: true) %>" data-method="POST"><%= emoji(:x, title: "Close Post") %></a>
+          | <a href="<%= post_mod_path(@post, close: true) %>" data-method="POST"><%= emoji(:x, title: "Close Post") %></a>
         <% end %>
       <% end %>
     </div>

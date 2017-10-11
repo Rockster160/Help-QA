@@ -37,6 +37,7 @@ gem 'oily_png'
 gem 'kaminari'
 gem 'pg_search'
 gem 'slack-notifier'
+gem 'browser-timezone-rails'
 
 group :development, :test do
   gem 'byebug', platform: :mri
