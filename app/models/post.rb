@@ -71,6 +71,17 @@ class Post < ApplicationRecord
     most_popular_post
   end
 
+  def set_tags
+    tags.pluck(:tag_name).join(", ")
+  end
+  def set_tags=(new_tags_string)
+    post_tags.destroy_all
+    new_tags_string.split(",").each do |new_tag|
+      tag = Tag.find_or_create_by(tag_name: new_tag)
+      post_tags.create(tag: tag)
+    end
+  end
+
   def recreate
     new_post = Post.create(attributes.slice("body", "author_id", "posted_anonymously", "closed_at", "marked_as_adult"))
     destroy

@@ -109,7 +109,7 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    params.require(:post).permit(:body, :posted_anonymously)
+    params.require(:post).permit(:body, :posted_anonymously, :set_tags)
   end
 
 end
