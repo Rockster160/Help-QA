@@ -38,7 +38,7 @@ class PostsController < ApplicationController
     modded_attrs[:closed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
     modded_attrs[:closed_at] = nil if params[:remove].present? && params[:remove] == "false"
 
-    if post.update(modded_attrs)
+    if Sherlock.update_by(current_user, post, modded_attrs)
       redirect_to post_path(post)
     else
       redirect_to post_path(post), alert: post.errors.full_messages.first || "Failed to save Post. Please try again."
@@ -47,13 +47,15 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
-    @replies = @post.replies.order(created_at: :asc)
     if user_signed_in?
       current_user.invites.unread.where(post_id: @post.id).each(&:read)
       current_user.notices.subscription.unread.where(notice_for_id: @post.id).each(&:read)
     end
-
     authenticate_adult unless current_user&.can_view?(@post)
+
+    @replies = @post.replies.order(created_at: :asc)
+    closed_notifications = Sherlock.closed_notifications_for(@post)
+    @replies_with_notifications = [@replies, closed_notifications].flatten.sort_by(&:created_at)
   end
 
   def vote
@@ -69,6 +71,7 @@ class PostsController < ApplicationController
 
   def edit
     @post = Post.find(params[:id])
+
     unless user_signed_in? && (@post.author == current_user || @post.mod? || current_user.can_edit_posts?)
       redirect_to post_path(@post), alert: "You do not have permission to edit this post."
     end
@@ -77,7 +80,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    if @post.update(post_params)
+    if Sherlock.update_by(current_user, @post, post_params)
       redirect_to post_path(@post)
     else
       render :edit

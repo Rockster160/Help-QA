@@ -37,10 +37,9 @@ class User < ApplicationRecord
   include Accountable
   include Postable
   include Moddable
-  has_paper_trail
-  # before_action :set_paper_trail_whodunnit - Add to controller
 
   has_one :location
+  has_many :sherlocks, foreign_key: :changed_by_id
 
   after_create :set_gravatar_if_exists
 

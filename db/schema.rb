@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171007235157) do
+ActiveRecord::Schema.define(version: 20171010234035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,15 +103,6 @@ ActiveRecord::Schema.define(version: 20171007235157) do
     t.index ["post_id"], name: "index_polls_on_post_id", using: :btree
   end
 
-  create_table "post_edits", force: :cascade do |t|
-    t.integer  "post_id"
-    t.integer  "edited_by_id"
-    t.datetime "edited_at"
-    t.text     "previous_body"
-    t.index ["edited_by_id"], name: "index_post_edits_on_edited_by_id", using: :btree
-    t.index ["post_id"], name: "index_post_edits_on_post_id", using: :btree
-  end
-
   create_table "post_tags", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "post_id"
@@ -151,6 +142,17 @@ ActiveRecord::Schema.define(version: 20171007235157) do
     t.boolean  "marked_as_adult"
     t.index ["author_id"], name: "index_replies_on_author_id", using: :btree
     t.index ["post_id"], name: "index_replies_on_post_id", using: :btree
+  end
+
+  create_table "sherlocks", force: :cascade do |t|
+    t.integer  "changed_by_id"
+    t.string   "obj_klass"
+    t.integer  "obj_id"
+    t.text     "previous_attributes_raw"
+    t.text     "new_attributes_raw"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.index ["changed_by_id"], name: "index_sherlocks_on_changed_by_id", using: :btree
   end
 
   create_table "shouts", force: :cascade do |t|

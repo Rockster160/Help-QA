@@ -62,7 +62,7 @@
   <div class="post-section-detail">Replies (<%= @replies.count %>)</div>
   <div class="post-section-content">
     <div class="replies-container">
-      <%= render partial: "replies/index", locals: { replies: @replies } %>
+      <%= render partial: "replies/index", locals: { replies: @replies_with_notifications } %>
       <% if @post.closed? %>
         <div class="pending-reply closed">This post has been closed. Thanks for stopping by!</div>
       <% end %>

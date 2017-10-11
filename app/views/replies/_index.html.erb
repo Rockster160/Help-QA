@@ -1,5 +1,13 @@
 <% replies ||= @replies || [] %>
 <% replies.each do |reply| %>
+  <% if reply.is_a?(Sherlock) %>
+    <div class="pending-reply info">
+      <% author_name = @post.posted_anonymously? && @post.author == reply.changed_by ? "Anonymous" : reply.changed_by.username %>
+      <% change = reply.changes["closed_at"].last ? "closed" : "reopened" %>
+      <%= author_name %> <%= change %> this post <%= timeago(reply.created_at) %>.
+    </div>
+    <% next %>
+  <% end %>
   <% if reply.has_questionable_text? %>
     <div class="pending-reply">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
     <% hidden_by_default = true %>
