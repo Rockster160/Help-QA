@@ -74,7 +74,8 @@
         <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>
       </div>
     </div>
-    <div class="reply-content" data-original-content="<%= reply.body %>"><%= markdown(posted_by_user: author) { reply.body } %></div>
+    <% original_content = current_user.try(:settings).try(:censor_inappropriate_language) ? censor_text(reply.body) : reply.body %>
+    <div class="reply-content" data-original-content="<%= original_content %>"><%= markdown(posted_by_user: author) { reply.body } %></div>
     <% if false # TODO: Help Me? %>
       <div class="reply-reciprocity"></div>
     <% end %>

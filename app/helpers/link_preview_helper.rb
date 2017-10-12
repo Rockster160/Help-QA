@@ -55,19 +55,19 @@ module LinkPreviewHelper
   end
 
   def png_data?(data)
-    data.starts_with?("\x89PNG".b)
+    data.starts_with?("\x89PNG".b) rescue false
   end
 
   def jpeg_data?(data)
-    data.starts_with?("\xff\xd8\xff\xe0".b)
+    data.starts_with?("\xff\xd8\xff\xe0".b) rescue false
   end
 
   def gif_data?(data)
-    data.starts_with?("GIF8".b)
+    data.starts_with?("GIF8".b) rescue false
   end
 
   def bitmap_data?(data)
-    data.starts_with?("MB".b)
+    data.starts_with?("MB".b) rescue false
   end
 
 end

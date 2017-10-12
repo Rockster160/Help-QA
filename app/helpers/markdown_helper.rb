@@ -1,4 +1,12 @@
 module MarkdownHelper
+  def censor_text(text)
+    adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
+
+    text.gsub(/\b(#{adult_word_regex})\b/i) do |found|
+      "*" * found.length
+    end
+  end
+
   def markdown(only: nil, except: [], render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
     only = [only].flatten
     except = [except].flatten
@@ -21,6 +29,7 @@ module MarkdownHelper
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
     text = parse_emoji(text) if @markdown_options[:emoji]
+    text = censor_language(text) if current_user.try(:settings).try(:censor_inappropriate_language)
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -32,6 +41,14 @@ module MarkdownHelper
     text[-1] = "" while text[-1] =~ / \n\r/ # Remove New Lines after post.
     text[0..text.index("</p>") + 3] = "" if text.index(/<p>[ |\n|\r]*?<\/p>/).try(:zero?) # Remove empty paragraph tags before post.
     text
+  end
+
+  def censor_language(text)
+    adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
+
+    text.gsub(/\b(#{adult_word_regex})\b/i) do |found|
+      "<span title=\"#{found}\">#{'*'*found.length}</span>"
+    end
   end
 
   def parse_emoji(text)
@@ -49,13 +66,6 @@ module MarkdownHelper
     text.sub("[poll]") do
       PostsController.render(template: 'posts/poll', layout: false, assigns: { post: post, user: current_user })
     end
-  end
-
-  def render_poll(post_id)
-    return unless @markdown_post.present? && @markdown_post.id.to_i == post_id.to_i
-    poll = @markdown_post.poll
-    return if poll.nil?
-    # render partial as template with poll as local
   end
 
   def parse_directive_quotes(text)

@@ -42,7 +42,7 @@ class Post < ApplicationRecord
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
   scope :by_tags,              ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
   scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
-  scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) }
+  scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
 
   after_create :auto_add_tags, :generate_poll
   defaults reply_count: 0

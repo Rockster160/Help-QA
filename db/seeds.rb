@@ -6,7 +6,7 @@ User.create({
   username: "HelpBot",
   confirmed_at: 1.year.ago,
   date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),
-  avatar_url: ActionController::Base.helpers.asset_path("HelpBotjpg")
+  avatar_url: ActionController::Base.helpers.asset_path("HelpBot.jpg")
 })
 
 unless Rails.env.production?
@@ -75,13 +75,6 @@ unless Rails.env.production?
       verify_date = random_time_between_now_and(u.created_at)
       u.update(confirmed_at: verify_date, verified_at: verify_date)
     end
-
-    location = u.build_location
-    location.ip = (0..255).to_a.sample(4).join(".")
-    location.city = person.location.city
-    location.zip_code = person.location.postcode
-
-    location.save
   end
 
   puts "\n"

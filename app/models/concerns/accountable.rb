@@ -3,9 +3,12 @@ module Accountable
 
   included do
     before_validation :set_default_username, :set_slug
+
     validates_uniqueness_of :username, :slug, message: "Sorry, that Username has already been taken."
     validate :username_meets_requirements
     validate :at_least_13_years_of_age
+
+    after_create :set_gravatar_if_exists, :create_associated_objects
   end
 
   def online?
@@ -113,11 +116,21 @@ module Accountable
     errors.add(:base, "We're sorry- you must be 13 years of age or older to use this site.")
   end
 
+  def create_associated_objects
+    build_location(ip: current_sign_in_ip.presence || last_sign_in_ip.presence).save
+    build_settings(
+      show_link_previews: true,
+      automatically_embed_images: true,
+      automatically_embed_videos: true
+    ).save
+  end
+
   def username_meets_requirements
     return unless email.present?
-    # Profanity filter?
-    # Username cannot be "anonymous" or some other reserved words?
 
+    if ["anonymous"].include?(username.to_s.downcase)
+      return errors.add(:base, "Sorry, that is a reserved word and cannot be used as a Username.")
+    end
     if username.blank?
       return errors.add(:username, "must be at least 4 characters.")
     end

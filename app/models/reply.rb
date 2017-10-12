@@ -40,7 +40,7 @@ class Reply < ApplicationRecord
   scope :questionable,      -> { where(has_questionable_text: true) }
   scope :verified_by_mod,   -> { where(has_questionable_text: [nil, false]) }
   scope :without_adult,     -> { where(replies: { marked_as_adult: [nil, false] }) }
-  scope :conditional_adult, ->(user) { verified_by_mod.without_adult unless user.try(:adult?) }
+  scope :conditional_adult, ->(user) { verified_by_mod.without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   # TODO Add validation requiring text, cannot be blank, cannot be "Leave a reply" or similar
 
   def safe?; !marked_as_adult?; end

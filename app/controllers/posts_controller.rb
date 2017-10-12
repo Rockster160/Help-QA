@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   include PostsHelper
 
   def index
-    @posts = Post.order(created_at: :desc)
+    @posts = Post.order(created_at: :desc).conditional_adult(current_user)
     @posts = @posts.claimed.where(user_id: params[:user_id]) if params[:user_id].present?
   end
 

@@ -18,7 +18,8 @@
     </script>
   </head>
 
-  <body class="ctr-<%= controller_name %> act-<%= action_name %> <%= content_for :body_classes %>">
+  <% user_data = current_user.try(:settings).try(:html_properties_for_settings) %>
+  <body class="ctr-<%= controller_name %> act-<%= action_name %> <%= content_for :body_classes %> <%= user_data %>">
     <%= render 'layouts/flashes' %>
     <%= render 'layouts/navigation' %>
     <div class="body-wrapper">

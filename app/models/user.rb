@@ -39,19 +39,14 @@ class User < ApplicationRecord
   include Moddable
 
   has_one :location
+  has_one :settings, class_name: "UserSetting"
   has_many :sherlocks, foreign_key: :changed_by_id
-
-  after_create :set_gravatar_if_exists
 
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
   scope :unverified,           -> { where(verified_at: nil) }
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
-
-  def self.helpbot
-    by_username("HelpBot")
-  end
 
   def self.by_username(username)
     find_by("users.slug = ?", username.parameterize)
