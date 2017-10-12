@@ -34,6 +34,9 @@ module LinkPreviewHelper
           # description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
           image: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
         }
+        if tags.empty? || image_data?(res.body)
+          meta_data[:image] ||= url
+        end
 
         meta_data
       end
@@ -45,6 +48,26 @@ module LinkPreviewHelper
         html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
       }
     end
+  end
+
+  def image_data?(data)
+    png_data?(data) || jpeg_data?(data) || gif_data?(data) || bitmap_data?(data)
+  end
+
+  def png_data?(data)
+    data.starts_with?("\x89PNG".b)
+  end
+
+  def jpeg_data?(data)
+    data.starts_with?("\xff\xd8\xff\xe0".b)
+  end
+
+  def gif_data?(data)
+    data.starts_with?("GIF8".b)
+  end
+
+  def bitmap_data?(data)
+    data.starts_with?("MB".b)
   end
 
 end
