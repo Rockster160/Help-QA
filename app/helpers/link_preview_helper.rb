@@ -34,7 +34,7 @@ module LinkPreviewHelper
           # description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
           image: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
         }
-        if tags.empty? || image_data?(res.body)
+        if !only_image && (tags.empty? || image_data?(res.body))
           meta_data[:image] ||= url
         end
 

@@ -19,20 +19,24 @@ class Notice < ApplicationRecord
 
   belongs_to :user
 
+  scope :by_type, ->(*types) { where(notice_type: Notice.notice_types.symbolize_keys.slice(types.map(&:to_sym)).values) }
+
   defaults notice_type: :other
 
   enum notice_type: {
     other:              0,
     subscription:       1,
     friend_request:     2,
-    questionable_reply: 3
+    questionable_reply: 3,
+    friend_approval:    4
   }
 
   def notice_message
     case notice_type.to_sym
     when :other              then generic_message
     when :subscription       then subscription_message
-    when :friend_request     then friend_message
+    when :friend_request     then friend_request_message
+    when :friend_approval    then friend_approval_message
     when :questionable_reply then questionable_message
     else "[INVALID]"
     end
@@ -48,10 +52,16 @@ class Notice < ApplicationRecord
     "New Comment on #{link_to(post.title, post_path)}".html_safe
   end
 
-  def friend_message
+  def friend_request_message
     new_fan = User.find(notice_for_id)
-    user_path = Rails.application.routes.url_helpers.user_path(new_fan)
-    "New Friend Request from #{link_to(new_fan.username, user_path)}".html_safe
+    friends_path = Rails.application.routes.url_helpers.account_friends_path
+    "New Friend Request from #{link_to(new_fan.username, friends_path)}".html_safe
+  end
+
+  def friend_approval_message
+    new_friend = User.find(notice_for_id)
+    friends_path = Rails.application.routes.url_helpers.account_friends_path
+    "#{link_to(new_friend.username, friends_path)} has accepted your friend request!".html_safe
   end
 
   def questionable_message

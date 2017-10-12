@@ -46,8 +46,10 @@ module Friendable
 
     if existing_friendship.try(:friend_id) == self.id # They requested to be my friend already, so I can accept the request.
       existing_friendship.update(accepted_at: DateTime.current)
+      friend.notices.friend_request.create(notice_for_id: self.id)
     elsif existing_friendship.nil?
       friendships.create(user_id: self.id, friend_id: friend.id)
+      friend.notices.friend_approval.create(notice_for_id: self.id)
     end
   end
   def remove_friend(friend)
