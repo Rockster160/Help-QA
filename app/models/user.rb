@@ -47,6 +47,7 @@ class User < ApplicationRecord
   scope :unverified,           -> { where(verified_at: nil) }
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
+  scope :not_helpbot,          -> { where.not(username: "HelpBot") }
 
   def self.by_username(username)
     find_by("users.slug = ?", username.parameterize)

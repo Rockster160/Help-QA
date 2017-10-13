@@ -6,7 +6,7 @@ class TagsController < ApplicationController
   end
 
   def show
-    redirect_to build_filtered_path(path_root: "/history")
+    @tag = Tag.find_by(tag_name: params[:tags]) || Tag.new(tag_name: params[:tags])
   end
 
   def redirect

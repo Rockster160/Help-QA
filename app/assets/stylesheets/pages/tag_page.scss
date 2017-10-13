@@ -1,0 +1,11 @@
+.ctr-tags.act-show {
+
+  .content-wrapper {
+    @include split-page(310px);
+
+    .explore {
+    }
+    .recent-posts {
+    }
+  }
+}

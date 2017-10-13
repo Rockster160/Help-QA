@@ -48,6 +48,7 @@ class Post < ApplicationRecord
   defaults reply_count: 0
   defaults posted_anonymously: false
 
+  before_validation :format_body
   before_validation :auto_adult, on: :create
   validate :body_is_not_default, :body_has_alpha_characters
 
@@ -60,15 +61,12 @@ class Post < ApplicationRecord
 
   def self.currently_popular
     pluck_last_replies = 100
-    uniq_replies_by_author_for_posts = Reply.order(created_at: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
+    replies_for_age_appropriate_posts = Reply.joins(:post).where(posts: { marked_as_adult: [nil, false] })
+    uniq_replies_by_author_for_posts = replies_for_age_appropriate_posts.order(created_at: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
     counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
     post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)
-    most_popular_post = nil
-    post_ids_sorted_by_uniq_author_count.reverse.each do |post_id|
-      most_popular_post = Post.find(post_id)
-      break most_popular_post unless most_popular_post.marked_as_adult?
-    end
-    most_popular_post
+    most_popular_post_id = post_ids_sorted_by_uniq_author_count.reverse.first
+    Post.find(most_popular_post_id) if most_popular_post_id
   end
 
   def set_tags
@@ -140,6 +138,11 @@ class Post < ApplicationRecord
   end
 
   private
+
+  def format_body
+    self.body[0] = "" while self.body[0] =~ /[ \n\r]/ # Remove New Lines before post.
+    self.body[-1] = "" while self.body[-1] =~ /[ \n\r]/ # Remove New Lines after post.
+  end
 
   def generate_poll
     poll_regex = /\[poll (.*?)\]/

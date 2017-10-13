@@ -118,11 +118,7 @@ module Accountable
 
   def create_associated_objects
     build_location(ip: current_sign_in_ip.presence || last_sign_in_ip.presence).save
-    build_settings(
-      show_link_previews: true,
-      automatically_embed_images: true,
-      automatically_embed_videos: true
-    ).save
+    build_settings.save
   end
 
   def username_meets_requirements

@@ -10,15 +10,15 @@
   <% end %>
   <% if reply.has_questionable_text? %>
     <div class="pending-reply">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
-    <% hidden_by_default = true %>
+    <% hidden_by_default = "attached pending" %>
     <% next unless current_user.try(:mod?) %>
-  <% elsif reply.removed? || !current_user&.can_view?(reply) %>
+  <% elsif reply.removed? || (reply.marked_as_adult? && !current_user&.can_view?(reply)) %>
     <div class="pending-reply removed">This reply has been removed.</div>
-    <% hidden_by_default = true %>
+    <% hidden_by_default = "attached removed" %>
     <% next unless current_user.try(:mod?) %>
   <% end %>
   <% author = reply.author %>
-  <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= 'attached' if hidden_by_default %>" id="reply-<%= reply.id %>">
+  <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= hidden_by_default %>" id="reply-<%= reply.id %>">
     <div class="reply-author">
       <%= avatar(reply.avatar, size: 40) %>
       <div class="reply-author-text">

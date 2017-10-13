@@ -52,7 +52,7 @@ class PostsController < ApplicationController
       current_user.invites.unread.where(post_id: @post.id).each(&:read)
       current_user.notices.subscription.unread.where(notice_for_id: @post.id).each(&:read)
     end
-    authenticate_adult unless current_user&.can_view?(@post)
+    authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
     @replies = @post.replies.order(created_at: :asc)
     closed_notifications = Sherlock.closed_notifications_for(@post)

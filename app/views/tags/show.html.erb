@@ -1,0 +1,12 @@
+<h1>Posts and People tagged "<%= @tag.tag_name %>"</h1>
+
+<div class="content-wrapper">
+  <div class="explore">
+    <h6>Explore</h6>
+    <p>Be specific - combine this tag with...</p>
+    <%= tags_container(@tag.similar_tags, min: 8, max: 40) %>
+  </div>
+
+  <div class="recent-posts">
+  </div>
+</div>

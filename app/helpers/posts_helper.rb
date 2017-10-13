@@ -9,7 +9,7 @@ module PostsHelper
 
     tags.map do |tag|
       size = range_map(tag.tags_count, min_tag_count, max_tag_count, min, max)
-      "<a href=\"#{tag_path(tag)}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{tag.tags_count} posts\">#{tag.tag_name}</a>"
+      "<a href=\"#{tag_path(tag)}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
     end.join(", ").html_safe
   end
 

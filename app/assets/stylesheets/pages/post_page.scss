@@ -19,6 +19,7 @@
       .title p {
         font-size: 25px;
         margin-bottom: 15px;
+        margin-top: 0;
       }
       .body {
         min-height: 50px;
@@ -86,6 +87,8 @@
 
           &.attached {
             margin-top: -13px;
+            &.pending { border: 2px solid $help-default; }
+            &.removed { border: 2px solid red; }
           }
           .reply-author {
             padding: 5px;

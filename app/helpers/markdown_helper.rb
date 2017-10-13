@@ -37,9 +37,9 @@ module MarkdownHelper
   end
 
   def clean_up_html(text)
-    text[0] = "" while text[0] =~ / \n\r/ # Remove New Lines before post.
-    text[-1] = "" while text[-1] =~ / \n\r/ # Remove New Lines after post.
-    text[0..text.index("</p>") + 3] = "" if text.index(/<p>[ |\n|\r]*?<\/p>/).try(:zero?) # Remove empty paragraph tags before post.
+    text[0] = "" while text[0] =~ /[ \n\r]/ # Remove New Lines before post.
+    text[-1] = "" while text[-1] =~ /[ \n\r]/ # Remove New Lines after post.
+    text[0..text.index("</p>") + 3] = "" while text.index(/<p>[ |\n|\r]*?<\/p>/).try(:zero?) # Remove empty paragraph tags before post.
     text
   end
 

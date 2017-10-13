@@ -42,6 +42,14 @@ class Tag < ApplicationRecord
     @@adult_words ||= File.read("lib/adult_words.txt").split("\n").reject { |word| word.to_s.length < 2 }
   end
 
+  def self.tags_grouped_by_similar
+    # Warning: Slow method
+    tag_hash = {}
+    Tag.find_each { |tag| tag_hash[tag.tag_name] = tag.similar_tags.map(&:tag_name) }
+    tag_hash.reject! { |tag_name, similar_tags| similar_tags.none? }
+    tag_hash
+  end
+
   def self.auto_mapper_hash
     {
       depression: [
