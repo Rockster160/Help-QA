@@ -9,21 +9,6 @@
     p { margin: 0; }
     .tags {
       font-size: 12px;
-
-      .tag-search {
-        @include split-page(80px);
-        display: flex;
-        flex-direction: row-reverse;
-
-        .field-wrapper {
-          padding-right: 10px;
-          input { width: 100%; }
-        }
-        .btn-wrapper {
-          text-align: right;
-          button { width: 80px; }
-        }
-      }
     }
     .popular-post {
       border: 1px solid lighten($help-default, 35%);

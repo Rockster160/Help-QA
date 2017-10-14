@@ -88,8 +88,9 @@ class Tag < ApplicationRecord
 
   def self.similar_tags
     tags = all
-    similar_ids = tags.map(&:similar_tag_ids).inject(&:&) - tags.pluck(:id)
-    unscoped.where(id: similar_ids)
+    similar_ids = tags.map(&:similar_tag_ids).inject(&:&)
+    return none if similar_ids.blank?
+    unscoped.where(id: similar_ids -  tags.pluck(:id))
   end
 
   def similar_tag_ids

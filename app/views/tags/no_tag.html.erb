@@ -1,0 +1,15 @@
+<h3>Sorry, no people or posts were found tagged <%= params[:tags].split(",").map { |tag| "\"#{tag.squish}\"" }.to_sentence %>.</h3>
+
+<p class="label-split">Try another tag:</p>
+<div style="max-width: 300px;">
+  <%= form_tag redirect_tags_path do %>
+    <div class="tag-search">
+      <div class="btn-wrapper">
+        <button type="button" name="button">Goto Tag</button>
+      </div>
+      <div class="field-wrapper">
+        <input type="text" name="tag_name">
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -53,4 +53,12 @@ class User < ApplicationRecord
     find_by("users.slug = ?", username.parameterize)
   end
 
+  def description
+    return :admin if admin?
+    return :mod if mod?
+    return :knowledgable if long_time_user?
+    return :active if replies.where("replies.created_at > ?", 1.week.ago).length > 5
+    :inactive
+  end
+
 end

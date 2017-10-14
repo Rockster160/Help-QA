@@ -1,4 +1,5 @@
-<h1>Posts and People tagged <%= @tags.map { |tag| "\"#{tag.tag_name}\""}.to_sentence %></h1>
+<% tags_together = @tags.map { |tag| "\"#{tag.tag_name}\""}.to_sentence %>
+<h1>Posts and People tagged <%= tags_together %></h1>
 
 <div class="content-wrapper">
   <div class="explore">
@@ -7,9 +8,36 @@
     <%= tags_container(@tags.similar_tags, min: 12, max: 32, href: tag_path(params[:tags] + ",{{tag}}")) %>
     <p class="label-split">Or, jump to a related tag...</p>
     <%= tags_container(@tags.similar_tags.count_order, min: 12, max: 32) %>
+    <p class="label-split">Or, jump to any tag!</p>
+    <%= form_tag redirect_tags_path do %>
+      <div class="tag-search">
+        <div class="btn-wrapper">
+          <button type="button" name="button">Goto Tag</button>
+        </div>
+        <div class="field-wrapper">
+          <input type="text" name="tag_name">
+        </div>
+      </div>
+    <% end %>
+    <h6>Users</h6>
+    <div class="users">
+      <% @users.limit(20).each do |user| %>
+        <%= avatar(user.avatar, { href: user_path(user), size: 60, border: "border-#{user.description}", title: user.username }) %>
+      <% end %>
+    </div>
+    <p class="view-all">A few of the <%= number_with_delimiter(@users.count) %> users tagged <%= tags_together %></p>
+    <div class="tag-legend">
+      <span>Outlined Users Key:</span>
+      <div class="legend-item admin">Admin</div>
+      <div class="legend-item mod">Mod</div>
+      <div class="legend-item knowledgable">Knowledgable</div>
+      <div class="legend-item active">Active</div>
+      <div class="legend-item inactive">Inactive</div>
+    </div>
   </div>
 
   <div class="recent-posts">
-    sup
+    <%= render partial: "posts/index", locals: { posts: @posts.limit(20) } %>
+    <p class="view-all"><%= link_to "View all #{@posts.length} Posts tagged #{tags_together} »", "/history/#{params[:tags].split(',').map(&:squish).join(',')}" %></p>
   </div>
 </div>

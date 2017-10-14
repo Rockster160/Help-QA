@@ -40,7 +40,6 @@ class Post < ApplicationRecord
   scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
-  scope :by_tags,              ->(*tags) { joins(:tags).where(tags: { tag_name: tags.flatten.map(&:downcase).map(&:squish) }).distinct }
   scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
   scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :by_tags, ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }

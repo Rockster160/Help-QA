@@ -51,4 +51,24 @@
       }
     }
   }
+  &.border-admin {
+    border: 1px solid #128B03;
+    border-bottom-width: 4px;
+  }
+  &.border-mod {
+    border: 1px solid #850000;
+    border-bottom-width: 4px;
+  }
+  &.border-knowledgable {
+    border: 1px solid #850087;
+    border-bottom-width: 4px;
+  }
+  &.border-active {
+    border: 1px solid #1185BF;
+    border-bottom-width: 4px;
+  }
+  &.border-inactive {
+    border: 1px solid lightgrey;
+    border-bottom-width: 4px;
+  }
 }

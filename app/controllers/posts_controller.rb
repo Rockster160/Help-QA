@@ -8,7 +8,7 @@ class PostsController < ApplicationController
   end
 
   def history_redirect
-    redirect_to build_filtered_path(path_root: "/history")
+    redirect_to build_filtered_path
   end
 
   def history

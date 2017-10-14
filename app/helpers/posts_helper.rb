@@ -47,7 +47,7 @@ module PostsHelper
     current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.blank? }
     current_filters[:tags] = current_filters[:tags].join(",") if current_filters[:tags].present?
 
-    link_to link_text, "/#{([page_root_path] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
+    link_to link_text, "#{([page_root_path] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
   end
 
   def current_tags(workable_params=params)
@@ -55,10 +55,10 @@ module PostsHelper
   end
 
   def page_root_path
-    request.path.split("/")[1]
+    "/" + request.path.split("/")[1]
   end
 
-  def build_filtered_path(workable_params=params, path_root: page_root_path)
+  def build_filtered_path(workable_params=params)
     if workable_params.is_a?(ActionController::Parameters)
       workable_params[:tags] = workable_params.permit(:tags, :new_tag).values.join(",")
       workable_params.delete(:tags) unless workable_params[:tags].present?

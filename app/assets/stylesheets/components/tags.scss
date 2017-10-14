@@ -1,0 +1,14 @@
+.tag-search {
+  @include split-page(80px);
+  display: flex;
+  flex-direction: row-reverse;
+
+  .field-wrapper {
+    padding-right: 10px;
+    input { width: 100%; }
+  }
+  .btn-wrapper {
+    text-align: right;
+    button { width: 80px; }
+  }
+}
