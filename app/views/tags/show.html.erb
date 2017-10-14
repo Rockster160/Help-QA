@@ -1,13 +1,12 @@
-<h1>Posts and People tagged "<%= @tag.tag_name %>"</h1>
+<h1>Posts and People tagged <%= @tags.map { |tag| "\"#{tag.tag_name}\""}.to_sentence %></h1>
 
 <div class="content-wrapper">
   <div class="explore">
     <h6>Explore</h6>
-    <p class="label-split">Be specific - combine this tag with...</p>
-    <%= tags_container(@tag.similar_tags, min: 12, max: 32, href: "") %>
-    <%# This should redirect to the History page with both tags? %>
+    <p class="label-split">Be specific - combine with...</p>
+    <%= tags_container(@tags.similar_tags, min: 12, max: 32, href: tag_path(params[:tags] + ",{{tag}}")) %>
     <p class="label-split">Or, jump to a related tag...</p>
-    <%= tags_container(@tag.similar_tags.unscope(:order).count_order, min: 12, max: 32) %>
+    <%= tags_container(@tags.similar_tags.count_order, min: 12, max: 32) %>
   </div>
 
   <div class="recent-posts">

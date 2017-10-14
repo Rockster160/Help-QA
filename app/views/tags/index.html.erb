@@ -2,5 +2,5 @@
 <h3>Top 100 Tags</h3>
 
 <div class="tags-container">
-  <%= tags_container(Tag.count_order.limit(100), min: 9, max: 80) %>
+  <%= tags_container(@tags, min: 9, max: 80) %>
 </div>

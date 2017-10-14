@@ -17,6 +17,8 @@ module Postable
     # has_many :tags,             through: :user_tags
     has_many :notices
     has_many :subscriptions
+
+    scope :by_tags, ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:user_ids).inject(&:&)) }
   end
 
   def can_view?(postable)

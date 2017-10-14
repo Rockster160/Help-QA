@@ -3,10 +3,13 @@ class TagsController < ApplicationController
   include PostsHelper
 
   def index
+    @tags = Tag.count_order.limit(100)
   end
 
   def show
-    @tag = Tag.find_by(tag_name: params[:tags]) || Tag.new(tag_name: params[:tags])
+    @tags = Tag.by_words(params[:tags].split(","))
+    @posts = Post.by_tags(@tags.pluck(:tag_name))
+    @users = User.by_tags(@tags.pluck(:tag_name))
   end
 
   def redirect

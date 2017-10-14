@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171012033131) do
+ActiveRecord::Schema.define(version: 20171014193707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20171012033131) do
   create_table "tags", force: :cascade do |t|
     t.string  "tag_name"
     t.integer "tags_count"
+    t.text    "similar_tag_id_string"
   end
 
   create_table "user_poll_votes", force: :cascade do |t|

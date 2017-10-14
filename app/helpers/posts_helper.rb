@@ -10,8 +10,8 @@ module PostsHelper
 
     tags.map do |tag|
       size = range_map(tag.tags_count, min_tag_count, max_tag_count, min, max)
-      href = URI.unescape(href).gsub("{{tag}}", tag.tag_name.to_s)
-      "<a href=\"#{href}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
+      tag_href = URI.unescape(href).gsub("{{tag}}", tag.tag_name.to_s)
+      "<a href=\"#{tag_href}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
     end.join(", ").html_safe
   end
 

@@ -2,9 +2,10 @@
 #
 # Table name: tags
 #
-#  id         :integer          not null, primary key
-#  tag_name   :string
-#  tags_count :integer
+#  id                    :integer          not null, primary key
+#  tag_name              :string
+#  tags_count            :integer
+#  similar_tag_id_string :text
 #
 
 class Tag < ApplicationRecord
@@ -15,10 +16,14 @@ class Tag < ApplicationRecord
 
   before_save :format_name
 
+  after_commit { delay.set_similar_tags }
+
   has_many :post_tags
   has_many :posts, through: :post_tags
+  has_many :users, through: :posts, source: :author
 
   scope :count_order, -> { order("tags.tags_count DESC NULLS LAST") }
+  scope :by_words, ->(*words) { where(tag_name: [words].flatten.map { |word| word.try(:downcase).try(:squish) }.compact) }
 
   def self.auto_extract_tags_from_body(body)
     stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
@@ -81,15 +86,43 @@ class Tag < ApplicationRecord
     adult_words_in_list(tags).any?
   end
 
-  def similar_tags(required_to_match=2)
+  def self.similar_tags
+    tags = all
+    similar_ids = tags.map(&:similar_tag_ids).inject(&:&) - tags.pluck(:id)
+    unscoped.where(id: similar_ids)
+  end
+
+  def similar_tag_ids
+    similar_tag_id_string.to_s.split(",").map(&:to_i).reject(&:zero?)
+  end
+
+  def similar_tags
+    where(id: similar_tag_ids)
+  end
+
+  def ordered_similar_tags
+    sorted_occurences = similar_tag_ids
+    psql_order_str = ["CASE"] + sorted_occurences.map.with_index { |tag_id, idx| "WHEN id='#{tag_id}' THEN #{idx}" } + ["END"]
+    where(id: sorted_occurences).order(psql_order_str.join(" "))
+  end
+
+  def set_similar_tags
+    return unless persisted?
+
+    required_to_match = 2
     all_tag_ids_used_in_posts = posts.map(&:tag_ids).flatten - [id]
     tag_occurence_counter = all_tag_ids_used_in_posts.each_with_object(Hash.new(0)) { |instance, count_hash| count_hash[instance] += 1 }
-    strong_matches = tag_occurence_counter.reject { |tag_id, similar_count| similar_count <= required_to_match }
-    return Tag.none if strong_matches.none?
+    strong_matches = tag_occurence_counter.reject { |tag_id, similar_count| similar_count <= required_to_match } # Less than or equal here because it INCLUDES the initial tag. So 3 occurrences of the tag mean there are 2 other posts with the same tag combo
+    if strong_matches.none?
+      update(similar_tag_id_string: "")  if similar_tag_id_string.present?
+      return
+    end
 
     sorted_occurences = Hash[strong_matches.sort_by { |tag_id, similar_count| -similar_count }]
-    psql_order_str = ["CASE"] + sorted_occurences.keys.map.with_index { |tag_id, idx| "WHEN id='#{tag_id}' THEN #{idx}" } + ["END"]
-    Tag.where(id: sorted_occurences.keys).order(psql_order_str.join(" "))
+    new_str = ",#{sorted_occurences.keys.join(',')}," # Commas on either side to allow the fuzzy search to pick up the start and end
+    unless new_str == similar_tag_id_string
+      update(similar_tag_id_string: new_str)
+    end
   end
 
   def to_param
