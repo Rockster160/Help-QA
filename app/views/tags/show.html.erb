@@ -3,10 +3,14 @@
 <div class="content-wrapper">
   <div class="explore">
     <h6>Explore</h6>
-    <p>Be specific - combine this tag with...</p>
-    <%= tags_container(@tag.similar_tags, min: 8, max: 40) %>
+    <p class="label-split">Be specific - combine this tag with...</p>
+    <%= tags_container(@tag.similar_tags, min: 12, max: 32, href: "") %>
+    <%# This should redirect to the History page with both tags? %>
+    <p class="label-split">Or, jump to a related tag...</p>
+    <%= tags_container(@tag.similar_tags.unscope(:order).count_order, min: 12, max: 32) %>
   </div>
 
   <div class="recent-posts">
+    sup
   </div>
 </div>

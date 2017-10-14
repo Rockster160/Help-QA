@@ -29,25 +29,32 @@ else
     rand(times[0]..times[1])
   end
 
-  @stored_paragraphs = []
-  def random_paragraph(count)
-    until @stored_paragraphs.length >= count
-      paragraphs = RestClient.get("http://randomtextgenerator.com").body[/\<textarea id="generatedtext"\>(.|\n)*?\<\/textarea\>/][29..-12].split(/\n|\r/).reject(&:blank?) rescue [Faker::Lorem.paragraph(2, true, 2)]
-      @stored_paragraphs += paragraphs
+  def normal_dist_with_bias(min, max, bias)
+    norm = rand * (max - min) + min
+    mix = rand
+    (norm * (1 - mix) + bias * mix).round
+  end
+
+  @stored_sentences = []
+  def random_sentences(count)
+    until @stored_sentences.length >= count
+      sentences = RestClient.get("http://johno.jsmf.net/knowhow/ngrams/index.php?table=en-nigga-word-2gram&length=2000&paragraphs=1").body[/\<div id="text" \>(.|\n)*?\<\/div\>/][24..-14].split(/(?<=[.?!;])\s+(?=\p{Lu})/).reject(&:blank?)
+      @stored_sentences += sentences
+      @tag_words ||= @stored_sentences.join(" ").gsub(/[^a-z \-]/i, "").gsub(/\b[a-z]{1,2}\b/i, "").split(" ").sample(100)
     end
-    new_paragraphs = @stored_paragraphs.sample(count)
-    @stored_paragraphs -= new_paragraphs
-    new_paragraphs.join(" ")
+    sentences = @stored_sentences.sample(count)
+    @stored_sentences -= sentences
+    sentences
+  end
+
+  def random_paragraph
+    random_sentences(normal_dist_with_bias(1, 10, 4)).join(" ")
   end
 
   def random_body_with_whitespace(paragraph_count)
-    raw_body = random_paragraph(paragraph_count)
-    body_pieces = raw_body.split(/(?<=\.) /)
-    body = ""
-    until body_pieces.empty?
-      body += body_pieces.pop(rand(6)).join(" ") + ("\n" * (1 + rand(2)))
-    end
-    body
+    paragraphs = paragraph_count.times.map { random_paragraph }
+    last_paragraph = paragraphs.pop
+    paragraphs.map { |paragraph| paragraph + ("\n" * (1 + rand(2))) }.join("") + last_paragraph
   end
 
   def print_inline(msg)
@@ -80,7 +87,7 @@ else
     remember_created_at: 6.months.ago,
     username: "Rockster160",
     date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),
-    role: :admin 
+    role: :admin
   })
   u.confirm
 
@@ -153,6 +160,7 @@ else
     post.posted_anonymously = rand(4) == 0
 
     post.save
+    post.set_tags = @tag_words.sample(10).join(", ")
   end
 
   puts "\n"

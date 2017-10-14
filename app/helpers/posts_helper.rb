@@ -2,18 +2,21 @@ module PostsHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
-  def tags_container(tags, min:, max:, min_tag_count: nil, max_tag_count: nil)
+  def tags_container(tags, min:, max:, min_tag_count: nil, max_tag_count: nil, href: tag_path("{{tag}}"))
     return if tags.none?
-    max_tag_count ||= tags.count_order.first.tags_count
-    min_tag_count ||= tags.count_order.last.tags_count
+    ordered_tags = tags.unscope(:order).count_order
+    max_tag_count ||= ordered_tags.first.tags_count
+    min_tag_count ||= ordered_tags.last.tags_count
 
     tags.map do |tag|
       size = range_map(tag.tags_count, min_tag_count, max_tag_count, min, max)
-      "<a href=\"#{tag_path(tag)}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
+      href = URI.unescape(href).gsub("{{tag}}", tag.tag_name.to_s)
+      "<a href=\"#{href}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
     end.join(", ").html_safe
   end
 
   def range_map(input, input_start, input_end, output_start, output_end)
+    return (output_start + output_end) / 2 if input_start == input_end
     input, input_start, input_end, output_start, output_end = [input, input_start, input_end, output_start, output_end].map(&:to_i)
     output_start + ((output_end - output_start) / (input_end - input_start).to_f) * (input - input_start)
   end

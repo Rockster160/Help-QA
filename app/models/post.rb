@@ -73,8 +73,9 @@ class Post < ApplicationRecord
     tags.pluck(:tag_name).join(", ")
   end
   def set_tags=(new_tags_string)
-    post_tags.destroy_all
+    post_tags.each(&:destroy)
     new_tags_string.split(",").each do |new_tag|
+      new_tag = new_tag.downcase.squish
       tag = Tag.find_or_create_by(tag_name: new_tag)
       post_tags.create(tag: tag)
     end
