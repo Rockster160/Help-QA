@@ -7,9 +7,21 @@ class Devise::User::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+  def create
+    if params.dig(:user, :password).blank?
+      user = User.find_for_database_authentication(user_params)
+      if user.nil?
+        sleep 0.2
+      elsif user.deactivated?
+        user.send_confirmation_instructions
+      else
+        user.send_reset_password_instructions
+      end
+      redirect_to root_path, notice: "You should receive instructions to your email on file assisting you in logging in."
+    else
+      super
+    end
+  end
 
   # DELETE /resource/sign_out
   # def destroy
@@ -17,6 +29,10 @@ class Devise::User::SessionsController < Devise::SessionsController
   # end
 
   # protected
+
+  def user_params
+    params.require(:user).permit(:login)
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_in_params

@@ -18,7 +18,7 @@
     <% next unless current_user.try(:mod?) %>
   <% end %>
   <% author = reply.author %>
-  <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= hidden_by_default %>" id="reply-<%= reply.id %>">
+  <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= hidden_by_default %> <%= 'deactivated' if author.deactivated? %>" id="reply-<%= reply.id %>">
     <div class="reply-author">
       <%= avatar(reply.avatar, size: 40) %>
       <div class="reply-author-text">
@@ -76,8 +76,10 @@
     </div>
     <% original_content = current_user.try(:settings).try(:censor_inappropriate_language) ? censor_text(reply.body) : reply.body %>
     <div class="reply-content" data-original-content="<%= original_content %>" <%=  'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
-    <% if false # TODO: Help Me? %>
-      <div class="reply-reciprocity"></div>
+    <% if author.deactivated? %>
+      <div class="reply-after-message"><p class="text-right">This account has been deactivated.</p></div>
+    <% else %>
+    <%# Help Me? %>
     <% end %>
   </div>
 <% end %>

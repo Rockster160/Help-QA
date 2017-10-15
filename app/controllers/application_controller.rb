@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
-  before_action :see_current_user, :logit, :preload_emojis
+  before_action :deactivate_user, :see_current_user, :logit, :preload_emojis
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message]
@@ -20,6 +20,15 @@ class ApplicationController < ActionController::Base
   def preload_emojis
     @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji.json")) }
     @emoji_names = Rails.cache.fetch("emoji_names") { @emoji_list.keys }
+  end
+
+  def deactivate_user
+    if user_signed_in? && current_user.deactivated?
+      current_user.send_confirmation_instructions
+      sign_out :user
+      flash.now[:notice] = nil
+      flash.now[:alert] = "Your account has been deactivated! Please click the link we sent to your email address to activate your account."
+    end
   end
 
   def authenticate_user

@@ -84,11 +84,23 @@
         .reply-container {
           border: 1px solid #999;
           margin-bottom: 10px;
+          position: relative;
 
           &.attached {
             margin-top: -13px;
             &.pending { border: 2px solid $help-default; }
             &.removed { border: 2px solid red; }
+          }
+          &.deactivated:after {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            opacity: 0.6;
+            pointer-events: none;
           }
           .reply-author {
             padding: 5px;
@@ -169,7 +181,17 @@
               }
             }
           }
-          .reply-reciprocity {}
+          .reply-after-message {
+            border-top: 1px solid #CCC;
+            background: white;
+
+            p {
+              font-size: 12px;
+              margin: 0;
+              padding: 3px;
+              font-weight: bold;
+            }
+          }
           &.highlight {
             border-top: 3px solid limegreen;
           }

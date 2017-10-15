@@ -6,6 +6,7 @@ def create_helpbot
     remember_created_at: 1.year.ago,
     username: "HelpBot",
     confirmed_at: 1.year.ago,
+    verified_at: 1.year.ago,
     date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),
     avatar_url: ActionController::Base.helpers.asset_path("HelpBot.jpg")
   })
@@ -84,6 +85,8 @@ else
     email: "rocco11nicholls@gmail.com",
     password: "password",
     created_at: 6.months.ago,
+    confirmed_at: 6.months.ago
+    verified_at: 6.months.ago,
     remember_created_at: 6.months.ago,
     username: "Rockster160",
     date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),

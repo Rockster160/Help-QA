@@ -19,6 +19,7 @@ module Accountable
   def verified?; verified_at?; end
   def long_term_user?; created_at < 1.year.ago; end
   def long_time_user?; long_term_user?; end
+  def deactivated?; !verified? && created_at < 1.day.ago; end
 
   def see!
     update(last_seen_at: DateTime.current)

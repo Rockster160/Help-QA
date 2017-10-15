@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  before_action :authenticate_user!, except: [ :confirm, :set_confirmation ]
+  before_action :authenticate_user, except: [ :confirm, :set_confirmation ]
   before_action :athenticate_confirmation_token!, only: [ :confirm, :set_confirmation ]
 
   def set_confirmation

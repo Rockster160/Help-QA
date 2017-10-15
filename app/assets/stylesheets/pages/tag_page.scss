@@ -3,10 +3,8 @@
   .content-wrapper {
     @include split-page(310px);
 
-    .explore {
-    }
-    .recent-posts {
-    }
+    .explore { padding-right: 10px; }
+    .recent-posts {}
     .view-all {
       margin-top: 10px;
       font-size: 12px;

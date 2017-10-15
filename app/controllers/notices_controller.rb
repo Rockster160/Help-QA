@@ -1,5 +1,5 @@
 class NoticesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user
 
   def index
     @unread_only = params[:show].to_s.to_sym == :unread
