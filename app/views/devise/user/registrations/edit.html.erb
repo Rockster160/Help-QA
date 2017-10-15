@@ -6,6 +6,18 @@
   <%= devise_error_messages! %>
 
   <div class="field">
+    <% if resource.date_of_birth.present? %>
+      <%= f.hidden_field :date_of_birth %>
+      <label>DOB: <%= resource.date_of_birth %></label>
+    <% else %>
+      <%= f.label :date_of_birth, "Your birthday:" %>
+      <em>ex: Month/Day/Year like <strong>02/02/2010</strong></em> <br />
+      <%= f.text_field :date_of_birth %>
+      <%# , value: "#{rand(12).to_s.rjust(2, "0")}/#{rand(30).to_s.rjust(2, "0")}/#{1990 + rand(30)}" %>
+    <% end %>
+  </div>
+
+  <div class="field">
     <%= f.label :email %><br />
     <%= f.email_field :email %>
   </div>
