@@ -1,1 +1,3 @@
-HelpBot = User.by_username("HelpBot") if ActiveRecord::Base.connection.table_exists?("users")
+def helpbot
+  $helpbot ||= User.by_username("HelpBot")
+end

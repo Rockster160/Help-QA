@@ -39,6 +39,14 @@ class Tag < ApplicationRecord
     sort_frequency(tags)
   end
 
+  def self.sounds_depressed?(body)
+    (depressed_words & body.downcase.gsub(/[^a-z ]/i, "").split(" ")).any?
+  end
+
+  def self.depressed_words
+    @@depressed_words ||= File.read("lib/sad_words.txt").split("\n").reject(&:blank?)
+  end
+
   def self.stop_words
     @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject { |word| word.to_s.length < 2 }
   end
@@ -60,6 +68,10 @@ class Tag < ApplicationRecord
       depression: [
         :sad,
         :crying,
+        :cry,
+        :sorrow,
+        :dead,
+        :dread
       ],
       suicide: [
         :"self-harm"

@@ -53,6 +53,11 @@ class User < ApplicationRecord
     find_by("users.slug = ?", username.parameterize)
   end
 
+  def helpbot?
+    return false unless persisted?
+    id == helpbot.id
+  end
+
   def description
     return :admin if admin?
     return :mod if mod?

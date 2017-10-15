@@ -44,7 +44,7 @@ class Post < ApplicationRecord
   scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :by_tags, ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
 
-  after_create :auto_add_tags, :generate_poll
+  after_create :auto_add_tags, :generate_poll, :alert_helpbot
   defaults reply_count: 0
   defaults posted_anonymously: false
 
@@ -163,6 +163,12 @@ class Post < ApplicationRecord
     update(body: body.sub(poll_regex, "[poll]"))
   end
 
+  def alert_helpbot
+    return unless Tag.sounds_depressed?(body)
+
+    replies.create(author_id: helpbot.id, body: ApplicationController.render(partial: "replies/helpbot_message"))
+  end
+
   def body_is_not_default
     if Post.text_matches_default_text?(body)
       errors.add(:base, "Try asking a question!")
@@ -180,8 +186,8 @@ class Post < ApplicationRecord
   end
 
   def auto_add_tags
-    new_tag_strs = Tag.auto_extract_tags_from_body(body).first(5)
-    new_tag_strs.each do |new_tag_str|
+    new_tag_strs = Tag.auto_extract_tags_from_body(body)
+    new_tag_strs.first(5).each do |new_tag_str|
       new_tag = Tag.find_or_create_by(tag_name: new_tag_str.to_s.downcase)
       post_tags.create(tag: new_tag)
     end

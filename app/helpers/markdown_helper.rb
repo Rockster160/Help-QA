@@ -8,6 +8,7 @@ module MarkdownHelper
   end
 
   def markdown(only: nil, except: [], render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
+
     only = [only].flatten
     except = [except].flatten
 
@@ -19,6 +20,7 @@ module MarkdownHelper
     user = posted_by_user
     post = Post.find_by(id: poll_post_id)
     text = yield.to_s.dup
+    return text.html_safe if posted_by_user.try(:helpbot?)
 
     text = escape_html_characters(text, render_html: render_html)
     text = escape_markdown_characters(text)
