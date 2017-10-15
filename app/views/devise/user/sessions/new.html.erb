@@ -1,26 +1,42 @@
-<h2>Log in</h2>
+<h2>HelperNow.co Account Administration</h2>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :login %><br />
-    <%= f.text_field :login, autofocus: true %>
+<div class="login-form">
+  <div class="form-wrapper">
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <h6>Login, Register, or Recover an Account</h6>
+      <p>If you wish to register or get a new login link, just enter your email and submit. To login, enter your email <strong>and password</strong> and submit.</p>
+      <%= f.hidden_field :remember_me, value: true %>
+
+      <div class="fields">
+        <div class="field">
+          <%= f.label :login, "Username or Email:" %><br />
+          <%= f.text_field :login, autofocus: true %>
+        </div>
+
+        <div class="highlight-wrapper">
+          <div class="field">
+            <%= f.label :password, "Password:" %><br />
+            <%= f.password_field :password, autocomplete: "off" %>
+          </div>
+          <p><i>If you are registering or recovering a password, go ahead and leave this blank.</i></p>
+        </div>
+
+        <div class="actions">
+          <%= f.submit "Login" %>
+        </div>
+      </div>
+    <% end %>
   </div>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
+  <div class="info">
+    <h6>Login &amp; Registration at HelperNow.co</h6>
+    <p>We only ask for your email when using HelperNow.co. That's it. No, really. After that you'll be able to post, customize your account, and fully interact with other memebers here.</p>
+    <p>You can register one of two ways:</p>
+    <ol>
+      <li>This page, just use the form</li>
+      <li>Any time you use your email on one of our forms. <br><i>(for example: if you reply or post with your email, you instantly have an account.)</i></li>
+    </ol>
+    <p>However, you must do a one-time email validation of your account after registration -- we'll automatically send you the first notice. If this is not done within 24 hours, we'll have to remove your replies/posts until you complete your verification. It's very simply to verify your account -- just click and of the links we send you in our emails.</p>
+    <p>If you need to get a new login link, just punch your email address in the form here, leave the password blank, and we'll send you a new one right away.</p>
   </div>
-
-  <% if devise_mapping.rememberable? -%>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end -%>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
