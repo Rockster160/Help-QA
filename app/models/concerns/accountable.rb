@@ -41,7 +41,7 @@ module Accountable
   end
 
   def adult?; age.present? && age >= 18; end
-  def child?; age.nil? || age < 18; end
+  def child?; !adult?; end
   def age
     return unless date_of_birth.present?
     now = Time.now.utc.to_date

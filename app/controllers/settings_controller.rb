@@ -1,4 +1,5 @@
 class SettingsController < ApplicationController
+  before_action :authenticate_user
 
   def index
     @settings = current_user.settings || current_user.create_settings

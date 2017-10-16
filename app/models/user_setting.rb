@@ -8,18 +8,26 @@
 #  censor_inappropriate_language :boolean          default("true")
 #
 
-# NOTE: Settings should always default to true
 class UserSetting < ApplicationRecord
   belongs_to :user
 
+  before_validation :set_required
+
+  delegate :child?, to: :user
+
   def editable_properties
     {
-      hide_adult_posts: "",
-      censor_inappropriate_language: ""
+      hide_adult_posts: [:child?, ""],
+      censor_inappropriate_language: [:child?, ""]
     }
   end
 
-  def html_properties_for_settings
-    editable_properties.keys.join(" ")
+  private
+
+  def set_required
+    unless user.adult?
+      self.hide_adult_posts = true
+      self.censor_inappropriate_language = true
+    end
   end
 end
