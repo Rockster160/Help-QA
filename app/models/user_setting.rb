@@ -6,6 +6,8 @@
 #  user_id                       :integer
 #  hide_adult_posts              :boolean          default("true")
 #  censor_inappropriate_language :boolean          default("true")
+#  last_email_sent               :datetime
+#  send_email_notifications      :boolean          default("true")
 #
 
 class UserSetting < ApplicationRecord
@@ -17,8 +19,9 @@ class UserSetting < ApplicationRecord
 
   def editable_properties
     {
-      hide_adult_posts: [:child?, ""],
-      censor_inappropriate_language: [:child?, ""]
+      hide_adult_posts: {disabled: child?},
+      censor_inappropriate_language: {disabled: child?},
+      send_email_notifications: {}
     }
   end
 

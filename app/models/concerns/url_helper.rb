@@ -5,7 +5,7 @@ module UrlHelper
     "#{url_opts[:protocol] || 'http'}://#{url_opts[:host]}#{port_str}#{path}"
   end
 
-  def link_to(text, link_url)
-    "<a href=\"#{link_url}\">#{text}</a>"
+  def link_to(text, link_url, passed_root: nil)
+    "<a href=\"#{[passed_root, link_url].compact.join('/')}\">#{text}</a>"
   end
 end

@@ -1,13 +1,10 @@
 <% content_for(:title) { "Account Notices &bull; HelperNow.co".html_safe } %>
 
-<% if @unread_only %>
-  <%= link_to "Show All", {} %>
-<% else %>
-  <%= link_to "Show Unread Only", {show: :unread} %>
-<% end %>
-
 <%= paginate @notices %>
 
+<% @unread.each do |notice| %>
+  <p><%= hover_icon("new", "New Notice!") if notice.unread? %> <%= notice.notice_message %></p>
+<% end %>
 <% @notices.each do |notice| %>
   <p><%= hover_icon("new", "New Notice!") if notice.unread? %> <%= notice.notice_message %></p>
 <% end %>

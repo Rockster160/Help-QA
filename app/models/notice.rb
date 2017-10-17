@@ -19,7 +19,7 @@ class Notice < ApplicationRecord
 
   belongs_to :user
 
-  scope :by_type, ->(*types) { where(notice_type: Notice.notice_types.symbolize_keys.slice(types.map(&:to_sym)).values) }
+  scope :by_type, ->(*types) { where(notice_type: Notice.notice_types.symbolize_keys.slice(*types.map(&:to_sym)).values) }
 
   defaults notice_type: :other
 
@@ -31,45 +31,45 @@ class Notice < ApplicationRecord
     friend_approval:    4
   }
 
-  def notice_message
+  def notice_message(passed_root: nil)
     case notice_type.to_sym
-    when :other              then generic_message
-    when :subscription       then subscription_message
-    when :friend_request     then friend_request_message
-    when :friend_approval    then friend_approval_message
-    when :questionable_reply then questionable_message
+    when :other              then generic_message(passed_root: passed_root)
+    when :subscription       then subscription_message(passed_root: passed_root)
+    when :friend_request     then friend_request_message(passed_root: passed_root)
+    when :friend_approval    then friend_approval_message(passed_root: passed_root)
+    when :questionable_reply then questionable_message(passed_root: passed_root)
     else "[INVALID]"
     end
   end
 
-  def generic_message
-    link_to(title.presence || "New Notice", url).html_safe
+  def generic_message(passed_root: nil)
+    link_to(title.presence || "New Notice", url, passed_root: passed_root).html_safe
   end
 
-  def subscription_message
+  def subscription_message(passed_root: nil)
     post = Post.find(notice_for_id)
     post_path = Rails.application.routes.url_helpers.post_path(post)
-    "New Comment on #{link_to(post.title, post_path)}".html_safe
+    "New Comment on #{link_to(post.title, post_path, passed_root: passed_root)}".html_safe
   end
 
-  def friend_request_message
+  def friend_request_message(passed_root: nil)
     new_fan = User.find(notice_for_id)
     friends_path = Rails.application.routes.url_helpers.account_friends_path
-    "New Friend Request from #{link_to(new_fan.username, friends_path)}".html_safe
+    "New Friend Request from #{link_to(new_fan.username, friends_path, passed_root: passed_root)}".html_safe
   end
 
-  def friend_approval_message
+  def friend_approval_message(passed_root: nil)
     new_friend = User.find(notice_for_id)
     friends_path = Rails.application.routes.url_helpers.account_friends_path
-    "#{link_to(new_friend.username, friends_path)} has accepted your friend request!".html_safe
+    "#{link_to(new_friend.username, friends_path, passed_root: passed_root)} has accepted your friend request!".html_safe
   end
 
-  def questionable_message
+  def questionable_message(passed_root: nil)
     reply = Reply.find(notice_for_id)
     post = reply.post
     read unless reply.has_questionable_text?
     reply_path = Rails.application.routes.url_helpers.post_path(post) + "#reply-#{notice_for_id}"
-    "Questionable Reply on #{link_to(post.title, reply_path)}".html_safe
+    "Questionable Reply on #{link_to(post.title, reply_path, passed_root: passed_root)}".html_safe
   end
 
 end

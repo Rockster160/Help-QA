@@ -1,4 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'from@example.com'
   layout 'mailer'
+  append_view_path Rails.root.join("app", "views", "mailers")
+  default from: "\"HelperNow\" <helpernowcontact@gmail.com>"
 end

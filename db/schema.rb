@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171014193707) do
+ActiveRecord::Schema.define(version: 20171017000538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,9 +191,11 @@ ActiveRecord::Schema.define(version: 20171014193707) do
   end
 
   create_table "user_settings", force: :cascade do |t|
-    t.integer "user_id"
-    t.boolean "hide_adult_posts",              default: true
-    t.boolean "censor_inappropriate_language", default: true
+    t.integer  "user_id"
+    t.boolean  "hide_adult_posts",              default: true
+    t.boolean  "censor_inappropriate_language", default: true
+    t.datetime "last_email_sent"
+    t.boolean  "send_email_notifications",      default: true
     t.index ["user_id"], name: "index_user_settings_on_user_id", using: :btree
   end
 
