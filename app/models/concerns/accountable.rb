@@ -49,6 +49,13 @@ module Accountable
     now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
   end
 
+  def email=(new_email)
+    if email == new_email && unconfirmed_email.present?
+      self.unconfirmed_email = nil
+    end
+    super
+  end
+
   def date_of_birth=(dob)
     begin
       if dob.is_a?(Date)

@@ -1,18 +1,19 @@
-.ctr-settings.act-index {
-  ul.account-completion {
-    margin: 20px;
-    padding: 0;
+.ctr-settings form { margin-bottom: 20px; }
 
-    li {
-      list-style-type: none;
+ul.account-completion {
+  margin: 20px;
+  padding: 0;
 
-      &.achievement-complete { background: #D6FFD5; }
-      &.achievement-incomplete { background: #FCDEDE; }
-      .hover-icon { vertical-align: middle; }
-    }
+  li {
+    list-style-type: none;
+
+    &.achievement-complete { background: #D6FFD5; }
+    &.achievement-incomplete { background: #FCDEDE; }
+    .hover-icon { vertical-align: middle; }
   }
+}
 
-  form { margin-bottom: 20px; }
+.split-half {
   .half:first-of-type {
     padding-right: 30px;
   }
