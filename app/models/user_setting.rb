@@ -8,6 +8,9 @@
 #  censor_inappropriate_language :boolean          default("true")
 #  last_email_sent               :datetime
 #  send_email_notifications      :boolean          default("true")
+#  send_reply_notifications      :boolean          default("true")
+#  default_anonymous             :boolean          default("false")
+#  friends_only                  :boolean          default("false")
 #
 
 class UserSetting < ApplicationRecord
@@ -16,14 +19,6 @@ class UserSetting < ApplicationRecord
   before_validation :set_required
 
   delegate :child?, to: :user
-
-  def editable_properties
-    {
-      hide_adult_posts: {disabled: child?},
-      censor_inappropriate_language: {disabled: child?},
-      send_email_notifications: {}
-    }
-  end
 
   private
 

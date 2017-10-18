@@ -18,7 +18,14 @@ class SettingsController < ApplicationController
   private
 
   def user_settings_params
-    params.require(:user_setting).permit(*@settings.editable_properties)
+    params.require(:user_setting).permit(
+      :hide_adult_posts,
+      :censor_inappropriate_language,
+      :send_email_notifications,
+      :send_reply_notifications,
+      :default_anonymous,
+      :friends_only
+    )
   end
 
 end

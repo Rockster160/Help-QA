@@ -1,12 +1,172 @@
 <% content_for(:title) { "Account Settings &bull; HelperNow.co".html_safe } %>
-<h1>Settings</h1>
+
+<h1>Account Administration for <%= current_user.username %></h1>
+
+<% unless current_user.completed_signup? %>
+  <%= render partial: "accounts/completion", locals: { completion: current_user.account_completion } %>
+<% end %>
+
+<h6>Age</h6>
+<%= form_for current_user, method: :post do |f| %>
+  <div class="split-half">
+    <div class="half">
+      Your age is never displayed to other users, but is used in order to filter out posts that may be inappropriate. <em>WARNING: If you lie about your age, you risk your account becoming permanently banned.</em>
+    </div>
+    <div class="half">
+      <div class="highlight-box">
+        <% if current_user.date_of_birth.present? %>
+          <%= f.hidden_field :date_of_birth %>
+          <label>DOB: <%= current_user.date_of_birth %></label>
+        <% else %>
+          <%= f.label :date_of_birth, "Your birthday:" %>
+          <em>ex: Month/Day/Year like <strong>02/02/2010</strong></em> <br />
+          <%= f.text_field :date_of_birth %>
+          <%= f.submit "Set" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<h6>Change your Username</h6>
+<%= form_for current_user, method: :post do |f| %>
+  <div class="split-half">
+    <div class="half">
+      Your username will appear in your profile, on your posts, and above your replies. A unique or identifying username will build your reputation and grow trust.
+    </div>
+    <div class="half">
+      <div class="highlight-box">
+        <%= f.label :username, "Edit Username:" %><br />
+        <%= f.text_field :username, autofocus: true %>
+        <%= f.submit "Change" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<h6>Update your Email Address</h6>
+<%= form_for current_user, method: :post do |f| %>
+  <div class="split-half">
+    <div class="half">
+      Not using that old email account anymore? Enter a new address and we'll send along a confirmation letter so you can get it updated.
+    </div>
+    <div class="half">
+      <div class="highlight-box">
+        <%= f.label :email, "New Email Address:" %><br />
+        <%= f.email_field :email, autofocus: true %>
+        <%= f.submit "Update" %>
+        <% if current_user.pending_reconfirmation? %>
+          <div class="text-right"><em>Currently waiting confirmation for: <%= current_user.unconfirmed_email %></em></div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<h6>Change your Password</h6>
+<%= form_for current_user, method: :post do |f| %>
+  <div class="split-half">
+    <div class="half">
+      You can use the password you set here to login to HelperNow.co without having to find a login link from your emails. This is useful if you find it annoying to open your email to find a login link. Additionally, if you ever lose access to your email account, you'll still have access to your account by logging in with the previous email address and password you set.
+    </div>
+    <div class="half">
+      <div class="highlight-box">
+        <%= f.label :password, "Set your password:" %>
+        <%= f.password_field :password, autocomplete: "off", class: "full-width" %>
+        <%= f.label :password_confirmation, "Verify your password:" %>
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: "full-width" %>
+
+        <div class="text-right">
+          <em>8 characters minimum</em> <br>
+          <%= f.submit "Update Password" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<h6>General Account Settings</h6>
 
 <%= form_for @settings, url: account_settings_path, method: :post do |f| %>
-  <% @settings.editable_properties.each do |property, options| %>
-    <div class="checkbox">
-      <%= f.check_box property, disabled: options[:disabled] %>
-      <%= f.label property, options[:description].presence || property.to_s.titleize + "?" %>
+  <h6 class="form-section">HelperNow.co Emails</h6>
+  <div class="split-form">
+    <div class="buttons">
+      <%= f.radio_button :send_email_notifications, true %>
+      <%= f.label :send_email_notifications_true, "Allow Emails from HelperNow.co" %> <br>
+      <%= f.radio_button :send_email_notifications, false %>
+      <%= f.label :send_email_notifications_false, "Do not email me" %>
     </div>
-  <% end %>
-  <%= f.submit "Save", style: "margin-top: 20px;" %>
+    <div class="description">
+      Completely stop emails from us. If this is turned off, we will not send you any emails except for account related emails that you request. (Such as a password reset)
+    </div>
+  </div>
+
+  <h6 class="form-section">HelperNow.co Reply Notifications</h6>
+  <div class="split-form">
+    <div class="buttons">
+      <%= f.radio_button :send_reply_notifications, true %>
+      <%= f.label :send_reply_notifications_true, "Send reply emails" %> <br>
+      <%= f.radio_button :send_reply_notifications, false %>
+      <%= f.label :send_reply_notifications_false, "Do not send reply emails" %>
+    </div>
+    <div class="description">
+      We like to keep you updated on the things you missed on posts you're active in or subscribed to. You can turn these occasional emails on or off from here.
+    </div>
+  </div>
+
+  <h6 class="form-section">Anonymous by Default</h6>
+  <div class="split-form">
+    <div class="buttons">
+      <%= f.radio_button :default_anonymous, true %>
+      <%= f.label :default_anonymous_true, "Post/reply anonymously" %> <br>
+      <%= f.radio_button :default_anonymous, false %>
+      <%= f.label :default_anonymous_false, "Post/reply as yourself" %>
+    </div>
+    <div class="description">
+      If you would like your replies and posts to be anonymously posted by default, set it here. This is just a default state for the Anonymous checkbox - you may change this anytime, or uncheck "Post Anonymously" on individual posts or replies.
+    </div>
+  </div>
+
+  <h6 class="form-section">Invites by Friends Only</h6>
+  <div class="split-form">
+    <div class="buttons">
+      <%= f.radio_button :friends_only, true %>
+      <%= f.label :friends_only_true, "Only mutual friends may invite me" %> <br>
+      <%= f.radio_button :friends_only, false %>
+      <%= f.label :friends_only_false, "Anyone may invite me" %>
+    </div>
+    <div class="description">
+      With this turned on, only other members that you have marked as mutual friends will be able to invite you to a post. A mutual friend is a member who added you as a friend and you added them as a friend.
+    </div>
+  </div>
+
+  <h6 class="form-section">Hide Adult Posts</h6>
+  <div class="split-form">
+    <div class="buttons">
+      <%= f.radio_button :hide_adult_posts, true %>
+      <%= f.label :hide_adult_posts_true, "Do NOT show adult posts" %> <br>
+      <%= f.radio_button :hide_adult_posts, false %>
+      <%= f.label :hide_adult_posts_false, "Show adult posts" %>
+    </div>
+    <div class="description">
+      When this is enabled, we will hide adult or "NSFW" (Not Safe For Work / not child appropriate) posts and replies.
+    </div>
+  </div>
+
+  <h6 class="form-section">Censor Inappropriate Language</h6>
+  <div class="split-form">
+    <div class="buttons">
+      <%= f.radio_button :censor_inappropriate_language, true %>
+      <%= f.label :censor_inappropriate_language_true, "Censor innapropriate language" %> <br>
+      <%= f.radio_button :censor_inappropriate_language, false %>
+      <%= f.label :censor_inappropriate_language_false, "Show inappropriate language" %>
+    </div>
+    <div class="description">
+      When this is enabled, we will censor inappropriate words and language.
+    </div>
+  </div>
+
+  <div class="text-right">
+    <%= f.submit "Update Account Settings", style: "margin-top: 20px;" %>
+  </div>
 <% end %>

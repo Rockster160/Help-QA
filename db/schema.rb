@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017000538) do
+ActiveRecord::Schema.define(version: 20171018002213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,6 +196,9 @@ ActiveRecord::Schema.define(version: 20171017000538) do
     t.boolean  "censor_inappropriate_language", default: true
     t.datetime "last_email_sent"
     t.boolean  "send_email_notifications",      default: true
+    t.boolean  "send_reply_notifications",      default: true
+    t.boolean  "default_anonymous",             default: false
+    t.boolean  "friends_only",                  default: false
     t.index ["user_id"], name: "index_user_settings_on_user_id", using: :btree
   end
 
@@ -225,6 +228,7 @@ ActiveRecord::Schema.define(version: 20171017000538) do
     t.text     "bio"
     t.string   "slug"
     t.integer  "role",                   default: 0
+    t.boolean  "completed_signup",       default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

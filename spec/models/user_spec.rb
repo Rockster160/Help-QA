@@ -28,6 +28,7 @@
 #  bio                    :text
 #  slug                   :string
 #  role                   :integer          default("0")
+#  completed_signup       :boolean          default("false")
 #
 
 require 'rails_helper'
