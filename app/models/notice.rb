@@ -23,6 +23,8 @@ class Notice < ApplicationRecord
 
   defaults notice_type: :other
 
+  after_create :notify_user
+
   enum notice_type: {
     other:              0,
     subscription:       1,
@@ -70,6 +72,20 @@ class Notice < ApplicationRecord
     read unless reply.has_questionable_text?
     reply_path = Rails.application.routes.url_helpers.post_path(post) + "#reply-#{notice_for_id}"
     "Questionable Reply on #{link_to(post.title, reply_path, passed_root: passed_root)}".html_safe
+  end
+
+  private
+
+  def notify_user
+    return unless user.settings.send_reply_notifications?
+    return if user.online?
+    if subscription?
+      post_subscription = user.subscriptions.where(post_id: notice_for_id)
+      previous_notification = post_subscription.last_notified_at
+      post_subscription.update(last_notified_at: 30.seconds.from_now) # Catch race conditions
+      return if previous_notification > 30.minutes.ago
+    end
+    UserMailer.notifications(user).deliver_later
   end
 
 end

@@ -1,7 +1,7 @@
 class UserMailer < ApplicationMailer
-  def notifications(user, notices)
+  def notifications(user)
     @user = user
-    @notices = notices
+    @notices = user.notices.unread.order(created_at: :desc)
 
     mail({
       to: user.email,
