@@ -53,13 +53,7 @@ class UsersController < ApplicationController
       :username,
       :email,
       :password,
-      :password_confirmation,
-      :send_email_notifications,
-      :send_reply_notifications,
-      :default_anonymous,
-      :friends_only,
-      :hide_adult_posts,
-      :censor_inappropriate_language
+      :password_confirmation
     )
   end
 

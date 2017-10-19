@@ -2,7 +2,7 @@ class EmailNotificationsWorker
   include Sidekiq::Worker
 
   def perform
-    User.joins(:notices, :settings).where(notices: { read_at: nil }, user_settings: { send_email_notifications: true }).distinct.find_each do |user|
+    User.joins(:notices, :settings).where(notices: { read_at: nil }, user_settings: { send_reply_notifications: true }).distinct.find_each do |user|
       settings = user.settings
       notices = user.notices.unread.where("notices.created_at > ?", settings.last_email_sent)
       next unless notices.any?
