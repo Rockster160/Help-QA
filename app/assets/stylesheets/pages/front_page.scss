@@ -1,3 +1,20 @@
+.announcement {
+  background: rgba(#3D94F6, 0.8);
+  border: 2px solid #3D94F6;
+  padding: 20px;
+  border-radius: 4px;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 20px;
+
+  a {
+    color: white;
+    text-decoration: underline;
+
+    &:hover, &:active, &:visited { color: white; }
+  }
+}
+
 .front-page {
   @include split-page(350px);
 
