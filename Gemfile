@@ -38,6 +38,7 @@ gem 'kaminari'
 gem 'pg_search'
 gem 'slack-notifier'
 gem 'browser-timezone-rails'
+gem 'obscenity'
 
 group :development, :test do
   gem 'byebug', platform: :mri

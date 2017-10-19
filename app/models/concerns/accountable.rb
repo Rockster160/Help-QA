@@ -1,5 +1,6 @@
 module Accountable
   extend ActiveSupport::Concern
+  RESERVED_WORDS_FOR_USERNAME = ["anonymous"].freeze
 
   included do
     before_validation :set_default_username, :set_slug
@@ -132,8 +133,11 @@ module Accountable
   def username_meets_requirements
     return unless email.present?
 
-    if ["anonymous"].include?(username.to_s.downcase)
+    if RESERVED_WORDS_FOR_USERNAME.include?(username.to_s.downcase)
       return errors.add(:base, "Sorry, that is a reserved word and cannot be used as a Username.")
+    end
+    if ObscenityChecker.maybe_profane?(username)
+      return errors.add(:username, "cannot be profane.")
     end
     if username.blank?
       return errors.add(:username, "must be at least 4 characters.")
