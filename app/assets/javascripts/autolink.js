@@ -64,7 +64,7 @@ loadImages = function() {
 addCards = function(cards_data) {
   $(cards_data).each(function() {
     var card = this
-    var $link = $('[data-loading-preview] > a[href="' + card.url + '"]'), $wrapper = $link.parent()
+    var $link = $('[data-loading-preview] > a[href="' + card.original_url + '"]'), $wrapper = $link.parent()
 
     if (card.inline || $link.parents(".post-container .body").length > 0) {
       $link.html(card.html)

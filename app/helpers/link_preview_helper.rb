@@ -1,9 +1,10 @@
 module LinkPreviewHelper
 
   def generate_previews_for_urls
-    [params[:urls]].flatten.compact.uniq.map do |url|
-      url = url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
-      next if url[/^\w+(\.){2,}\w+$/]
+    [params[:urls]].flatten.compact.uniq.map do |raw_url|
+      raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
+      next if raw_url[/^\w+(\.){2,}\w+$/]
+      url = "http://#{raw_url.gsub(/^\/*/, '')}" unless raw_url.starts_with?("http")
       meta_data = Rails.cache.fetch(url) do
         puts "Running Cache Fetch for: #{url}".colorize(:yellow)
         res = RestClient.get(url)
@@ -43,6 +44,7 @@ module LinkPreviewHelper
 
       response_data = {
         title: meta_data[:title].presence || meta_data[:url],
+        original_url: raw_url,
         url: meta_data[:url],
         inline: meta_data[:video_url].present? || meta_data[:only_image],
         html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
