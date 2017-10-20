@@ -3,7 +3,11 @@
   <% if reply.is_a?(Sherlock) %>
     <div class="pending-reply info">
       <% author_name = @post.posted_anonymously? && @post.author == reply.changed_by ? "Anonymous" : reply.changed_by.username %>
-      <% change = reply.changes["closed_at"].last ? "closed" : "reopened" %>
+      <% change = if reply.changes.keys.include?("closed_at") %>
+        <% reply.changes["closed_at"].last ? "closed" : "reopened" %>
+      <% else %>
+        <% "edited" %>
+      <% end %>
       <%= author_name %> <%= change %> this post <%= timeago(reply.created_at) %>.
     </div>
     <% next %>

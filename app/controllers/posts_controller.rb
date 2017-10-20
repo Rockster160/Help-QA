@@ -55,8 +55,8 @@ class PostsController < ApplicationController
     authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
     @replies = @post.replies.order(created_at: :asc)
-    closed_notifications = Sherlock.closed_notifications_for(@post)
-    @replies_with_notifications = [@replies, closed_notifications].flatten.sort_by(&:created_at)
+    sherlocks = Sherlock.notifications_for(@post)
+    @replies_with_notifications = [@replies, sherlocks].flatten.sort_by(&:created_at)
   end
 
   def vote
@@ -73,7 +73,7 @@ class PostsController < ApplicationController
   def edit
     @post = Post.find(params[:id])
 
-    unless user_signed_in? && (@post.author == current_user || current_user.mod? || current_user.can_edit_posts?)
+    unless user_signed_in? && (@post.author == current_user || current_user.can_edit_posts?)
       redirect_to post_path(@post), alert: "You do not have permission to edit this post."
     end
   end

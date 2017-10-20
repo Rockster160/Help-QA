@@ -40,7 +40,6 @@ $(document).on("click", ".hide-img", function(evt) {
 
 loadImages = function() {
   $("[data-img-src]").each(function() {
-    console.log("tick");
     var $link = $(this), src = $link.attr("data-img-src")
     if (!src) { return }
 

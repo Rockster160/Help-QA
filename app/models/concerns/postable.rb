@@ -28,7 +28,7 @@ module Postable
   end
 
   def can_edit_posts?
-    long_time_user?
+    long_time_user? || mod?
   end
 
   def favorite_reply_for_post(post)

@@ -22,8 +22,10 @@
       This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> |
       Views: <%= @post.views.count %>,
       Subscribers: <%= @post.subscriptions.count %> |
-      <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
-      <a href="#" class="underline" data-scroll-to="">Leave a reply</a> |
+      <% if @post.author == current_user || current_user.try(:can_edit_posts?) %>
+        <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
+      <% end %>
+      <a href="#reply_body" class="underline">Leave a reply</a> |
       <a href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
 
       <% if current_user.try(:mod?) %>

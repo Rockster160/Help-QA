@@ -17,8 +17,8 @@ class Sherlock < ApplicationRecord
 
   validate :some_changes_made
 
-  def self.closed_notifications_for(post)
-    where(obj_klass: "Post", obj_id: post.id).select { |sherlock| sherlock.changes.keys.include?("closed_at") }
+  def self.notifications_for(post)
+    where(obj_klass: "Post", obj_id: post.id)
   end
 
   def self.update_by(person, obj_to_update, new_params)
