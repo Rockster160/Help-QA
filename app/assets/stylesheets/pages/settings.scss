@@ -7,8 +7,8 @@ ul.account-completion {
   li {
     list-style-type: none;
 
-    &.achievement-complete { background: #D6FFD5; }
-    &.achievement-incomplete { background: #FCDEDE; }
+    &.achievement-complete { background: $reciprocity-some; }
+    &.achievement-incomplete { background: $reciprocity-none; }
     .hover-icon { vertical-align: middle; }
   }
 }

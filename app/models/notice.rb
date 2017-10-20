@@ -80,10 +80,12 @@ class Notice < ApplicationRecord
     return unless user.settings.send_reply_notifications?
     return if user.online?
     if subscription?
-      post_subscription = user.subscriptions.where(post_id: notice_for_id)
-      previous_notification = post_subscription.last_notified_at
-      post_subscription.update(last_notified_at: 30.seconds.from_now) # Catch race conditions
-      return if previous_notification > 30.minutes.ago
+      post_subscription = user.subscriptions.find_by(post_id: notice_for_id)
+      if post_subscription
+        previous_notification = post_subscription.last_notified_at || DateTime.new
+        post_subscription.update(last_notified_at: 30.seconds.from_now) # Catch race conditions
+        return if previous_notification > 30.minutes.ago
+      end
     end
     UserMailer.notifications(user).deliver_later
   end

@@ -35,6 +35,14 @@ module Postable
     favorite_replies.find_by(post: post)
   end
 
+  def reciprocity(since=4.days.ago)
+    since = [since, 4.days.ago].max
+    recent_replies = replies.where("replies.created_at > ?", since)
+    replies_for_posts_not_belonging_to_user = recent_replies.joins(:post).where.not(posts: { author_id: self.id })
+    uniq_posts_for_replies = replies_for_posts_not_belonging_to_user.pluck(:post_id, :author_id).uniq
+    uniq_posts_for_replies.count
+  end
+
   def activity(day_count)
     activity_hash = {}
     day_count.times do |t|

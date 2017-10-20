@@ -42,10 +42,28 @@
   </div>
 </div>
 
+<% reciprocity = @post.author.reciprocity(@post.created_at) %>
 <div class="reciprocity post-section">
-  <div class="post-section-detail">Reciprocity (?)</div>
-  <div class="post-section-content">
-    Since writing this post... TODO
+  <div class="post-section-detail reciprocity-<%= reciprocity.positive? ? 'some' : 'none' %>">
+    <div class="text-wrapper">
+      <span>Reciprocity (<%= reciprocity %>)</span>
+      <%= hover_icon(reciprocity.positive? ? :check : :cross, "Reciprocity") %>
+    </div>
+  </div>
+  <div class="post-section-content reciprocity-<%= reciprocity.positive? ? 'some' : 'none' %>">
+    <% if @post.created_at > 4.days.ago %>
+      <% if reciprocity.positive? %>
+        Since writing this post <strong><%= @post.username %></strong> has helped <%= pluralize(reciprocity, 'person') %>.
+      <% else %>
+        Since writing this post <strong><%= @post.username %></strong> <span class="deep">has not</span> helped any one.
+      <% end %>
+    <% else %>
+      <% if reciprocity.positive? %>
+        In the past four (4) days <strong><%= @post.username %></strong> has helped <%= pluralize(reciprocity, 'person') %>.
+      <% else %>
+        Since writing this post <strong><%= @post.username %></strong> may have helped people, but <span class="deep">has not</span> within the last four (4) days.
+      <% end %>
+    <% end %>
   </div>
 </div>
 
