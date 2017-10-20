@@ -20,6 +20,13 @@ class Sherlock < ApplicationRecord
   def self.notifications_for(post)
     where(obj_klass: "Post", obj_id: post.id)
   end
+  def self.user_changes(user)
+    where(obj_klass: "User", obj_id: user.id)
+  end
+
+  def self.by_changed_attr(*change_keys)
+    select { |sherlock| (changes.keys & change_keys.map(&:to_s)).any? }
+  end
 
   def self.update_by(person, obj_to_update, new_params)
     new_sherlock = person.sherlocks.new(obj: obj_to_update)
@@ -42,11 +49,11 @@ class Sherlock < ApplicationRecord
   end
 
   def previous_attributes
-    @previous_attributes ||= JSON.parse(previous_attributes_raw.to_s)
+    @previous_attributes ||= JSON.parse(previous_attributes_raw.to_s) rescue {}
   end
 
   def new_attributes
-    @new_attributes ||= JSON.parse(new_attributes_raw.to_s)
+    @new_attributes ||= JSON.parse(new_attributes_raw.to_s) rescue {}
   end
 
   def changes

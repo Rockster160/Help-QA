@@ -20,10 +20,10 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find(params[:id])
+    @user = current_user
     @settings = @user.settings
 
-    if @user.update(user_params)
+    if Sherlock.update_by(current_user, @user, user_params)
       redirect_to account_settings_path, notice: "Success!"
     else
       render "settings/index"

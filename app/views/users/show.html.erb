@@ -44,7 +44,10 @@
             <%= avatar(friend.avatar, size: 40, href: user_path(friend), title: friend.username) %>
           <% end %>
         </div>
-        <%# TODO: Add AKA list (Previous Usernames, not first one?) %>
+        <% if @user.aka.any? %>
+          <h6>AKA</h6>
+          <div class="aka"><%= @user.aka.join(", ") %></div>
+        <% end %>
       </div>
     </div>
 

@@ -51,6 +51,15 @@ module Accountable
     now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
   end
 
+  def aka
+    previous_usernames = []
+    Sherlock.user_changes(self).each do |sherlock|
+      previous_usernames << sherlock.changes["username"].first
+    end
+    previous_usernames.shift
+    previous_usernames.uniq
+  end
+
   def email=(new_email)
     if email == new_email && unconfirmed_email.present?
       self.unconfirmed_email = nil
