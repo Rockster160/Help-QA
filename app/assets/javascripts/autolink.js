@@ -1,4 +1,4 @@
-$(".ctr-posts.act-show").ready(function() {
+$(".ctr-posts.act-show, .ctr-users.act-show").ready(function() {
   function onPageLoaded() {
     var jqxhrs = [];
 
@@ -40,6 +40,7 @@ $(document).on("click", ".hide-img", function(evt) {
 
 loadImages = function() {
   $("[data-img-src]").each(function() {
+    console.log("tick");
     var $link = $(this), src = $link.attr("data-img-src")
     if (!src) { return }
 
@@ -66,7 +67,7 @@ addCards = function(cards_data) {
     var card = this
     var $link = $('[data-loading-preview] > a[href="' + card.original_url + '"]'), $wrapper = $link.parent()
 
-    if (card.inline || $link.parents(".post-container .body").length > 0) {
+    if (card.inline || $link.parents("[data-inline-links]").length > 0) {
       $link.html(card.html)
     } else {
       $link.html('<a rel="nofollow" href="' + card.url + '">[' + card.title + "]</a>")
@@ -91,7 +92,7 @@ loadAllLinks = function() {
     var max_link_length = 60
     var short_text_link = link_href.length > max_link_length ? (link_href.substr(0, max_link_length) + "...") : link_href
 
-    $link.html('<a rel="nofollow" style="white-space: nowrap;" href="' + link_href + '"><i class="fa fa-spinner fa-spin"></i> ' + short_text_link + "</a>")
+    $link.html('<a rel="nofollow" href="' + link_href + '"><i class="fa fa-spinner fa-spin"></i> ' + short_text_link + "</a>")
 
     links_to_generate.push(link_href)
   })
@@ -109,7 +110,7 @@ loadAllLinks = function() {
 }
 
 parseLinks = function() {
-  $(".reply-content, .post-container .body").not("[data-parsed-links]").each(function() {
+  $(".reply-content, .post-container .body, .bio").not("[data-parsed-links]").each(function() {
     $(this).attr("data-parsed-links", "")
     var new_body = $(this).html()
 

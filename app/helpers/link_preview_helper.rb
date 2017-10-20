@@ -5,6 +5,7 @@ module LinkPreviewHelper
       raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
       next if raw_url[/^\w+(\.){2,}\w+$/]
       url = "http://#{raw_url.gsub(/^\/*/, '')}" unless raw_url.starts_with?("http")
+      url ||= raw_url
       meta_data = Rails.cache.fetch(url) do
         puts "Running Cache Fetch for: #{url}".colorize(:yellow)
         res = RestClient.get(url)

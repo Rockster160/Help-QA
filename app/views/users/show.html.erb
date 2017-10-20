@@ -16,7 +16,16 @@
     <div class="mini-profile">
       <div class="title">Mini-Profile</div>
       <%= avatar(@user.avatar, size: 200) %>
-      <p>My user description</p>
+      <div class="bio" data-inline-links>
+        <% @user.profile.editable_attributes.each do |attr_key, sentence| %>
+          <% text = @user.profile.send(attr_key) %>
+          <% next if text.blank? %>
+          <% unless attr_key == :about %>
+            <p><strong><%= sentence %></strong></p>
+          <% end %>
+          <%= markdown { text } %>
+        <% end %>
+      </div>
       <div class="friends-list-wrapper">
         <div class="friends-list-title">
           <%= @user.username %>

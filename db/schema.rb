@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171019035443) do
+ActiveRecord::Schema.define(version: 20171020045920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,24 @@ ActiveRecord::Schema.define(version: 20171019035443) do
     t.datetime "updated_at",     null: false
     t.index ["poll_option_id"], name: "index_user_poll_votes_on_poll_option_id", using: :btree
     t.index ["user_id"], name: "index_user_poll_votes_on_user_id", using: :btree
+  end
+
+  create_table "user_profiles", force: :cascade do |t|
+    t.integer  "user_id"
+    t.text     "about"
+    t.text     "grow_up"
+    t.text     "live_now"
+    t.text     "education"
+    t.text     "subjects"
+    t.text     "sports"
+    t.text     "jobs"
+    t.text     "hobbies"
+    t.text     "causes"
+    t.text     "political"
+    t.text     "religion"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_profiles_on_user_id", using: :btree
   end
 
   create_table "user_settings", force: :cascade do |t|

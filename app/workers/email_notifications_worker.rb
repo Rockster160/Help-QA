@@ -10,7 +10,7 @@ class EmailNotificationsWorker
       next if settings.send_reply_notifications?
 
       post = subscription.post
-      notices = user.notices.subscription.where(notices: { read_at: nil }.where(notice_for_id: post.id)
+      notices = user.notices.subscription.where(notices: { read_at: nil }).where(notice_for_id: post.id)
       next if notices.none?
 
       recent_notices = notices.where("notices.created_at > ?", 5.minutes.ago)

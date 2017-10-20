@@ -53,10 +53,11 @@ Rails.application.routes.draw do
 
     resources :subscriptions, only: [ :index, :destroy ]
     resources :friends, only: [ :index, :update, :destroy ]
+    resources :profile, only: [ :index ] do
+      post :update, on: :collection
+    end
     resources :settings, only: [ :index ] do
-      collection do
-        post :update
-      end
+      post :update, on: :collection
     end
     resources :notices, only: [ :index ]
     resources :invites, only: [ :index ]

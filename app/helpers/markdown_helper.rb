@@ -8,7 +8,6 @@ module MarkdownHelper
   end
 
   def markdown(only: nil, except: [], render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
-
     only = [only].flatten
     except = [except].flatten
 
@@ -26,7 +25,7 @@ module MarkdownHelper
     text = escape_markdown_characters(text)
     text = filter_nested_quotes(text, max_nest_level: 3)
     text = escape_markdown_characters(text)
-    text = invite_tagged_users(text, author: user) if @markdown_options[:tags]
+    text = invite_tagged_users(text) if @markdown_options[:tags]
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
@@ -113,12 +112,11 @@ module MarkdownHelper
     text = text.gsub("\\\~", "&#126;") # ~
   end
 
-  def invite_tagged_users(text, author:)
-    return text unless author.present?
+  def invite_tagged_users(text)
     text.gsub(/@([^ \`\@]+)/) do |username_tag|
       username = $1.gsub(/\<.*?\>/, "")
       tagged_user = User.by_username(username)
-      if tagged_user.present? && (tagged_user.friends?(author) || tagged_user == author)
+      if tagged_user.present?
         leftovers = username_tag.gsub(/[@#{Regexp.escape(tagged_user.username)}]/i, "")
         "<a href=\"#{user_path(tagged_user)}\" class=\"tagged-user\">@#{tagged_user.username.gsub(':', '&#58;')}</a>#{leftovers}"
       else

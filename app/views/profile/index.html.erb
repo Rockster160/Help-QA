@@ -1,0 +1,26 @@
+<% content_for(:title) { "Update Profile &bull; HelperNow.co".html_safe } %>
+
+<h1>Update Profile</h1>
+
+<% unless @user.completed_signup? %>
+  <%= render partial: "accounts/completion", locals: { completion: @user.account_completion } %>
+<% end %>
+
+<%= form_for @profile, url: account_profile_index_path, method: :post do |f| %>
+  <% @profile.editable_attributes.each do |attr_key, sentence| %>
+    <h6><%= sentence %></h6>
+    <div class="split-half">
+      <div class="half">
+
+      </div>
+      <div class="half">
+        <div class="highlight-box">
+          <%= f.text_area attr_key, class: "full-width", rows: 6 %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="text-right" style="margin-top: 20px;">
+    <%= f.submit "Update profile" %>
+  </div>
+<% end %>

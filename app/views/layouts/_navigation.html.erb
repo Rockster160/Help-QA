@@ -21,14 +21,14 @@
               </ul>
             </div>
             <div class="dropdown-container">
-              <a href="<%= edit_account_path %>" class="dropdown-clickable">Account Admin</a>
+              <a href="<%= account_settings_path %>" class="dropdown-clickable">Account Admin</a>
               <ul class="dropdown-list hidden">
-                <a href="<%= edit_account_path %>">Main</a>
+                <a href="<%= account_settings_path %>">Main</a>
                 <a href="<%= account_notices_path %>">Notices</a>
                 <a href="<%= account_subscriptions_path %>">Subscriptions</a>
                 <a href="<%= account_invites_path %>">Invites</a>
                 <!-- <a href="/account/my-tags">My Tags</a> -->
-                <a href="<%= user_path(current_user) %>">Profile</a>
+                <a href="<%= account_profile_index_path %>">Profile</a>
                 <a href="<%= account_friends_path %>">Friends</a>
                 <a href="<%= avatar_account_path %>">Avatar</a>
                 <a href="<%= account_settings_path %>">Settings</a>

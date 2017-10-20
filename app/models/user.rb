@@ -40,6 +40,7 @@ class User < ApplicationRecord
   include Moddable
 
   has_one :location
+  has_one :profile, class_name: "UserProfile"
   has_one :settings, class_name: "UserSetting"
   has_many :sherlocks, foreign_key: :changed_by_id
 

@@ -132,6 +132,7 @@ module Accountable
 
   def create_associated_objects
     build_location(ip: current_sign_in_ip.presence || last_sign_in_ip.presence).save
+    build_profile.save
     build_settings.save
   end
 
