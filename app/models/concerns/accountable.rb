@@ -10,6 +10,7 @@ module Accountable
     validate :at_least_13_years_of_age
 
     after_create :set_gravatar_if_exists, :create_associated_objects
+    after_commit :reset_cache
   end
 
   def online?
@@ -90,6 +91,10 @@ module Accountable
   end
 
   private
+
+  def reset_cache
+    ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username")
+  end
 
   def set_gravatar_if_exists
     return unless gravatar?

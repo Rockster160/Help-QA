@@ -1,0 +1,16 @@
+<% if user_signed_in? %>
+  <div class="field-autofiller username-loader hidden">
+    <% cache "invite_loader" do %>
+      <% User.not_helpbot.invitable.find_each do |user| %>
+        <div class="searchable-container" data-type="username" data-searchable-by="<%= user.username %>">
+          <div class="option-name">@<%= user.username %></div>
+        </div>
+      <% end %>
+    <% end %>
+    <% current_user.friends.not_invitable.each do |friend| %>
+      <div class="searchable-container" data-type="username" data-searchable-by="<%= friend.username %>">
+        <div class="option-name">@<%= friend.username %></div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

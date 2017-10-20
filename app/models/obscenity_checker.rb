@@ -19,7 +19,6 @@ class ObscenityChecker
 
     def maybe_profane?(text)
       blacklist.select { |b| b.length > 3 }.any? do |profanity|
-        print " #{profanity}".colorize(:cyan)
         found_profanity = text.to_s =~ Regexp.new(leet_regexp(profanity.to_s.downcase))
         # CustomLogger.log("Found Profanity: #{profanity} : #{leet_regexp(profanity.to_s.downcase)} in #{text}") if found_profanity
         found_profanity.present?

@@ -49,6 +49,8 @@ class User < ApplicationRecord
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
   scope :not_helpbot,          -> { where.not(username: "HelpBot") }
+  scope :invitable,            -> { joins(:settings).where(user_settings: { friends_only: false }) }
+  scope :not_invitable,        -> { joins(:settings).where(user_settings: { friends_only: true }) }
 
   def self.by_username(username)
     find_by("users.slug = ?", username.parameterize)

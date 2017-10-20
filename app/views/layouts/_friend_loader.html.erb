@@ -1,9 +1,0 @@
-<% if user_signed_in? %>
-  <div class="field-autofiller username-loader hidden">
-    <% current_user.friends.each do |friend| %>
-      <div class="searchable-container" data-type="username" data-searchable-by="<%= friend.username %>">
-        <div class="option-name">@<%= friend.username %></div>
-      </div>
-    <% end %>
-  </div>
-<% end %>
