@@ -115,7 +115,7 @@ class Reply < ApplicationRecord
 
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
-    if new_record? # && user has not been around long enough
+    if new_record? && !author.long_term_user?
       self.has_questionable_text = Tag.adult_words_in_body(body).any?
     end
   end
