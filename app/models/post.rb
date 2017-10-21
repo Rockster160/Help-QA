@@ -36,6 +36,7 @@ class Post < ApplicationRecord
   scope :unclaimed,            -> { where(posted_anonymously: true) }
   scope :verified_user,        -> { joins(:author).where.not(users: { verified_at: nil }) }
   scope :unverified_user,      -> { joins(:author).where(users: { verified_at: nil }) }
+  scope :not_banned,           -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :no_replies,           -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
   scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
@@ -50,7 +51,7 @@ class Post < ApplicationRecord
 
   before_validation :format_body
   before_validation :auto_adult, on: :create
-  validate :body_is_not_default, :body_has_alpha_characters
+  validate :body_is_not_default, :body_has_alpha_characters, :debounce_posts
 
   def self.text_matches_default_text?(text)
     stripped_default_text = DEFAULT_POST_TEXT.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
@@ -61,7 +62,7 @@ class Post < ApplicationRecord
 
   def self.currently_popular
     pluck_last_replies = 100
-    replies_for_age_appropriate_posts = Reply.joins(:post).where(posts: { marked_as_adult: [nil, false] })
+    replies_for_age_appropriate_posts = Reply.not_banned.joins(:post).where(posts: { marked_as_adult: [nil, false] })
     uniq_replies_by_author_for_posts = replies_for_age_appropriate_posts.order(created_at: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
     counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
     post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)
@@ -173,6 +174,12 @@ class Post < ApplicationRecord
     if Post.text_matches_default_text?(body)
       errors.add(:base, "Try asking a question!")
     end
+  end
+
+  def debounce_posts
+    return if author.posts.where("created_at > ?", 5.minutes.ago).none?
+
+    errors.add(:base, "Slow down there! You're posting too fast.")
   end
 
   def body_has_alpha_characters

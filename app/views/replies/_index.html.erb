@@ -16,7 +16,7 @@
     <div class="pending-reply">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
     <% hidden_by_default = "attached pending" %>
     <% next unless current_user.try(:mod?) %>
-  <% elsif reply.removed? || (reply.marked_as_adult? && !current_user&.can_view?(reply)) %>
+  <% elsif reply.removed? || reply.author.banned? || (reply.marked_as_adult? && !current_user&.can_view?(reply)) %>
     <div class="pending-reply removed">This reply has been removed.</div>
     <% hidden_by_default = "attached removed" %>
     <% next unless current_user.try(:mod?) %>

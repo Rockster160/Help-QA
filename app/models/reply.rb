@@ -26,7 +26,7 @@ class Reply < ApplicationRecord
 
   before_validation :format_body
 
-  validate :post_is_open
+  validate :post_is_open, :debounce_replies
 
   after_create :invite_users, :notify_subscribers
   after_update :read_questionable_text
@@ -34,6 +34,7 @@ class Reply < ApplicationRecord
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_removed,       -> { where(removed_at: nil) }
+  scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :removed,           -> { where.not(removed_at: nil) }
   scope :adult,             -> { where(marked_as_adult: true) }
   scope :safe,              -> { where(marked_as_adult: [nil, false]) }
@@ -81,6 +82,12 @@ class Reply < ApplicationRecord
     return if post.open?
 
     errors.add(:base, "We're very sorry- but this post has been closed.")
+  end
+
+  def debounce_replies
+    return if author.replies.where("created_at > ?", 10.seconds.ago).none?
+
+    errors.add(:base, "Slow down there! You're posting too fast.")
   end
 
   def notify_subscribers

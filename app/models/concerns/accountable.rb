@@ -22,6 +22,8 @@ module Accountable
   def long_term_user?; created_at < 1.year.ago; end
   def long_time_user?; long_term_user?; end
   def deactivated?; !verified? && created_at < 1.day.ago; end
+  def banned?; banned_until? && banned_until > DateTime.current; end
+  def perma_banned?; banned_until? && banned_until > 50.years.from_now; end
 
   def see!
     update(last_seen_at: DateTime.current)
@@ -56,6 +58,7 @@ module Accountable
   def aka
     previous_usernames = []
     Sherlock.user_changes(self).each do |sherlock|
+      next unless sherlock.changes.keys.include?("username")
       previous_usernames << sherlock.changes["username"].first
     end
     previous_usernames.shift

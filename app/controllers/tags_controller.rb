@@ -9,8 +9,8 @@ class TagsController < ApplicationController
   def show
     @tags = Tag.by_words(params[:tags].split(","))
     return render :no_tag if @tags.none?
-    @posts = Post.by_tags(@tags.pluck(:tag_name)).order(created_at: :desc)
-    @users = User.by_tags(@tags.pluck(:tag_name)).order(last_seen_at: :desc)
+    @posts = Post.not_banned.by_tags(@tags.pluck(:tag_name)).order(created_at: :desc)
+    @users = User.not_banned.by_tags(@tags.pluck(:tag_name)).order(last_seen_at: :desc)
   end
 
   def redirect

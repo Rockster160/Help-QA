@@ -10,10 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171020045920) do
+ActiveRecord::Schema.define(version: 20171021011639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "banned_ips", force: :cascade do |t|
+    t.inet     "ip"
+    t.datetime "created_at"
+  end
 
   create_table "favorite_replies", force: :cascade do |t|
     t.integer  "user_id"
@@ -244,10 +249,11 @@ ActiveRecord::Schema.define(version: 20171020045920) do
     t.datetime "verified_at"
     t.date     "date_of_birth"
     t.boolean  "has_updated_username",   default: false
-    t.text     "bio"
     t.string   "slug"
     t.integer  "role",                   default: 0
     t.boolean  "completed_signup",       default: false
+    t.boolean  "can_use_chat",           default: true
+    t.datetime "banned_until"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

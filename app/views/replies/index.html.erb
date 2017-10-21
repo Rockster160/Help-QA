@@ -9,6 +9,8 @@
 
 <div class="recent-replies">
   <% @replies.each do |reply| %>
+    <% next if (reply.removed? || reply.author.banned?) %>
+    <% next unless current_user&.can_view?(reply) %>
     <div class="post-reply-container" style="margin-bottom: 30px;">
       <div class="post-reply-title">
         <% if @user.nil? %>

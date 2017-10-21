@@ -25,10 +25,11 @@
 #  verified_at            :datetime
 #  date_of_birth          :date
 #  has_updated_username   :boolean          default("false")
-#  bio                    :text
 #  slug                   :string
 #  role                   :integer          default("0")
 #  completed_signup       :boolean          default("false")
+#  can_use_chat           :boolean          default("true")
+#  banned_until           :datetime
 #
 
 FactoryGirl.define do

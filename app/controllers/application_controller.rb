@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
-  before_action :deactivate_user, :see_current_user, :logit, :preload_emojis
+  before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message]
@@ -21,6 +21,14 @@ class ApplicationController < ActionController::Base
   def preload_emojis
     @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji.json")) }
     @emoji_names = Rails.cache.fetch("emoji_names") { @emoji_list.keys }
+  end
+
+  def unauth_banned_user
+    if user_signed_in? && current_user.banned?
+      sign_out :user
+      flash.now[:notice] = nil
+      flash.now[:alert] = "Your account has been banned! Please click the link we sent to your email address to activate your account."
+    end
   end
 
   def deactivate_user
@@ -95,7 +103,7 @@ class ApplicationController < ActionController::Base
   end
 
   def block_ip_addresses
-    head :unauthorized if current_ip_address == "XX.XX.XX.XX"
+    head :unauthorized if BannedIp.pluck(:ip).include?(current_ip_address)
   end
 
   def current_ip_address

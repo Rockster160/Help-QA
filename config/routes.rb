@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     member do
       put :add_friend
       put :remove_friend
+      post :moderate
     end
     get "shoutbox" => "shouts#index", as: :shouts
     post "shoutbox" => "shouts#create"

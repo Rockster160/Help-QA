@@ -12,7 +12,23 @@
     <%# <div class="location"></div> %>
   </div>
   <% if current_user.try(:mod?) %>
-    <p>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></p>
+    <ul class="user-details">
+      <li>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></li>
+      <li>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></li>
+      <li>--</li>
+      <li>
+        Ban User: <a href="<%= moderate_user_path(@user, ban: :day) %>" data-method="post">1 day</a> -
+        <a href="<%= moderate_user_path(@user, ban: :week) %>" data-method="post">1 week</a> -
+        <a href="<%= moderate_user_path(@user, ban: :month) %>" data-method="post">1 month</a> -
+        <a href="<%= moderate_user_path(@user, ban: :permanent) %>" data-method="post">Perma-Ban</a> -
+        <a href="<%= moderate_user_path(@user, ban: :ip) %>" data-method="post">Ban IP Address</a>
+      </li>
+      <% if @user.can_use_chat? %>
+        <li>Revoke access: <a href="<%= moderate_user_path(@user, revoke: :chat) %>" data-method="post">Chat</a></li>
+      <% else %>
+        <li>Grant access: <a href="<%= moderate_user_path(@user, grant: :chat) %>" data-method="post">Chat</a></li>
+      <% end %>
+    </ul>
   <% end %>
 
   <div class="profile-wrapper">
@@ -117,6 +133,20 @@
           </div>
         <% end %>
       </div>
+      <% if @user.mod? %>
+        <div class="mod-abilities">
+          <h6>
+            <% if @user.admin? %>
+              <%= hover_icon(:shield, "HerlpNow.co Admin") %>
+            <% else %>
+              <%= hover_icon(:star, "HelperNow.co Volunteer Moderator") %>
+            <% end %>
+            <%= @user.username %> has been granted the following permissions at HelperNow.co
+          </h6>
+          <p>IP Banning, Post Moderation, Adult Mark Posts, Edit Posts, Reply Moderation, Adult Mark Replies, Remove Replies, Reports Moderation, Tag Moderation, Ban Users, Revoke Chat Ability, View Anonymous User, View User Details, View User Email</p>
+          <p>HelperNow.co gives certain volunteer users moderator permissions. However, these moderators are not employees of HelperNow, and do not necessarily represent our views. Additionally, volunteer moderators should <strong>never</strong> ask for personal information such as email address, passwords, credit card numbers, or social security numbers. As a user, you are permitted to deny any requested information from these moderators. If you believe a moderator is abusing the permissions granted to them, please <a href="<%= feedback_path %>" class="underline">file a report</a> so that we may look into this breach.</p>
+        </div>
+      <% end %>
       <div class="post-tags">
         <div class="title"><%= @user.username %> is tagged...</div>
         <div class="tags">

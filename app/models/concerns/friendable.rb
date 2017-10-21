@@ -30,15 +30,15 @@ module Friendable
   end
 
   def favorites
-    User.joins(:pending_friendships).where(friendships: { user_id: self.id, accepted_at: nil })
+    User.not_banned.joins(:pending_friendships).where(friendships: { user_id: self.id, accepted_at: nil })
   end
   def fans
-    User.joins(:requested_friendships).where(friendships: { friend_id: self.id, accepted_at: nil })
+    User.not_banned.joins(:requested_friendships).where(friendships: { friend_id: self.id, accepted_at: nil })
   end
   def friends
     favorite_ids = User.joins(:pending_friendships).where(friendships: { user_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
     fan_ids = User.joins(:requested_friendships).where(friendships: { friend_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
-    User.where(id: (favorite_ids + fan_ids).uniq)
+    User.not_banned.where(id: (favorite_ids + fan_ids).uniq)
   end
 
   def add_friend(friend)

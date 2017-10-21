@@ -25,10 +25,11 @@
 #  verified_at            :datetime
 #  date_of_birth          :date
 #  has_updated_username   :boolean          default("false")
-#  bio                    :text
 #  slug                   :string
 #  role                   :integer          default("0")
 #  completed_signup       :boolean          default("false")
+#  can_use_chat           :boolean          default("true")
+#  banned_until           :datetime
 #
 
 class User < ApplicationRecord
@@ -46,6 +47,7 @@ class User < ApplicationRecord
 
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
+  scope :not_banned,           -> { where("banned_until IS NULL OR banned_until < ?", DateTime.current) }
   scope :unverified,           -> { where(verified_at: nil) }
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
