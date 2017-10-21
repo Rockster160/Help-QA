@@ -10,7 +10,7 @@
     .author-details {
       font-size: 12px;
 
-      .avatar-container { border-color: #999; }
+      .avatar-container { border-color: $gray-med; }
       .username { font-weight: bold; }
     }
     .words {
@@ -56,15 +56,15 @@
         }
       }
       .details {
-        border-top: 1px solid #CCC;
+        border-top: 1px solid $border-color;
         padding-top: 3px;
-        color: #AAA;
+        color: $gray-med-light;
         font-size: 10px;
       }
     }
   }
   .post-section {
-    border-top: 1px solid #CCC;
+    border-top: 1px solid $border-color;
     padding-top: 3px;
     margin-top: 10px;
     text-align: left;
@@ -100,7 +100,7 @@
         padding-right: 0;
 
         .reply-container {
-          border: 1px solid #999;
+          border: 1px solid $gray-med;
           margin-bottom: 10px;
           position: relative;
 
@@ -122,7 +122,7 @@
           }
           .reply-author {
             padding: 5px;
-            border-bottom: 1px solid #999;
+            border-bottom: 1px solid $gray-med;
             position: relative;
             background: white;
             @include split-page(40px);
@@ -155,14 +155,14 @@
               right: 0;
               width: auto;
               height: auto;
-              border-top: 1px solid #CCC;
-              border-left: 1px solid #CCC;
+              border-top: 1px solid $border-color;
+              border-left: 1px solid $border-color;
 
               .hover-icon { padding: 5px 3px; }
             }
           }
           .reply-content {
-            background: #FAFAFA;
+            background: $off-white;
             width: 100%;
             max-width: 745px;
             padding: 8px 5px;
@@ -200,7 +200,7 @@
             }
           }
           .reply-after-message {
-            border-top: 1px solid #CCC;
+            border-top: 1px solid $border-color;
             background: white;
 
             p {

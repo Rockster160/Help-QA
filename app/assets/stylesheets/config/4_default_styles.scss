@@ -20,26 +20,26 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   margin-bottom: 5px;
-  color: #666;
-  border-bottom: 2px solid #EEE;
+  color: $text-med;
+  border-bottom: 2px solid $grey-light;
 }
 
 h2 {
-  border-color: #666;
+  border-color: $text-med;
   border-width: 1px;
 }
 
 hr {
   margin: 0;
   margin-bottom: 5px;
-  border: 1px solid #EEE;
+  border: 1px solid $grey-light;
 }
 
 a {
   text-decoration: none;
-  color: blue;
-  &:visited { color: #90C; }
-  &:hover { color: red; }
+  color: $link-default;
+  &:visited { color: $link-visited; }
+  &:hover { color: $link-hovered; }
 }
 
 .footer .links {

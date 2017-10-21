@@ -2,13 +2,14 @@
 
   hr {
     border: 0;
-    border-top: 1px solid #222;
+    border-top: 1px solid $text-dark;
     margin: 5px 0;
   }
 
   .shout-title {
     font-size: 28px;
-    color: #666;
+    color: $text-med;
+
     p {
       font-size: 10px;
       color: black;

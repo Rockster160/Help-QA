@@ -1,16 +1,18 @@
 .members {
   .show-tooltip {
     position: relative;
+
     .tooltip {
       position: absolute;
       top: 15px;
       left: 20px;
       background: white;
-      border: 1px solid #DDD;
+      border: 1px solid $border-color;
       color: black;
-      z-index: 2;
+      z-index: map-get($zindex, tooltip);
       padding: 4px;
       min-width: 135px;
+
       .name { font-size: 16px; }
       .timestamp {
         font-size: 10px;

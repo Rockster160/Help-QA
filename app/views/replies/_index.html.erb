@@ -47,11 +47,6 @@
           </div>
         </div>
         <div class="reply-info">
-          <% if reply.location.present? %>
-          <%# <a href="#"><= reply.location ></a> | %>
-          <% else %>
-          <%# <a href="#">An Undisclosed Location</a> | %>
-          <% end %>
           <%= timeago(reply.created_at) %> (<%= time_difference_in_words(reply.created_at, reply.post.created_at, word_count: 1).presence || "0 minutes" %> after post)
         </div>
       </div>

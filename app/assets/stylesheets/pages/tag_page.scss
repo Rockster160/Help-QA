@@ -29,11 +29,11 @@
           bottom: 1px;
           width: 18px;
         }
-        &.admin:before { background-color: #128B03; }
-        &.mod:before { background-color: #850000; }
-        &.knowledgable:before { background-color: #850087; }
-        &.active:before { background-color: #1185BF; }
-        &.inactive:before { background-color: lightgrey; }
+        &.admin:before { background-color: $admin; }
+        &.mod:before { background-color: $mod; }
+        &.knowledgable:before { background-color: $knowledgable; }
+        &.active:before { background-color: $active; }
+        &.inactive:before { background-color: $inactive; }
       }
     }
   }

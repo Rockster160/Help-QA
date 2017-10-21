@@ -9,7 +9,6 @@
   <div class="user-info">
     <div class="username"><%= @user.username %></div>
     <%= render partial: "users/detail_icons", locals: { user: @user } %>
-    <%# <div class="location"></div> %>
   </div>
   <% if current_user.try(:mod?) %>
     <ul class="user-details">
@@ -134,7 +133,6 @@
           <% end %>
         </div>
       <% end %>
-      <%# TODO: Add top replies for user %>
       <div class="recent-replies">
         <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="<%= user_replies_path(@user) %>">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
         <% @replies.limit(5).each do |reply| %>

@@ -24,10 +24,10 @@
       color: grey;
     }
   }
-  &:visited .post-description .title { color: #909; }
+  &:visited .post-description .title { color: $link-visited; }
   &:hover {
-    .post-description .title { color: red; }
-    .avatar-container { border-color: purple; }
+    .post-description .title { color: $link-hovered; }
+    .avatar-container { border-color: $link-visited; }
   }
 }
 

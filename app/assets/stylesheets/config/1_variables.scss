@@ -1,12 +1,61 @@
+// Scheme
 $help-default: #FF9F0F;
+$default-inverse: #0F6FFF;
+
+// Colors
+$purple-shadow: #AAC;
+$off-white: #FAFAFA;
+$gray: #777;
+$gray-med: #999;
+$gray-med-light: #AAA;
+$grey-light: #EEE;
+
+// Components
+// -- Defaults
+$link-default: blue;
+$link-hovered: red;
+$link-visited: #909;
+$text-dark: #222;
+$text-med-dark: #444;
+$text-med: #666;
+$tagged-color: #3D94F6;
+$border-color: #DDD;
 $reciprocity-some: #D6FFD5;
 $reciprocity-none: #FCDEDE;
-$default-blue: #0F6FFF;
+$flash-notice-bg: #009600;
+$flash-alert-bg: #B31500;
+$form-highlight: #FFFFC0;
+$popup-highlight: #CCF;
+$tagged-highlight: #F0FAFF;
+$graph-posts: #66C;
+$graph-replies: #6C6;
+// -- Nav
+$nav-normal: #009;
+$nav-hover: #900;
+$nav-dark: #222;
+$dropdown-background: #FCFCFC;
+$dropdown-border: #BBB;
+$dropdown-list-border: #EEE;
+
+// Styles
+$online: green;
+$offline: red;
+$admin: #128B03;
+$mod: #850000;
+$knowledgable: #850087;
+$active: #1185BF;
+$inactive: lightgrey;
+$quote-background: #F6F6FF;
+$quote-border: #99C;
+$quote-border-left: #009;
+$code-background: #E0E0E5;
 
 $zindex: (
-  flash : 1000,
-  header: 0,
-  body: 1
+  flash: 1000,
+  popup: 999,
+  tooltip: 2,
+  body: 1,
+  header: 0
 );
 
 /*

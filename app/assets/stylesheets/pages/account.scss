@@ -27,8 +27,8 @@
           min-width: 5px;
           width: 100%;
         }
-        .posts-bar { background: #66C; }
-        .replies-bar { background: #6C6; }
+        .posts-bar { background: $graph-posts; }
+        .replies-bar { background: $graph-replies; }
       }
     }
   }

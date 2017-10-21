@@ -4,12 +4,12 @@
 
   .post-reply-container {
     margin-top: 10px;
-    background: #F9F9F9;
-    border: 1px solid #EEE;
+    background: $off-white;
+    border: 1px solid $grey-light;
 
     .post-reply-title {
       font-weight: normal;
-      background: #EEE;
+      background: $grey-light;
       padding: 5px;
     }
     .reply-text {
@@ -17,7 +17,7 @@
 
       .quote-container {
         padding-left: 8px;
-        border-left: 1px solid #999;
+        border-left: 1px solid $gray-med;
 
         .timestamp, .timestamp * {
           font-weight: normal;

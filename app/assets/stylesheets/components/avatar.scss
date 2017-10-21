@@ -1,7 +1,7 @@
 .avatar-container {
   width: 40px;
   height: 40px;
-  border: 1px solid #DDD;
+  border: 1px solid $border-color;
   position: relative;
   display: inline-block !important;
   vertical-align: top;
@@ -9,7 +9,7 @@
 
   .status-indicator {
     position: absolute;
-    z-index: 1;
+    z-index: 1; // Relative to parent, no need for map
     top: -4px;
     left: -4px;
     width: 7px;
@@ -17,12 +17,12 @@
     border-radius: 100%;
 
     &.online {
-      background: green;
-      background: linear-gradient(135deg, white, green);
+      background: $online;
+      background: linear-gradient(135deg, white, $online);
     }
     &.offline {
-      background: red;
-      background: linear-gradient(135deg, white, red);
+      background: $offline;
+      background: linear-gradient(135deg, white, $offline);
     }
   }
   .avatar-img-wrapper {
@@ -52,23 +52,23 @@
     }
   }
   &.border-admin {
-    border: 1px solid #128B03;
+    border: 1px solid $admin;
     border-bottom-width: 4px;
   }
   &.border-mod {
-    border: 1px solid #850000;
+    border: 1px solid $mod;
     border-bottom-width: 4px;
   }
   &.border-knowledgable {
-    border: 1px solid #850087;
+    border: 1px solid $knowledgable;
     border-bottom-width: 4px;
   }
   &.border-active {
-    border: 1px solid #1185BF;
+    border: 1px solid $active;
     border-bottom-width: 4px;
   }
   &.border-inactive {
-    border: 1px solid lightgrey;
+    border: 1px solid $inactive;
     border-bottom-width: 4px;
   }
 }

@@ -4,7 +4,7 @@
   background: $help-default;
   z-index: 0;
   border-bottom: 3px solid white;
-  box-shadow: 0 0 8px #777;
+  box-shadow: 0 0 8px $gray;
 
   .navigation-container {
     width: 1000px;
@@ -28,7 +28,7 @@
     .profile-tab {
       position: absolute;
       background: white;
-      border: 1px solid #222;
+      border: 1px solid $nav-dark;
       border-bottom: none;
 
       right: 20px;
@@ -37,9 +37,9 @@
       width: 400px;
 
       a {
-        color: #009;
+        color: $nav-normal;
         cursor: pointer;
-        &:hover { color: #900; }
+        &:hover { color: $nav-hover; }
       }
       .account-wrapper {
         height: 100%;
@@ -49,7 +49,7 @@
           position: absolute;
           top: 3px; left: 3px;
           font-size: 10px;
-          color: #222;
+          color: $nav-dark;
 
           a {
             font-size: 10px;
@@ -74,8 +74,8 @@
               left: 0;
               right: 0;
               top: 20px;
-              background: #FCFCFC;
-              border: 1px solid #BBB;
+              background: $dropdown-background;
+              border: 1px solid $dropdown-border;
               margin: 0;
               padding: 0;
               z-index: 2;
@@ -87,7 +87,7 @@
                 font-size: 12px;
 
                 &:not(:last-of-type) {
-                  border-bottom: 1px solid #EEE;
+                  border-bottom: 1px solid $dropdown-list-border;
                 }
                 &:hover {
                   background: white;

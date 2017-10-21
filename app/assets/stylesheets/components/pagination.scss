@@ -6,10 +6,10 @@ nav.pagination {
 
   span.current, a, span.gap {
     display: inline-block;
-    border: 1px solid #CCC;
+    border: 1px solid $gray;
     padding: 3px 5px;
   }
-  
+
   a {
     text-decoration: underline;
 

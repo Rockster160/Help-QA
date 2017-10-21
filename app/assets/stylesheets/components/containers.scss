@@ -7,7 +7,7 @@ body {
 .body-wrapper {
   z-index: map-get($zindex, body);
   background: white;
-  box-shadow: inset 0 0 8px #777;
+  box-shadow: inset 0 0 8px $gray;
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
@@ -15,7 +15,7 @@ body {
   border-radius: 8px;
   border: 3px double white;
   padding: 25px 15px;
-  color: #222;
+  color: $text-dark;
 }
 
 .footer {
@@ -28,10 +28,10 @@ body {
 }
 
 .highlight-box {
-  background: #FFFFC0;
+  background: $form-highlight;
   margin-top: 5px;
   padding: 10px;
-  border: 1px solid #CCC;
+  border: 1px solid $border-color;
 
   p { margin: 0 5px 5px; }
 }

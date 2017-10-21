@@ -1,13 +1,13 @@
 .ctr-users.act-show .user-page-container {
   .user-info {
-    border-bottom: 1px solid #999;
+    border-bottom: 1px solid $gray-med;
     margin-bottom: 10px;
 
     .username {
       display: inline-block;
       width: auto;
       font-size: 32px;
-      color: #666;
+      color: $text-med;
     }
     .detail-icons {
       display: inline-block;
@@ -35,6 +35,7 @@
 
     .mini-profile {
       padding-left: 5px;
+      max-width: 215px;
 
       .bio {
         max-width: 100%;
@@ -58,12 +59,12 @@
       .avatar { font-weight: normal; }
       .title {
         margin-top: 15px;
-        border-bottom: 1px solid #EEE;
+        border-bottom: 1px solid $grey-light;
       }
       hr {
         margin: 0;
         padding: 0;
-        border-color: #EEE;
+        border-color: $grey-light;
       }
       p {
         font-size: 10px;

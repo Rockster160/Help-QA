@@ -2,24 +2,24 @@ quote {
   display: block;
   margin: 3px 0 3px 15px;
   padding: 0 10px;
-  background: #F6F6FF;
-  border: 1px solid #99C;
-  border-left: 4px solid #009;
+  background: $quote-background;
+  border: 1px solid $quote-border;
+  border-left: 4px solid $quote-border-left;
 }
 
 .tagged-user {
   display: inline;
   white-space: nowrap;
   font-family: monospace;
-  background: #F0FAFF;
+  background: $tagged-highlight;
   padding: 0 3px;
-  color: #3D94F6 !important;
+  color: $tagged-color !important;
 }
 
 code {
   display: inline;
   font-family: monospace;
-  background: #E0E0E5;
+  background: $code-background;
   padding: 0 3px;
 }
 
@@ -28,7 +28,7 @@ blockquote {
   margin: 10px 0;
   padding: 10px;
   font-family: monospace;
-  background: #E0E0E5;
+  background: $code-background;
   position: relative;
 
   .wrapper {
