@@ -1,0 +1,11 @@
+<% messages ||= @messages %>
+<% messages.each do |message| %>
+  <div class="message-container" data-timestamp="<%= message.created_at.to_i %>">
+    <div class="timestamp"><div class="timestamp-wrapper"><%= message.created_at.strftime("%H:%M") %></div></div>
+    <%= avatar(message.author.avatar, size: 20) %>
+    <div class="body">
+      <div class="username"><%= message.author.username %></div>
+      <%= markdown(only: [:bold, :italic, :strike, :code, :emoji]) { message.body } %>
+    </div>
+  </div>
+<% end %>

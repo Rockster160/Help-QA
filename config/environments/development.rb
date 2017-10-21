@@ -18,6 +18,8 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  config.action_cable.url = "ws://localhost:4357/cable"
+
   config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.perform_caching = false

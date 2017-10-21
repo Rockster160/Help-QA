@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get :"privacy-policy", controller: :static_pages
   get :faq, controller: :static_pages
   get :emoji, controller: :static_pages
+  get :chat, controller: :chat
 
   resource :feedback, path: "feedback", only: [:show, :create] do
     get ":id/edit", action: :edit, as: :edit
@@ -79,5 +80,6 @@ Rails.application.routes.draw do
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
+  mount ActionCable.server => '/cable'
 
 end

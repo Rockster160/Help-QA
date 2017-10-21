@@ -1,6 +1,6 @@
 module Accountable
   extend ActiveSupport::Concern
-  RESERVED_WORDS_FOR_USERNAME = ["anonymous"].freeze
+  RESERVED_WORDS_FOR_USERNAME = ["anonymous", "guest"].freeze
 
   included do
     before_validation :set_default_username, :set_slug

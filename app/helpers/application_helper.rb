@@ -132,7 +132,7 @@ module ApplicationHelper
 
     if options[:size].present?
       avatar_container_hash[:style] = "width: #{options[:size]}px; height: #{options[:size]}px;"
-      avatar_hash[:style] << "font-size: #{options[:size].to_i - 5}px; line-height: #{options[:size]}px;"
+      avatar_hash[:style] << "font-size: #{options[:size].to_i - 5}px; line-height: #{options[:size] - 2}px;"
     end
 
     avatar_img = avatar_src && avatar_src.length > 5 ? image_tag(avatar_src) : avatar_src
@@ -142,6 +142,14 @@ module ApplicationHelper
     avatar_container_hash[:html] << avatar_wrapper_hash
 
     avatar_container_hash.to_html.html_safe
+  end
+
+  def meta_title(str, include_name: true)
+    content_for(:title) { str.html_safe }
+  end
+
+  def meta_description(description)
+    content_for(:description) { description }
   end
 
 end

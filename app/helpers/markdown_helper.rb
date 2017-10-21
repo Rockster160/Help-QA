@@ -8,6 +8,7 @@ module MarkdownHelper
   end
 
   def markdown(only: nil, except: [], render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
+    current_user = current_user rescue nil
     only = [only].flatten
     except = [except].flatten
 

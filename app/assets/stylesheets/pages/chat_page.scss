@@ -1,0 +1,88 @@
+.ctr-chat.act-chat {
+
+  *:not(h1) { font-size: 12px; }
+  small, small * { font-size: 10px; }
+
+  .chat-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+
+    & > div {
+      border: 1px solid $gray-med;
+      margin-top: 10px;
+
+      .title {
+        background: $border-color;
+        border-bottom: 1px solid $gray-med;
+        font-weight: bold;
+        font-size: 12px;
+        padding: 3px;
+      }
+    }
+    .users-container {
+      margin-left: 5px;
+      width: 250px;
+    }
+    .chat-container {
+      width: 100%;
+    }
+    .online-list, .messages-container {
+      height: 500px;
+      max-height: 500px;
+      overflow-y: scroll;
+    }
+    .online-list {}
+    .messages-container {}
+    .message-container {
+      display: table;
+      background-color: $grey-light;
+      margin-bottom: 3px;
+
+      & > div {
+        display: table-cell;
+        vertical-align: top;
+      }
+      .timestamp {
+        color: $gray;
+        line-height: 30px;
+
+        .timestamp-wrapper {
+          width: 50px;
+          text-align: center;
+        }
+      }
+      .avatar-container {
+        margin-top: 4px;
+      }
+      .body {
+        color: $text-dark;
+        padding: 7px;
+        width: 100%;
+
+        .username {
+          display: inline-block;
+          margin-right: 10px;
+          color: $text-med-dark;
+          font-weight: bold;
+        }
+        p {
+          display: inline;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  form {
+    width: calc(100% - 200px);
+    display: flex;
+    margin-top: 10px;
+
+    input { width: 100%; }
+    button {
+      margin-left: 10px;
+      padding: 0 7px;
+    }
+  }
+}

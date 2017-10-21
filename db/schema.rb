@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171021150500) do
+ActiveRecord::Schema.define(version: 20171021164936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,6 +18,15 @@ ActiveRecord::Schema.define(version: 20171021150500) do
   create_table "banned_ips", force: :cascade do |t|
     t.inet     "ip"
     t.datetime "created_at"
+  end
+
+  create_table "chat_messages", force: :cascade do |t|
+    t.integer  "author_id"
+    t.text     "body"
+    t.boolean  "removed",    default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.index ["author_id"], name: "index_chat_messages_on_author_id", using: :btree
   end
 
   create_table "favorite_replies", force: :cascade do |t|

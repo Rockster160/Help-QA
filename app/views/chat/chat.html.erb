@@ -1,0 +1,31 @@
+<%= meta_title "HelperNow Chat" %>
+<h1>HelperNow Chat</h1>
+
+<div class="chat-wrapper">
+  <div class="users-container">
+    <div class="title">Users Chatting</div>
+    <div class="online-list">
+      <%= render partial: "online_list" %>
+    </div>
+  </div>
+  <div class="chat-container">
+    <div class="title">HelperNow Chat</div>
+    <div class="messages-container">
+      <%= render partial: "messages" %>
+    </div>
+  </div>
+</div>
+
+<% if user_signed_in? && current_user.verified? %>
+  <form class="chat-form">
+    <input type="text" name="chat-message">
+    <button type="button" name="button">Send</button>
+  </form>
+<% else %>
+  <form class="chat-form">
+    <input disabled="disabled" type="text" name="" value="" placeholder="Only logged in and verified members may participate in the chat.">
+    <button disabled="disabled" type="button" name="button">Send</button>
+  </form>
+  <p><strong>Get an account or verify your current one by <a href="<%= new_user_session_path %>" class="underline">entering your email on our login page</a> and clicking the link in the email you receive.</strong></p>
+<% end %>
+<i><small>Messages may take a few seconds to send &amp; update. Please be patient. <a href="#" class="underline">Auto Scroll Chat (on)</a></small></i>
