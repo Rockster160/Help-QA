@@ -36,6 +36,7 @@
                 <% if current_user.mod? %>
                   <h6>Mod Tools</h6>
                   <a href="<%= all_feedback_path(resolution_status: :unresolved) %>">Feedback</a>
+                  <a href="<%= users_path %>">Search Users</a>
                 <% end %>
               </ul>
             </div>

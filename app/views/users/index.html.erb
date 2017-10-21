@@ -9,10 +9,15 @@
   <%= form_tag update_user_search_path do %>
     <%= hidden_field_tag :status, params[:status] if params[:status].present? %>
     <%= hidden_field_tag :search, params[:search] if params[:search].present? %>
+    <%= hidden_field_tag :ip_search, params[:ip_search] if params[:ip_search].present? %>
 
     <div class="search-form">
       <h6>Search by Username</h6>
       <input type="text" name="search" value="<%= params[:search] %>">
+      <% if current_user.try(:mod?) %>
+        <h6>Search by IP Address (Enter complete IP)</h6>
+        <input type="text" name="ip_search" value="<%= params[:ip_search] %>">
+      <% end %>
       <%= submit_tag "Search" %>
 
       <div class="filters">

@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  prepend_before_action :block_ip_addresses
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
@@ -91,6 +92,14 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :password, :password_confirmation])
     devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :date_of_birth])
     devise_parameter_sanitizer.permit(:account_update, keys: [:username, :email, :date_of_birth, :password, :password_confirmation, :current_password])
+  end
+
+  def block_ip_addresses
+    head :unauthorized if current_ip_address == "XX.XX.XX.XX"
+  end
+
+  def current_ip_address
+    request.env['HTTP_X_REAL_IP'] || request.env['REMOTE_ADDR']
   end
 
 end

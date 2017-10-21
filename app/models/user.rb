@@ -49,6 +49,14 @@ class User < ApplicationRecord
   scope :unverified,           -> { where(verified_at: nil) }
   scope :verified,             -> { where.not(verified_at: nil) }
   scope :search_username,      ->(username) { where("users.username ILIKE ?", "%#{username}%") }
+  scope :search_ip,            ->(ip) {
+    begin
+      IPAddr.new(ip)
+      where("users.current_sign_in_ip = :ip OR users.last_sign_in_ip = :ip", ip: ip)
+    rescue IPAddr::InvalidAddressError
+      all
+    end
+  }
   scope :not_helpbot,          -> { where.not(username: "HelpBot") }
   scope :invitable,            -> { joins(:settings).where(user_settings: { friends_only: false }) }
   scope :not_invitable,        -> { joins(:settings).where(user_settings: { friends_only: true }) }

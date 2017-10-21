@@ -11,6 +11,9 @@
     <%= render partial: "users/detail_icons", locals: { user: @user } %>
     <%# <div class="location"></div> %>
   </div>
+  <% if current_user.try(:mod?) %>
+    <p>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></p>
+  <% end %>
 
   <div class="profile-wrapper">
     <div class="mini-profile">

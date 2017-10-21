@@ -3,7 +3,9 @@
 <div class="post-container">
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
-      <%= avatar(@post.avatar, size: 200) %>
+      <% options = {size: 200} %>
+      <% options.merge!(href: user_path(@post.author)) if current_user.try(:mod?) %>
+      <%= avatar(@post.avatar, options) %>
       <span class="anonymous">This post left anonymously</span>
     <% else %>
       <%= avatar(@post.avatar, size: 200, href: user_path(@post.author)) %>
