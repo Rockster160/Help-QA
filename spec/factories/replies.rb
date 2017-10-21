@@ -12,6 +12,7 @@
 #  post_id               :integer
 #  removed_at            :datetime
 #  marked_as_adult       :boolean
+#  favorite_count        :integer          default("0")
 #
 
 FactoryGirl.define do

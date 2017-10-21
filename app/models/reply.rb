@@ -12,6 +12,7 @@
 #  post_id               :integer
 #  removed_at            :datetime
 #  marked_as_adult       :boolean
+#  favorite_count        :integer          default("0")
 #
 
 class Reply < ApplicationRecord
@@ -22,7 +23,7 @@ class Reply < ApplicationRecord
   belongs_to :author, class_name: "User"
   has_many :tags, through: :post
   has_many :favorite_replies
-  has_many :favorited_by, class_name: "User", through: :favorite_replies
+  has_many :favorited_by, through: :favorite_replies, source: :user
 
   before_validation :format_body
 
@@ -35,6 +36,7 @@ class Reply < ApplicationRecord
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_removed,       -> { where(removed_at: nil) }
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
+  scope :favorited,         -> { where("favorite_count > 0") }
   scope :removed,           -> { where.not(removed_at: nil) }
   scope :adult,             -> { where(marked_as_adult: true) }
   scope :safe,              -> { where(marked_as_adult: [nil, false]) }

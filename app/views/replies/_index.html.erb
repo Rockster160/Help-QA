@@ -71,11 +71,11 @@
         <% if user_signed_in? && current_user.verified? %>
           <% previous_favorite = current_user.favorite_reply_for_post(reply.post) %>
           <% if previous_favorite.nil? %>
-            <%= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.", href: post_reply_favorite_path(reply.post, reply)) %>
+            <%= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.", href: post_reply_favorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
           <% elsif previous_favorite.reply == reply %>
-            <%= hover_icon("medal", "Changed your mind? Unmark this as your favorite.", href: post_reply_unfavorite_path(reply.post, reply)) %>
+            <%= hover_icon("medal", "Changed your mind? Unmark this as your favorite.", href: post_reply_unfavorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
           <% else %>
-            <%= hover_icon("medal-add", "You've already favorited a reply for this post.", href: "#reply-#{reply.id}", class: "grayscale") %>
+            <%= hover_icon("medal-add", "You've already favorited a reply for this post.", href: "#reply-#{reply.id}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
           <% end %>
         <% end %>
         <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>

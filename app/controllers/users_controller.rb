@@ -19,6 +19,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     return render :banned if @user.banned?
     @recent_posts = @user.posts.claimed.order(created_at: :desc).limit(5)
+    @top_replies = @user.replies.claimed.favorited.order(favorite_count: :desc, created_at: :desc)
     @replies = @user.replies.conditional_adult(current_user).claimed.order(created_at: :desc)
   end
 

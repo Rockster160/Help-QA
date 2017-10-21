@@ -118,6 +118,22 @@
           <hr>
         <% end %>
       </div>
+      <% if @top_replies.any? %>
+        <div class="top-replies">
+          <div class="title"><%= hover_icon("medal", "Top Replies") %> <%= @user.username %>'s Top (<%= [@top_replies.count, 5].min %>) Replies by other users' votes</div>
+          <% @top_replies.limit(5).each do |reply| %>
+            <div class="post-reply-container">
+              <div class="post-reply-title"><a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a></div>
+              <div class="reply-text">
+                <div class="quote-container">
+                  <%= markdown(posted_by_user: @user) { reply.body } %>
+                  <i>- written <%= timeago(reply.created_at, word_count: 2) %> - voted for by <%= reply.favorited_by.map { |user| "<a href=\"#{user_path(user)}\" class=\"underline\">#{user.username}</a>" }.join(", ").html_safe %></i>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
       <%# TODO: Add top replies for user %>
       <div class="recent-replies">
         <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="<%= user_replies_path(@user) %>">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>

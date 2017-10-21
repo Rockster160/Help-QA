@@ -19,6 +19,7 @@
     }
   }
   .user-details {
+    // background:
     margin: 10px;
     padding: 0;
 
@@ -52,9 +53,13 @@
     .mini-profile, .user-activity {
       font-size: 12px;
       font-weight: bold;
+      margin-top: -15px;
 
-      .title { border-bottom: 1px solid #EEE; }
       .avatar { font-weight: normal; }
+      .title {
+        margin-top: 15px;
+        border-bottom: 1px solid #EEE;
+      }
       hr {
         margin: 0;
         padding: 0;
