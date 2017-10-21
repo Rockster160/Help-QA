@@ -1,0 +1,19 @@
+.moddable {
+  background: rgba($default-inverse, 0.6);
+  border: 1px solid $default-inverse;
+  border-radius: 6px;
+  padding: 10px;
+  color: white;
+
+  ul { margin: 0; padding: 0; }
+  li {
+    font-size: 14px;
+    list-style-type: none;
+  }
+  a {
+    color: white;
+    text-decoration: underline;
+
+    &:hover { color: $default-inverse; }
+  }
+}
