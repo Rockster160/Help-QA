@@ -89,13 +89,6 @@ module ApplicationHelper
     end
   end
 
-  def emoji(icon, classes: nil, title: nil)
-    colon_name = ":#{icon}:"
-    return colon_name unless icon.present? && icon.to_s.gsub(":", "").in?(@emoji_names)
-
-    "<i class=\"emoji #{icon} #{classes}\" alt=\"#{colon_name}\" title=\"#{title || colon_name}\"></i>".html_safe
-  end
-
   def avatar(avatar_src, options={})
     avatar_container_hash = {}
     avatar_container_hash[:tag] = "a" if options[:href].present?

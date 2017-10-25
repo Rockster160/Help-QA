@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   end
 
   def preload_emojis
-    @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji.json")) }
+    @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji2.json")).reject { |emoji, _aliases| emoji.to_s.starts_with?("// ") } }
     @emoji_names = Rails.cache.fetch("emoji_names") { @emoji_list.keys }
   end
 

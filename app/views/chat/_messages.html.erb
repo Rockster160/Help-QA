@@ -5,7 +5,7 @@
     <%= avatar(message.author.avatar, size: 20) %>
     <div class="body">
       <div class="username"><%= message.author.username %></div>
-      <%= markdown(only: [:bold, :italic, :strike, :code, :emoji]) { message.body } %>
+      <%= markdown(only: [:bold, :italic, :strike, :code]) { message.body } %>
     </div>
   </div>
 <% end %>

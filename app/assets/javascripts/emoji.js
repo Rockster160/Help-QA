@@ -87,6 +87,9 @@ $(document).ready(function() {
     var fieldPos = focusedField.offset()
     $(".field-autofiller:not(.hidden)").each(function() {
       var popup = $(this)
+      var containers = popup.find(".searchable-container")
+      var maxHeight = ((containers.outerHeight() + parseInt(containers.css("margin"))) * 3) + 5
+      popup.css({ "max-height": maxHeight })
       var popupHeight = popup.height()
       popup.css({ top: fieldPos.top - popupHeight, left: fieldPos.left, width: focusedField.outerWidth() })
     })
@@ -210,7 +213,7 @@ $(document).ready(function() {
     while (text[endIdx] != undefined && text[endIdx] != " " && text[endIdx] != "\n") { endIdx += 1; }
 
     var prefill_value = option_name
-    if (currentOption.attr("data-type") == "emoji") { prefill_value = ":" + option_name + ": " }
+    if (currentOption.attr("data-type") == "emoji") { prefill_value = option_name + " " }
     if (currentOption.attr("data-type") == "username") { prefill_value = option_name + " " }
 
     field.val(
@@ -260,7 +263,6 @@ $(document).ready(function() {
 
   var currentCaretPos = 0
   $(".autofillable-field").on("keydown", function(evt) {
-    // Also, keys aren't working + auto-select isn't selecting
     if (autofillerPopupVisible()) {
       switch(evt.which) {
         case keyEvent("ENTER"):

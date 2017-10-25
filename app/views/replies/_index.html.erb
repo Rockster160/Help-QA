@@ -53,14 +53,14 @@
       <div class="reply-options">
         <% if current_user.try(:mod?) %>
           <% if reply.marked_as_adult? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><%= emoji(:baby, title: "Mark reply as Safe") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark reply as Safe">👶🏻</i></a>
           <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><%= emoji(:underage, title: "Mark reply as NSFW/Adult") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><i class="emoji lg" title="Mark reply as NSFW/Adult">🔞</i></a>
           <% end %>
           <% if reply.removed? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= emoji(:sync, title: "Restore reply to post") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><i class="emoji lg" title="Restore Reply">🔄</i></a>
           <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= emoji(:x, title: "Remove reply from post") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><i class="emoji lg" title="Remove Reply">✖</i></a>
           <% end %>
         <% end %>
         <% if user_signed_in? && current_user.verified? %>

@@ -34,7 +34,9 @@
       </div>
     </div>
     <div id="pre-load" class="hidden"></div>
-    <%= render partial: "layouts/invite_loader" %>
+    <% cache "friend_loader" do %>
+      <%= render partial: "layouts/invite_loader" %>
+    <% end %>
     <% cache "emoji_loader" do %>
       <%= render partial: "layouts/emoji_loader" %>
     <% end %>

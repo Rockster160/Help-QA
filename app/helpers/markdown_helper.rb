@@ -12,7 +12,7 @@ module MarkdownHelper
     only = [only].flatten
     except = [except].flatten
 
-    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :emoji]
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll]
     default_markdown_options = only if only.any?
     default_markdown_options -= except
     @markdown_options = Hash[default_markdown_options.product([true])]
@@ -30,7 +30,6 @@ module MarkdownHelper
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
-    text = parse_emoji(text) if @markdown_options[:emoji]
     text = censor_language(text) if current_user.try(:settings).try(:censor_inappropriate_language)
     text = clean_up_html(text)
 
@@ -50,17 +49,6 @@ module MarkdownHelper
 
     text.gsub(/\b(#{adult_word_regex})\b/i) do |found|
       "<span title=\"#{found}\">#{'*'*found.length}</span>"
-    end
-  end
-
-  def parse_emoji(text)
-    not_between_carrots_regex = /[^<>]+(?![^<]*>)/
-    emoji_regex = /([^a-zA-Z0-9\\]?)\:([^ \n]+?)\:/
-
-    text.gsub(not_between_carrots_regex) do |found_match|
-      found_match.gsub(emoji_regex) do |found_emoji|
-        "#{$1}#{emoji($2)}"
-      end
     end
   end
 

@@ -215,7 +215,7 @@
       <p>We will automatically detect links, as well as urls to images and videos- and will automatically show previews when added to your posts or replies.</p>
       <p>HelperNow.co supports basic Emoji, Markdown, and a few special "directives" to add to replies and posts:</p>
       <h4>Emoji</h4>
-      <p>Emoji's can be placed typing the emoji name between a pair of colons, Like this: <code>:raised_hands:</code>, which will turn into this: <%= emoji(:raised_hands) %></p>
+      <p>Emoji's can be searched by typing a colon <code>:</code> and the emoji name. An autocomplete field will pop up that you can use to select an emoji.</p>
       <p>View <a href="/emoji">this page</a> for a list of supported emoji.</p>
       <%= markdown(render_html: true) { File.read("lib/assets/raw_markdown.html").gsub("{{quote-icon}}", hover_icon("quote", "Quote this reply", tag: "i")) } %>
     </div>

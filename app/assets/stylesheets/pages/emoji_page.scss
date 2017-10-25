@@ -8,11 +8,11 @@
       text-align: center;
 
       .emoji-wrapper {
-        .emoji, .option-name { vertical-align: middle; }
+        font-size: 72px;
+
+        .option-name { vertical-align: middle; }
       }
-      .aliases {
-        font-size: 10px;
-      }
+      .aliases { font-size: 10px; }
     }
   }
 }

@@ -18,7 +18,7 @@
     <% if @post.marked_as_adult? %>
       <div class="nsfw" title="Not Safe For Work / children - This post will not show up on the home page.">NSFW</div>
     <% end %>
-    <div class="title"><%= markdown(only: :emoji) { @post.title } %></div>
+    <div class="title"><%= @post.title %></div>
     <div class="body" data-inline-links><%= markdown(poll_post_id: @post.id, posted_by_user: @post.author) { @post.body[@post.title.length..-1] } %></div>
     <div class="details">
       This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> |
@@ -32,14 +32,14 @@
 
       <% if current_user.try(:mod?) %>
         <% if @post.nsfw? %>
-          | <a href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><%= emoji(:baby, title: "Mark post as Safe") %></a>
+          | <a href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark post as Safe">👶🏻</i></a>
         <% else %>
-          | <a href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><%= emoji(:underage, title: "Mark post as NSFW/Adult") %></a>
+          | <a href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><i class="emoji lg" title="Mark post as NSFW/Adult">🔞</i></a>
         <% end %>
         <% if @post.closed? %>
-          | <a href="<%= post_mod_path(@post, close: false) %>" data-method="POST"><%= emoji(:sync, title: "Reopen Post") %></a>
+          | <a href="<%= post_mod_path(@post, close: false) %>" data-method="POST"><i class="emoji lg" title="Reopen Post">🔄</i></a>
         <% else %>
-          | <a href="<%= post_mod_path(@post, close: true) %>" data-method="POST"><%= emoji(:x, title: "Close Post") %></a>
+          | <a href="<%= post_mod_path(@post, close: true) %>" data-method="POST"><i class="emoji lg" title="Close Post">✖</i></a>
         <% end %>
       <% end %>
     </div>
@@ -115,7 +115,7 @@
   <div class="post-section-content">
     <p>
       <small>HelperNow supports basic <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">Markdown</a>,
-      <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">emoji</a> <%= emoji(:raised_hands) %>,
+      <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">emoji 😁</a>,
       and tagging friends with <a href="<%= user_path(helpbot) %>" class="tagged-user">@username</a>!</small>
     </p>
   </div>

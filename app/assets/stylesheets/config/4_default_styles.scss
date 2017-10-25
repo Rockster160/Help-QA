@@ -38,6 +38,7 @@ hr {
 a {
   text-decoration: none;
   color: $link-default;
+  
   &:visited { color: $link-visited; }
   &:hover { color: $link-hovered; }
 }
