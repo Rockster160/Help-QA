@@ -1,4 +1,4 @@
-received_sound = new Audio('https://www.soundjay.com/button/sounds/button-47.mp3');
+received_sound = new Audio("https://www.soundjay.com/button/sounds/button-47.mp3")
 
 $(".ctr-chat.act-chat").ready(function() {
   var currently_typing = {}
@@ -32,8 +32,10 @@ $(".ctr-chat.act-chat").ready(function() {
   })
 
   addMessages = function(messages_html) {
+    received_sound.play()
+
     $(".messages-container").append(messages_html)
-    unread_count += $(messages_html).find(".message-container").length
+    unread_count += $(messages_html).length
     updatePageTitleWithUnreads()
     reorderMessages()
     if (auto_scroll) { scrollToBottom(300) }
