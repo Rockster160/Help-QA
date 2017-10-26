@@ -34,10 +34,10 @@
       </div>
     </div>
     <div id="pre-load" class="hidden"></div>
-    <% cache "friend_loader" do %>
+    <% cache "friend_loader", skip_digest: true do %>
       <%= render partial: "layouts/invite_loader" %>
     <% end %>
-    <% cache "emoji_loader" do %>
+    <% cache "emoji_loader", skip_digest: true do %>
       <%= render partial: "layouts/emoji_loader" %>
     <% end %>
     <%= yield(:modals) %>

@@ -15,11 +15,13 @@ class ApplicationController < ActionController::Base
   def reload_emoji_cache
     Rails.cache.delete("emoji_list")
     Rails.cache.delete("emoji_names")
-    Rails.cache.delete("emoji_loader")
+    ActionController::Base.new.expire_fragment("emoji_loader")
+    ActionController::Base.new.expire_fragment("friend_loader")
   end
 
   def preload_emojis
-    @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji2.json")).reject { |emoji, _aliases| emoji.to_s.starts_with?("// ") } }
+    # reload_emoji_cache
+    @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji.json")).reject { |emoji, _aliases| emoji.to_s.starts_with?("// ") } }
     @emoji_names = Rails.cache.fetch("emoji_names") { @emoji_list.keys }
   end
 

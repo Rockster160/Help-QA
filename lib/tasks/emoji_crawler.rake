@@ -1,5 +1,5 @@
 task :emoji do
-  File.open("lib/emoji2.json", "w") do |f|
+  File.open("lib/temp_emoji.json", "w") do |f|
     f.puts("{")
     url = "http://www.unicode.org/emoji/charts/full-emoji-list.html"
     res = RestClient.get(url)

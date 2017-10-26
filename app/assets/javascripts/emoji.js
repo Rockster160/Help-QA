@@ -87,7 +87,7 @@ $(document).ready(function() {
     var fieldPos = focusedField.offset()
     $(".field-autofiller:not(.hidden)").each(function() {
       var popup = $(this)
-      var containers = popup.find(".searchable-container")
+      var containers = popup.find(".searchable-container:not(.hidden)")
       var maxHeight = ((containers.outerHeight() + parseInt(containers.css("margin"))) * 3) + 5
       popup.css({ "max-height": maxHeight })
       var popupHeight = popup.height()
