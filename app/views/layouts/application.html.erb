@@ -16,10 +16,12 @@
 
       ga('create', 'UA-106090486-1', 'auto');
       ga('send', 'pageview');
+      current_username = "<%= current_user.try(:username) %>"
     </script>
   </head>
 
-  <body class="ctr-<%= controller_name %> act-<%= action_name %> <%= content_for :body_classes %>">
+  <% censor_class = user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor" %>
+  <body class="ctr-<%= controller_name %> act-<%= action_name %> <%= content_for :body_classes %> <%= censor_class %>">
     <%= render 'layouts/flashes' %>
     <%= render 'layouts/navigation' %>
     <div class="body-wrapper">

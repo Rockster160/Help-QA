@@ -33,6 +33,12 @@
     }
     .online-list {}
     .messages-container {}
+    .date-splitter {
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 10px;
+    }
     .message-container {
       display: table;
       background-color: $grey-light;
@@ -69,6 +75,10 @@
           display: inline;
           margin: 0;
           padding: 0;
+
+          .highlight {
+            background: rgba($tagged-color, 0.5);
+          }
         }
       }
     }

@@ -1,6 +1,13 @@
 <% messages ||= @messages %>
+<% previous_message_date = Date.new %>
 <% messages.each do |message| %>
-  <div class="message-container" data-timestamp="<%= message.created_at.to_i %>" data-author-id="<%= message.author.id %>">
+  <% next if message.removed? %>
+  <% new_message_date = message.created_at.to_date %>
+  <% if previous_message_date != new_message_date %>
+    <div class="date-splitter"><%= new_message_date.strftime("%A, %B %-d") %></div>
+  <% end %>
+  <% previous_message_date = new_message_date %>
+  <div class="message-container" data-timestamp="<%= message.created_at.to_i %>" data-author-id="<%= message.author.id %>" data-message-id="<%= message.id %>">
     <div class="timestamp"><div class="timestamp-wrapper"><%= message.created_at.strftime("%H:%M") %></div></div>
     <%= avatar(message.author.avatar, size: 20) %>
     <div class="body">

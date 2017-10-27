@@ -30,7 +30,7 @@ module MarkdownHelper
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
-    text = censor_language(text) if current_user.try(:settings).try(:censor_inappropriate_language)
+    text = censor_language(text)
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -38,8 +38,8 @@ module MarkdownHelper
   end
 
   def clean_up_html(text)
-    text[0] = "" while text[0] =~ /[ \n\r]/ # Remove New Lines before post.
-    text[-1] = "" while text[-1] =~ /[ \n\r]/ # Remove New Lines after post.
+    text[0] = "" while text[0] =~ /[ \n\r]/ # Remove white space before post.
+    text[-1] = "" while text[-1] =~ /[ \n\r]/ # Remove white space after post.
     text[0..text.index("</p>") + 3] = "" while text.index(/<p>[ |\n|\r]*?<\/p>/).try(:zero?) # Remove empty paragraph tags before post.
     text
   end
@@ -48,7 +48,7 @@ module MarkdownHelper
     adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
 
     text.gsub(/\b(#{adult_word_regex})\b/i) do |found|
-      "<span title=\"#{found}\">#{'*'*found.length}</span>"
+      "<span class=\"profane-wrapper\"><span class=\"safe\" title=\"#{found}\">#{'*'*found.length}</span><span class=\"unsafe\">#{found}</span></span>"
     end
   end
 

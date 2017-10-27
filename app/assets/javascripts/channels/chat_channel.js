@@ -16,6 +16,8 @@ $(".ctr-chat.act-chat").ready(function() {
     received: function(data) {
       if (data["message"] != undefined) {
         addMessages(data["message"])
+      } else if (data["removed"] != undefined) {
+        removeId(data["removed"])
       } else if (data["users"] != undefined) {
         $(".online-list").html(data["users"])
       } else if (data["ping"] != undefined) {
@@ -31,14 +33,24 @@ $(".ctr-chat.act-chat").ready(function() {
     }
   })
 
+  highlightCurrentUsername = function(html) {
+    if (current_username.length == 0) { return }
+    $(".message-container .body p").each(function() {
+      $(this).html($(this).html().replace("@" + current_username, '<span class="highlight">@' + current_username + '</span>'))
+    })
+  }
+
   addMessages = function(messages_html) {
     received_sound.play()
-
     $(".messages-container").append(messages_html)
     unread_count += $(messages_html).length
     updatePageTitleWithUnreads()
     reorderMessages()
     if (auto_scroll) { scrollToBottom(300) }
+  }
+
+  removeId = function(removed_id) {
+    $("[data-message-id=" + removed_id + "]").remove()
   }
 
   reorderMessages = function() {
@@ -85,5 +97,6 @@ $(".ctr-chat.act-chat").ready(function() {
     }
   })
   scrollToBottom()
+  highlightCurrentUsername($(".messages-container"), current_username)
 
 })

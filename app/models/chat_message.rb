@@ -24,6 +24,10 @@ class ChatMessage < ApplicationRecord
 
   def broadcast_creation
     rendered_message = ChatController.render partial: "chat/messages", locals: { messages: [self] }
-    ActionCable.server.broadcast "chat", message: rendered_message
+    if removed?
+      ActionCable.server.broadcast "chat", removed: id
+    else
+      ActionCable.server.broadcast "chat", message: rendered_message
+    end
   end
 end
