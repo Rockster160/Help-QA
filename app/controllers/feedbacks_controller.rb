@@ -1,5 +1,5 @@
 class FeedbacksController < ApplicationController
-  before_action :authenticate_mod, only: [:index, :show, :complete]
+  before_action :authenticate_mod, only: [:index, :edit, :complete]
 
   def redirect_all
     redirect_to all_feedback_path(params.permit(:search, :by_user, :resolution_status))
@@ -29,7 +29,7 @@ class FeedbacksController < ApplicationController
       redirect_to root_path, notice: "Thank you for your feedback. A moderator will review shortly, and if we need to follow up, we will get back to you in a timely manner."
     else
       flash.now[:alert] = "Failed to submit your Feedback. Please fix the problems listed below and try again."
-      render :feedback
+      render :show
     end
   end
 
