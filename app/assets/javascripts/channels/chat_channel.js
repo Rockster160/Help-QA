@@ -11,11 +11,17 @@ $(".ctr-chat.act-chat").ready(function() {
   App.chat = App.cable.subscriptions.create({
     channel: "ChatChannel"
   }, {
-    connected: function() {},
-    disconnected: function() {},
+    connected: function() {
+      var url = window.location.href.split("?")[0]
+      $.get(url, {since: $(".message-container").last().attr("data-timestamp")}).success(addMessagesByHTML)
+      $(".connection-trouble").addClass("hidden")
+    },
+    disconnected: function() {
+      $(".connection-trouble").removeClass("hidden")
+    },
     received: function(data) {
       if (data["message"] != undefined) {
-        addMessages(data["message"])
+        addMessage(data["message"])
       } else if (data["removed"] != undefined) {
         removeId(data["removed"])
       } else if (data["users"] != undefined) {
@@ -40,13 +46,20 @@ $(".ctr-chat.act-chat").ready(function() {
     })
   }
 
-  addMessages = function(messages_html) {
-    received_sound.play()
-    $(".messages-container").append(messages_html)
-    unread_count += $(messages_html).length
-    updatePageTitleWithUnreads()
-    reorderMessages()
-    if (auto_scroll) { scrollToBottom(300) }
+  addMessagesByHTML = function(messages_html) {
+    if ($(messages_html).length > 0) {
+      received_sound.play()
+      $(".messages-container").append(messages_html)
+      unread_count += $(messages_html).length
+      updatePageTitleWithUnreads()
+      reorderMessages()
+      if (auto_scroll) { scrollTo(300) }
+    }
+  }
+
+  addMessage = function(message_id) {
+    var url = window.location.href.split("?")[0]
+    $.get(url, {id: message_id}).success(addMessagesByHTML)
   }
 
   removeId = function(removed_id) {
@@ -58,6 +71,8 @@ $(".ctr-chat.act-chat").ready(function() {
     messages.sort(function(a, b) {
       return parseInt($(a).attr("data-timestamp")) - parseInt($(b).attr("data-timestamp"))
     })
+    var message_ids = messages.map(function() { return $(this).attr("data-message-id") }).toArray()
+    messages = messages.filter(function(index, message) { return message_ids.indexOf($(message).attr("data-message-id")) === index })
     $(".messages-container").html(messages.slice(-1000))
   }
 
@@ -71,15 +86,24 @@ $(".ctr-chat.act-chat").ready(function() {
     }
   }
 
-  scrollToBottom = function(speed) {
+  scrollTo = function(speed, scroll_location) {
     var container = $(".messages-container")
     user_scrolling = false
     container.animate({
-      scrollTop: container.get(0).scrollHeight
+      scrollTop: scroll_location || container.get(0).scrollHeight
     }, {
       duration: speed || 0,
       complete: function() { user_scrolling = true }
     })
+  }
+
+  scrollToSelectedMessage = function() {
+    if (params.message) {
+      var selected_message = $(".message-container[data-message-id=" + params.message + "]")
+      if (selected_message.length > 0) {
+        scrollTo(300, $(".message-container.highlight").get(0).offsetTop - $(".messages-container").get(0).offsetTop)
+      }
+    }
   }
 
   $(".chat-form").submit(function(evt) {
@@ -96,7 +120,8 @@ $(".ctr-chat.act-chat").ready(function() {
       auto_scroll = $(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight
     }
   })
-  scrollToBottom()
+  scrollTo()
+  scrollToSelectedMessage()
   highlightCurrentUsername($(".messages-container"), current_username)
 
 })

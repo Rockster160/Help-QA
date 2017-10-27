@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get :faq, controller: :static_pages
   get :emoji, controller: :static_pages
   get :chat, controller: :chat
+  get "chat/remove_message/:id" => "chat#remove_message", as: :remove_message
 
   resource :feedback, path: "feedback", only: [:show, :create] do
     get ":id/edit", action: :edit, as: :edit

@@ -5,7 +5,7 @@
   <div class="users-container">
     <div class="title">Users Chatting</div>
     <div class="online-list">
-      <%= render partial: "online_list" %>
+      <%#= render partial: "online_list" %>
     </div>
   </div>
   <div class="chat-container">
@@ -16,6 +16,7 @@
   </div>
 </div>
 
+<p class="connection-trouble nsfw hidden">Trouble connecting to server. Messages sent now may not be delivered. Try refreshing the page if problems continue.</p>
 <% if user_signed_in? && current_user.verified? %>
   <form class="chat-form">
     <input type="text" name="chat-message" class="autofillable-field">

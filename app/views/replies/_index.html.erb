@@ -58,9 +58,9 @@
             <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><i class="emoji lg" title="Mark reply as NSFW/Adult">🔞</i></a>
           <% end %>
           <% if reply.removed? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><i class="emoji lg" title="Restore Reply">🔄</i></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:check, "Restore Reply") %></a>
           <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><i class="emoji lg" title="Remove Reply">✖</i></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:cross, "Remove Reply") %><a>
           <% end %>
         <% end %>
         <% if user_signed_in? && current_user.verified? %>

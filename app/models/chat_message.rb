@@ -11,7 +11,7 @@
 #
 
 class ChatMessage < ApplicationRecord
-  belongs_to :author, class_name: "User"
+  belongs_to :author, class_name: "User", foreign_key: :author_id
 
   validates :body, presence: true
 
@@ -23,11 +23,10 @@ class ChatMessage < ApplicationRecord
   private
 
   def broadcast_creation
-    rendered_message = ChatController.render partial: "chat/messages", locals: { messages: [self] }
     if removed?
       ActionCable.server.broadcast "chat", removed: id
     else
-      ActionCable.server.broadcast "chat", message: rendered_message
+      ActionCable.server.broadcast "chat", message: id
     end
   end
 end

@@ -44,7 +44,6 @@ class User < ApplicationRecord
   has_one :profile, class_name: "UserProfile"
   has_one :settings, class_name: "UserSetting"
   has_many :sherlocks, foreign_key: :changed_by_id
-  has_many :chat_messages, foreign_key: :author_id
 
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }

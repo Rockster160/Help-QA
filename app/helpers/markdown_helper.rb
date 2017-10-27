@@ -7,8 +7,7 @@ module MarkdownHelper
     end
   end
 
-  def markdown(only: nil, except: [], render_html: false, poll_post_id: nil, posted_by_user: nil, &block)
-    current_user = current_user rescue nil
+  def markdown(only: nil, except: [], render_html: false, poll_post: nil, posted_by_user: nil, &block)
     only = [only].flatten
     except = [except].flatten
 
@@ -18,7 +17,7 @@ module MarkdownHelper
     @markdown_options = Hash[default_markdown_options.product([true])]
 
     user = posted_by_user
-    post = Post.find_by(id: poll_post_id)
+    post = poll_post
     text = yield.to_s.dup
     return text.html_safe if posted_by_user.try(:helpbot?)
 

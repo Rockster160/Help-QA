@@ -77,7 +77,7 @@ module ApplicationHelper
   end
 
   def hover_icon(icon, alt, options={})
-    style = "background-image: url(#{image_url('icon_sheet.png')})"
+    style = "background-image: url(#{image_path('icon_sheet.png')})"
     img = image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon}")
 
     if options[:href].present?

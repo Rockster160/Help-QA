@@ -75,13 +75,11 @@
           display: inline;
           margin: 0;
           padding: 0;
-
-          .highlight {
-            background: rgba($tagged-color, 0.5);
-          }
         }
       }
     }
+    .highlight { background: rgba($tagged-color, 0.5); }
+    .removed { background: $reciprocity-none; }
   }
 
   form {

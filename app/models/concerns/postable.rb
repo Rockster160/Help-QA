@@ -2,8 +2,9 @@ module Postable
   extend ActiveSupport::Concern
 
   included do
-    has_many :posts,            foreign_key: :author_id
-    has_many :replies,          foreign_key: :author_id
+    has_many :posts,            foreign_key: :author_id, class_name: "Post"
+    has_many :replies,          foreign_key: :author_id, class_name: "Reply"
+    has_many :chat_messages,    foreign_key: :author_id, class_name: "ChatMessage"
     has_many :post_edits,       foreign_key: :edited_by_id
     has_many :post_views,       foreign_key: :viewed_by_id
     has_many :votes, class_name: "UserPollVote"
