@@ -25,7 +25,7 @@ $(".ctr-chat.act-chat").ready(function() {
       } else if (data["removed"] != undefined) {
         removeId(data["removed"])
       } else if (data["users"] != undefined) {
-        $(".online-list").html(data["users"])
+        updateOnlineList(data["users"])
       } else if (data["ping"] != undefined) {
         this.perform("pong")
       } else {
@@ -38,6 +38,21 @@ $(".ctr-chat.act-chat").ready(function() {
       })
     }
   })
+
+  updateOnlineList = function(users_html) {
+    $(".online-list").append(users_html)
+    var usernames = $(".online-list .message-container").map(function() { return $(this).find(".username").text() }).toArray()
+    var guest_count = $(".online-list .message-container").filter(function() {
+      var username = $(this).find(".username").text()
+      return username.startsWith("Guest ")
+    }).last()
+    var non_guests = $(".online-list .message-container").filter(function(index, user_html) {
+      var username = $(user_html).find(".username").text()
+      if (username.startsWith("Guest ")) { return false }
+      return usernames.indexOf(username) === index
+    })
+    $(".online-list").html($.merge(non_guests, guest_count))
+  }
 
   highlightCurrentUsername = function(html) {
     if (current_username.length == 0) { return }
@@ -123,5 +138,6 @@ $(".ctr-chat.act-chat").ready(function() {
   scrollTo()
   scrollToSelectedMessage()
   highlightCurrentUsername($(".messages-container"), current_username)
+  updateOnlineList()
 
 })

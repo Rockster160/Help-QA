@@ -13,5 +13,10 @@ module Helpernow
     # -- all .rb files in that directory are automatically loaded.
 
     config.autoload_paths += %W(#{config.root}/app/workers)
+
+    config.after_initialize do
+      Rails.cache.write("users_chatting", [])
+      ActionCable.server.broadcast("chat", {ping: true})
+    end
   end
 end

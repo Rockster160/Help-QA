@@ -1,11 +1,11 @@
 class ChatChannel < ApplicationCable::Channel
   def subscribed
     stream_from "chat"
-    refresh_users
+    user_connected
   end
 
   def unsubscribed
-    refresh_users
+    user_disconnected
   end
 
   def speak(data)
@@ -13,14 +13,8 @@ class ChatChannel < ApplicationCable::Channel
     current_user.chat_messages.create(body: data["message"])
   end
 
-  def refresh_users
-    Rails.cache.write("users_chatting", [])
-    ActionCable.server.broadcast("chat", {ping: true})
-  end
-
   def pong
-    user_connected
-    send_user_list
+    user_connected(send_list: false)
   end
 
   private
@@ -34,9 +28,17 @@ class ChatChannel < ApplicationCable::Channel
     ActionCable.server.broadcast "chat", users: rendered_message
   end
 
-  def user_connected
-    current_users = [Rails.cache.read("users_chatting")].flatten
+  def user_disconnected
+    current_users = [Rails.cache.read("users_chatting")].flatten.compact
+    current_users.delete_at(current_users.index(current_username) || current_users.length)
+    Rails.cache.write("users_chatting", current_users)
+    send_user_list
+  end
+
+  def user_connected(send_list: true)
+    current_users = [Rails.cache.read("users_chatting")].flatten.compact
     current_users << current_username
     Rails.cache.write("users_chatting", current_users)
+    send_user_list if send_list
   end
 end
