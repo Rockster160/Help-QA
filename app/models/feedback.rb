@@ -45,14 +45,13 @@ class Feedback < ApplicationRecord
     slack_message = "New Feedback from #{display_name}"
     link_url = url_for(Rails.application.routes.url_helpers.edit_feedback_path(id))
     attachment = {
-      pretext: slack_message,
       fallback: "#{body} - Ticket: ##{id}: #{link_url}",
       title: slack_message,
       title_link: link_url,
       text: body,
       color: :good
     }
-    SlackNotifier.notify(slack_message, attachments: [attachment])
+    SlackNotifier.notify("", attachments: [attachment])
   end
 
   def message_exists
