@@ -24,4 +24,23 @@ $(".ctr-posts.act-show").ready(function() {
     })
   }
 
+  $(".new-reply-container form").submit(function(evt) {
+    var $form = $(this)
+    evt.preventDefault()
+    $.post(this.action, $form.serializeArray()).success(function(data) {
+      if (data.redirect) { window.location.href = data.redirect }
+      if (data.errors) {
+        $(".reply-errors").html(data.errors.join("<br>"))
+        $(".reply-errors").removeClass("hidden")
+      } else {
+        $(".reply-errors").addClass("hidden")
+        $form.find("textarea").val("")
+      }
+    }).complete(function() {
+      $form.find("input, button, textarea").prop("disabled", false)
+    })
+    $form.find("input, button, textarea").prop("disabled", true)
+    return false
+  })
+
 })

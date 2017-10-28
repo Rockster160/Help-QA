@@ -90,6 +90,7 @@
       <% end %>
     </div>
     <% if @post.open? %>
+      <div class="reply-errors hidden"></div>
       <div class="new-reply-container">
         <%= form_for [@post, Reply.new] do |f| %>
           <%= f.label :body, "Reply:" %>

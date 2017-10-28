@@ -27,7 +27,7 @@ class Reply < ApplicationRecord
 
   before_validation :format_body
 
-  validate :post_is_open, :debounce_replies
+  validate :post_is_open, :debounce_replies, :valid_text
 
   after_create :invite_users, :notify_subscribers
   after_update :read_questionable_text
@@ -46,7 +46,6 @@ class Reply < ApplicationRecord
   scope :verified_by_mod,   -> { where(has_questionable_text: [nil, false]) }
   scope :without_adult,     -> { where(replies: { marked_as_adult: [nil, false] }) }
   scope :conditional_adult, ->(user) { verified_by_mod.without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
-  # TODO Add validation requiring text, cannot be blank, cannot be "Leave a reply" or similar
 
   def safe?; !marked_as_adult?; end
   def removed?; removed_at?; end
@@ -96,6 +95,15 @@ class Reply < ApplicationRecord
     return if author.replies.where("created_at > ?", 10.seconds.ago).none?
 
     errors.add(:base, "Slow down there! You're posting too fast.")
+  end
+
+  def valid_text
+    if body.squish == "Post a reply"
+      errors.add(:base, "Try adding some text first!")
+    end
+    if body.length <= 1
+      errors.add(:base, "Try adding some more text! This isn't long enough.")
+    end
   end
 
   def notify_subscribers
