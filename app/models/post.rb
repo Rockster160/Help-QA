@@ -46,6 +46,7 @@ class Post < ApplicationRecord
   scope :by_tags, ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
 
   after_create :auto_add_tags, :generate_poll, :alert_helpbot
+  after_commit :broadcast_creation
   defaults reply_count: 0
   defaults posted_anonymously: false
 
@@ -140,6 +141,10 @@ class Post < ApplicationRecord
   end
 
   private
+
+  def broadcast_creation
+    ActionCable.server.broadcast("posts_channel", {})
+  end
 
   def format_body
     self.body[0] = "" while self.body[0] =~ /[ \n\r]/ # Remove New Lines before post.

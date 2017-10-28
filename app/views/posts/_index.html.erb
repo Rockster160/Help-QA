@@ -1,7 +1,7 @@
 <% hide_tags ||= false %>
 
 <% posts.each do |post| %>
-  <a href="<%= post_path(post) %>" class="post-container">
+  <a href="<%= post_path(post) %>" class="post-container" data-timestamp="<%= post.created_at.to_i %>" data-id="<%= post.id %>">
     <%= avatar(post.avatar, size: 50) %>
     <div class="post-description">
       <div class="title"><%= markdown(only: []) { post.title } %></div>

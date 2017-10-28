@@ -1,25 +1,37 @@
 $(".ctr-index.act-index").ready(function() {
 
-  App.notifications = App.cable.subscriptions.create({
-    channel: "PostChannel"
+  App.posts = App.cable.subscriptions.create({
+    channel: "PostsChannel"
   }, {
     connected: function() {
-      updateNotifications()
+      updatePostsSinceLast()
     },
     disconnected: function() {},
     received: function(data) {
-      if (data["message"] != undefined) {
-        addFlashNotice(data["message"])
-      }
-      updateNotifications()
+      updatePostsSinceLast()
     }
   })
 
-  updateNotifications = function() {
-    $.get(notifications_url).success(function(data) {
-      $("#notifications-notices").text(data.notices)
-      $("#notifications-shouts").text(data.shouts)
-      $("#notifications-invites").text(data.invites)
+  updatePostsSinceLast = function() {
+    var url = window.location.href.split("?")[0]
+    var last_post_timestamp = $(".posts-container .post-container").first().attr("data-timestamp")
+    $.get(url, {since: last_post_timestamp}).success(function(data) {
+      var prev_height = $(".posts-container").get(0).scrollHeight
+      $(".posts-container").css({"max-height": prev_height})
+      $(".posts-container").prepend(data)
+      $(".posts-container").scrollTop($(".posts-container").get(0).scrollHeight)
+      $(".posts-container").animate({
+        scrollTop: 0
+      }, {
+        duration: 1000,
+        complete: function() {
+          $(".posts-container .post-container").slice(10).hide("fade", { direction: "down" }, 1000, function() {
+            console.log("dead");
+            $(this).remove()
+            $(".posts-container").css({"max-height": ""})
+          })
+        }
+      })
     })
   }
 
