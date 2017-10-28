@@ -111,12 +111,12 @@ module PostsHelper
 
   def pagination(association, options={})
     current_filters = @filter_options.reject { |param_key, param_val| param_val.blank? }
-    tags = current_filters.delete(:tags)
-    current_filter_str = ([page_root_path] + current_filters.keys + [tags.try(:compact)&.join(",")]).compact.join("/")
+    tags = current_filters.delete(:tags)&.map(&:squish)&.map(&:presence).try(:compact) || []
+    current_filter_str = ([page_root_path] + current_filters.keys + [tags&.join(",")]).compact.join("/")
 
-    paginate(association, options).gsub(/history.*?\d?"/) do |found_match|
+    paginate(association, options).gsub(/\/history.*?\d?"/) do |found_match|
       page = found_match.scan(/\/\d+/).first.presence || "/1"
-      "#{current_filter_str}#{page}#{filter_query_string}\""
+      "#{current_filter_str}#{page}#{filter_query_string}\"" # escaped string at the end to catch the removed one from the gsub
     end.html_safe
   end
 
@@ -127,10 +127,6 @@ module PostsHelper
       "resolved" => false,
       "unresolved" => false
     }
-
-    filter_values.each do |filter_val|
-
-    end
 
     @filter_params = {}
   end
