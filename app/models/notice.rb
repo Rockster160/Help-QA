@@ -10,6 +10,7 @@
 #  created_at    :datetime
 #  notice_for_id :integer
 #  url           :string
+#  updated_at    :datetime
 #
 
 class Notice < ApplicationRecord

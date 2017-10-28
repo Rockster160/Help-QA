@@ -1,4 +1,4 @@
-<% content_for(:title) { "#{@user.username}'s Profile at HelperNow.co" } %>
+<% content_for(:title) { "#{@user.username}'s Profile at Help-QA.com" } %>
 <% content_for(:meta) do %>
   <% description = "#{@user.username} has #{@user.friends.count} and helps in #{@user.tags_from_replies.count} tags like: #{@user.tags_from_replies.count_order.first(5).join(', ')}" %>
   <meta name="description" content="<%= @user.username %> has <%=  %>">
@@ -153,12 +153,12 @@
             <% if @user.admin? %>
               <%= hover_icon(:shield, "HerlpNow.co Admin") %>
             <% else %>
-              <%= hover_icon(:star, "HelperNow.co Volunteer Moderator") %>
+              <%= hover_icon(:star, "Help-QA.com Volunteer Moderator") %>
             <% end %>
-            <%= @user.username %> has been granted the following permissions at HelperNow.co
+            <%= @user.username %> has been granted the following permissions at Help-QA.com
           </h6>
           <p>IP Banning, Post Moderation, Adult Mark Posts, Edit Posts, Reply Moderation, Adult Mark Replies, Remove Replies, Reports Moderation, Tag Moderation, Ban Users, Revoke Chat Ability, View Anonymous User, View User Details, View User Email</p>
-          <p>HelperNow.co gives certain volunteer users moderator permissions. However, these moderators are not employees of HelperNow, and do not necessarily represent our views. Additionally, volunteer moderators should <strong>never</strong> ask for personal information such as email address, passwords, credit card numbers, or social security numbers. As a user, you are permitted to deny any requested information from these moderators. If you believe a moderator is abusing the permissions granted to them, please <a href="<%= feedback_path %>" class="underline">file a report</a> so that we may look into this breach.</p>
+          <p>Help-QA.com gives certain volunteer users moderator permissions. However, these moderators are not employees of Help-QA, and do not necessarily represent our views. Additionally, volunteer moderators should <strong>never</strong> ask for personal information such as email address, passwords, credit card numbers, or social security numbers. As a user, you are permitted to deny any requested information from these moderators. If you believe a moderator is abusing the permissions granted to them, please <a href="<%= feedback_path %>" class="underline">file a report</a> so that we may look into this breach.</p>
         </div>
       <% end %>
       <div class="post-tags">

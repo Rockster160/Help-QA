@@ -1,6 +1,6 @@
 <% content_for(:title) { "#{@post.tags.count_order.first.try(:tag_name)} help: #{@post.title}" } %>
 
-<div class="post-container">
+<div class="post-container" data-id="<%= @post.id %>">
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
       <% options = {size: 200} %>
@@ -114,7 +114,7 @@
   <div class="post-section-detail"></div>
   <div class="post-section-content">
     <p>
-      <small>HelperNow supports basic <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">Markdown</a>,
+      <small>Help-QA supports basic <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">Markdown</a>,
       <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">emoji 😁</a>,
       and tagging friends with <a href="<%= user_path(helpbot) %>" class="tagged-user">@username</a>!</small>
     </p>

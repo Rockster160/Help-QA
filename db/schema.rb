@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171021164936) do
+ActiveRecord::Schema.define(version: 20171028172950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 20171021164936) do
     t.datetime "created_at"
     t.integer  "notice_for_id"
     t.string   "url"
+    t.datetime "updated_at"
     t.index ["user_id"], name: "index_notices_on_user_id", using: :btree
   end
 

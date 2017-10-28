@@ -5,7 +5,7 @@ class UserMailer < ApplicationMailer
 
     mail({
       to: user.email,
-      subject: "Recent Notices from HelperNow"
+      subject: "Recent Notices from Help-QA"
     })
   end
 end

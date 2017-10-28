@@ -10,13 +10,13 @@ Rails.application.configure do
     address:              'smtp.gmail.com',
     port:                 587,
     domain:               'gmail.com',
-    user_name:            'helpernowcontact@gmail.com',
-    password:             ENV["HELPERNOW_GMAIL_PASSWORD"],
+    user_name:            'helpqacontact@gmail.com',
+    password:             ENV["HELPQA_GMAIL_PASSWORD"],
     authentication:       :plain,
     enable_starttls_auto: true
   }
 
-  config.action_cable.url = "ws://helpernow.co/cable"
+  config.action_cable.url = "ws://help-qa.com/cable"
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -69,7 +69,7 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "helpernow_#{Rails.env}"
+  # config.active_job.queue_name_prefix = "helpqa_#{Rails.env}"
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.

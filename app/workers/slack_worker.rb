@@ -5,8 +5,8 @@ class SlackWorker
 
   # https://api.slack.com/docs/attachments
 
-  def perform(message, channel='#helpernow', username='Help-Bot', icon_emoji=':heavy_plus_sign:', attachments=[])
+  def perform(message, channel='#helpqa', username='Help-Bot', icon_emoji=':heavy_plus_sign:', attachments=[])
     ::Slack::Notifier.new(WEBHOOK_URL, channel: channel, username: username).ping(message, attachments: attachments)
-  end 
+  end
 
 end

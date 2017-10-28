@@ -85,7 +85,7 @@ else
     email: "rocco11nicholls@gmail.com",
     password: "password",
     created_at: 6.months.ago,
-    confirmed_at: 6.months.ago
+    confirmed_at: 6.months.ago,
     verified_at: 6.months.ago,
     remember_created_at: 6.months.ago,
     username: "Rockster160",

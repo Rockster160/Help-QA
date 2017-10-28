@@ -1,4 +1,4 @@
-<p>Hey <%= @user.username %>, here's what you've missed up at <a href="<%= root_url %>">HelperNow.co</a>:</p>
+<p>Hey <%= @user.username %>, here's what you've missed up at <a href="<%= root_url %>">Help-QA.com</a>:</p>
 <ul>
   <% @notices.each do |notice| %>
     <li><%= notice.notice_message(passed_root: root_url) %></li>

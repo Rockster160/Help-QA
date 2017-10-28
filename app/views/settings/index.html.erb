@@ -1,4 +1,4 @@
-<% content_for(:title) { "Account Settings &bull; HelperNow.co".html_safe } %>
+<% content_for(:title) { "Account Settings &bull; Help-QA.com".html_safe } %>
 
 <h1>Account Administration for <%= @user.username %></h1>
 
@@ -69,7 +69,7 @@
 <%= form_for @user, method: :patch do |f| %>
   <div class="split-half">
     <div class="half">
-      You can use the password you set here to login to HelperNow.co without having to find a login link from your emails. This is useful if you find it annoying to open your email to find a login link. Additionally, if you ever lose access to your email account, you'll still have access to your account by logging in with the previous email address and password you set.
+      You can use the password you set here to login to Help-QA.com without having to find a login link from your emails. This is useful if you find it annoying to open your email to find a login link. Additionally, if you ever lose access to your email account, you'll still have access to your account by logging in with the previous email address and password you set.
     </div>
     <div class="half">
       <div class="highlight-box">
@@ -90,11 +90,11 @@
 <h6>General Account Settings</h6>
 
 <%= form_for @settings, url: account_settings_path, method: :post do |f| %>
-  <h6 class="form-section">HelperNow.co Emails</h6>
+  <h6 class="form-section">Help-QA.com Emails</h6>
   <div class="split-form">
     <div class="buttons">
       <%= f.radio_button :send_email_notifications, true %>
-      <%= f.label :send_email_notifications_true, "Allow Emails from HelperNow.co" %> <br>
+      <%= f.label :send_email_notifications_true, "Allow Emails from Help-QA.com" %> <br>
       <%= f.radio_button :send_email_notifications, false %>
       <%= f.label :send_email_notifications_false, "Do not email me" %>
     </div>
@@ -103,7 +103,7 @@
     </div>
   </div>
 
-  <h6 class="form-section">HelperNow.co Reply Notifications</h6>
+  <h6 class="form-section">Help-QA.com Reply Notifications</h6>
   <div class="split-form">
     <div class="buttons">
       <%= f.radio_button :send_reply_notifications, true %>

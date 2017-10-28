@@ -93,11 +93,11 @@ $(".ctr-chat.act-chat").ready(function() {
 
   updatePageTitleWithUnreads = function() {
     if (unread_count == 0) {
-      document.title = "HelperNow Chat"
+      document.title = "Help-QA Chat"
     } else if (unread_count == 1) {
-      document.title = "(1 unread message) HelperNow Chat"
+      document.title = "(1 unread message) Help-QA Chat"
     } else {
-      document.title = "(" + unread_count + " unread messages) HelperNow Chat"
+      document.title = "(" + unread_count + " unread messages) Help-QA Chat"
     }
   }
 
