@@ -1,8 +1,6 @@
 $(".ctr-posts.act-show").ready(function() {
 
-  $(".title .emoji").addClass("big")
-
-  $(".quote-reply").click(function(evt) {
+  $(document).on("click", ".quote-reply", function(evt) {
     evt.preventDefault()
     var reply_text = $(this).parents(".reply-container").find(".reply-content").attr("data-original-content")
     var author_name = $(this).parents(".reply-container").find(".reply-username").html()

@@ -29,7 +29,7 @@ $(".ctr-posts.act-show").ready(function() {
     evt.preventDefault()
     $.post(this.action, $form.serializeArray()).success(function(data) {
       if (data.redirect) { window.location.href = data.redirect }
-      if (data.errors) {
+      if (data.errors.length != 0) {
         $(".reply-errors").html(data.errors.join("<br>"))
         $(".reply-errors").removeClass("hidden")
       } else {
