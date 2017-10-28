@@ -24,21 +24,18 @@ class Notice < ApplicationRecord
   defaults notice_type: :other
 
   after_create :notify_user
+  after_commit :broadcast_creation
 
   enum notice_type: {
     other:              0,
     subscription:       1,
-    friend_request:     2,
-    questionable_reply: 3,
-    friend_approval:    4
+    questionable_reply: 2
   }
 
   def notice_message(passed_root: nil)
     case notice_type.to_sym
     when :other              then generic_message(passed_root: passed_root)
     when :subscription       then subscription_message(passed_root: passed_root)
-    when :friend_request     then friend_request_message(passed_root: passed_root)
-    when :friend_approval    then friend_approval_message(passed_root: passed_root)
     when :questionable_reply then questionable_message(passed_root: passed_root)
     else "[INVALID]"
     end
@@ -54,18 +51,6 @@ class Notice < ApplicationRecord
     "New Comment on #{link_to(post.title, post_path, passed_root: passed_root)}".html_safe
   end
 
-  def friend_request_message(passed_root: nil)
-    new_fan = User.find(notice_for_id)
-    friends_path = Rails.application.routes.url_helpers.account_friends_path
-    "New Friend Request from #{link_to(new_fan.username, friends_path, passed_root: passed_root)}".html_safe
-  end
-
-  def friend_approval_message(passed_root: nil)
-    new_friend = User.find(notice_for_id)
-    friends_path = Rails.application.routes.url_helpers.account_friends_path
-    "#{link_to(new_friend.username, friends_path, passed_root: passed_root)} has accepted your friend request!".html_safe
-  end
-
   def questionable_message(passed_root: nil)
     reply = Reply.find(notice_for_id)
     post = reply.post
@@ -75,6 +60,14 @@ class Notice < ApplicationRecord
   end
 
   private
+
+  def broadcast_creation
+    if updated_at == created_at
+      ActionCable.server.broadcast("notifications_#{user_id}", message: notice_message)
+    else
+      ActionCable.server.broadcast("notifications_#{user_id}", {})
+    end
+  end
 
   def notify_user
     return unless user.settings.send_reply_notifications?

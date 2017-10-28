@@ -11,6 +11,12 @@ class AccountsController < ApplicationController
     end
   end
 
+  def notifications
+    respond_to do |format|
+      format.json { render json: @notifications }
+    end
+  end
+
   private
 
   def confirmation_error(msg)

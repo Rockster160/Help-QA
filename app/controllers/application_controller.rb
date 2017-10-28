@@ -3,10 +3,10 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
-  before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis
+  before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications
 
   def flash_message
-    flash.now[params[:flash_type].to_sym] = params[:message]
+    flash.now[params[:flash_type].to_sym] = params[:message].html_safe
     render partial: 'layouts/flashes'
   end
 
@@ -23,6 +23,16 @@ class ApplicationController < ActionController::Base
     # reload_emoji_cache
     @emoji_list = Rails.cache.fetch("emoji_list") { JSON.parse(File.read("lib/emoji.json")).reject { |emoji, _aliases| emoji.to_s.starts_with?("// ") } }
     @emoji_names = Rails.cache.fetch("emoji_names") { @emoji_list.keys }
+  end
+
+  def set_notifications
+    return unless user_signed_in?
+    notices = current_user.notices.unread
+    @notifications = {
+      notices: notices.subscription.count + notices.questionable_reply.count,
+      shouts: current_user.shouts.unread.count,
+      invites: current_user.invites.unread.count
+    }
   end
 
   def unauth_banned_user

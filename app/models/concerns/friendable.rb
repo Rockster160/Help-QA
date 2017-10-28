@@ -6,7 +6,7 @@ module Friendable
     has_many :shouts_to,        foreign_key: :sent_to_id,      class_name: "Shout"
     has_many :shouts_from,      foreign_key: :sent_from_id,    class_name: "Shout"
     has_many :requested_friendships, class_name: "Friendship", foreign_key: "user_id"
-    has_many :pending_friendships, class_name: "Friendship", foreign_key: "friend_id"
+    has_many :pending_friendships,   class_name: "Friendship", foreign_key: "friend_id"
   end
 
   def recent_shouts
@@ -46,10 +46,12 @@ module Friendable
 
     if existing_friendship.try(:friend_id) == self.id # They requested to be my friend already, so I can accept the request.
       existing_friendship.update(accepted_at: DateTime.current)
-      friend.notices.friend_request.create(notice_for_id: self.id)
+      friend_path = Rails.application.routes.url_helpers.user_path(self)
+      ActionCable.server.broadcast("notifications_#{friend.id}", message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!")
     elsif existing_friendship.nil?
       friendships.create(user_id: self.id, friend_id: friend.id)
-      friend.notices.friend_approval.create(notice_for_id: self.id)
+      friends_path = Rails.application.routes.url_helpers.account_friends_path
+      ActionCable.server.broadcast("notifications_#{friend.id}", message: "New Friend Request from <a href=\"#{friends_path}\">#{self.username}</a>")
     end
   end
   def remove_friend(friend)

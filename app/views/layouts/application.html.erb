@@ -17,6 +17,8 @@
       ga('create', 'UA-106090486-1', 'auto');
       ga('send', 'pageview');
       current_username = "<%= current_user.try(:username) %>"
+      current_userid = "<%= current_user.try(:id) %>"
+      notifications_url = "<%= notifications_account_path %>"
     </script>
   </head>
 
@@ -37,9 +39,11 @@
     </div>
     <div id="pre-load" class="hidden"></div>
     <% cache "friend_loader", skip_digest: true do %>
+      <% puts "Running cache for friend_loader".colorize(:yellow) %>
       <%= render partial: "layouts/invite_loader" %>
     <% end %>
     <% cache "emoji_loader", skip_digest: true do %>
+      <% puts "Running cache for emoji_loader".colorize(:yellow) %>
       <%= render partial: "layouts/emoji_loader" %>
     <% end %>
     <%= yield(:modals) %>
