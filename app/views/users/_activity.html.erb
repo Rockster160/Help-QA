@@ -1,27 +1,30 @@
-<% dates_count = 125 %>
-<% activity = @user.activity(dates_count) %>
-<% max_replies = activity.max_by { |date, activity_on_date| activity_on_date[:replies] }.last&.dig(:replies) %>
-<% max_replies = [max_replies, 1].max %>
-<% max_posts = activity.max_by { |date, activity_on_date| activity_on_date[:posts] }.last&.dig(:posts) %>
-<% max_posts = [max_posts, 1].max %>
+<% cache "activity-#{@user.id}.#{@user.posts.count}.#{@user.replies.count}" do %>
+  <% puts "Running cache for #{@user.username} activity".colorize(:yellow) %>
+  <% dates_count = 125 %>
+  <% activity = @user.activity(dates_count) %>
+  <% max_replies = activity.max_by { |date, activity_on_date| activity_on_date[:replies] }.last&.dig(:replies) %>
+  <% max_replies = [max_replies, 1].max %>
+  <% max_posts = activity.max_by { |date, activity_on_date| activity_on_date[:posts] }.last&.dig(:posts) %>
+  <% max_posts = [max_posts, 1].max %>
 
-<% max_height = 70 %>
-<% max_width = 5 %>
-<% min_height = 3 %>
+  <% max_height = 70 %>
+  <% max_width = 5 %>
+  <% min_height = 3 %>
 
-<% posts_ratio = 1 / 3.to_f %>
-<% max_post_height = max_height * posts_ratio %>
-<% max_replies_height = max_height * (1 - posts_ratio) %>
+  <% posts_ratio = 1 / 3.to_f %>
+  <% max_post_height = max_height * posts_ratio %>
+  <% max_replies_height = max_height * (1 - posts_ratio) %>
 
-<div class="activity-wrapper">
-  <div class="activity-graph">
-    <% activity.each do |date, activity_on_date| %>
-      <% posts_height = range_map(activity_on_date[:posts], 0, max_posts, min_height, max_post_height) || min_height %>
-      <% replies_height = range_map(activity_on_date[:replies], 0, max_replies, min_height, max_replies_height) || min_height %>
-      <div class="date-column">
-        <div class="posts-bar" style="height: <%= posts_height %>px;" title="<%= pluralize(activity_on_date[:posts], 'post') %> on <%= date %>"></div>
-        <div class="replies-bar" style="height: <%= replies_height %>px;" title="<%= pluralize(activity_on_date[:replies], 'reply') %> on <%= date %>"></div>
-      </div>
-    <% end %>
+  <div class="activity-wrapper">
+    <div class="activity-graph">
+      <% activity.each do |date, activity_on_date| %>
+        <% posts_height = range_map(activity_on_date[:posts], 0, max_posts, min_height, max_post_height) || min_height %>
+        <% replies_height = range_map(activity_on_date[:replies], 0, max_replies, min_height, max_replies_height) || min_height %>
+        <div class="date-column">
+          <div class="posts-bar" style="height: <%= posts_height %>px;" title="<%= pluralize(activity_on_date[:posts], 'post') %> on <%= date %>"></div>
+          <div class="replies-bar" style="height: <%= replies_height %>px;" title="<%= pluralize(activity_on_date[:replies], 'reply') %> on <%= date %>"></div>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>
+<% end %>
