@@ -17,6 +17,8 @@ class Sherlock < ApplicationRecord
 
   validate :some_changes_made
 
+  after_commit :broadcast_creation
+
   def self.notifications_for(post)
     where(obj_klass: "Post", obj_id: post.id)
   end
@@ -66,6 +68,12 @@ class Sherlock < ApplicationRecord
   end
 
   private
+
+  def broadcast_creation
+    if obj_klass == "Post"
+      ActionCable.server.broadcast("replies_for_#{obj_id}", {})
+    end
+  end
 
   def some_changes_made
     return if changes.any?

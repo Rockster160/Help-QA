@@ -32,6 +32,8 @@ class Reply < ApplicationRecord
   after_create :invite_users, :notify_subscribers
   after_update :read_questionable_text
 
+  after_commit :broadcast_creation
+
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_removed,       -> { where(removed_at: nil) }
@@ -79,6 +81,10 @@ class Reply < ApplicationRecord
   end
 
   private
+
+  def broadcast_creation
+    ActionCable.server.broadcast("replies_for_#{post_id}", {})
+  end
 
   def post_is_open
     return if post.open?

@@ -98,6 +98,7 @@
       .replies-container {
         padding: 5px;
         padding-right: 0;
+        overflow: hidden;
 
         .reply-container {
           border: 1px solid $gray-med;
