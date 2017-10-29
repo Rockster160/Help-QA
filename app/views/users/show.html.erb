@@ -1,7 +1,6 @@
-<% content_for(:title) { "#{@user.username}'s Profile at Help-QA.com" } %>
-<% content_for(:meta) do %>
-  <% description = "#{@user.username} has #{@user.friends.count} and helps in #{@user.tags_from_replies.count} tags like: #{@user.tags_from_replies.count_order.first(5).join(', ')}" %>
-  <meta name="description" content="<%= @user.username %> has <%=  %>">
+<% meta_title "#{@user.username}'s Profile at Help-QA.com" %>
+<% content_for(:description) do %>
+  <%= "#{@user.username} has #{@user.friends.count} and helps in #{@user.tags_from_replies.count} tags like: #{@user.tags_from_replies.count_order.first(5).join(', ')}" %>
 <% end %>
 
 <div class="user-page-container">

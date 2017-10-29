@@ -20,7 +20,14 @@ $(".ctr-posts.act-show").ready(function() {
       var prev_height = $(".replies-container").get(0).scrollHeight
       $(".replies-container").css({"max-height": prev_height})
       $(".replies-container").append(data)
-      $(".replies-container").animate({ "max-height": $(".replies-container").get(0).scrollHeight }, 1000)
+      $(".replies-container").animate({
+        "max-height": $(".replies-container").get(0).scrollHeight
+      }, {
+        duration: 1000,
+        complete: function() {
+          $(".replies-container").css({"max-height": ""})
+        }
+      })
     })
   }
 

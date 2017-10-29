@@ -2,7 +2,7 @@
 <% first_post = [(@feedbacks.limit_value * (@feedbacks.current_page - 1)) + 1, total_posts, 0].sort[1] %>
 <% last_post = [@feedbacks.limit_value * @feedbacks.current_page, total_posts, 0].sort[1] %>
 <% title = "#{pluralize_with_delimiter(total_posts, 'post')}, Posts #{number_with_delimiter(first_post)} to #{number_with_delimiter(last_post)}" %>
-<% content_for(:title) { title } %>
+<% meta_title  title  %>
 <h2><i>History:</i> <%= title %></h2>
 
 <div class="history-page">

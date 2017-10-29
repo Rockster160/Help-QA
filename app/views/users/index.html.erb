@@ -2,7 +2,7 @@
 <% first_user = [(@users.limit_value * (@users.current_page - 1)) + 1, total_users, 0].sort[1] %>
 <% last_user = [@users.limit_value * @users.current_page, total_users, 0].sort[1] %>
 <% title = "#{pluralize_with_delimiter(total_users, 'user')}, Users #{number_with_delimiter(first_user)} to #{number_with_delimiter(last_user)}" %>
-<% content_for(:title) { title } %>
+<% meta_title  title  %>
 <h2><i>Users:</i> <%= title %></h2>
 
 <div class="history-page">

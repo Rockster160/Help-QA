@@ -1,4 +1,4 @@
-<% content_for(:title) { "#{@user.username}'s ShoutBox &bull; Help-QA.com".html_safe } %>
+<% meta_title "#{@user.username}'s ShoutBox &bull; Help-QA.com" %>
 
 <div class="shout-title">
   <i>Shoutbox: </i> <a href="<%= user_path(@user) %>" class="underline"><%= @user.username %></a> is listening

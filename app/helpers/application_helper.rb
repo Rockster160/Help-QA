@@ -142,7 +142,7 @@ module ApplicationHelper
   end
 
   def meta_description(description)
-    content_for(:description) { description }
+    content_for(:description) { description.html_safe }
   end
 
 end

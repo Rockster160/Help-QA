@@ -1,0 +1,37 @@
+<% if content_for?(:title) %>
+  <title><%= content_for(:title) %></title>
+  <meta name="title" content="<%= content_for(:title) %>">
+  <meta name="og:title" content="<%= content_for(:title) %>">
+  <meta name="twitter:title" content="<%= content_for(:title) %>">
+<% else %>
+  <title>Help-QA.com</title>
+  <meta name="title" content="Help-QA.com">
+  <meta name="og:title" content="Help-QA.com">
+  <meta name="twitter:title" content="Help-QA.com">
+<% end %>
+
+<% if content_for?(:description) %>
+  <meta name="description" content="<%= content_for(:description) %>">
+  <meta name="og:description" content="<%= content_for(:description) %>">
+  <meta name="twitter:description" content="<%= content_for(:description) %>">
+<% else %>
+  <meta name="description" content="Resurrection of the old Help.com site from 2008. Welcoming new and old helpers to ask questions and give answers.">
+  <meta name="og:description" content="Resurrection of the old Help.com site from 2008. Welcoming new and old helpers to ask questions and give answers.">
+  <meta name="twitter:description" content="Resurrection of the old Help.com site from 2008. Welcoming new and old helpers to ask questions and give answers.">
+<% end %>
+
+<meta name="image" content="<%= root_url + '/helpqa-thumbnail.png' %>">
+<meta name="og:image" content="<%= root_url + '/helpqa-thumbnail.png' %>">
+<meta name="twitter:image" content="<%= root_url + '/helpqa-thumbnail.png' %>">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="Help-QA.com">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="<%= root_url %>">
+<meta property="og:site_name" content="Help-QA">
+
+<%= content_for(:meta) %>
+
+<%= csrf_meta_tags %>
+<%= action_cable_meta_tag %>

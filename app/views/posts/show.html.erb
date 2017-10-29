@@ -1,4 +1,4 @@
-<% content_for(:title) { "#{@post.tags.count_order.first.try(:tag_name)} help: #{@post.title}" } %>
+<% meta_title "#{@post.tags.count_order.first.try(:tag_name)} help: #{@post.title}" %>
 
 <div class="post-container" data-id="<%= @post.id %>">
   <div class="author-details text-center">
