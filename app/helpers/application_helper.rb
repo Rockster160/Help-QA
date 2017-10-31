@@ -3,6 +3,10 @@ module ApplicationHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
+  def default_anonymous?
+    current_user.try(:settings).try(:default_anonymous?)
+  end
+
   def errors(resource, error_messages=nil, title: nil)
     if resource.is_a?(String)
       resource_class = resource

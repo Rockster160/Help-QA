@@ -102,7 +102,7 @@
             <%= text_field_tag "new_user[email]", "", class: "full-width" %>
           <% end %>
 
-          <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" %>
+          <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
           <%= f.label :posted_anonymously, "Post Anonymously?" %>
           <%= f.submit "Send Reply" %>
         <% end %>
