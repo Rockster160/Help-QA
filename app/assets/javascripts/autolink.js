@@ -21,10 +21,12 @@ $(".ctr-posts.act-show, .ctr-users.act-show").ready(function() {
     $(document).ajaxComplete(unregisterJqxhr);
   }
 
-  setInterval(autolinkTick, 500)
+  setTimeout(function() {
+    setInterval(autolinkTick, 500)
+  }, 2500)
 })
 
-var url_regex = /.(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+var url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|http\:\/\/localhost:[0-9]{4})/
 var email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 var last_catch_url_regex = /^\w+(\.){2,}\w+$/
 

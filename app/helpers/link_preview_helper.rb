@@ -1,11 +1,12 @@
 module LinkPreviewHelper
 
-  def generate_previews_for_urls
+  def generate_previews_for_urls(clear: false)
     [params[:urls]].flatten.compact.uniq.map do |raw_url|
       raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
       next if raw_url[/^\w+(\.){2,}\w+$/]
       url = "http://#{raw_url.gsub(/^\/*/, '')}" unless raw_url.starts_with?("http")
       url ||= raw_url
+      Rails.cache.delete(url) if clear
       meta_data = Rails.cache.fetch(url) do
         puts "Running Cache Fetch for: #{url}".colorize(:yellow)
         res = RestClient.get(url)

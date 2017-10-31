@@ -114,6 +114,7 @@ GEM
       railties (>= 3.2.16)
     js_cookie_rails (2.1.4)
       railties (>= 3.1)
+    json (1.8.6)
     jstz-rails3-plus (1.0.5)
       railties (>= 3.1)
     kaminari (1.0.1)
@@ -187,6 +188,11 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
+    rails_real_favicon (0.0.7)
+      json (>= 1.7, < 3)
+      rails (>= 3.1)
+      rest-client (~> 2.0)
+      rubyzip (~> 1)
     railties (5.0.3)
       actionpack (= 5.0.3)
       activesupport (= 5.0.3)
@@ -227,6 +233,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    rubyzip (1.2.1)
     rufus-scheduler (3.4.0)
       et-orbi (~> 1.0)
     sass (3.4.24)
@@ -311,6 +318,7 @@ DEPENDENCIES
   pry-rails
   puma (~> 3.0)
   rails (~> 5.0.2)
+  rails_real_favicon
   redis (~> 3.0)
   redis-namespace
   rest-client

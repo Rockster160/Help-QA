@@ -13,6 +13,7 @@ module ApplicationHelper
   end
 
   def hash_of_url_parts(url)
+    return {host: "localhost:4357"} if url == "http://localhost:4357"
     split_regex = /^((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/
     hash = {}
     url.scan(split_regex) do
