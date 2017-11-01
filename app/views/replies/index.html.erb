@@ -32,6 +32,9 @@
       </div>
     </div>
   <% end %>
+  <% if @replies.none? %>
+    <p>No replies found</p>
+  <% end %>
 </div>
 
 <%= paginate @replies %>
