@@ -30,6 +30,7 @@
 #  completed_signup       :boolean          default("false")
 #  can_use_chat           :boolean          default("true")
 #  banned_until           :datetime
+#  authorization_token    :string
 #
 
 FactoryGirl.define do

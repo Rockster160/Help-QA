@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   prepend_before_action :block_ip_addresses
+  before_action :auto_sign_in
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
@@ -91,6 +92,16 @@ class ApplicationController < ActionController::Base
       if user_signed_in?
         current_user.see!
         request.env['exception_notifier.exception_data'] = { current_user: current_user }
+      end
+    end
+  end
+
+  def auto_sign_in
+    if params[:auth].present?
+      user = User.find_by(authorization_token: params[:auth])
+      if user.present?
+        sign_out :user
+        sign_in(user)
       end
     end
   end

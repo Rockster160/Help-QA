@@ -11,6 +11,7 @@ module Accountable
 
     after_create :set_gravatar_if_exists, :create_associated_objects
     after_commit :reset_cache
+    after_update :reset_auth_token, if: :encrypted_password_changed?
   end
 
   def online?
@@ -104,10 +105,24 @@ module Accountable
     [id, username.parameterize].join("-")
   end
 
+  def auth_token(force: false)
+    return authorization_token if authorization_token.present? && !force
+    new_auth_token ||= loop do
+      random_token = SecureRandom.hex(20)
+      break random_token if User.where(authorization_token: random_token).none?
+    end
+    update(authorization_token: new_auth_token)
+    new_auth_token
+  end
+
   private
 
   def reset_cache
     ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username")
+  end
+
+  def reset_auth_token
+    auth_token(force: true)
   end
 
   def set_gravatar_if_exists

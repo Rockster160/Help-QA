@@ -1,5 +1,5 @@
 class UserMailerPreview < ActionMailer::Preview
   def notifications
-    UserMailer.notifications(User.first, Notice.last(10))
+    UserMailer.notifications(User.not_helpbot.first)
   end
 end

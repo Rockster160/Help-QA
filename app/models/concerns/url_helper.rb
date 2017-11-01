@@ -6,6 +6,8 @@ module UrlHelper
   end
 
   def link_to(text, link_url, passed_root: nil)
+    link_url[0] = "" while link_url[0] == "/"
+    passed_root[-1] = "" while passed_root[-1] == "/"
     "<a href=\"#{[passed_root, link_url].compact.join('/')}\">#{text}</a>"
   end
 end
