@@ -1,0 +1,44 @@
+<h1>
+  Start a New Post
+  <p>Ask a question, post a rant, tell us your story</p>
+</h1>
+<div class="new-post-container">
+  <%= form_for @post do |f| %>
+    <div class="text-area-wrapper">
+      <%= f.label :body, "Start a new post" %>
+      <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
+    </div>
+    <div class="post-controls">
+      <% unless user_signed_in? %>
+        <label for="new-post-email">Email: </label>
+        <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) %>">
+      <% end %>
+      <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
+      <%= f.label :posted_anonymously, "Post Anonymously?" %>
+      <%= f.submit "Post!" %>
+      <% unless user_signed_in? %>
+        <div class="small-text">
+          Email address is required <br>
+          You must be 13 years or older
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <h6>How This Works</h6>
+  <p>After you start your post, our computer will find matching "Tags" and other related content for you to check out.</p>
+  <ol>
+    <li>Retag the post
+      <p>Our computer isn't as awesome as you, so it doesn't always do the best job tagging posts. You should add/remove/edit the tags yourself, just to make sure they are right. A mix of generic and specific Tags, along with using LOTS of them will help you reach the right place -- be it an answer or an audience.</p>
+    </li>
+    <li>Start Helping Others!
+      <p>As soon as your question is posted, we'll show you other users and their posts where you can help them out. Why? It's a fact that when you help others at Help-QA.com, you are far more likely to get a response on your post.</p>
+    </li>
+    <li>Explore your Tags / Related Posts
+      <p>We'll see out related posts and also show you Wiki articles related to your post. Perhaps these can quickly get your question answered, check them out.</p>
+    </li>
+  </ol>
+
+  <h6>Tags?</h6>
+  <p>What is a Tag, you ask? Tags are user-grown categorizational schemes. Basically, you help categorize your post using whatever you feel is most appropriate. On most sites, you only have a few, limited categories to post into -- with Tags you can make up and post to as many Tags as are appropriate.</p>
+</div>

@@ -1,3 +1,21 @@
+.ctr-posts.act-new {
+  h6 { margin-top: 20px; }
+  ol {
+    font-size: 12px;
+    padding-left: 20px;
+
+    li {
+      font-weight: bold;
+
+      p {
+        font-size: 12px;
+        font-weight: normal;
+        margin-top: 0;
+      }
+    }
+  }
+}
+
 .ctr-posts.act-show {
 
   .body-wrapper > * {
