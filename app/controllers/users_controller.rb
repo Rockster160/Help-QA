@@ -26,8 +26,10 @@ class UsersController < ApplicationController
   def update
     @user = current_user
     @settings = @user.settings
+    sign_in_again = current_user == @user
 
     if Sherlock.update_by(current_user, @user, user_params)
+      sign_in(@user, bypass: true) if sign_in_again
       redirect_to account_settings_path, notice: "Success!"
     else
       render "settings/index"

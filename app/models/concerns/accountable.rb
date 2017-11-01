@@ -122,6 +122,7 @@ module Accountable
   end
 
   def reset_auth_token
+    return if authorization_token_changed?
     auth_token(force: true)
   end
 
