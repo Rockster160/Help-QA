@@ -14,6 +14,17 @@ module Helpqa
 
     config.autoload_paths += %W(#{config.root}/app/workers)
 
+    config.paperclip_defaults = {
+      storage:           :s3,
+      s3_region:         "us-east-2",
+      s3_host_name:      "s3.us-east-2.amazonaws.com",
+      preserve_files:    true,
+      bucket:            "help-qa",
+      path:              "#{Rails.env}/:class/:attachment/:id_partition/:style/:filename",
+      access_key_id:     ENV["HELPQA_AWS_ID"],
+      secret_access_key: ENV["HELPQA_AWS_ACCESS"]
+    }
+
     config.after_initialize do
       Rails.cache.write("users_chatting", [])
       ActionCable.server.broadcast("chat", {ping: true})

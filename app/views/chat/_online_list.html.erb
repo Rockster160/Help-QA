@@ -4,7 +4,7 @@
   <% username = "Guest (#{usernames.count('Guest')})" if is_guest %>
   <% avatar = User.by_username(username).try(:avatar) || image_path("status_offline.png") %>
   <div class="message-container">
-    <%= avatar(avatar, size: 20) %>
+    <%= avatar(avatar(size: 20), size: 20) %>
     <div class="body">
       <div class="username"><%= username %></div>
     </div>

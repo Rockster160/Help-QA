@@ -1,4 +1,19 @@
 <% meta_title "Avatar &bull; Help-QA.com" %>
+<h1>Update Avatar</h1>
+<div class="avatar-page-wrapper">
+  <div class="avatar-section">
+    <%= avatar(current_user.avatar, size: 200) %>
+  </div>
+  <div class="avatar-form">
+    <%= form_for current_user, url: avatar_account_path, method: :post do |f| %>
 
+      <p>For best results, upload a square 200x200 image. Avatar will automatically be cropped and resized.</p>
 
-<input type="text" class="autofillable-field">
+      <div class="form-field">
+        <%= f.file_field :avatar_image %>
+      </div>
+
+      <%= f.submit "Upload Avatar" %>
+    <% end %>
+  </div>
+</div>

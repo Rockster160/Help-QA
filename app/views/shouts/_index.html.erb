@@ -3,7 +3,7 @@
   <% shouter = shout.sent_from %>
   <div class="shout-container" id="shout-<%= shout.id %>">
     <div class="shout-author">
-      <%= avatar(shouter.avatar, size: 30) %>
+      <%= avatar(shouter.avatar(size: 30), size: 30) %>
       <div class="author-details">
         <div class="author-name">
           <a href="<%= user_shouts_path(shouter) %>"><%= shouter.username %></a>

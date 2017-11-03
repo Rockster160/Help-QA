@@ -24,7 +24,7 @@
   <% author = reply.author %>
   <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= hidden_by_default %> <%= 'deactivated' if author.deactivated? %>" id="reply-<%= reply.id %>" data-timestamp="<%= reply.created_at.to_i %>">
     <div class="reply-author">
-      <%= avatar(reply.avatar, size: 40) %>
+      <%= avatar(reply.avatar(size: 40), size: 40) %>
       <div class="reply-author-text">
         <div class="reply-author-info">
           <div class="reply-author-name">

@@ -51,7 +51,7 @@ Rails.application.routes.draw do
     get :confirm
     patch :confirm, action: :set_confirmation
     get :avatar
-    post :avatar, action: :update
+    post :avatar, action: :update_avatar
     get :notifications
 
     resources :subscriptions, only: [ :index, :destroy ]

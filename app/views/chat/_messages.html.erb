@@ -14,7 +14,7 @@
       <% end %>
     </div>
     <div class="timestamp"><div class="timestamp-wrapper"><%= message.created_at.strftime("%H:%M") %></div></div>
-    <%= avatar(message.author.avatar, size: 20) %>
+    <%= avatar(message.author.avatar(size: 20), size: 20) %>
     <div class="body">
       <div class="username"><%= message.author.username %></div>
       <%= markdown(only: [:bold, :italic, :strike, :code]) { message.body } %>

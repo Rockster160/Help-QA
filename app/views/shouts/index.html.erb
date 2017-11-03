@@ -29,7 +29,7 @@
     <div class="shout-users">
       <div class="title">Shouts From:</div>
       <% @shouts_from.each do |shouter| %>
-        <%= avatar(shouter.avatar, size: 65, href: user_path(shouter), title: shouter.username) %>
+        <%= avatar(shouter.avatar(size: 65), size: 65, href: user_path(shouter), title: shouter.username) %>
       <% end %>
     </div>
   </div>

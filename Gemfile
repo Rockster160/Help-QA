@@ -40,6 +40,8 @@ gem 'pg_search'
 gem 'slack-notifier'
 gem 'browser-timezone-rails'
 gem 'obscenity'
+gem 'aws-sdk'
+gem 'paperclip'
 
 group :development, :test do
   gem 'byebug', platform: :mri

@@ -97,8 +97,16 @@ module Accountable
     false  # Show "no gravatar" if the service is down or slow
   end
 
-  def avatar
-    avatar_url.presence || letter.presence || "status_offline.png"
+  def avatar(size: nil)
+    uploaded_url = if avatar_image_file_name.present?
+      render_style = case size
+      when  0..40  then :tiny
+      when 41..100 then :small
+      else              :original
+      end
+      avatar_image.url(render_style)
+    end
+    uploaded_url.presence || avatar_url.presence || letter.presence || "status_offline.png"
   end
 
   def to_param

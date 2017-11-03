@@ -58,7 +58,7 @@
         </div>
         <div class="friends-list">
           <% @user.friends.first(30).each do |friend| %>
-            <%= avatar(friend.avatar, size: 40, href: user_path(friend), title: friend.username) %>
+            <%= avatar(friend.avatar(size: 40), size: 40, href: user_path(friend), title: friend.username) %>
           <% end %>
         </div>
         <% if @user.aka.any? %>

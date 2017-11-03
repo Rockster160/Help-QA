@@ -22,7 +22,7 @@
     <h6>Users</h6>
     <div class="users">
       <% @users.limit(20).each do |user| %>
-        <%= avatar(user.avatar, { href: user_path(user), size: 60, border: "border-#{user.description}", title: user.username }) %>
+        <%= avatar(user.avatar(size: 60), { href: user_path(user), size: 60, border: "border-#{user.description}", title: user.username }) %>
       <% end %>
     </div>
     <p class="view-all">A few of the <%= number_with_delimiter(@users.count) %> users tagged <%= tags_together %></p>

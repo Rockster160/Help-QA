@@ -119,11 +119,11 @@ class Post < ApplicationRecord
     end
   end
 
-  def avatar
+  def avatar(size: nil)
     if posted_anonymously?
       anonicon_src(author.ip_address)
     else
-      author.avatar_url.presence || letter.presence || 'status_offline.png'
+      author.avatar(size: size)
     end
   end
 

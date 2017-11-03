@@ -17,6 +17,14 @@ class AccountsController < ApplicationController
     end
   end
 
+  def update_avatar
+    if current_user.update(user_params)
+      render :avatar
+    else
+      redirect_to avatar_account_path, notice: "Successfully updated avatar."
+    end
+  end
+
   private
 
   def confirmation_error(msg)
@@ -29,7 +37,8 @@ class AccountsController < ApplicationController
       :current_password,
       :password,
       :password_confirmation,
-      :confirmation_token
+      :confirmation_token,
+      :avatar_image
     )
   end
 

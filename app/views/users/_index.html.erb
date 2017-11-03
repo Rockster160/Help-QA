@@ -1,6 +1,6 @@
 <% users.each do |user| %>
   <a href="<%= user_path(user) %>" class="post-container">
-    <%= avatar(user.avatar, size: 50) %>
+    <%= avatar(user.avatar(size: 50), size: 50) %>
     <div class="post-description">
       <div class="title">
         <%= user.username %>

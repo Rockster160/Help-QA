@@ -11,7 +11,7 @@
       <% end %>
     </div>
     <a href="<%= post_path(post) %>" class="post-container">
-      <%= avatar(post.avatar, size: 50) %>
+      <%= avatar(post.avatar(size: 50), size: 50) %>
       <div class="post-description">
         <div class="title">
           <%= post.title %>

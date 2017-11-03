@@ -1,0 +1,13 @@
+.avatar-page-wrapper {
+  @include split-page(200px);
+
+  .avatar-section {
+  }
+  .avatar-form {
+    padding-left: 30px;
+    
+    input[type=submit] {
+      margin-top: 30px;
+    }
+  }
+}

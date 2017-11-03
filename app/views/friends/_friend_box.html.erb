@@ -6,7 +6,7 @@
   end
 %>
 <div class="friend-container">
-  <%= avatar(user.avatar, { href: user_path(user), size: 60, status: user.online? ? 'online' : 'offline', title: last_online }) %>
+  <%= avatar(user.avatar(size: 60), { href: user_path(user), size: 60, status: user.online? ? 'online' : 'offline', title: last_online }) %>
   <div class="username">
     <% if current_user.added?(user) %>
       <%= hover_icon("user-rem", "Remove Friend", href: account_friend_path(user), method: :delete) %>
