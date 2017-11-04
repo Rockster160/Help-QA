@@ -246,12 +246,12 @@ $(document).ready(function() {
     }
   })
 
-  $(document).on("mouseenter", ".searchable-container", function() {
+  $(document).on("mouseenter touchstart", ".searchable-container", function() {
     selectOption(this)
-  }).on("mousedown touchstart", ".searchable-container", function(evt) {
+  }).on("mousedown", ".searchable-container", function(evt) {
     evt.preventDefault()
     return false
-  }).on("mouseup touchend", ".searchable-container", function() {
+  }).on("mouseup touchend tap", ".searchable-container", function() {
     confirmOption()
   })
 
