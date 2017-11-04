@@ -17,7 +17,7 @@ class EmailNotificationsWorker
       next if recent_notices.any?
 
       subscription.update(last_notified_at: DateTime.current)
-      UserMailer.notifications(user, notices).deliver_later
+      UserMailer.notifications(user).deliver_later
     end
   end
 end

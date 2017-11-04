@@ -12,6 +12,10 @@ module Accountable
     after_create :set_gravatar_if_exists, :create_associated_objects
     after_commit :reset_cache
     after_update :reset_auth_token, if: :encrypted_password_changed?
+
+    # Confirmable and reconfirmable don't work together well. Hack to prevent double confirm emails
+    before_save { skip_confirmation! }
+    after_commit { send_confirmation_instructions if created_at == updated_at }
   end
 
   def online?
