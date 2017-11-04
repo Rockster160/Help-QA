@@ -48,7 +48,7 @@ class AccountsController < ApplicationController
   end
 
   def athenticate_confirmation_token!
-    return redirect_to root_path, alert: "Your account is already verified." if user_signed_in? && current_user.confirmed?
+    return redirect_to root_path, alert: "Your account is already verified." if user_signed_in? && current_user.confirmed? && current_user.encrypted_password.present?
     confirmation_token = params[:confirmation_token] || params.dig(:user, :confirmation_token)
     return redirect_to new_user_session_path, alert: "Invalid token. Please use the link we sent to your email to confirm your account." unless confirmation_token.present?
     @user = User.find_by(confirmation_token: confirmation_token)
