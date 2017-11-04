@@ -182,14 +182,14 @@ class Post < ApplicationRecord
   end
 
   def debounce_posts
-    return if author.posts.where("created_at > ?", 5.minutes.ago).none?
+    return if !new_record? || author.posts.where("created_at > ?", 5.minutes.ago).none?
 
-    errors.add(:base, "Slow down there! You're posting too fast.")
+    errors.add(:base, "Slow down there! You're posting too fast. You can only make 1 new post every 5 minutes.")
   end
 
   def body_has_alpha_characters
     unless body.present? && body.gsub(/[^a-z]/, "").length > 10
-      errors.add(:base, "This post isn't long enough!")
+      errors.add(:base, "This post isn't long enough! Try adding some more detail.")
     end
   end
 

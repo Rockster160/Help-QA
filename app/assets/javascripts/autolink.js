@@ -23,7 +23,7 @@ $(".ctr-posts.act-show, .ctr-users.act-show").ready(function() {
 
   setTimeout(function() {
     setInterval(autolinkTick, 500)
-  }, 2500)
+  }, 1000)
 })
 
 var url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|http\:\/\/localhost:[0-9]{4})/

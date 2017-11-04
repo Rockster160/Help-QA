@@ -92,9 +92,9 @@ class Reply < ApplicationRecord
   end
 
   def debounce_replies
-    return if author.replies.where("created_at > ?", 10.seconds.ago).none?
+    return if author.replies.where("created_at > ?", 5.seconds.ago).none?
 
-    errors.add(:base, "Slow down there! You're posting too fast.")
+    errors.add(:base, "Slow down there! You're posting too fast. You can only reply once every 5 seconds.")
   end
 
   def valid_text
