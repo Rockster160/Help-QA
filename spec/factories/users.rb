@@ -38,7 +38,7 @@
 #
 
 FactoryGirl.define do
-  factory :user, class: User do
+  factory :user do
     email
     password
     username
