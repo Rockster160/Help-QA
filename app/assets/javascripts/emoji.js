@@ -249,10 +249,10 @@ $(document).ready(function() {
 
   $(document).on("mouseenter", ".searchable-container", function() {
     selectOption(this)
-  }).on("mousedown", ".searchable-container", function(evt) {
+  }).on("mousedown touchstart", ".searchable-container", function(evt) {
     evt.preventDefault()
     return false
-  }).on("mouseup", ".searchable-container", function() {
+  }).on("mouseup touchend", ".searchable-container", function() {
     confirmOption()
   })
 
