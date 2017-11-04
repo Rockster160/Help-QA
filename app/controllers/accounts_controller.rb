@@ -8,7 +8,10 @@ class AccountsController < ApplicationController
   end
 
   def set_confirmation
-    if @user.confirm_with_password(user_params)
+    if @user.uncomfirmed? && @user.confirm_with_password(user_params)
+      bypass_sign_in(@user)
+      redirect_to edit_account_path, notice: "Thanks for verifying your email!"
+    elsif @user.confirmed? && @user.update_with_password(user_params)
       bypass_sign_in(@user)
       redirect_to edit_account_path, notice: "Thanks for verifying your email!"
     else
