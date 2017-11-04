@@ -5,7 +5,6 @@ $(document).ready(function() {
     if (search_text.length == 0) {
       loader.find(".searchable-container").removeClass("hidden")
     }
-    console.log(search_text);
 
     loader.find(".searchable-container").each(function() {
       var names = $(this).attr("data-searchable-by").toLowerCase().split(" ")
