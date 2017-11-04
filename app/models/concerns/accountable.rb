@@ -43,6 +43,8 @@ module Accountable
     steps
   end
 
+  def unconfirmed?; !confirmed?; end
+  
   def send_confirmation_instructions
     # Stubbing this method so Devise doesn't send it's own emails
   end
