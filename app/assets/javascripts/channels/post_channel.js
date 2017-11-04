@@ -26,7 +26,6 @@ $(".ctr-index.act-index").ready(function() {
         duration: 1000,
         complete: function() {
           $(".posts-container .post-container").slice(10).hide("fade", { direction: "down" }, 1000, function() {
-            console.log("dead");
             $(this).remove()
             $(".posts-container").css({"max-height": ""})
           })
