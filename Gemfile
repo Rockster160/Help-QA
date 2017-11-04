@@ -42,6 +42,7 @@ gem 'browser-timezone-rails'
 gem 'obscenity'
 gem 'aws-sdk'
 gem 'paperclip'
+gem 'exception_notification'
 
 group :development, :test do
   gem 'byebug', platform: :mri

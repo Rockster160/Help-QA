@@ -100,3 +100,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end
+
+require "#{Rails.root}/lib/custom_notifier"
+Rails.application.config.middleware.use ExceptionNotification::Rack, custom: {}
