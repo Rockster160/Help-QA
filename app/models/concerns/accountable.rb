@@ -34,7 +34,7 @@ module Accountable
     steps = {
       "Confirm account (Verify email and add password)" => verified? && encrypted_password.present?,
       "Update Username" => has_updated_username?,
-      "Upload Avatar" => avatar_url.present?,
+      "Upload Avatar" => avatar_image_file_name.present? || avatar_url.present?,
       "Add Bio" => profile.about.present?,
       "Make your first post" => posts.count.positive?,
       "Help somebody (Comment on a post)" => replies.joins(:post).where.not(posts: { author_id: id }).count.positive?
