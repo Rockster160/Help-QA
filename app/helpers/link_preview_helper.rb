@@ -47,7 +47,7 @@ module LinkPreviewHelper
       response_data = {
         title: meta_data[:title].presence || meta_data[:url],
         original_url: raw_url,
-        url: meta_data[:url],
+        url: meta_data[:url].presence || url,
         inline: meta_data[:video_url].present? || meta_data[:only_image],
         html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
       }
