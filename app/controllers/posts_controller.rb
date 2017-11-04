@@ -90,6 +90,7 @@ class PostsController < ApplicationController
     if Sherlock.update_by(current_user, @post, post_params)
       redirect_to post_path(@post)
     else
+      flash.now[:alert] = @post.errors.full_messages.first
       render :edit
     end
   end
@@ -110,7 +111,7 @@ class PostsController < ApplicationController
     if @post.persisted?
       redirect_to post_path(@post), notice: "Successfully created post! While you're waiting for replies, consider viewing other posts and helping others."
     else
-      redirect_to root_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously], email: user.email), alert: @post.errors.full_messages.first || "Something went wrong creating your post. Please make sure our post consists of words."
+      redirect_to new_post_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously], email: user.email), alert: @post.errors.full_messages.first || "Something went wrong creating your post. Please make sure our post consists of words."
     end
   end
 

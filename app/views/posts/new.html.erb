@@ -6,7 +6,7 @@
   <%= form_for @post do |f| %>
     <div class="text-area-wrapper">
       <%= f.label :body, "Start a new post" %>
-      <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
+      <%= f.text_area :body, rows: 6, class: "autofillable-field", value: params[:post_text].presence %>
     </div>
     <div class="post-controls">
       <% unless user_signed_in? %>

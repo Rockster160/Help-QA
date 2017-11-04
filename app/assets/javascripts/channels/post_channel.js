@@ -25,10 +25,15 @@ $(".ctr-index.act-index").ready(function() {
       }, {
         duration: 1000,
         complete: function() {
-          $(".posts-container .post-container").slice(10).hide("fade", { direction: "down" }, 1000, function() {
-            $(this).remove()
+          var posts = $(".posts-container .post-container").slice(10)
+          if (posts.length > 0) {
+            posts.hide("fade", { direction: "down" }, 1000, function() {
+              $(this).remove()
+              $(".posts-container").css({"max-height": ""})
+            })
+          } else {
             $(".posts-container").css({"max-height": ""})
-          })
+          }
         }
       })
     })
