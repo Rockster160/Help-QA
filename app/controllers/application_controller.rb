@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
 
   def deactivate_user
     if user_signed_in? && current_user.deactivated?
-      current_user.send_confirmation_instructions
+      current_user.send_confirmation_email
       sign_out :user
       flash.now[:notice] = nil
       flash.now[:alert] = "Your account has been deactivated! Please click the link we sent to your email address to activate your account."
@@ -100,6 +100,7 @@ class ApplicationController < ActionController::Base
     if params[:auth].present?
       user = User.find_by(authorization_token: params[:auth])
       if user.present?
+        user.confirm unless user.confirmed?
         sign_out :user
         sign_in(user)
       end

@@ -9,13 +9,14 @@ class Devise::User::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
   def create
     if params.dig(:user, :password).blank?
-      user = User.find_for_database_authentication(user_params)
-      if user.nil?
-        sleep 0.2
-      elsif user.deactivated?
-        user.send_confirmation_instructions
+      @user = User.find_for_database_authentication(user_params)
+      if @user.nil?
+        @user = User.create(email: user_params[:login])
+        sign_in(@user) if @user.persisted?
+      elsif @user.unconfirmed? || @user.deactivated?
+        @user.send_confirmation_email
       else
-        user.send_reset_password_instructions
+        @user.send_reset_password_instructions
       end
       redirect_to root_path, notice: "You should receive instructions to your email on file assisting you in logging in."
     else

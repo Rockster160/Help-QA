@@ -9,13 +9,9 @@ module Accountable
     validate :username_meets_requirements
     validate :at_least_13_years_of_age
 
-    after_create :set_gravatar_if_exists, :create_associated_objects
+    after_create :set_gravatar_if_exists, :create_associated_objects, :send_confirmation_email
     after_commit :reset_cache
     after_update :reset_auth_token, if: :encrypted_password_changed?
-
-    # Confirmable and reconfirmable don't work together well. Hack to prevent double confirm emails
-    before_save { skip_confirmation! }
-    after_commit { send_confirmation_instructions if created_at == updated_at }
   end
 
   def online?
@@ -45,6 +41,22 @@ module Accountable
     }
     update(completed_signup: true) if !completed_signup? && steps.values.all?
     steps
+  end
+
+  def send_confirmation_instructions
+    # Stubbing this method so Devise doesn't send it's own emails
+  end
+
+  def send_confirmation_email
+    new_user = created_at == updated_at
+    recently_emailed = confirmation_sent_at.present? && confirmation_sent_at < 10.seconds.ago
+    return unless new_user || recently_emailed
+    delay.deliver_confirmation_email
+  end
+
+  def deliver_confirmation_email
+    update(confirmation_sent_at: DateTime.current)
+    UserMailer.confirmation_instructions(self).deliver_now
   end
 
   def ip_address

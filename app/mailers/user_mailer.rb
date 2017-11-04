@@ -11,4 +11,14 @@ class UserMailer < ApplicationMailer
       subject: "Recent Notices from Help-QA"
     })
   end
+
+  def confirmation_instructions(user)
+    @user = user
+
+    mail({
+      to: user.email,
+      subject: "Confirmation Instructions",
+      template_name: user.pending_reconfirmation? ? 'reconfirmation_instructions' : 'confirmation_instructions'
+    })
+  end
 end

@@ -1,6 +1,11 @@
 class AccountsController < ApplicationController
   before_action :authenticate_user, except: [ :confirm, :set_confirmation ]
   before_action :athenticate_confirmation_token!, only: [ :confirm, :set_confirmation ]
+  skip_before_action :auto_sign_in, only: [:confirm]
+
+  def confirm
+    sign_out :user
+  end
 
   def set_confirmation
     if @user.confirm_with_password(user_params)

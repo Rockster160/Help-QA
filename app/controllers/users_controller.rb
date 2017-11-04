@@ -29,7 +29,8 @@ class UsersController < ApplicationController
     sign_in_again = current_user == @user
 
     if Sherlock.update_by(current_user, @user, user_params)
-      sign_in(@user, bypass: true) if sign_in_again
+      bypass_sign_in(@user) if sign_in_again
+      @user.delay.deliver_confirmation_email if user_params[:email].present?
       redirect_to account_settings_path, notice: "Success!"
     else
       render "settings/index"
