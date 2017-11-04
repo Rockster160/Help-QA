@@ -9,7 +9,7 @@ module Accountable
     validate :username_meets_requirements
     validate :at_least_13_years_of_age
 
-    after_create :set_gravatar_if_exists, :create_associated_objects, :send_confirmation_email
+    after_create :set_gravatar_if_exists, :create_associated_objects, :send_confirmation_email, :ping_slack
     after_commit :reset_cache
     after_update :reset_auth_token, if: :encrypted_password_changed?
   end
@@ -171,6 +171,10 @@ module Accountable
       break try_username if User.where(username: try_username).none?
     end
     username.try(:squish!)
+  end
+
+  def ping_slack
+    SlackNotifier.notify("New User: #{username}")
   end
 
   def set_slug
