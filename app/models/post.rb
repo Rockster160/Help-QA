@@ -45,7 +45,7 @@ class Post < ApplicationRecord
   scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :by_tags, ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
 
-  after_create :auto_add_tags, :generate_poll, :alert_helpbot
+  after_create :auto_add_tags, :generate_poll, :alert_helpbot, :subscribe_author
   after_commit :broadcast_creation
   defaults reply_count: 0
   defaults posted_anonymously: false
@@ -203,6 +203,10 @@ class Post < ApplicationRecord
       new_tag = Tag.find_or_create_by(tag_name: new_tag_str.to_s.downcase)
       post_tags.create(tag: new_tag)
     end
+  end
+
+  def subscribe_author
+    subscriptions.create(user_id: author_id)
   end
 
   def short_title
