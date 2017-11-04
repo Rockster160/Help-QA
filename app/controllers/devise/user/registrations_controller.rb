@@ -14,7 +14,7 @@ class Devise::User::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/edit
   def edit
-    redirect_to 
+    redirect_to account_settings_path
   end
 
   # PUT /resource
