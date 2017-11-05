@@ -57,6 +57,7 @@ module DeviseOverrides
 
   def confirm
     assign_attributes(verified_at: DateTime.current)
+    save if confirmed?
     super
   end
 
