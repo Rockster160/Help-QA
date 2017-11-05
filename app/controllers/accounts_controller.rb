@@ -1,21 +1,23 @@
 class AccountsController < ApplicationController
   before_action :authenticate_user, except: [ :confirm, :set_confirmation ]
   before_action :athenticate_confirmation_token!, only: [ :confirm, :set_confirmation ]
-  skip_before_action :auto_sign_in, only: [:confirm]
-
-  def confirm
-    sign_out :user
-  end
 
   def set_confirmation
-    if @user.unconfirmed? && @user.confirm_with_password(user_params)
-      bypass_sign_in(@user)
-      redirect_to edit_account_path, notice: "Thanks for verifying your email!"
-    elsif @user.confirmed? && @user.update_with_password(user_params)
-      bypass_sign_in(@user)
-      redirect_to edit_account_path, notice: "Thanks for verifying your email!"
-    else
-      render :confirm
+    if @user.confirmed?
+      if @user.confirm_with_password(user_params)
+        bypass_sign_in(@user)
+        redirect_to edit_account_path, notice: "Thanks for verifying your email!"
+      else
+        render :confirm
+      end
+    elsif @user.confirmed?
+      if password_matched_confirmation? && @user.update(user_params)
+        bypass_sign_in(@user)
+        redirect_to edit_account_path, notice: "Thanks for verifying your email!"
+      else
+        @user.errors.add(:password_confirmation, "must match password.") unless password_matched_confirmation?
+        render :confirm
+      end
     end
   end
 
@@ -34,6 +36,11 @@ class AccountsController < ApplicationController
   end
 
   private
+
+  def password_matched_confirmation?
+    return false unless user_params[:password].present?
+    user_params[:password] == user_params[:password_confirmation].present?
+  end
 
   def confirmation_error(msg)
     flash.now[:alert] = msg
