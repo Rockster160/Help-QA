@@ -39,7 +39,7 @@ class AccountsController < ApplicationController
 
   def password_matched_confirmation?
     return false unless user_params[:password].present?
-    user_params[:password] == user_params[:password_confirmation].present?
+    user_params[:password] == user_params[:password_confirmation]
   end
 
   def confirmation_error(msg)
