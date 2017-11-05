@@ -10,9 +10,9 @@ class Devise::User::ConfirmationsController < Devise::ConfirmationsController
   # end
 
   # GET /resource/confirmation?confirmation_token=abcdef
-  # def show
-  #   super
-  # end
+  def show
+    redirect_to confirm_account_path
+  end
 
   # protected
 
