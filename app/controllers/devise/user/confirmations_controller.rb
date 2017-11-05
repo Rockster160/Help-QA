@@ -11,7 +11,7 @@ class Devise::User::ConfirmationsController < Devise::ConfirmationsController
 
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
-    redirect_to confirm_account_path
+    redirect_to confirm_account_path(confirmation_token: params[:confirmation_token])
   end
 
   # protected
