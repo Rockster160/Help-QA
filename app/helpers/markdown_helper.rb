@@ -7,13 +7,14 @@ module MarkdownHelper
     end
   end
 
-  def markdown(only: nil, except: [], render_html: false, poll_post: nil, posted_by_user: nil, &block)
+  def markdown(only: nil, except: [], with: [], render_html: false, poll_post: nil, posted_by_user: nil, &block)
     only = [only].flatten
     except = [except].flatten
 
-    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll]
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews]
     default_markdown_options = only if only.any?
     default_markdown_options -= except
+    default_markdown_options += with
     @markdown_options = Hash[default_markdown_options.product([true])]
 
     user = posted_by_user
@@ -30,6 +31,7 @@ module MarkdownHelper
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
     text = censor_language(text)
+    text = link_previews(text) if @markdown_options[:link_previews]
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -150,6 +152,29 @@ module MarkdownHelper
     /(\W|\*|\`|\_|\~)#{regex_safe_character}(#{not_space}.*?#{not_space}?)#{regex_safe_character}/m
   end
 
+  def link_previews(text)
+    url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)|http\:\/\/localhost:[0-9]{4})/
+    add_to_text = ""
+    text = text.gsub(url_regex) do |found_match|
+      pre_char = found_match[0]
+      link = found_match[1..-1]
+      next link if pre_char == "\\"
+      preview_hash = generate_link_preview_for_url(link)
+
+      if preview_hash.nil?
+        "#{pre_char}<span data-load-link>#{link}</span>"
+      else
+        if @markdown_options[:inline_previews] || preview_hash[:inline]
+          "#{pre_char}</p>#{preview_hash[:html]}<p>"
+        else
+          add_to_text += preview_hash[:html]
+          "#{pre_char}<a rel=\"nofollow\" href=\"#{preview_hash[:url]}\">[#{preview_hash[:title]}]</a>"
+        end
+      end
+    end
+    "#{text}#{add_to_text}"
+  end
+
   def generate_unique_token(text)
     loop do
       new_token = "quotetoken" + ('a'..'z').to_a.sample(10).join("")
@@ -179,6 +204,8 @@ module MarkdownHelper
   end
 
   def unwrap_quotes(text, depth: 0, quotes:, max_nest_level:)
+    # TODO: Seems to be a bug here- when there are too many nested quotes and text before and after quote.
+    #   End quote seems to be improperly removed.
     text.gsub(/quotetoken[a-z]{10}/).each do |found_token|
       quote_to_unwrap = quotes.select { |(token, quote)| token == found_token }.first[1]
       if depth < max_nest_level

@@ -21,9 +21,8 @@ $(".ctr-posts.act-show, .ctr-users.act-show").ready(function() {
     $(document).ajaxComplete(unregisterJqxhr);
   }
 
-  setTimeout(function() {
-    setInterval(autolinkTick, 500)
-  }, 1000)
+  autolinkTick()
+  setInterval(autolinkTick, 500)
 })
 
 var url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|http\:\/\/localhost:[0-9]{4})/g
@@ -110,34 +109,7 @@ loadAllLinks = function() {
   })
 }
 
-parseLinks = function() {
-  $(".reply-content, .post-container .body, .bio").not("[data-parsed-links]").each(function() {
-    $(this).attr("data-parsed-links", "")
-    var new_body = $(this).html()
-
-    new_body = new_body.replace(/\<a.*?\<\/a\>/, function(found) {
-      return found // This does nothing?
-    })
-
-    new_body = new_body.replace(/\&amp\;/, "&") // Hack because for some reason JS is picking up the escaped codes
-
-    new_body = new_body.replace(url_regex, function(found) {
-      if (last_catch_url_regex.test(found.trim())) { return found }
-      var pre_char = found.charAt(0)
-      found = found.substr(1)
-
-      if (pre_char === "\"") { return pre_char + found }
-      if (pre_char === "\\") { return found }
-
-      return pre_char + ' <span data-load-link>' + found + "</span>"
-    })
-
-    $(this).html(new_body)
-  })
-}
-
 autolinkTick = function() {
-  parseLinks()
   loadAllLinks()
   loadImages()
 }
