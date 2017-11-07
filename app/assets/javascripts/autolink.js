@@ -83,10 +83,10 @@ loadAllLinks = function() {
 
   if ($links.length == 0) { return }
 
-  $links.removeAttr("data-load-link").attr("data-loading-preview", "")
 
   $links.each(function() {
-    var $link = $(this), link_href = $link.html()
+    var $link = $(this), link_href = $link.attr("data-load-link")
+    $link.removeAttr("data-load-link").attr("data-loading-preview", "")
 
     if (email_regex.test(link_href)) { return }
     var max_link_length = 60

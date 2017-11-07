@@ -11,7 +11,7 @@ module MarkdownHelper
     only = [only].flatten
     except = [except].flatten
 
-    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews]
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews, :link_titleize]
     default_markdown_options = only if only.any?
     default_markdown_options -= except
     default_markdown_options += with
@@ -31,7 +31,7 @@ module MarkdownHelper
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
     text = censor_language(text)
-    text = link_previews(text) if @markdown_options[:link_previews]
+    text = link_previews(text)
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -155,6 +155,8 @@ module MarkdownHelper
   def link_previews(text)
     url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)|http\:\/\/localhost:[0-9]{4})/
     add_to_text = ""
+
+
     text = text.gsub(url_regex) do |found_match|
       pre_char = found_match[0]
       link = found_match[1..-1]
@@ -162,14 +164,23 @@ module MarkdownHelper
       preview_hash = generate_link_preview_for_url(link)
 
       if preview_hash.nil?
-        "#{pre_char}<span data-load-link>#{link}</span>"
-      else
+        if @markdown_options[:link_previews]
+          # TODO: Handle the data value in JS instead of grabbing the inner text
+          "#{pre_char}<span data-load-link=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</span>"
+        elsif @markdown_options[:link_titleize]
+          "#{pre_char}<a rel=\"nofollow\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
+        else
+          "#{found_match}"
+        end
+      elsif @markdown_options[:link_previews]
         if @markdown_options[:inline_previews] || preview_hash[:inline]
           "#{pre_char}</p>#{preview_hash[:html]}<p>"
         else
           add_to_text += preview_hash[:html]
           "#{pre_char}<a rel=\"nofollow\" href=\"#{preview_hash[:url]}\">[#{preview_hash[:title]}]</a>"
         end
+      elsif @markdown_options[:link_titleize]
+        "#{pre_char}<a rel=\"nofollow\" href=\"#{preview_hash[:url]}\">[#{preview_hash[:title]}]</a>"
       end
     end
     "#{text}#{add_to_text}"

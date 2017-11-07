@@ -35,6 +35,7 @@
 #  avatar_image_content_type :string
 #  avatar_image_file_size    :integer
 #  avatar_image_updated_at   :datetime
+#  super_ip                  :inet
 #
 
 class User < ApplicationRecord
@@ -62,9 +63,9 @@ class User < ApplicationRecord
   scope :search_ip,            ->(ip) {
     begin
       IPAddr.new(ip)
-      where("users.current_sign_in_ip = :ip OR users.last_sign_in_ip = :ip", ip: ip)
+      where("users.super_ip = :ip OR users.super_ip IS NULL AND (users.current_sign_in_ip = :ip OR users.last_sign_in_ip = :ip)", ip: ip)
     rescue IPAddr::InvalidAddressError
-      all
+      none
     end
   }
 
@@ -78,6 +79,9 @@ class User < ApplicationRecord
   def self.by_username(username)
     find_by("users.slug = ?", username.parameterize)
   end
+
+  def current_sign_in_ip; super_ip || super; end
+  def last_sign_in_ip; super_ip || super; end
 
   def helpbot?
     return false unless persisted?

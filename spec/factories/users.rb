@@ -35,6 +35,7 @@
 #  avatar_image_content_type :string
 #  avatar_image_file_size    :integer
 #  avatar_image_updated_at   :datetime
+#  super_ip                  :inet
 #
 
 FactoryGirl.define do

@@ -46,5 +46,7 @@
 
     <%= paginate @users, window: window_sizes.values.max, outer_window: 1, params_on_first_page: true, params: params %>
     <%= render partial: "index", locals: { users: @users } %>
+    <%= paginate @users, window: window_sizes.values.max, outer_window: 1, params_on_first_page: true, params: params %>
+    <p></p>
   </div>
 </div>
