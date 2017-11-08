@@ -11,7 +11,7 @@ class AccountsController < ApplicationController
         @user.errors.add(:password_confirmation, "must match password.") unless password_matched_confirmation?
         render :confirm
       end
-    elsif @user.confirmed?
+    else
       if @user.confirm_with_password(user_params)
         bypass_sign_in(@user)
         redirect_to edit_account_path, notice: "Thanks for verifying your email!"
