@@ -44,7 +44,7 @@ module Accountable
   end
 
   def unconfirmed?; !confirmed?; end
-  
+
   def send_confirmation_instructions
     # Stubbing this method so Devise doesn't send it's own emails
   end
@@ -52,8 +52,10 @@ module Accountable
   def send_confirmation_email
     new_user = created_at == updated_at
     recently_emailed = confirmation_sent_at.present? && confirmation_sent_at < 10.seconds.ago
-    return unless new_user || recently_emailed
-    delay.deliver_confirmation_email
+
+    if new_user || !recently_emailed
+      delay.deliver_confirmation_email
+    end
   end
 
   def deliver_confirmation_email
