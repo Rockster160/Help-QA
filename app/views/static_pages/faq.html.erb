@@ -217,7 +217,7 @@
       <h4>Emoji</h4>
       <p>Emoji's can be searched by typing a colon <code>:</code> and the emoji name. An autocomplete field will pop up that you can use to select an emoji.</p>
       <p>View <a href="/emoji">this page</a> for a list of supported emoji.</p>
-      <%= markdown(render_html: true) { File.read("lib/assets/raw_markdown.html").gsub("{{quote-icon}}", hover_icon("quote", "Quote this reply", tag: "i")) } %>
+      <%= markdown(render_html: true) { File.read("lib/assets/raw_markdown.html") }.gsub("{{quote-icon}}", hover_icon("quote", "Quote this reply", tag: "i")).html_safe %>
     </div>
 
     <div id="sect22">
