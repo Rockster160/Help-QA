@@ -49,15 +49,13 @@ module Accountable
     # Stubbing this method so Devise doesn't send it's own emails
   end
 
-  def send_confirmation_email
-    return if recently_emailed
-
-    delay.deliver_confirmation_email
-  end
-
   def deliver_initial_confirmation_email
     return unless created_at == updated_at
-    
+
+    send_confirmation_email
+  end
+
+  def send_confirmation_email
     delay.deliver_confirmation_email
   end
 
