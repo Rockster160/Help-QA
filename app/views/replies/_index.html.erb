@@ -15,11 +15,11 @@
   <% if reply.has_questionable_text? %>
     <div class="pending-reply" data-timestamp="<%= reply.created_at.to_i %>">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
     <% hidden_by_default = "attached pending" %>
-    <% next unless current_user.try(:mod?) %>
+    <% next unless current_mod? %>
   <% elsif reply.removed? || reply.author.banned? || (reply.marked_as_adult? && !current_user&.can_view?(reply)) %>
     <div class="pending-reply removed" data-timestamp="<%= reply.created_at.to_i %>">This reply has been removed.</div>
     <% hidden_by_default = "attached removed" %>
-    <% next unless current_user.try(:mod?) %>
+    <% next unless current_mod? %>
   <% end %>
   <% author = reply.author %>
   <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= hidden_by_default %> <%= 'deactivated' if author.deactivated? %>" id="reply-<%= reply.id %>" data-timestamp="<%= reply.created_at.to_i %>">
@@ -30,7 +30,7 @@
           <div class="reply-author-name">
             <%= hover_icon("vcard", "Original Poster") if reply.same_author_as_post? %>
             <% if reply.posted_anonymously? %>
-              <% if current_user.try(:mod?) %>
+              <% if current_mod? %>
                 <a href="<%= user_path(reply.author) %>"><span class="reply-username">Anonymous*</span></a>
               <% else %>
                 <span class="reply-username">Anonymous</span>
@@ -51,7 +51,7 @@
         </div>
       </div>
       <div class="reply-options">
-        <% if current_user.try(:mod?) %>
+        <% if current_mod? %>
           <% if reply.marked_as_adult? %>
             <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark reply as Safe">👶🏻</i></a>
           <% else %>

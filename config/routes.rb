@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
   end
+  delete "shout/:id" => "shouts#destroy", as: :shout
 
   require 'sidekiq/web'
   authenticate :user, ->(u) { u.admin? } do

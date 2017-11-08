@@ -4,7 +4,7 @@
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
       <% options = {size: 200} %>
-      <% options.merge!(href: user_path(@post.author)) if current_user.try(:mod?) %>
+      <% options.merge!(href: user_path(@post.author)) if current_mod? %>
       <%= avatar(@post.avatar, options) %>
       <span class="anonymous">This post left anonymously</span>
     <% else %>
@@ -30,7 +30,7 @@
       <a href="#reply_body" class="underline">Leave a reply</a> |
       <a href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
 
-      <% if current_user.try(:mod?) %>
+      <% if current_mod? %>
         <% if @post.nsfw? %>
           | <a href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark post as Safe">👶🏻</i></a>
         <% else %>

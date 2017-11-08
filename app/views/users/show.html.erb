@@ -9,7 +9,7 @@
     <div class="username"><%= @user.username %></div>
     <%= render partial: "users/detail_icons", locals: { user: @user } %>
   </div>
-  <% if current_user.try(:mod?) %>
+  <% if current_mod? %>
     <ul class="moddable">
       <li>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></li>
       <li>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></li>

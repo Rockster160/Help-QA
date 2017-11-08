@@ -2,7 +2,7 @@ class ShoutsController < ApplicationController
 
   def index
     @user = User.find(params[:user_id])
-    @shouts = @user.shouts_to.not_banned.order(created_at: :desc).first(50)
+    @shouts = @user.shouts_to.not_removed.not_banned.order(created_at: :desc).first(50)
     @shouts_from = User.not_banned.joins(:shouts_from)
       .where(shouts: { sent_to_id: @user.id })
       .group("users.id")
@@ -17,7 +17,7 @@ class ShoutsController < ApplicationController
   def shouttrail
     @user = User.find(params[:user_id])
     @other_user = User.find(params[:other_user_id])
-    @user.shouts_to.not_banned.where(sent_from_id: @other_user.id)
+    @user.shouts_to.not_removed.not_banned.where(sent_from_id: @other_user.id)
     @shouts = Shout.between(@user, @other_user).order(created_at: :desc).first(50)
 
     if @user == current_user
@@ -32,6 +32,12 @@ class ShoutsController < ApplicationController
     @shout = @user.shouts_to.create(body: params[:shout][:body], sent_from_id: current_user.id)
 
     redirect_to user_shouttrail_path(current_user, @user)
+  end
+
+  def destroy
+    shout = Shout.find(params[:id])
+    shout.update(removed_at: DateTime.current)
+    redirect_back fallback_location: user_shouts_path(shout.sent_to)
   end
 
 end

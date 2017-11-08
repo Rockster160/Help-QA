@@ -7,6 +7,10 @@ module ApplicationHelper
     current_user.try(:settings).try(:default_anonymous?)
   end
 
+  def current_mod?
+    current_user.try(:mod?)
+  end
+
   def errors(resource, error_messages=nil, title: nil)
     if resource.is_a?(String)
       resource_class = resource

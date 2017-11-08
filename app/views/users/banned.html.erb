@@ -1,4 +1,4 @@
-<% if current_user.try(:mod?) %>
+<% if current_mod? %>
   <li>Unban User: <a href="<%= moderate_user_path(@user, ban: :none) %>" data-method="post">Unban</a></li>
   <li>Ban IP: <a href="<%= moderate_user_path(@user, ban: :ip) %>" data-method="post">Ban IP Address</a></li>
   <% if @user.perma_banned? %>

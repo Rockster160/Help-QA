@@ -31,7 +31,7 @@ class PostsController < ApplicationController
 
   def mod
     post = Post.find(params[:post_id])
-    return redirect_to post_path(post) unless current_user.try(:mod?)
+    return redirect_to post_path(post) unless current_mod?
 
     modded_attrs = {}
     modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"

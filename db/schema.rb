@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107165632) do
+ActiveRecord::Schema.define(version: 20171108025950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20171107165632) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.datetime "read_at"
+    t.datetime "removed_at"
     t.index ["sent_from_id"], name: "index_shouts_on_sent_from_id", using: :btree
     t.index ["sent_to_id"], name: "index_shouts_on_sent_to_id", using: :btree
   end
