@@ -7,8 +7,8 @@ class ApplicationController < ActionController::Base
   before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications
 
   rescue_from ActionController::UnknownFormat, with: :not_found
-  rescue_from ActionController::UnknownController, with: :not_found
-  rescue_from ActionView::MissingTemplate, with: :not_found
+  # rescue_from ActionController::UnknownController, with: :not_found
+  # rescue_from ActionView::MissingTemplate, with: :not_found
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message].html_safe
