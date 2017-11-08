@@ -1,3 +1,4 @@
+<%= meta_no_index %>
 <% total_posts = @posts.total_count || 0 %>
 <% first_post = [(@posts.limit_value * (@posts.current_page - 1)) + 1, total_posts, 0].sort[1] %>
 <% last_post = [@posts.limit_value * @posts.current_page, total_posts, 0].sort[1] %>

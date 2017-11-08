@@ -11,7 +11,7 @@ module PostsHelper
     tags.map do |tag|
       size = range_map(tag.tags_count, min_tag_count, max_tag_count, min, max)
       tag_href = URI.unescape(href).gsub("{{tag}}", tag.tag_name.to_s)
-      "<a href=\"#{tag_href}\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
+      "<a href=\"#{tag_href}\" rel=\"nofollow\" class=\"underline\" style=\"font-size: #{size}px;\" title=\"#{pluralize(tag.tags_count, "post")}\">#{tag.tag_name}</a>"
     end.join(", ").html_safe
   end
 
@@ -27,7 +27,7 @@ module PostsHelper
       sorted_class = "current-filter"
     end
 
-    link_to link_text, all_feedback_path(filtered_params.merge(resolution_status: resolution_status)), class: "#{sorted_class}"
+    link_to link_text, all_feedback_path(filtered_params.merge(resolution_status: resolution_status)), class: "#{sorted_class}", rel: "nofollow"
   end
 
   def filter_posts_link(link_text, options={})
@@ -47,7 +47,7 @@ module PostsHelper
     current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.blank? }
     current_filters[:tags] = current_filters[:tags].join(",") if current_filters[:tags].present?
 
-    link_to link_text, "#{([page_root_path] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}"
+    link_to link_text, "#{([page_root_path] + current_filters.values).join("/")}#{filter_query_string}", class: "#{sorted_class} #{options[:class]}", rel: "nofollow"
   end
 
   def current_tags(workable_params=params)
@@ -106,7 +106,7 @@ module PostsHelper
 
     current_filters = current_filters.merge(new_filter_options).reject { |param_key, param_val| param_val.blank? }
 
-    link_to link_text, users_path(current_filters), class: "#{sorted_class} #{options[:class]}"
+    link_to link_text, users_path(current_filters), class: "#{sorted_class} #{options[:class]}", rel: "nofollow"
   end
 
   def pagination(association, options={})

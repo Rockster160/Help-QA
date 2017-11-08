@@ -1,5 +1,6 @@
 module ApplicationHelper
   include MarkdownHelper
+  include MetaHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
@@ -91,7 +92,7 @@ module ApplicationHelper
 
     if options[:href].present?
       method = options[:method].present? ? "data-method=\"#{options[:method]}\"" : ""
-      "<a href=\"#{options[:href]}\" class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
+      "<a rel=\"nofollow\" href=\"#{options[:href]}\" class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
     else
       options[:tag] ||= "div"
       "<#{options[:tag]} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
@@ -144,14 +145,6 @@ module ApplicationHelper
     avatar_container_hash[:html] << avatar_wrapper_hash
 
     avatar_container_hash.to_html.html_safe
-  end
-
-  def meta_title(str, include_name: true)
-    content_for(:title) { str.html_safe }
-  end
-
-  def meta_description(description)
-    content_for(:description) { description.html_safe }
   end
 
 end

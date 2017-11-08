@@ -27,19 +27,19 @@
       <% if @post.author == current_user || current_user.try(:can_edit_posts?) %>
         <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
       <% end %>
-      <a href="#reply_body" class="underline">Leave a reply</a> |
-      <a href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
+      <a rel="nofollow" href="#reply_body" class="underline">Leave a reply</a> |
+      <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
 
       <% if current_mod? %>
         <% if @post.nsfw? %>
-          | <a href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark post as Safe">👶🏻</i></a>
+          | <a rel="nofollow" href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark post as Safe">👶🏻</i></a>
         <% else %>
-          | <a href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><i class="emoji lg" title="Mark post as NSFW/Adult">🔞</i></a>
+          | <a rel="nofollow" href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><i class="emoji lg" title="Mark post as NSFW/Adult">🔞</i></a>
         <% end %>
         <% if @post.closed? %>
-          | <a href="<%= post_mod_path(@post, close: false) %>" data-method="POST"><%= hover_icon(:check, "Reopen Post") %></a>
+          | <a rel="nofollow" href="<%= post_mod_path(@post, close: false) %>" data-method="POST"><%= hover_icon(:check, "Reopen Post") %></a>
         <% else %>
-          | <a href="<%= post_mod_path(@post, close: true) %>" data-method="POST"><%= hover_icon(:cross, "Close Post") %></a>
+          | <a rel="nofollow" href="<%= post_mod_path(@post, close: true) %>" data-method="POST"><%= hover_icon(:cross, "Close Post") %></a>
         <% end %>
       <% end %>
     </div>
@@ -75,7 +75,7 @@
   <div class="post-section-detail">Post Tags (<%= @post.tags.count %>)</div>
   <div class="post-section-content">
     <% @post.tags.count_order.reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
-      <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
+      <a rel="nofollow" href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
     <% end %>
   </div>
 </div>
@@ -115,9 +115,9 @@
   <div class="post-section-detail"></div>
   <div class="post-section-content">
     <p>
-      <small>Help-QA supports basic <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">Markdown</a>,
-      <a href="<%= faq_path(anchor: 'sect21') %>" class="underline">emoji 😁</a>,
-      and tagging friends with <a href="<%= user_path(helpbot) %>" class="tagged-user">@username</a>!</small>
+      <small>Help-QA supports basic <a rel="nofollow" href="<%= faq_path(anchor: 'sect21') %>" class="underline">Markdown</a>,
+      <a rel="nofollow" href="<%= faq_path(anchor: 'sect21') %>" class="underline">emoji 😁</a>,
+      and tagging friends with <a rel="nofollow" href="<%= user_path(helpbot) %>" class="tagged-user">@username</a>!</small>
     </p>
   </div>
 </div>
