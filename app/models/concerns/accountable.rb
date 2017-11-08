@@ -9,8 +9,8 @@ module Accountable
     validate :username_meets_requirements
     validate :at_least_13_years_of_age
 
-    after_create :set_gravatar_if_exists, :create_associated_objects, :send_confirmation_email, :ping_slack
-    after_commit :reset_cache
+    after_create :set_gravatar_if_exists, :create_associated_objects, :ping_slack
+    after_commit :reset_cache, :deliver_initial_confirmation_email
     after_update :reset_auth_token, if: :encrypted_password_changed?
   end
 
@@ -50,12 +50,15 @@ module Accountable
   end
 
   def send_confirmation_email
-    new_user = created_at == updated_at
-    recently_emailed = confirmation_sent_at.present? && confirmation_sent_at < 10.seconds.ago
+    return if recently_emailed
 
-    if new_user || !recently_emailed
-      delay.deliver_confirmation_email
-    end
+    delay.deliver_confirmation_email
+  end
+
+  def deliver_initial_confirmation_email
+    return unless created_at == updated_at
+    
+    delay.deliver_confirmation_email
   end
 
   def deliver_confirmation_email
