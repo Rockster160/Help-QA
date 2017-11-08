@@ -6,6 +6,7 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: 'help-qa.com' }
   config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.perform_deliveries = true
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     address:              'smtp.gmail.com',
