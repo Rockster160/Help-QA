@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::UnknownFormat, with: :not_found
   rescue_from ActionController::UnknownController, with: :not_found
+  rescue_from ActionView::MissingTemplate, with: :not_found
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message].html_safe
@@ -16,12 +17,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def not_found(error="Unknown Error")
-    if Rails.env.development?
-      raise error
-    else
-      raise ActionController::RoutingError.new('Not Found')
-    end
+  def not_found
+    render file: "#{Rails.root}/public/404.html", status: :not_found, layout: false
   end
 
   def reload_emoji_cache
