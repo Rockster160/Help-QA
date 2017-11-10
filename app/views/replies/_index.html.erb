@@ -79,6 +79,7 @@
           <% else %>
             <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
           <% end %>
+          <!-- <a rel="nofollow" href="<%#= FIXME mod_edit_reply_path(reply) %>"><%= hover_icon(:comment_edit, "Edit Reply") %></a> -->
         <% end %>
       </div>
     </div>
