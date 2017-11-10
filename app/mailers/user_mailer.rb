@@ -1,14 +1,13 @@
 class UserMailer < ApplicationMailer
-  def notifications(user)
+  include UrlHelper
+  
+  def notifications(user, message)
     @user = user
-    @grouped_notices = user.notices.unread.order(created_at: :desc).group_by do |notice|
-      next notice.id unless notice.subscription?
-      "sub: #{notice.notice_for_id}"
-    end
+    @message = add_params_to_urls_in_message(message, auth: user.auth_token)
 
     mail({
       to: user.email,
-      subject: "Recent Notices from Help-QA"
+      subject: "We're missing you at Help-QA!"
     })
   end
 

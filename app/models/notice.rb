@@ -89,7 +89,7 @@ class Notice < ApplicationRecord
         return if previous_notification > 30.minutes.ago
       end
     end
-    UserMailer.notifications(user).deliver_later
+    UserMailer.notifications(user, notice_message).deliver_later
   end
 
 end

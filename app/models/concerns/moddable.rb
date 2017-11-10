@@ -2,7 +2,7 @@ module Moddable
   extend ActiveSupport::Concern
 
   included do
-    has_many :feedbacks
+    has_many :feedbacks, dependent: :destroy
 
     enum role: {
       default: 0,

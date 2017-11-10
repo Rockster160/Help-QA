@@ -1,7 +1,2 @@
 <p>Hey <%= @user.username %>, here's what you've missed up at <a href="<%= root_url %>">Help-QA.com</a>:</p>
-<ul>
-  <% @grouped_notices.each do |_group, notices| %>
-    <% notice = notices.first %>
-    <li><%= notice.notice_message(passed_root: root_url).gsub(URI::regexp(['http', 'https'])) { |found| attach_auth_token_to_url(found) }.html_safe %></li>
-  <% end %>
-</ul>
+<p><%= @message.html_safe %></p>
