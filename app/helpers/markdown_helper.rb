@@ -12,7 +12,7 @@ module MarkdownHelper
     except = [except].flatten
 
     default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews, :link_titleize]
-    default_markdown_options = only if only.any?
+    default_markdown_options = only if only.is_a?(Array)
     default_markdown_options -= except
     default_markdown_options += with
     @markdown_options = Hash[default_markdown_options.product([true])]
@@ -170,7 +170,7 @@ module MarkdownHelper
         elsif @markdown_options[:link_titleize]
           "#{pre_char}<a rel=\"nofollow\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
         else
-          "#{found_match}"
+          found_match
         end
       elsif @markdown_options[:link_previews]
         if @markdown_options[:inline_previews] || preview_hash[:inline]
@@ -181,6 +181,8 @@ module MarkdownHelper
         end
       elsif @markdown_options[:link_titleize]
         "#{pre_char}<a rel=\"nofollow\" href=\"#{preview_hash[:url]}\">[#{preview_hash[:title]}]</a>"
+      else
+        found_match
       end
     end
     "#{text}#{add_to_text}"
