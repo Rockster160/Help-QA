@@ -8,7 +8,7 @@ module MarkdownHelper
   end
 
   def markdown(only: nil, except: [], with: [], render_html: false, poll_post: nil, posted_by_user: nil, &block)
-    only = [only].flatten
+    only = [only].flatten if only.is_a?(Array) # We want `only` to be `nil` if it wasn't explicitly set.
     except = [except].flatten
 
     default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews, :link_titleize]

@@ -11,6 +11,7 @@
 #  updated_at         :datetime         not null
 #  reply_count        :integer
 #  marked_as_adult    :boolean
+#  in_moderation      :boolean          default("false")
 #
 
 FactoryGirl.define do

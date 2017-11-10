@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   include PostsHelper
 
   def index
-    @posts = Post.order(created_at: :desc).not_banned.conditional_adult(current_user)
+    @posts = Post.displayable(current_user).order(created_at: :desc)
     @posts = @posts.claimed.where(user_id: params[:user_id]) if params[:user_id].present?
   end
 
@@ -14,7 +14,7 @@ class PostsController < ApplicationController
   def history
     set_post_filter_params
 
-    @posts = Post.not_banned.conditional_adult(current_user).order(created_at: :desc)
+    @posts = Post.displayable(current_user).order(created_at: :desc)
     @posts = @posts.claimed if @filter_options["claimed"]
     @posts = @posts.unclaimed if @filter_options["unclaimed"]
     @posts = @posts.verified_user if @filter_options["verified"]
@@ -34,6 +34,8 @@ class PostsController < ApplicationController
     return redirect_to post_path(post) unless current_mod?
 
     modded_attrs = {}
+    modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
+    modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
     modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
     modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
     modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"

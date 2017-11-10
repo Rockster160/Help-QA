@@ -60,6 +60,7 @@ class User < ApplicationRecord
   scope :not_helpbot,          -> { where.not(username: "HelpBot") }
   scope :invitable,            -> { joins(:settings).where(user_settings: { friends_only: false }) }
   scope :not_invitable,        -> { joins(:settings).where(user_settings: { friends_only: true }) }
+  scope :displayable,          -> { not_helpbot.not_banned }
   scope :search_ip,            ->(ip) {
     begin
       IPAddr.new(ip)

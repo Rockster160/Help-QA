@@ -5,7 +5,7 @@ class ChatController < ApplicationController
   def chat
     limit = 1000
     @messages = ChatMessage.includes(:author).order(created_at: :desc).limit(limit) # Intentionally ordering backwards so that limit gets the last N records
-    @messages = @messages.not_banned.not_removed
+    @messages = @messages.displayable
     if params[:message].to_i > 0
       start_id = params[:message].to_i - (limit / 2)
       end_id = params[:message].to_i + (limit / 2)

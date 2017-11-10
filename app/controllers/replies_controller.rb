@@ -35,7 +35,9 @@ class RepliesController < ApplicationController
     post = Post.find(params[:post_id])
     reply = post.replies.find(params[:reply_id])
 
-    modded_attrs = {has_questionable_text: false}
+    modded_attrs = {}
+    modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
+    modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
     modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
     modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
     modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"

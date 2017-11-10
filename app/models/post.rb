@@ -11,6 +11,7 @@
 #  updated_at         :datetime         not null
 #  reply_count        :integer
 #  marked_as_adult    :boolean
+#  in_moderation      :boolean          default("false")
 #
 
 class Post < ApplicationRecord
@@ -37,13 +38,18 @@ class Post < ApplicationRecord
   scope :verified_user,        -> { joins(:author).where.not(users: { verified_at: nil }) }
   scope :unverified_user,      -> { joins(:author).where(users: { verified_at: nil }) }
   scope :not_banned,           -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
+  scope :closed,               -> { where.not(closed_at: nil) }
+  scope :not_closed,           -> { where(closed_at: nil) }
+  scope :needs_moderation,     -> { where(in_moderation: true) }
+  scope :no_moderation,        -> { where(in_moderation: [nil, false]) }
   scope :no_replies,           -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
   scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
+  scope :by_tags,              ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
   scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
-  scope :conditional_adult,    ->(user) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
-  scope :by_tags, ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
+  scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
+  scope :displayable,          ->(user=nil) { not_banned.not_closed.no_moderation.conditional_adult(user) }
 
   after_create :auto_add_tags, :generate_poll, :alert_helpbot
   after_commit :broadcast_creation, :subscribe_author
@@ -63,7 +69,7 @@ class Post < ApplicationRecord
 
   def self.currently_popular
     pluck_last_replies = 100
-    replies_for_age_appropriate_posts = Reply.not_banned.joins(:post).where(posts: { marked_as_adult: [nil, false] })
+    replies_for_age_appropriate_posts = Reply.displayable.joins(:post).where(posts: { marked_as_adult: [nil, false] })
     uniq_replies_by_author_for_posts = replies_for_age_appropriate_posts.order(created_at: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
     counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
     post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)

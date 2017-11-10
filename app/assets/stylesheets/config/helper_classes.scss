@@ -12,3 +12,8 @@
 .full-width { width: 100%; }
 
 .grayscale { filter: grayscale(100%); }
+
+.no-censor .profane-wrapper .safe { display: none; }
+.apply-censor .profane-wrapper .unsafe { display: none; }
+
+.danger { color: red; font-size: 10px; }

@@ -12,7 +12,7 @@
     </div>
     <% next %>
   <% end %>
-  <% if reply.has_questionable_text? %>
+  <% if reply.in_moderation? %>
     <div class="pending-reply" data-timestamp="<%= reply.created_at.to_i %>">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
     <% hidden_by_default = "attached pending" %>
     <% next unless current_mod? %>
@@ -51,18 +51,6 @@
         </div>
       </div>
       <div class="reply-options">
-        <% if current_mod? %>
-          <% if reply.marked_as_adult? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><i class="emoji lg" title="Mark reply as Safe">👶🏻</i></a>
-          <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><i class="emoji lg" title="Mark reply as NSFW/Adult">🔞</i></a>
-          <% end %>
-          <% if reply.removed? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:check, "Restore Reply") %></a>
-          <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:cross, "Remove Reply") %><a>
-          <% end %>
-        <% end %>
         <% if user_signed_in? && current_user.verified? %>
           <% previous_favorite = current_user.favorite_reply_for_post(reply.post) %>
           <% if previous_favorite.nil? %>
@@ -75,6 +63,23 @@
         <% end %>
         <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>
         <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>
+        <% if current_mod? %>
+          <% if reply.removed? %>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:bin_t, "Restore Reply") %></a>
+          <% else %>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:bin, "Delete Reply") %></a>
+          <% end %>
+          <% if reply.marked_as_adult? %>
+            <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><%= hover_icon(:link_t, "Mark Reply as Safe") %></a>
+          <% else %>
+            <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><%= hover_icon(:link, "Mark Reply as NSFW/Adult") %></a>
+          <% end %>
+          <% if reply.in_moderation? %>
+            <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell_t, "Unmoderate") %></a>
+          <% else %>
+            <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
+          <% end %>
+        <% end %>
       </div>
     </div>
     <% original_content = current_user.try(:settings).try(:censor_inappropriate_language) ? censor_text(reply.body) : reply.body %>

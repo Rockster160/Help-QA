@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :authenticate_mod, only: [:moderate]
 
   def index
-    @users = User.not_banned.order(created_at: :desc)
+    @users = User.displayable.order(created_at: :desc)
     @users = @users.verified if params[:status] == "verified"
     @users = @users.unverified if params[:status] == "unverified"
     @users = @users.search_username(params[:search]) if params[:search].present?

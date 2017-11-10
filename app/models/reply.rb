@@ -2,17 +2,17 @@
 #
 # Table name: replies
 #
-#  id                    :integer          not null, primary key
-#  body                  :text
-#  author_id             :integer
-#  posted_anonymously    :boolean
-#  has_questionable_text :boolean
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  post_id               :integer
-#  removed_at            :datetime
-#  marked_as_adult       :boolean
-#  favorite_count        :integer          default("0")
+#  id                 :integer          not null, primary key
+#  body               :text
+#  author_id          :integer
+#  posted_anonymously :boolean
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  post_id            :integer
+#  removed_at         :datetime
+#  marked_as_adult    :boolean
+#  favorite_count     :integer          default("0")
+#  in_moderation      :boolean          default("false")
 #
 
 class Reply < ApplicationRecord
@@ -40,12 +40,14 @@ class Reply < ApplicationRecord
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :favorited,         -> { where("favorite_count > 0") }
   scope :removed,           -> { where.not(removed_at: nil) }
+  scope :not_removed,       -> { where(removed_at: nil) }
   scope :adult,             -> { where(marked_as_adult: true) }
-  scope :safe,              -> { where(marked_as_adult: [nil, false]) }
-  scope :questionable,      -> { where(has_questionable_text: true) }
-  scope :verified_by_mod,   -> { where(has_questionable_text: [nil, false]) }
+  scope :child_safe,        -> { where(marked_as_adult: [nil, false]) }
+  scope :needs_moderation,  -> { where(in_moderation: true) }
+  scope :no_moderation,     -> { where(in_moderation: [nil, false]) }
   scope :without_adult,     -> { where(replies: { marked_as_adult: [nil, false] }) }
-  scope :conditional_adult, ->(user) { verified_by_mod.without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
+  scope :conditional_adult, ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
+  scope :displayable,       ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) }
 
   def safe?; !marked_as_adult?; end
   def removed?; removed_at?; end
@@ -110,7 +112,7 @@ class Reply < ApplicationRecord
     subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id)
     post.notify_subscribers(not_user: author)
 
-    if has_questionable_text?
+    if in_moderation?
       User.mod.each do |mod|
         mod.notices.questionable_reply.create(notice_for_id: self.id)
       end
@@ -130,7 +132,7 @@ class Reply < ApplicationRecord
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
     if new_record? && !author.long_term_user?
-      self.has_questionable_text = Tag.adult_words_in_body(body).any?
+      self.in_moderation = Tag.adult_words_in_body(body).any?
     end
   end
 

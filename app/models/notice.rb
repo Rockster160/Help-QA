@@ -57,7 +57,7 @@ class Notice < ApplicationRecord
   def questionable_message(passed_root: nil)
     reply = Reply.find(notice_for_id)
     post = reply.post
-    read unless reply.has_questionable_text?
+    read unless reply.in_moderation?
     reply_path = Rails.application.routes.url_helpers.post_path(post) + "#reply-#{notice_for_id}"
     "Questionable Reply on #{link_to(post.title, reply_path, passed_root: passed_root)}".html_safe
   end
