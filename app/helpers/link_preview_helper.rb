@@ -17,7 +17,9 @@ module LinkPreviewHelper
     return if Rails.cache.read(url).nil? && !generate_if_nil
     meta_data = Rails.cache.fetch(url) do
       puts "Running Cache Fetch for: #{url}".colorize(:yellow)
-      res = RestClient.get(url)
+      res = RestClient.get(url) rescue nil
+      next {} if res.nil?
+
       doc = Nokogiri::HTML(res.body)
       only_image = MIME::Types.type_for(url).first.try(:content_type)&.starts_with?("image")
 
@@ -52,6 +54,7 @@ module LinkPreviewHelper
       meta_data
     end
 
+    return if meta_data.blank?
     response_data = {
       title: meta_data[:title].presence || meta_data[:url],
       original_url: raw_url,

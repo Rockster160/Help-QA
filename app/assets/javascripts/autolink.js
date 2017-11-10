@@ -66,6 +66,7 @@ addCards = function(cards_data) {
   $(cards_data).each(function() {
     var card = this
     var $link = $('[data-loading-preview] > a[href="' + card.original_url + '"]'), $wrapper = $link.parent()
+    $link.removeAttr("data-loading-preview")
 
     if (card.inline || $link.parents("[data-inline-links]").length > 0) {
       $link.html(card.html)
@@ -74,6 +75,11 @@ addCards = function(cards_data) {
       new_link = $(card.html)
       $link.closest("quote, .reply-content").append(new_link)
     }
+  })
+  $("[data-loading-preview]").each(function() {
+    var $container = $(this)
+    $container.html($container.text())
+    $container.removeAttr("data-loading-preview")
   })
 }
 
