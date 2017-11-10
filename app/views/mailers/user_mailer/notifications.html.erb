@@ -1,2 +1,2 @@
-<p>Hey <%= @user.username %>, here's what you've missed up at <a href="<%= root_url %>">Help-QA.com</a>:</p>
+<p>Hey <%= @user.username %>, here's what you've missed up at <a href="<%= attach_auth_token_to_url(root_url) %>">Help-QA.com</a>:</p>
 <p><%= @message.html_safe %></p>

@@ -20,7 +20,7 @@ module UrlHelper
         new_query_uri << [add_key, add_val]
       end
       uri.query = URI.encode_www_form(new_query_uri)
-      new_message.gsub(found_url, uri.to_s)
+      new_message = new_message.gsub(found_url, uri.to_s)
     end
     new_message
   end
