@@ -12,7 +12,8 @@ module UrlHelper
   def link_to(text, link_url, passed_root: nil)
     link_url[0] = "" while link_url[0] == "/"
     passed_root[-1] = "" while passed_root[-1] == "/" if passed_root.present?
-    "<a href=\"#{[passed_root, link_url].compact.join('/')}\">#{text}</a>"
+    full_url = "#{passed_root}/#{link_url}"
+    "<a href=\"#{full_url}\">#{text}</a>"
   end
 
   def add_params_to_urls_in_message(message, additional_params)

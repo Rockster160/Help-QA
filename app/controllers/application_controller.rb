@@ -80,7 +80,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate_adult
     if user_signed_in?
-      if current_user.child?
+      if current_user.age.nil?
+        redirect_to account_settings_path, alert: "Please verify your age before continuing."
+      elsif current_user.child?
         redirect_to root_path, alert: "Sorry, this post contains inappropriate material."
       end
     else
