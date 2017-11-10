@@ -1,5 +1,25 @@
 <% meta_title "#{@post.tags.count_order.first.try(:tag_name)} help: #{@post.title}" %>
 
+<% if current_mod? %>
+  <div class="mod-tools">
+    <% if @post.nsfw? %>
+      <a rel="nofollow" href="<%= mod_post_path(@post, adult: false) %>" data-method="POST"><%= hover_icon(:link_t, "Mark post as Safe") %></a>
+    <% else %>
+      <a rel="nofollow" href="<%= mod_post_path(@post, adult: true) %>" data-method="POST"><%= hover_icon(:link, "Mark post as NSFW/Adult") %></a>
+    <% end %>
+    <% if @post.closed? %>
+      <a rel="nofollow" href="<%= mod_post_path(@post, close: false) %>" data-method="POST"><%= hover_icon(:lock_t, "Reopen Post") %></a>
+    <% else %>
+      <a rel="nofollow" href="<%= mod_post_path(@post, close: true) %>" data-method="POST"><%= hover_icon(:lock, "Close Post") %></a>
+    <% end %>
+    <% if @post.in_moderation? %>
+      <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell_t, "Unmoderate") %></a>
+    <% else %>
+      <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
+    <% end %>
+  </div>
+<% end %>
+
 <div class="post-container" data-id="<%= @post.id %>">
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
@@ -21,32 +41,21 @@
     <div class="title"><%= markdown(except: [:link_previews, :link_titleize]) { @post.title } %></div>
     <div class="body" data-inline-links><%= markdown(poll_post: @post, posted_by_user: @post.author, with: [:inline_previews]) { @post.body[@post.title.length..-1] } %></div>
     <div class="details">
-      This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> |
-      Views: <%= @post.views.count %>,
-      Subscribers: <%= @post.subscriptions.count %> |
+      This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong>
+      | Views: <%= @post.views.count %>,
+      Subscribers: <%= @post.subscriptions.count %>
       <% if @post.author == current_user || current_user.try(:can_edit_posts?) %>
-        <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
+        | <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong>
       <% end %>
-      <a rel="nofollow" href="#reply_body" class="underline">Leave a reply</a> |
-      <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
-
-      <% if current_mod? %>
-        <% if @post.nsfw? %>
-          | <a rel="nofollow" href="<%= post_mod_path(@post, adult: false) %>" data-method="POST"><%= hover_icon(:link_t, "Mark post as Safe") %></a>
+      | <a rel="nofollow" href="#reply_body" class="underline">Leave a reply</a>
+      <% if user_signed_in? %>
+        <% if @post.user_subscribed?(current_user) %>
+          | <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: false) %>" class="underline">Unsubscribe from Replies</a>
         <% else %>
-          | <a rel="nofollow" href="<%= post_mod_path(@post, adult: true) %>" data-method="POST"><%= hover_icon(:link, "Mark post as NSFW/Adult") %></a>
-        <% end %>
-        <% if @post.closed? %>
-          | <a rel="nofollow" href="<%= post_mod_path(@post, close: false) %>" data-method="POST"><%= hover_icon(:lock_t, "Reopen Post") %></a>
-        <% else %>
-          | <a rel="nofollow" href="<%= post_mod_path(@post, close: true) %>" data-method="POST"><%= hover_icon(:lock, "Close Post") %></a>
-        <% end %>
-        <% if @post.in_moderation? %>
-          | <a rel="nofollow" href="<%= post_mod_path(@post, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell_t, "Unmoderate") %></a>
-        <% else %>
-          | <a rel="nofollow" href="<%= post_mod_path(@post, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
+          | <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: true) %>" class="underline">Subscribe to Replies</a>
         <% end %>
       <% end %>
+      | <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
     </div>
   </div>
 </div>
@@ -62,13 +71,13 @@
   <div class="post-section-content reciprocity-<%= reciprocity.positive? ? 'some' : 'none' %>">
     <% if @post.created_at > 4.days.ago %>
       <% if reciprocity.positive? %>
-        Since writing this post <strong><%= @post.username %></strong> has helped <%= pluralize(reciprocity, 'person') %>.
+        Since writing this post <strong><%= @post.username %></strong> <span class="deep">has helped</span> <%= pluralize(reciprocity, 'person') %>.
       <% else %>
         Since writing this post <strong><%= @post.username %></strong> <span class="deep">has not</span> helped any one.
       <% end %>
     <% else %>
       <% if reciprocity.positive? %>
-        In the past four (4) days <strong><%= @post.username %></strong> has helped <%= pluralize(reciprocity, 'person') %>.
+        In the past four (4) days <strong><%= @post.username %></strong> <span class="deep">has helped</span> <%= pluralize(reciprocity, 'person') %>.
       <% else %>
         Since writing this post <strong><%= @post.username %></strong> may have helped people, but <span class="deep">has not</span> within the last four (4) days.
       <% end %>

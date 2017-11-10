@@ -8,7 +8,7 @@ class SubscriptionsController < ApplicationController
   def destroy
     subscription = Subscription.find(params[:id])
 
-    if subscription.destroy
+    if subscription.update(unsubscribed: true)
       redirect_to account_subscriptions_path, notice: "You have been unsubscribed from that post. You will no longer receive replies for it."
     else
       redirect_to account_subscriptions_path, alert: "Faield to unsubscribe you. Please try again."

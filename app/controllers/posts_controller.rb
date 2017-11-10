@@ -30,7 +30,7 @@ class PostsController < ApplicationController
   end
 
   def mod
-    post = Post.find(params[:post_id])
+    post = Post.find(params[:id])
     return redirect_to post_path(post) unless current_mod?
 
     modded_attrs = {}
@@ -41,7 +41,7 @@ class PostsController < ApplicationController
     modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
     modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
 
-    if Sherlock.update_by(current_user, post, modded_attrs)
+    if post.update(modded_attrs)
       redirect_to post_path(post)
     else
       redirect_to post_path(post), alert: post.errors.full_messages.first || "Failed to save Post. Please try again."
@@ -68,8 +68,24 @@ class PostsController < ApplicationController
     end
   end
 
+  def subscribe
+    post = Post.find(params[:id])
+    subscription = post.subscriptions.find_or_create_by(user_id: current_user.id)
+
+    if subscription.update(unsubscribed: params[:subscribe] != "true")
+      notice_message = if subscription.subscribed?
+        "You'll now receive notifications when there are new replies to this post."
+      else
+        "You'll no longer receive notifications for this post."
+      end
+      redirect_to post_path(post), notice: notice_message
+    else
+      redirect_to post_path(post), alert: "Sorry, failed to do that. Please try again."
+    end
+  end
+
   def vote
-    poll = Post.find(params[:post_id]).poll
+    poll = Post.find(params[:id]).poll
     vote = poll.options.find(params[:option]).votes.create(user: current_user)
 
     unless vote.persisted?

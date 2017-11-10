@@ -18,7 +18,7 @@
 
 .ctr-posts.act-show {
 
-  .body-wrapper > * {
+  .body-wrapper > *:not(.mod-tools) {
     @include split-page(210px);
   }
 
@@ -109,10 +109,9 @@
       font-size: 11px;
       padding: 5px;
 
-      .deep {
-        color: darken($reciprocity-none, 60%);
-        font-weight: bold;
-      }
+      .deep { font-weight: bold; }
+      &.reciprocity-none .deep { color: darken($reciprocity-none, 60%); }
+      &.reciprocity-some .deep { color: darken($reciprocity-some, 60%); }
       .replies-container {
         padding: 5px;
         padding-right: 0;

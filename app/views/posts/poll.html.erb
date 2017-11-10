@@ -14,7 +14,7 @@
       <% total_votes = poll.votes.count %>
       <li>
         <% if @user.try(:verified?) && !poll.answered_by?(@user) %>
-          <a href="<%= post_vote_path(@post, option: option) %>"><button>Vote</button></a>
+          <a href="<%= vote_post_path(@post, option: option) %>"><button>Vote</button></a>
         <% end %>
         <%= option.body %>
         <% if poll.answered_by?(@user) %>

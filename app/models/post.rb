@@ -25,7 +25,7 @@ class Post < ApplicationRecord
   has_many :views, class_name: "PostView"
   has_many :edits, class_name: "PostEdit"
   has_many :replies
-  has_many :subscriptions
+  has_many :subscriptions, -> { subscribed }
   has_many :subscribers, through: :subscriptions, source: :user
   has_many :post_tags
   has_many :tags, through: :post_tags
@@ -105,6 +105,10 @@ class Post < ApplicationRecord
   def closed?; closed_at?; end
   def safe?; !nsfw?; end
   def nsfw?; marked_as_adult?; end
+
+  def user_subscribed?(user)
+    subscriptions.find_by(user: user).try(:subscribed?)
+  end
 
   def notify_subscribers(not_user: nil)
     subscribers.each do |subscriber|
@@ -213,7 +217,7 @@ class Post < ApplicationRecord
 
   def subscribe_author
     if created_at == updated_at
-      subscriptions.create(user_id: author_id)
+      subscriptions.find_or_create_by(user_id: author_id)
     end
   end
 

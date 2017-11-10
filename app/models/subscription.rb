@@ -15,6 +15,8 @@ class Subscription < ApplicationRecord
   belongs_to :post
   belongs_to :user
 
+  scope :subscribed, -> { where(unsubscribed: [nil, false]) }
+
   def subscribed?
     !unsubscribed?
   end
