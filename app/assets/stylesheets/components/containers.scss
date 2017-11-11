@@ -6,7 +6,6 @@ body {
 
 .body-wrapper {
   z-index: map-get($zindex, body);
-  position: relative;
   background: white;
   box-shadow: inset 0 0 8px $gray;
   width: 100%;
