@@ -42,6 +42,15 @@ class Notice < ApplicationRecord
     end
   end
 
+  def groupable_identifier
+    case notice_type.to_sym
+    when :other              then title
+    when :subscription       then "post-#{notice_for_id}"
+    when :friend_request     then "friend-#{notice_for_id}"
+    else "[INVALID]"
+    end
+  end
+
   def generic_message(passed_root: nil)
     link_to(title.presence || "New Notice", url, passed_root: passed_root).html_safe
   end

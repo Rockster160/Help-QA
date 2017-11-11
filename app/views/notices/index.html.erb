@@ -1,12 +1,15 @@
 <% meta_title "Account Notices &bull; Help-QA.com" %>
 
+<% @unread.each do |groupable_identifier, notices| %>
+  <p><%= hover_icon("new", "New Notice!") %> <%= notices.first.notice_message %></p>
+<% end %>
+
+<hr>
+
 <%= paginate @notices %>
 
-<% @unread.each do |notice| %>
-  <p><%= hover_icon("new", "New Notice!") if notice.unread? %> <%= notice.notice_message %></p>
-<% end %>
 <% @notices.each do |notice| %>
-  <p><%= hover_icon("new", "New Notice!") if notice.unread? %> <%= notice.notice_message %></p>
+  <%= notice.notice_message %></p>
 <% end %>
 
 <%= paginate @notices %>
