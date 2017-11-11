@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
   prepend_before_action :block_ip_addresses
   before_action :auto_sign_in
   before_action :store_user_location!, if: :storable_location?
@@ -41,6 +42,7 @@ class ApplicationController < ActionController::Base
       shouts: current_user.shouts.unread.count,
       invites: current_user.invites.unread.count
     }
+    @notifications.merge!(modq: Post.needs_moderation.count + Reply.needs_moderation.count) if current_mod?
   end
 
   def unauth_banned_user

@@ -30,7 +30,6 @@ class Reply < ApplicationRecord
   validate :post_is_open, :debounce_replies, :valid_text
 
   after_create :invite_users, :notify_subscribers
-  after_update :read_questionable_text
 
   after_commit :broadcast_creation
 
@@ -111,12 +110,6 @@ class Reply < ApplicationRecord
   def notify_subscribers
     subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id)
     post.notify_subscribers(not_user: author)
-
-    if in_moderation?
-      User.mod.each do |mod|
-        mod.notices.questionable_reply.create(notice_for_id: self.id)
-      end
-    end
   end
 
   def invite_users
@@ -131,13 +124,10 @@ class Reply < ApplicationRecord
 
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
+
     if new_record? && !author.long_term_user?
       self.in_moderation = Tag.adult_words_in_body(body).any?
     end
-  end
-
-  def read_questionable_text
-    Notice.questionable_reply.where(notice_for_id: self.id).each(&:read)
   end
 
   def anonicon_src(ip)

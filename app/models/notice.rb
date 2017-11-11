@@ -30,7 +30,6 @@ class Notice < ApplicationRecord
   enum notice_type: {
     other:              0,
     subscription:       1,
-    questionable_reply: 2,
     friend_request:     3
   }
 
@@ -38,7 +37,6 @@ class Notice < ApplicationRecord
     case notice_type.to_sym
     when :other              then generic_message(passed_root: passed_root)
     when :subscription       then subscription_message(passed_root: passed_root)
-    when :questionable_reply then questionable_message(passed_root: passed_root)
     when :friend_request     then friend_request_message(passed_root: passed_root)
     else "[INVALID]"
     end
@@ -52,14 +50,6 @@ class Notice < ApplicationRecord
     post = Post.find(notice_for_id)
     post_path = Rails.application.routes.url_helpers.post_path(post)
     "New Comment on #{link_to(post.title, post_path, passed_root: passed_root)}".html_safe
-  end
-
-  def questionable_message(passed_root: nil)
-    reply = Reply.find(notice_for_id)
-    post = reply.post
-    read unless reply.in_moderation?
-    reply_path = Rails.application.routes.url_helpers.post_path(post) + "#reply-#{notice_for_id}"
-    "Questionable Reply on #{link_to(post.title, reply_path, passed_root: passed_root)}".html_safe
   end
 
   def friend_request_message(passed_root: nil)

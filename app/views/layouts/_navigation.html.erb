@@ -33,7 +33,7 @@
                 <a href="<%= avatar_account_path %>">Avatar</a>
                 <a href="<%= account_settings_path %>">Settings</a>
                 <!-- <a href="/map">Map</a> -->
-                <% if current_user.mod? %>
+                <% if current_mod? %>
                   <h6>Mod Tools</h6>
                   <a href="<%= all_feedback_path(resolution_status: :unresolved) %>">Feedback</a>
                   <a href="<%= users_path %>">Search Users</a>
@@ -46,6 +46,9 @@
           <a href="<%= account_notices_path %>" class="notice-link">Notices: <span id="notifications-notices"><%= @notifications[:notices] %></span></a>
           <a href="<%= user_shouts_path(current_user) %>" class="notice-link">Shouts: <span id="notifications-shouts"><%= @notifications[:shouts] %></span></a>
           <a href="<%= account_invites_path %>" class="notice-link">Invites: <span id="notifications-invites"><%= @notifications[:invites] %></span></a>
+          <% if current_mod? %>
+            <a href="<%= queue_mod_path %>" class="notice-link" style="padding-top: 3px;">ModQ: <span id="notifications-mod-queue"><%= @notifications[:modq] %></span></a>
+          <% end %>
         </div>
       </div>
     <% else %>

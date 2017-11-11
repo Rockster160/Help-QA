@@ -50,6 +50,12 @@ Rails.application.routes.draw do
   resources :replies, only: [ :index ] do
   end
 
+  resource :mod, only: [] do
+    member do
+      get :queue
+    end
+  end
+
   resource :account, only: [ :index, :edit, :update ] do
     get :confirm
     patch :confirm, action: :set_confirmation
