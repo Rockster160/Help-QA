@@ -1,5 +1,6 @@
 class ProfileController < ApplicationController
-  before_action { @user = current_user; @profile = @user.profile }
+  before_action :authenticate_user
+  before_action { @user = current_user; @profile = @user.try(:profile) }
 
   def update
     if @profile.update(profile_params)

@@ -21,6 +21,10 @@ class AccountsController < ApplicationController
     end
   end
 
+  # We need to define this method here, otherwise the `avatar` helper method in the `ApplicationHelper` gets called
+  def avatar
+  end
+
   def notifications
     respond_to do |format|
       format.json { render json: @notifications }

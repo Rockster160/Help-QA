@@ -1,23 +1,25 @@
 <% meta_title "#{@post.tags.count_order.first.try(:tag_name)} help: #{@post.title}" %>
 
-<% if current_mod? %>
-  <div class="mod-tools">
-    <% if @post.nsfw? %>
-      <a rel="nofollow" href="<%= mod_post_path(@post, adult: false) %>" data-method="POST"><%= hover_icon(:link_t, "Mark post as Safe") %></a>
-    <% else %>
-      <a rel="nofollow" href="<%= mod_post_path(@post, adult: true) %>" data-method="POST"><%= hover_icon(:link, "Mark post as NSFW/Adult") %></a>
-    <% end %>
-    <% if @post.closed? %>
-      <a rel="nofollow" href="<%= mod_post_path(@post, close: false) %>" data-method="POST"><%= hover_icon(:lock_t, "Reopen Post") %></a>
-    <% else %>
-      <a rel="nofollow" href="<%= mod_post_path(@post, close: true) %>" data-method="POST"><%= hover_icon(:lock, "Close Post") %></a>
-    <% end %>
-    <% if @post.in_moderation? %>
-      <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell_t, "Unmoderate") %></a>
-    <% else %>
-      <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
-    <% end %>
-  </div>
+<% content_for(:mod_tools) do %>
+  <% if current_mod? %>
+    <div class="mod-tools">
+      <% if @post.nsfw? %>
+        <a rel="nofollow" href="<%= mod_post_path(@post, adult: false) %>" data-method="POST"><%= hover_icon(:link_t, "Mark post as Safe") %></a>
+      <% else %>
+        <a rel="nofollow" href="<%= mod_post_path(@post, adult: true) %>" data-method="POST"><%= hover_icon(:link, "Mark post as NSFW/Adult") %></a>
+      <% end %>
+      <% if @post.closed? %>
+        <a rel="nofollow" href="<%= mod_post_path(@post, close: false) %>" data-method="POST"><%= hover_icon(:lock_t, "Reopen Post") %></a>
+      <% else %>
+        <a rel="nofollow" href="<%= mod_post_path(@post, close: true) %>" data-method="POST"><%= hover_icon(:lock, "Close Post") %></a>
+      <% end %>
+      <% if @post.in_moderation? %>
+        <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell_t, "Unmoderate") %></a>
+      <% else %>
+        <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>
 
 <div class="post-container" data-id="<%= @post.id %>">
