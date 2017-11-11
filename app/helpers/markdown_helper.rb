@@ -166,7 +166,7 @@ module MarkdownHelper
       if preview_hash.nil?
         if @markdown_options[:link_previews]
           # TODO: Handle the data value in JS instead of grabbing the inner text
-          "#{pre_char}TICK<span data-load-link=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</span>"
+          "#{pre_char}<span data-load-link=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</span>"
         elsif @markdown_options[:link_titleize]
           "#{pre_char}<a rel=\"nofollow\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
         else
