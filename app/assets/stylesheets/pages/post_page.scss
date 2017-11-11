@@ -190,7 +190,7 @@
               line-height: 1.5;
             }
 
-            .link-img img, .video-container {
+            .link-img, .video-container {
               width: 100%;
               max-width: 450px;
               margin: 0 auto;
@@ -200,6 +200,10 @@
                 height: 20px;
               }
 
+              img {
+                width: auto;
+                max-width: 100%;
+              }
               .video-wrapper {
                 padding-bottom: 56.25%; /* 16:9 */
                 position: relative;
