@@ -8,9 +8,8 @@ module LinkPreviewHelper
 
   def generate_link_preview_for_url(raw_url, clear: false, generate_if_nil: false)
     raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
-    raw_url = raw_url.downcase
-    return if raw_url[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods
-    url = "http://#{raw_url.gsub(/^\/*/, '')}" unless raw_url.starts_with?("http")
+    return if raw_url[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods together
+    url = "http://#{raw_url.gsub(/^\/*/, '')}" if raw_url[/http/i].nil?
     url ||= raw_url
 
     Rails.cache.delete(url) if clear
