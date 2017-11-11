@@ -13,3 +13,10 @@
     <li><%= link_to truncate(reply.body, length: 100, omission: "..."), post_path(reply.post, anchor: "reply-#{reply.id}") %></li>
   <% end %>
 </ol>
+
+<h6>Unresolved Feedback (<%= @feedback.count %> most recent / <%= @feedback.total_count %> total)</h6>
+<ol>
+  <% @feedback.each do |feedback| %>
+    <li><%= link_to truncate(feedback.body.squish, length: 100, omission: "..."), edit_feedback_path(feedback) %></li>
+  <% end %>
+</ol>

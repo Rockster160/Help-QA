@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
       shouts: current_user.shouts.unread.count,
       invites: current_user.invites.unread.count
     }
-    @notifications.merge!(modq: Post.needs_moderation.count + Reply.needs_moderation.count) if current_mod?
+    @notifications.merge!(modq: Post.needs_moderation.count + Reply.needs_moderation.count + Feedback.unresolved.count) if current_mod?
   end
 
   def unauth_banned_user
