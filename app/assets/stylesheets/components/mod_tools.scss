@@ -1,6 +1,7 @@
 .ctr-posts.act-show .mod-tools {
   position: absolute;
-  top: 0;
+  top: 100%;
+  top: calc(100% + 8px);
   left: 8px;
   padding: 3px;
   background: white;

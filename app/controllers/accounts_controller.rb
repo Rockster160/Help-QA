@@ -36,6 +36,7 @@ class AccountsController < ApplicationController
       flash.now[:alert] = "Please select a file to upload."
       return render :avatar
     end
+    
     if current_user.update(user_params)
       render :avatar
     else
