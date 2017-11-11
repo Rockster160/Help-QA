@@ -46,3 +46,34 @@
     }
   }
 }
+
+.link-img, .video-container {
+  display: block;
+  width: 100%;
+  max-width: 450px;
+
+  &.broken {
+    width: 20px;
+    height: 20px;
+  }
+
+  img {
+    width: auto;
+    max-width: 100%;
+  }
+  .video-wrapper {
+    padding-bottom: 56.25%; /* 16:9 */
+    position: relative;
+    height: 0;
+
+    .link-vid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
