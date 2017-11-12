@@ -7,6 +7,7 @@ module LinkPreviewHelper
   end
 
   def generate_link_preview_for_url(raw_url, clear: false, generate_if_nil: false)
+    return if Rails.env.development? && raw_url.include?("localhost:4357")
     raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
     return if raw_url[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods together
     url = "http://#{raw_url.gsub(/^\/*/, '')}" if raw_url[/http/i].nil?

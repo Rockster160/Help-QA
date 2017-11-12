@@ -36,7 +36,7 @@ class AccountsController < ApplicationController
       flash.now[:alert] = "Please select a file to upload."
       return render :avatar
     end
-    
+
     if current_user.update(user_params)
       render :avatar
     else
@@ -69,8 +69,11 @@ class AccountsController < ApplicationController
   def athenticate_confirmation_token!
     return redirect_to root_path, alert: "Your account is already verified." if user_signed_in? && current_user.verified? && current_user.confirmed? && current_user.encrypted_password.present?
     confirmation_token = params[:confirmation_token] || params.dig(:user, :confirmation_token)
-    return redirect_to new_user_session_path, alert: "Invalid token. Please use the link we sent to your email to confirm your account." unless confirmation_token.present?
-    @user = User.find_by(confirmation_token: confirmation_token)
+    if confirmation_token.nil? && user_signed_in?
+      current_user.send_confirmation_email
+      return redirect_to root_path, notice: "We just sent you an email containing a confirmation link. Click that link to confirm your account."
+    end
+    @user = confirmation_token.present? ? User.find_by(confirmation_token: confirmation_token) : nil
     return redirect_to new_user_session_path, alert: "Invalid token. Please use the link we sent to your email to confirm your account." unless @user.present?
 
     if @user.encrypted_password.present?

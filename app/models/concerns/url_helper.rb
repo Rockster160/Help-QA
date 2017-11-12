@@ -1,8 +1,13 @@
 module UrlHelper
+
   def root_domain
     url_opts = ActionMailer::Base.default_url_options
     port_str = url_opts[:host] == "localhost" ? ":#{url_opts[:port]}" : ""
     "#{url_opts[:protocol] || 'http'}://#{url_opts[:host]}#{port_str}"
+  end
+
+  def route_for(route_sym, params={})
+    Rails.application.routes.url_helpers.send(route_sym, params)
   end
 
   def url_for(path)

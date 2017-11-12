@@ -1,5 +1,6 @@
 module Accountable
   extend ActiveSupport::Concern
+  include UrlHelper
   RESERVED_WORDS_FOR_USERNAME = ["anonymous", "guest"].freeze
 
   included do
@@ -31,14 +32,28 @@ module Accountable
   end
 
   def account_completion
-    steps = {
-      "Confirm account (Verify email and add password)" => verified? && encrypted_password.present?,
-      "Update Username" => has_updated_username?,
-      "Upload Avatar" => avatar_image_file_name.present? || avatar_url.present?,
-      "Add Bio" => profile.about.present?,
-      "Make your first post" => posts.count.positive?,
-      "Help somebody (Comment on a post)" => replies.joins(:post).where.not(posts: { author_id: id }).count.positive?
-    }
+    step_data = [
+      [:help, :user_confirmation_path, "Confirm account (Verify email and add password)", "Confirm Account - We'll email you a new confirmation email.", verified? && encrypted_password.present?],
+      [:help, :account_settings_path, "Update Username", nil, has_updated_username?],
+      [:help, :avatar_account_path, "Upload Avatar", nil, avatar_image_file_name.present? || avatar_url.present?],
+      [:help, :account_profile_index_path, "Add Bio", nil, profile.about.present?],
+      [:help, :new_post_path, "Make your first post", nil, posts.count.positive?],
+      [:help, :root_path, "Help somebody (Comment on a post)", nil, replies.joins(:post).where.not(posts: { author_id: id }).count.positive?]
+    ]
+    steps = {}
+    step_data.each do |step|
+      icon, url_sym, message, title, completed = *step
+      route_params = url_sym == :user_confirmation_path ? {user: {email: email}} : {}
+      route = route_for(url_sym, route_params)
+      completion_icon = if completed
+        ApplicationHelper.hover_icon("check", "complete")
+      else
+        ApplicationHelper.hover_icon("cross", "incomplete")
+      end
+      link = ApplicationHelper.hover_icon(icon, title || message, href: route)
+      built_message = "#{link} #{completion_icon} #{message}"
+      steps[built_message] = completed
+    end
     update(completed_signup: true) if !completed_signup? && steps.values.all?
     steps
   end
@@ -211,7 +226,10 @@ module Accountable
       errors.add(:username, "cannot contain spaces")
     end
     if username.include?("@")
-      errors.add(:username, "cannot contain @'s'")
+      errors.add(:username, "cannot contain @'s")
+    end
+    if username.include?("`")
+      errors.add(:username, "cannot contain `'s")
     end
     unless username.length > 3
       errors.add(:username, "must be at least 4 characters")

@@ -9,6 +9,7 @@
 #  created_at      :datetime
 #  reply_id        :integer
 #  read_at         :datetime
+#  updated_at      :datetime
 #
 
 class Invite < ApplicationRecord

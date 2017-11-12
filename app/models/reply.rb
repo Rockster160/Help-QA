@@ -35,7 +35,6 @@ class Reply < ApplicationRecord
 
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
-  scope :not_removed,       -> { where(removed_at: nil) }
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :favorited,         -> { where("favorite_count > 0") }
   scope :removed,           -> { where.not(removed_at: nil) }
@@ -114,11 +113,11 @@ class Reply < ApplicationRecord
 
   def invite_users
     return if posted_anonymously?
-    invited_friends = []
     body.scan(/@([^ \`\@]+)/) do |username_tag|
-      friend = author.friends.by_username($1)
-      invite = friend.invites.create(post: post, reply: self, from_user: author) if friend && invited_friends.exclude?(friend.id)
-      invited_friends << friend.try(:id)
+      user = User.by_username($1)
+      if user.present? && (user.friends?(author) || !user.settings.friends_only?)
+        user.invites.create(post: post, reply: self, from_user: author)
+      end
     end
   end
 

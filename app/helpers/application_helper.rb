@@ -87,8 +87,8 @@ module ApplicationHelper
   end
 
   def hover_icon(icon, alt, options={})
-    style = "background-image: url(#{image_path('icon_sheet.png')})"
-    img = image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon.to_s.gsub('_', '-')}")
+    style = "background-image: url(#{ActionController::Base.helpers.asset_path('icon_sheet.png', digest: false)})"
+    img = ActionController::Base.helpers.image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon.to_s.gsub('_', '-')}")
 
     if options[:href].present?
       method = options[:method].present? ? "data-method=\"#{options[:method]}\"" : ""
@@ -98,6 +98,7 @@ module ApplicationHelper
       "<#{options[:tag]} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
     end
   end
+  module_function :hover_icon
 
   def avatar(avatar_src, options={})
     avatar_container_hash = {}
