@@ -17,4 +17,8 @@ ul.account-completion {
   .half:first-of-type {
     padding-right: 30px;
   }
+
+  @include xsmall-down {
+    @include unsplit;
+  }
 }

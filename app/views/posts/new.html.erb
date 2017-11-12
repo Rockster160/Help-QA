@@ -10,12 +10,16 @@
     </div>
     <div class="post-controls">
       <% unless user_signed_in? %>
-        <label for="new-post-email">Email: </label>
-        <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) %>">
+        <div class="input-wrapper">
+          <label for="new-post-email">Email: </label>
+          <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) %>">
+        </div>
       <% end %>
-      <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
-      <%= f.label :posted_anonymously, "Post Anonymously?" %>
-      <%= f.submit "Post!" %>
+      <div class="input-wrapper">
+        <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
+        <%= f.label :posted_anonymously, "Post Anonymously?" %>
+      </div>
+      <div class="input-wrapper"><%= f.submit "Post!" %></div>
       <% unless user_signed_in? %>
         <div class="small-text">
           Email address is required <br>

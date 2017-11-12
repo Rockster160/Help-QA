@@ -8,11 +8,16 @@
   }
   .post-controls {
     font-size: 12px;
-    
+
     .small-text {
       vertical-align: middle;
       display: inline-block;
       font-size: 8px;
+    }
+
+    @include xsmall-down {
+      text-align: center;
+      & > * { display: block; }
     }
   }
 }

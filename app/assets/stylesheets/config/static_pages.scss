@@ -20,7 +20,10 @@
         min-width: 300px;
         width: 300px;
       }
-      .new-user-sections {}
+
+      @include small-down {
+        @include unsplit;
+      }
     }
   }
 }

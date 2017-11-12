@@ -44,20 +44,24 @@
     <div class="body" data-inline-links><%= markdown(poll_post: @post, posted_by_user: @post.author, with: [:inline_previews]) { @post.body[@post.title.length..-1] } %></div>
     <div class="details">
       This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong>
-      | Views: <%= @post.views.count %>,
+      <span class="small-up">|</span>
+      <br class="xsmall-down">
+      Views: <%= @post.views.count %>,
       Subscribers: <%= @post.subscriptions.count %>
+      <span class="small-up">|</span>
+      <br class="xsmall-down">
       <% if @post.author == current_user || current_user.try(:can_edit_posts?) %>
-        | <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong>
+        <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
       <% end %>
-      | <a rel="nofollow" href="#reply_body" class="underline">Leave a reply</a>
+      <a rel="nofollow" href="#reply_body" class="underline">Leave a reply</a> |
       <% if user_signed_in? %>
         <% if @post.user_subscribed?(current_user) %>
-          | <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: false) %>" class="underline">Unsubscribe from Replies</a>
+          <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: false) %>" class="underline">Unsubscribe from Replies</a> |
         <% else %>
-          | <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: true) %>" class="underline">Subscribe to Replies</a>
+          <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: true) %>" class="underline">Subscribe to Replies</a> |
         <% end %>
       <% end %>
-      | <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
+      <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
     </div>
   </div>
 </div>
@@ -110,7 +114,7 @@
       <div class="new-reply-container">
         <%= form_for [@post, Reply.new] do |f| %>
           <%= f.label :body, "Reply:" %>
-          <%= f.text_area :body, rows: 12, class: "js-clear-text-after-focus autofillable-field", value: "Post a reply" %>
+          <%= f.text_area :body, rows: 8, class: "js-clear-text-after-focus autofillable-field", value: "Post a reply" %>
           <% if user_signed_in? %>
             Post as <strong><%= current_user.username %></strong> (No? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)
           <% else %>
@@ -118,8 +122,10 @@
             <%= text_field_tag "new_user[email]", "", class: "full-width" %>
           <% end %>
 
-          <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
-          <%= f.label :posted_anonymously, "Post Anonymously?" %>
+          <div class="input-wrapper">
+            <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
+            <%= f.label :posted_anonymously, "Post Anonymously?" %>
+          </div>
           <%= f.submit "Send Reply" %>
         <% end %>
       </div>

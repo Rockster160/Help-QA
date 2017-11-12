@@ -16,6 +16,10 @@ body {
   border: 3px double white;
   padding: 25px 15px;
   color: $text-dark;
+
+  @include small-down {
+    padding: 15px 5px;
+  }
 }
 
 .footer {

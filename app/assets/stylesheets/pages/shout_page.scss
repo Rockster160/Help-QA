@@ -14,6 +14,7 @@
       font-size: 10px;
       color: black;
     }
+    @include xsmall-down { font-size: 22px; }
   }
 
   .shout-wrapper {
@@ -33,12 +34,8 @@
             width: 100%;
             padding-left: 5px;
 
-            .author-name {
-              font-size: 14px;
-            }
-            .timestamp {
-              font-size: 10px;
-            }
+            .author-name { font-size: 14px; }
+            .timestamp { font-size: 10px; }
           }
         }
         .shout-body {
@@ -69,6 +66,21 @@
 
       .shout-list, .new-shout {
         width: 100%;
+
+        .shout-users {
+          border-bottom: 1px solid $text-dark;
+          margin-bottom: 20px;
+
+          .avatar-container {
+            width: 30px !important; // These values are normally generated in the ApplicationHelper
+            height: 30px !important; // These values are normally generated in the ApplicationHelper
+
+            .avatar {
+              font-size: 25px !important; // These values are normally generated in the ApplicationHelper
+              line-height: 28px !important; // These values are normally generated in the ApplicationHelper
+            }
+          }
+        }
       }
     }
   }

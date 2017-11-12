@@ -18,7 +18,7 @@
         <p>Leave a shout for <%= @other_user.username %></p>
       <% end %>
       <%= form_for [@other_user, Shout.new] do |f| %>
-        <%= f.text_area :body, rows: 10, class: "autofillable-field" %>
+        <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
         <div class="text-right">
           <%= f.submit "Shout!" %>
         </div>

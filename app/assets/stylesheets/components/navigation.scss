@@ -111,28 +111,51 @@
         }
       }
     }
-  }
-
-  @include small-down {
-    .navigation-container {
+    @include small-down {
       padding-bottom: 50px;
+      text-align: center;
+
+      .navigation-head {
+        display: block;
+      }
+      .profile-tab {
+        .dropdown-list { text-align: left; }
+        .notices-container { height: 20px; }
+      }
     }
-  }
-  @include xxsmall-only {
-    .navigation-container {
-      padding-bottom: 70px;
+    @include xxsmall-only {
+      padding-bottom: 0px;
+      margin-bottom: -3px;
 
       .profile-tab {
-        height: 70px;
-        width: auto;
-        left: 10px;
+        position: relative;
+        margin: 10px auto 0;
+        padding: 3px;
+        height: auto;
+        width: 100%;
+        top: inherit;
+        left: inherit;
+        right: inherit;
+        bottom: inherit;
 
         .account-wrapper {
+          small {
+            position: relative;
+            display: block;
+            text-align: left;
+          }
           .account-dropdowns {
-            top: 50px;
+            position: relative;
+            text-align: center;
+            margin-top: 40px;
+            top: 0;
             left: 0;
             right: 0;
-            text-align: center;
+            down: 0;
+
+            .dropdown-list {
+              text-align: left;
+            }
           }
         }
         .notices-container {

@@ -240,4 +240,74 @@
       }
     }
   }
+
+  @include xsmall-down {
+    .body-wrapper > *:not(.mod-tools) { @include unsplit; }
+    .post-container {
+      .author-details .avatar-container {
+        display: block !important;
+        margin: 0 auto;
+        width: 100px !important; // These values are normally generated in the ApplicationHelper
+        height: 100px !important; // These values are normally generated in the ApplicationHelper
+
+        .avatar {
+          font-size: 95px !important; // These values are normally generated in the ApplicationHelper
+          line-height: 98px !important; // These values are normally generated in the ApplicationHelper
+        }
+      }
+      .words { padding: 0 5px; }
+    }
+    .post-section {
+      .post-section-content {
+        .replies-container {
+          padding: 0;
+          .reply-container {
+            &.attached {
+              &.pending {}
+              &.removed {}
+            }
+            &.deactivated:after {}
+            .reply-author {
+              @include unsplit;
+              .avatar-container {}
+              .reply-author-text {
+                padding: 0;
+                .reply-author-name {}
+                .reply-author-stats {
+                  .detail-icons {}
+                }
+              }
+              .reply-options {
+                top: 0;
+                bottom: inherit;
+                border-bottom: 1px solid $border-color;
+                border-top: none;
+                width: auto;
+                .hover-icon {}
+              }
+            }
+            .reply-content {
+              p {}
+            }
+            .reply-after-message {
+              p {}
+            }
+            &.highlight {}
+            &.original-poster {
+              .reply-author {}
+              .reply-content {}
+            }
+          }
+          .pending-reply {
+            &.removed {}
+          }
+        }
+        .reply-errors {}
+        .new-reply-container {
+          label {}
+          textarea {}
+        }
+      }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 form {
   &, p, i, label, input { font-size: 12px; }
+  textarea, input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=radio]) { font-size: 16px; }
 
   .form-section {
     color: black;
@@ -16,7 +17,21 @@ form {
       border-left: 1px solid $border-color;
       padding: 5px;
     }
+
+    @include xsmall-down {
+      @include unsplit;
+
+      .description {
+        border-left: none;
+        border-bottom: 1px solid $border-color;
+      }
+    }
   }
+}
+
+.input-wrapper { display: inline; }
+@include xsmall-down {
+  .input-wrapper { display: block; }
 }
 
 .checkbox {
@@ -59,5 +74,14 @@ form {
 
     ol { padding-left: 20px; }
     p, li { font-size: 12px;}
+  }
+
+  @include xsmall-down {
+    @include unsplit;
+
+    display: flex;
+    flex-direction: column-reverse;
+
+    form .fields { margin: 0 10px; }
   }
 }
