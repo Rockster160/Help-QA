@@ -12,7 +12,7 @@ class SettingsController < ApplicationController
     if @settings.update(user_settings_params)
       redirect_to account_settings_path, notice: "Successfully updated settings!"
     else
-      redirect_to account_settings_path, notice: "Failed to update settings. Please try again."
+      redirect_to account_settings_path, alert: "Failed to update settings. Please try again."
     end
   end
 
