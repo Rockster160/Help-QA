@@ -60,4 +60,13 @@ form {
     ol { padding-left: 20px; }
     p, li { font-size: 12px;}
   }
+
+  @include xsmall-down {
+    @include unsplit;
+
+    display: flex;
+    flex-direction: column-reverse;
+
+    form .fields { margin: 0 10px; }
+  }
 }

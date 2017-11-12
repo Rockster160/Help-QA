@@ -118,6 +118,10 @@
       .navigation-head {
         display: block;
       }
+      .profile-tab {
+        .dropdown-list { text-align: left; }
+        .notices-container { height: 20px; }
+      }
     }
     @include xxsmall-only {
       padding-bottom: 0px;
@@ -148,6 +152,10 @@
             left: 0;
             right: 0;
             down: 0;
+
+            .dropdown-list {
+              text-align: left;
+            }
           }
         }
         .notices-container {
