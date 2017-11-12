@@ -20,8 +20,6 @@
   }
 }
 
-.split-half { @include split-page(50%); }
-
 @mixin unsplit {
   display: flex;
   flex-direction: column;
