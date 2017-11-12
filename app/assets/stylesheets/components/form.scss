@@ -1,5 +1,6 @@
 form {
   &, p, i, label, input { font-size: 12px; }
+  textarea, input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=radio]) { font-size: 16px; }
 
   .form-section {
     color: black;
@@ -26,6 +27,11 @@ form {
       }
     }
   }
+}
+
+.input-wrapper { display: inline; }
+@include xsmall-down {
+  .input-wrapper { display: block; }
 }
 
 .checkbox {
