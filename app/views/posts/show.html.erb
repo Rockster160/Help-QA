@@ -43,12 +43,10 @@
     <div class="title"><%= markdown(except: [:link_previews, :link_titleize]) { @post.title } %></div>
     <div class="body" data-inline-links><%= markdown(poll_post: @post, posted_by_user: @post.author, with: [:inline_previews]) { @post.body[@post.title.length..-1] } %></div>
     <div class="details">
-      This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong>
-      <span class="small-up">|</span>
+      This <strong><%= @post.open? ? "open" : "closed" %></strong> post was written <strong><%= timeago(@post.created_at) %></strong> | 
       <br class="xsmall-down">
       Views: <%= @post.views.count %>,
-      Subscribers: <%= @post.subscriptions.count %>
-      <span class="small-up">|</span>
+      Subscribers: <%= @post.subscriptions.count %> | 
       <br class="xsmall-down">
       <% if @post.author == current_user || current_user.try(:can_edit_posts?) %>
         <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
