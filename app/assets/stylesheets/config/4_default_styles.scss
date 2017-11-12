@@ -34,6 +34,8 @@ hr {
   border: 1px solid $grey-light;
 }
 
+li { font-size: 14px; }
+
 a {
   text-decoration: none;
   color: $link-default;
@@ -46,4 +48,12 @@ a {
   text-align: center;
   font-size: 12px;
   margin-bottom: 20px;
+}
+
+@include xsmall-down {
+  h4 { font-size: 16px; }
+  h3 { font-size: 20px; }
+  h2 { font-size: 22px; }
+  h1 { font-size: 24px; }
+  input { font-size: 16px; }
 }

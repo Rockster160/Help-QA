@@ -1,20 +1,20 @@
 <h1>Moderation Queue</h1>
 
-<h6>Moderated Posts (<%= @posts.count %> most recent / <%= @posts.total_count %> total)</h6>
+<h6>Moderated Posts <br class="xsmall-down">(<%= @posts.count %> most recent / <%= @posts.total_count %> total)</h6>
 <ol>
   <% @posts.each do |post| %>
     <li><%= link_to post.title, post_path(post) %></li>
   <% end %>
 </ol>
 
-<h6>Moderated Replies (<%= @replies.count %> most recent / <%= @replies.total_count %> total)</h6>
+<h6>Moderated Replies <br class="xsmall-down">(<%= @replies.count %> most recent / <%= @replies.total_count %> total)</h6>
 <ol>
   <% @replies.each do |reply| %>
     <li><%= link_to truncate(reply.body, length: 100, omission: "..."), post_path(reply.post, anchor: "reply-#{reply.id}") %></li>
   <% end %>
 </ol>
 
-<h6>Unresolved Feedback (<%= @feedback.count %> most recent / <%= @feedback.total_count %> total)</h6>
+<h6>Unresolved Feedback <br class="xsmall-down">(<%= @feedback.count %> most recent / <%= @feedback.total_count %> total)</h6>
 <ol>
   <% @feedback.each do |feedback| %>
     <li><%= link_to truncate(feedback.body.squish, length: 100, omission: "..."), edit_feedback_path(feedback) %></li>
