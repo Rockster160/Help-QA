@@ -50,5 +50,9 @@
         display: block;
       }
     }
+    @include small-down {
+      width: auto;
+      margin: 10px;
+    }
   }
 }
