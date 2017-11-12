@@ -123,4 +123,56 @@
     }
   }
 
+  @include xsmall-down {
+    .profile-wrapper {
+      @include unsplit;
+
+      .mini-profile, .user-activity {
+        padding: 0 5px;
+
+        & > .avatar-container {
+          margin: 0 auto;
+          display: block !important;
+        }
+      }
+      .user-activity {
+        .user-stats {
+          .user-stat-name { display: none; }
+          .user-stat-value td {
+            display: block;
+            font-size: 12px;
+            height: 25px;
+            line-height: 25px;
+            margin: 0;
+            padding: 0;
+            border-left: none;
+            border-bottom: 2px solid white;
+            width: 100%;
+            max-width: inherit;
+
+            &:before {
+              content: attr(data-label);
+              float: left;
+              font-weight: bold;
+              font-size: 10px;
+              line-height: 25px;
+              width: 50%;
+              padding-left: 5px;
+              text-align: left;
+            }
+          }
+        }
+        .recent-posts {
+          .recent-post {
+            a { font-size: 14px; }
+            i { display: block; }
+            p { margin-top: 5px; }
+          }
+          .post-index-wrapper {
+            a { font-size: 14px; }
+          }
+        }
+      }
+    }
+  }
 }
