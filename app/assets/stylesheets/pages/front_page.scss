@@ -22,11 +22,10 @@
     padding: 0 10px;
     margin: 0 auto;
     margin-bottom: 50px;
+
     h6, p { font-size: 14px; }
     p { margin: 0; }
-    .tags {
-      font-size: 12px;
-    }
+    .tags { font-size: 12px; }
     .popular-post {
       border: 1px solid lighten($help-default, 35%);
       margin: 10px auto;
@@ -38,12 +37,12 @@
       h6 { border-color: $help-default; }
       .post {
         @include split-page(25px);
+
         .words {
           vertical-align: top;
           padding-left: 4px;
-          .title {
-            font-size: 18px;
-          }
+
+          .title { font-size: 18px; }
           .details {
             font-size: 12px;
             color: black;
@@ -51,9 +50,7 @@
         }
       }
     }
-    .recent-members {
-      font-size: 0;
-    }
+    .recent-members { font-size: 0; }
   }
   .posts-side {
     padding-left: 10px;
@@ -61,20 +58,34 @@
 
     .posts-wrapper {
       h1 { margin-top: 20px; }
-      .tags {
-        font-size: 10px;
-      }
-      .posts-container {
-        overflow: hidden;
-      }
+      .tags { font-size: 10px; }
+      .posts-container { overflow: hidden; }
     }
   }
-  // @media(max-width: 950px) {
-  //   display: flex;
-  //   flex-direction: column;
-  //   .users-side {
-  //     max-width: 350px;
-  //     width: auto;
-  //   }
-  // }
+
+  @include unsplit-small {
+    flex-direction: column-reverse;
+
+    & > * { margin: 10px auto; }
+    .users-side {
+      text-align: center;
+
+      & > * {
+        display: inline-block;
+        vertical-align: top;
+        max-width: 350px;
+        min-width: 350px;
+        width: 50%;
+        margin: 5px;
+        text-align: left;
+      }
+      .popular-post { margin: 5px; } // Specificity selector
+    }
+  }
+  @include xxsmall-only {
+    .users-side > * {
+      min-width: inherit;
+      width: 100%;
+    }
+  }
 }
