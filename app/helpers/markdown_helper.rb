@@ -156,7 +156,6 @@ module MarkdownHelper
     url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)|http\:\/\/localhost:[0-9]{4})/
     add_to_text = ""
 
-
     text = text.gsub(url_regex) do |found_match|
       pre_char = found_match[0]
       link = found_match[1..-1]

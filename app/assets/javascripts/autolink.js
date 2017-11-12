@@ -1,4 +1,4 @@
-$(".ctr-posts.act-show, .ctr-users.act-show").ready(function() {
+$(".ctr-posts.act-show, .ctr-users.act-show, .ctr-shouts").ready(function() {
   function onPageLoaded() {
     var jqxhrs = [];
 
@@ -66,14 +66,14 @@ addCards = function(cards_data) {
   $(cards_data).each(function() {
     var card = this
     var $link = $('[data-loading-preview] > a[href="' + card.original_url + '"]'), $wrapper = $link.parent()
-    $link.removeAttr("data-loading-preview")
+    $link.parent().removeAttr("data-loading-preview")
 
     if (card.inline || $link.parents("[data-inline-links]").length > 0) {
       $link.html(card.html)
     } else {
       $link.html('<a rel="nofollow" href="' + card.url + '">[' + card.title + "]</a>")
       new_link = $(card.html)
-      $link.closest("quote, .reply-content").append(new_link)
+      $link.closest("quote, .reply-content, .shout-body").append(new_link)
     }
   })
   $("[data-loading-preview]").each(function() {
@@ -88,7 +88,6 @@ loadAllLinks = function() {
   var $links = $("[data-load-link]"), links_to_generate = []
 
   if ($links.length == 0) { return }
-
 
   $links.each(function() {
     var $link = $(this), link_href = $link.attr("data-load-link")
