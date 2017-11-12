@@ -8,11 +8,18 @@
   }
   .post-controls {
     font-size: 12px;
-    
+
     .small-text {
       vertical-align: middle;
       display: inline-block;
       font-size: 8px;
+    }
+    .input-wrapper { display: inline; }
+
+    @include xsmall-down {
+      .input-wrapper, & > * { display: block; }
+
+      text-align: center;
     }
   }
 }
