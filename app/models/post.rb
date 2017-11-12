@@ -216,7 +216,7 @@ class Post < ApplicationRecord
   end
 
   def subscribe_author
-    if created_at == updated_at
+    if created_at == updated_at && !author.helpbot?
       subscriptions.find_or_create_by(user_id: author_id)
     end
   end
