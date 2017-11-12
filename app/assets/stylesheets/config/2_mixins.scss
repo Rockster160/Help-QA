@@ -22,21 +22,17 @@
 
 .split-half { @include split-page(50%); }
 
-@mixin unsplit-small {
-  @include small-down {
-    display: flex;
-    flex-direction: column;
+@mixin unsplit {
+  display: flex;
+  flex-direction: column;
 
-    & > * {
-      display: block;
+  & > * {
+    display: block;
 
-      &:first-child, &:last-child {
-        min-width: inherit;
-        width: inherit;
-        max-width: inherit;
-      }
+    &:first-child, &:last-child {
+      min-width: inherit;
+      width: inherit;
+      max-width: inherit;
     }
-
-    @content
   }
 }

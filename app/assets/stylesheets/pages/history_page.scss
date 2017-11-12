@@ -51,4 +51,8 @@
       margin-bottom: 10px;
     }
   }
+
+  @include xxsmall-down {
+    @include unsplit;
+  }
 }

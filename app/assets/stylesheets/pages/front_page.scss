@@ -63,7 +63,8 @@
     }
   }
 
-  @include unsplit-small {
+  @include small-down {
+    @include unsplit;
     flex-direction: column-reverse;
 
     & > * { margin: 10px auto; }
