@@ -65,19 +65,19 @@
         <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>
         <% if current_mod? %>
           <% if reply.removed? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:bin_t, "Restore Reply") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Restore Reply") %></a>
           <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:bin, "Delete Reply") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:bin_t, "Delete Reply") %></a>
           <% end %>
           <% if reply.marked_as_adult? %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><%= hover_icon(:link_t, "Mark Reply as Safe") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><%= hover_icon(:link, "Mark Reply as Safe") %></a>
           <% else %>
-            <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><%= hover_icon(:link, "Mark Reply as NSFW/Adult") %></a>
+            <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><%= hover_icon(:link_t, "Mark Reply as NSFW/Adult") %></a>
           <% end %>
           <% if reply.in_moderation? %>
-            <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell_t, "Unmoderate") %></a>
+            <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell, "Unmoderate") %></a>
           <% else %>
-            <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell, "Moderate") %></a>
+            <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell_t, "Moderate") %></a>
           <% end %>
           <!-- <a rel="nofollow" href="<%#= FIXME mod_edit_reply_path(reply) %>"><%= hover_icon(:comment_edit, "Edit Reply") %></a> -->
         <% end %>
