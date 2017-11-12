@@ -2,6 +2,7 @@
 
   .feedback-wrapper {
     @include split-page(350px);
+
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
@@ -25,6 +26,12 @@
         margin-left: -20px;
       }
       textarea { resize: vertical; }
+    }
+  }
+
+  @include xsmall-down {
+    .feedback-wrapper {
+      @include unsplit;
     }
   }
 }
