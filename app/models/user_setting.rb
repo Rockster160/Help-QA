@@ -18,9 +18,15 @@ class UserSetting < ApplicationRecord
 
   before_validation :set_required
 
+  after_commit :reset_cache
+
   delegate :child?, to: :user
 
   private
+
+  def reset_cache
+    ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("friends_only")
+  end
 
   def set_required
     unless user.adult?

@@ -61,7 +61,7 @@
       }
     }
 
-    @include xsmall-only {
+    @include xsmall-down {
       flex-direction: column-reverse;
 
       .shout-list, .new-shout {
