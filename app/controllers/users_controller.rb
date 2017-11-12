@@ -27,12 +27,19 @@ class UsersController < ApplicationController
     @user = current_user
     @settings = @user.settings
     sign_in_again = current_user == @user
+    did_update_age = params.dig(:user, :date_of_birth).present?
 
-    if Sherlock.update_by(current_user, @user, user_params)
-      bypass_sign_in(@user) if sign_in_again
-      @user.delay.deliver_confirmation_email if user_params[:email].present?
-      redirect_to account_settings_path, notice: "Success!"
+    if @user.update(user_params)
+      if did_update_age && @user.age.nil?
+        flash.now[:alert] = "Your birthday must match the format MM/DD/YYYY"
+        render "settings/index"
+      else
+        bypass_sign_in(@user) if sign_in_again
+        @user.delay.deliver_confirmation_email if user_params[:email].present?
+        redirect_to account_settings_path, notice: "Success!"
+      end
     else
+      flash.now[:alert] ||= "Failed to update your account settings."
       render "settings/index"
     end
   end

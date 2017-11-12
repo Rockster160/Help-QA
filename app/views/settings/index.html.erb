@@ -142,12 +142,16 @@
     </div>
   </div>
 
-  <h6 class="form-section">Hide Adult Posts</h6>
+  <% if @user.child? %>
+    <p class="danger">Please verify your age before continuing.</p>
+  <% end %>
+
+  <h6 class="form-section" style="margin-top: 20px;">Hide Adult Posts</h6>
   <div class="split-form">
     <div class="buttons">
-      <%= f.radio_button :hide_adult_posts, true %>
+      <%= f.radio_button :hide_adult_posts, true, disabled: @user.child? %>
       <%= f.label :hide_adult_posts_true, "Do NOT show adult posts" %> <br>
-      <%= f.radio_button :hide_adult_posts, false %>
+      <%= f.radio_button :hide_adult_posts, false, disabled: @user.child? %>
       <%= f.label :hide_adult_posts_false, "Show adult posts" %>
     </div>
     <div class="description">
@@ -158,9 +162,9 @@
   <h6 class="form-section">Censor Inappropriate Language</h6>
   <div class="split-form">
     <div class="buttons">
-      <%= f.radio_button :censor_inappropriate_language, true %>
+      <%= f.radio_button :censor_inappropriate_language, true, disabled: @user.child? %>
       <%= f.label :censor_inappropriate_language_true, "Censor innapropriate language" %> <br>
-      <%= f.radio_button :censor_inappropriate_language, false %>
+      <%= f.radio_button :censor_inappropriate_language, false, disabled: @user.child? %>
       <%= f.label :censor_inappropriate_language_false, "Show inappropriate language" %>
     </div>
     <div class="description">

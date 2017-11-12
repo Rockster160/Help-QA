@@ -120,6 +120,7 @@ module Accountable
         super(Date.parse(dob))
       end
     rescue ArgumentError
+      errors.add(:date_of_birth, "was not a valid date. Please be sure to use MM/DD/YYYY format.")
     end
   end
 
