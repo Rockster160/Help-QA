@@ -1,15 +1,15 @@
 <% meta_title "Account Invites &bull; Help-QA.com" %>
 
-<% if @unread_only %>
-  <%= link_to "Show All", {} %>
-<% else %>
-  <%= link_to "Show Unread Only", {show: :unread} %>
+<% @unread.each do |groupable_identifier, invites| %>
+  <p><%= hover_icon("new", "New Invite!") %> <%= invites.first.notice_message %></p>
 <% end %>
+
+<hr>
 
 <%= paginate @invites %>
 
 <% @invites.each do |invite| %>
-  <p><%= hover_icon("new", "New Notice!") if invite.unread? %> <%= invite.notice_message %></p>
+  <%= invite.notice_message %></p>
 <% end %>
 
 <%= paginate @invites %>

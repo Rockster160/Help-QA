@@ -1,10 +1,17 @@
 class InvitesController < ApplicationController
   before_action :authenticate_user
+  after_action :mark_as_read, only: :index
 
   def index
-    @unread_only = params[:show].to_s.to_sym == :unread
-    @invites = current_user.invites.order(created_at: :desc).page(params[:page])
-    @invites = @invites.unread if @unread_only
+    @all_invites = current_user.invites.order(created_at: :desc)
+    @invites = @all_invites.read.page(params[:page])
+    @unread = @all_invites.unread.group_by(&:groupable_identifier)
+  end
+
+  private
+
+  def mark_as_read
+    @all_invites.unread.each(&:read)
   end
 
 end

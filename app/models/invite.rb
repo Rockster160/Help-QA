@@ -26,6 +26,10 @@ class Invite < ApplicationRecord
     "#{from_user.username} invited you to the post <a href=\"#{link_to_reply}\">#{post.title}</a>".html_safe
   end
 
+  def groupable_identifier
+    "post-#{post_id}"
+  end
+
   private
 
   def broadcast_creation
