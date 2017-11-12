@@ -7,11 +7,13 @@ $screen-md-min: 992px;
 $screen-md-max: 1199px;
 $screen-lg-min: 1200px;
 
+@mixin xxsmall-up  { @include min(0) { @content; } }
 @mixin xsmall-up  { @include min($screen-xs-min) { @content; } }
 @mixin small-up  { @include min($screen-sm-min) { @content; } }
 @mixin medium-up { @include min($screen-md-min) { @content; } }
 // @mixin large-up  { @include min($screen-lg-min) { @content; } }
 
+@mixin xxsmall-down  { @include max($screen-xxs-max) { @content; } }
 @mixin xsmall-down  { @include max($screen-xs-max) { @content; } }
 @mixin small-down  { @include max($screen-sm-max) { @content; } }
 @mixin medium-down { @include max($screen-md-max) { @content; } }
@@ -38,3 +40,27 @@ $screen-lg-min: 1200px;
 @include small-only {
   // These styles will only be applied when the screen size is within 'small'
 }
+
+
+.xxsmall-down, .xxsmall-only, .xxsmall-up,
+.xsmall-down, .xsmall-only, .xsmall-up,
+.small-down, .small-only, .small-up,
+.medium-down, .medium-only, .medium-up,
+.large-down, .large-only, .large-up {
+  display: none;
+}
+.xxsmall-down { @include xxsmall-down { display: inherit; } }
+.xxsmall-only { @include xxsmall-only { display: inherit; } }
+.xxsmall-up { @include xxsmall-up { display: inherit; } }
+.xsmall-down { @include xsmall-down { display: inherit; } }
+.xsmall-only { @include xsmall-only { display: inherit; } }
+.xsmall-up { @include xsmall-up { display: inherit; } }
+.small-down { @include small-down { display: inherit; } }
+.small-only { @include small-only { display: inherit; } }
+.small-up { @include small-up { display: inherit; } }
+.medium-down { @include medium-down { display: inherit; } }
+.medium-only { @include medium-only { display: inherit; } }
+.medium-up { @include medium-up { display: inherit; } }
+// .large-down { @include large-down { display: inherit; } }
+.large-only { @include large-only { display: inherit; } }
+// .large-up { @include large-up { display: inherit; } }
