@@ -29,6 +29,9 @@
       <% options.merge!(href: user_path(@post.author)) if current_mod? %>
       <%= avatar(@post.avatar, options) %>
       <span class="anonymous">This post left anonymously</span>
+      <% if current_mod? %>
+        <a href="<%= user_path(@post.author) %>" title="<%= @post.author.username %>">Anonymous*</a>
+      <% end %>
     <% else %>
       <%= avatar(@post.avatar, size: 200, href: user_path(@post.author)) %>
       <div class="username"><%= @post.username %></div>
