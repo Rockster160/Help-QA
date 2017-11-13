@@ -85,8 +85,9 @@ module MarkdownHelper
     unless render_html
       text = text.gsub("<", "&lt;")
       text = "<p>#{text}</p>"
-      text = text.gsub("\n", "</p><p>")
       text = text.gsub("\r", "")
+      text = text.gsub("\n\n", "</p><p>")
+      text = text.gsub("\n", "<br>")
     end
     text
   end
