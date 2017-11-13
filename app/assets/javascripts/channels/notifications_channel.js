@@ -22,6 +22,7 @@ $(document).ready(function() {
       $("#notifications-notices").text(data.notices)
       $("#notifications-shouts").text(data.shouts)
       $("#notifications-invites").text(data.invites)
+      $("#notifications-mod-queue").text(data.modq)
     })
   }
 

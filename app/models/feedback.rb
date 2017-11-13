@@ -22,6 +22,7 @@ class Feedback < ApplicationRecord
   validate :message_exists
   validate :can_follow_up
   after_create :notify_slack
+  after_commit :broadcast_creation
 
   pg_search_scope :search_for, against: :body
   scope :unresolved, -> { where(completed_at: nil) }
@@ -40,6 +41,13 @@ class Feedback < ApplicationRecord
   end
 
   private
+
+  def broadcast_creation
+    mod_message = unresolved? ? "<a href=\"/mod/queue\">There is a new reply that requires approval.</a>" : ""
+    User.mod.each do |mod|
+      ActionCable.server.broadcast("notifications_#{mod.id}", message: mod_message)
+    end
+  end
 
   def notify_slack
     slack_message = "New Feedback from #{display_name}"
