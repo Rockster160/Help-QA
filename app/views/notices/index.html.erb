@@ -1,7 +1,7 @@
 <% meta_title "Account Notices &bull; Help-QA.com" %>
 
 <% @unread.each do |groupable_identifier, notices| %>
-  <p><%= hover_icon("new", "New Notice!") %> <%= notices.first.notice_message %></p>
+  <p><%= hover_icon("new", "New Notice!") %> <%= notices.last.notice_message %></p>
 <% end %>
 
 <hr>
