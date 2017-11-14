@@ -1,6 +1,6 @@
 class UserMailer < ApplicationMailer
   include UrlHelper
-  
+
   def notifications(user, message)
     @user = user
     @message = add_params_to_urls_in_message(message, auth: user.auth_token)
@@ -15,9 +15,9 @@ class UserMailer < ApplicationMailer
     @user = user
 
     mail({
-      to: user.email,
+      to: user.unconfirmed_email || user.email,
       subject: "Confirmation Instructions",
-      template_name: (user.pending_reconfirmation? && !user.verified?) ? 'reconfirmation_instructions' : 'confirmation_instructions'
+      template_name: user.unconfirmed_email.present? ? 'reconfirmation_instructions' : 'confirmation_instructions'
     })
   end
 end
