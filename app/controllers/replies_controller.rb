@@ -1,5 +1,6 @@
 class RepliesController < ApplicationController
   include LinkPreviewHelper
+  skip_before_action :verify_authenticity_token, only: :create
 
   def index
     @replies = Reply.conditional_adult(current_user).order(created_at: :desc).page(params[:page]).per(10)
