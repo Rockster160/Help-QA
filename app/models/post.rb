@@ -89,16 +89,12 @@ class Post < ApplicationRecord
     end
   end
 
-  def recreate
-    new_post = Post.create(attributes.slice("body", "author_id", "posted_anonymously", "closed_at", "marked_as_adult"))
-    destroy
-    new_post
-  end
-
   def title
     return "BROKEN" unless body.present?
     first_sentence = body.split(/[\!\.\n\;\?\r][ \r\n]/).reject(&:blank?).first
-    body[0..first_sentence.try(:length) || -1].gsub(/\[poll\]/, "")
+    long_title = body[0..first_sentence.try(:length) || -1].gsub(/\[poll\]/, "")
+    max_title_length = 200
+    cut_string_before_index_at_char(long_title, max_title_length)
   end
 
   def open?; !closed?; end
@@ -219,12 +215,6 @@ class Post < ApplicationRecord
     if created_at == updated_at && !author.helpbot?
       subscriptions.find_or_create_by(user_id: author_id)
     end
-  end
-
-  def short_title
-    cut_title = cut_string_before_index_at_char(title, 100)
-    return cut_title if cut_title.length <= 100
-    "#{cut_title}..."
   end
 
   def cut_string_before_index_at_char(str, idx, letter=" ")
