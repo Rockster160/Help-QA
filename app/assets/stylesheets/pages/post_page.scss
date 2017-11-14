@@ -310,4 +310,16 @@
       }
     }
   }
+
+  .helpbot-message {
+    .image-wrapper {
+      float: right;
+      height: 125px;
+
+      @include xsmall-down {
+        float: none;
+        height: auto
+      }
+    }
+  }
 }
