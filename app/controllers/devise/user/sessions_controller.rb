@@ -18,7 +18,7 @@ class Devise::User::SessionsController < Devise::SessionsController
       else
         @user.send_reset_password_instructions
       end
-      redirect_to root_path, notice: "You should receive instructions to your email on file assisting you in logging in."
+      redirect_to root_path, notice: "You should receive instructions to your email on file assisting you in logging in.\nBe sure to check your spam filter."
     else
       super
     end

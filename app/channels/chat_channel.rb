@@ -37,7 +37,9 @@ class ChatChannel < ApplicationCable::Channel
 
   def user_connected(send_list: true)
     current_users = [Rails.cache.read("users_chatting")].flatten.compact
-    current_users << current_username
+    if current_username == "Guest" || current_users.exclude?(current_username)
+      current_users << current_username
+    end
     Rails.cache.write("users_chatting", current_users)
     send_user_list if send_list
   end
