@@ -50,7 +50,7 @@ module Friendable
       ActionCable.server.broadcast("notifications_#{friend.id}", message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!")
     elsif existing_friendship.nil?
       friendships.create(user_id: self.id, friend_id: friend.id)
-      friend.notices.friend_request.create(notice_for_id: self.id)
+      friend.notices.friend_request.create(friend: self)
     end
   end
   def remove_friend(friend)

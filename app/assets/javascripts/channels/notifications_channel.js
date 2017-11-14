@@ -10,7 +10,7 @@ $(document).ready(function() {
     },
     disconnected: function() {},
     received: function(data) {
-      if (data["message"] != undefined) {
+      if (data["message"] != undefined && data["message"].length > 0) {
         addFlashNotice(data["message"])
       }
       updateNotifications()

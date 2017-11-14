@@ -110,10 +110,10 @@ class Post < ApplicationRecord
     subscriptions.find_by(user: user).try(:subscribed?)
   end
 
-  def notify_subscribers(not_user: nil)
+  def notify_subscribers(not_user: nil, reply_id: nil)
     subscribers.each do |subscriber|
       next if subscriber == not_user
-      subscriber.notices.subscription.create(notice_for_id: id)
+      subscriber.notices.subscription.create(post_id: id, reply_id: reply_id)
     end
   end
 

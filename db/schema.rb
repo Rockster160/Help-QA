@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171112001850) do
+ActiveRecord::Schema.define(version: 20171114005005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,9 +98,14 @@ ActiveRecord::Schema.define(version: 20171112001850) do
     t.string   "title"
     t.datetime "read_at"
     t.datetime "created_at"
-    t.integer  "notice_for_id"
     t.string   "url"
     t.datetime "updated_at"
+    t.integer  "post_id"
+    t.integer  "reply_id"
+    t.integer  "friend_id"
+    t.index ["friend_id"], name: "index_notices_on_friend_id", using: :btree
+    t.index ["post_id"], name: "index_notices_on_post_id", using: :btree
+    t.index ["reply_id"], name: "index_notices_on_reply_id", using: :btree
     t.index ["user_id"], name: "index_notices_on_user_id", using: :btree
   end
 

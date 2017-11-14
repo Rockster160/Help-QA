@@ -51,8 +51,8 @@ class PostsController < ApplicationController
   def show
     @post = Post.find(params[:id])
     if user_signed_in?
-      current_user.invites.unread.where(post_id: @post.id).each(&:read)
-      current_user.notices.subscription.unread.where(notice_for_id: @post.id).each(&:read)
+      current_user.invites.unread.where(post: @post).each(&:read)
+      current_user.notices.subscription.unread.where(post: @post).each(&:read)
       @post.views.create(viewed_by: current_user)
     end
     authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)

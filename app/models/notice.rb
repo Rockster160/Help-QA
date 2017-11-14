@@ -2,15 +2,17 @@
 #
 # Table name: notices
 #
-#  id            :integer          not null, primary key
-#  user_id       :integer
-#  notice_type   :integer
-#  title         :string
-#  read_at       :datetime
-#  created_at    :datetime
-#  notice_for_id :integer
-#  url           :string
-#  updated_at    :datetime
+#  id          :integer          not null, primary key
+#  user_id     :integer
+#  notice_type :integer
+#  title       :string
+#  read_at     :datetime
+#  created_at  :datetime
+#  url         :string
+#  updated_at  :datetime
+#  post_id     :integer
+#  reply_id    :integer
+#  friend_id   :integer
 #
 
 class Notice < ApplicationRecord
@@ -19,6 +21,9 @@ class Notice < ApplicationRecord
   include UrlHelper
 
   belongs_to :user
+  belongs_to :post, optional: true
+  belongs_to :reply, optional: true
+  belongs_to :friend, class_name: "User", optional: true
 
   scope :by_type, ->(*types) { where(notice_type: Notice.notice_types.symbolize_keys.slice(*types.map(&:to_sym)).values) }
 
@@ -45,8 +50,8 @@ class Notice < ApplicationRecord
   def groupable_identifier
     case notice_type.to_sym
     when :other              then title
-    when :subscription       then "post-#{notice_for_id}"
-    when :friend_request     then "friend-#{notice_for_id}"
+    when :subscription       then "post-#{post_id}"
+    when :friend_request     then "friend-#{friend_id}"
     else "[INVALID]"
     end
   end
@@ -56,15 +61,17 @@ class Notice < ApplicationRecord
   end
 
   def subscription_message(passed_root: nil)
-    post = Post.find(notice_for_id)
-    post_path = Rails.application.routes.url_helpers.post_path(post)
+    post_path = if reply_id.present?
+      Rails.application.routes.url_helpers.post_path(post_id, anchor: "reply-#{reply_id}")
+    else
+      Rails.application.routes.url_helpers.post_path(post_id)
+    end
     "New Comment on #{link_to(post.title, post_path, passed_root: passed_root)}".html_safe
   end
 
   def friend_request_message(passed_root: nil)
-    new_fan = User.find(notice_for_id)
     friends_path = Rails.application.routes.url_helpers.account_friends_path
-    "New Friend Request from #{link_to(new_fan.username, friends_path, passed_root: passed_root)}".html_safe
+    "New Friend Request from #{link_to(friend.username, friends_path, passed_root: passed_root)}".html_safe
   end
 
   private
@@ -81,11 +88,11 @@ class Notice < ApplicationRecord
     return unless user.settings.send_reply_notifications?
     return if user.online? || user.banned?
     if subscription?
-      post_subscription = user.subscriptions.find_by(post_id: notice_for_id)
+      post_subscription = user.subscriptions.find_by(post_id: post_id)
       if post_subscription
         previous_notification = post_subscription.last_notified_at || DateTime.new
         post_subscription.update(last_notified_at: 30.seconds.from_now) # Catch race conditions
-        return if previous_notification > 30.minutes.ago
+        return if previous_notification > 22.hours.ago
       end
     end
     UserMailer.notifications(user, notice_message(passed_root: root_domain)).deliver_later

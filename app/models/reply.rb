@@ -113,8 +113,8 @@ class Reply < ApplicationRecord
   end
 
   def notify_subscribers
-    subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id)
-    post.notify_subscribers(not_user: author)
+    subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id) unless author.helpbot?
+    post.notify_subscribers(not_user: author, reply_id: id)
   end
 
   def invite_users
