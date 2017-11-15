@@ -4,7 +4,7 @@
   <a href="<%= post_path(post) %>" class="post-container" data-timestamp="<%= post.created_at.to_i %>" data-id="<%= post.id %>">
     <%= avatar(post.avatar(size: 50), size: 50) %>
     <div class="post-description">
-      <div class="title"><%= markdown(only: []) { post.title } %></div>
+      <div class="title"><%= markdown(with: [:ignore_previews]) { post.title } %></div>
       <div class="post-information">
         <% if post.marked_as_adult? %>
           <div class="nsfw" title="Not Safe For Work / children - This post will not show up on the home page.">NSFW</div>

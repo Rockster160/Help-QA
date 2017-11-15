@@ -6,22 +6,24 @@
       <% else %>
         <video class="link-vid" src="<%= video_url %>" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></video>
       <% end %>
-      <a rel="nofollow" href="<%= url %>">[Original Link]</a>
     </div>
   </div>
+  <br><a rel="nofollow" href="<%= url %>" target="_blank" title="<%= title || url %>">[Original Link]</a><br>
 <% elsif only_image %>
   <a rel="nofollow" href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
     <span class="hidden"><%= truncate(url, length: 50, omission: "...") %></span>
     <img src="<%= url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
   </a>
 <% else %>
-  <a rel="nofollow" href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image %>" target="_blank">
-    <div class="page-title">
-      <%= truncate(title.to_s, length: 50, omission: "...") %>
-    </div>
-    <div class="original-page">
-      <%= image_tag(favicon) if favicon.present? %>
-      <%= hash_of_url_parts(url)[:host].to_s.gsub("www.", "") %>
-    </div>
-  </a>
+  <div class="link-preview-wrapper">
+    <a rel="nofollow" href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image %>" target="_blank">
+      <div class="page-title">
+        <%= truncate(title.to_s, length: 50, omission: "...") %>
+      </div>
+      <div class="original-page">
+        <%= image_tag(favicon) if favicon.present? %>
+        <%= hash_of_url_parts(url)[:host].to_s.gsub("www.", "") %>
+      </div>
+    </a>
+  </div>
 <% end %>

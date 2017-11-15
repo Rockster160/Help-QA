@@ -7,7 +7,6 @@ module LinkPreviewHelper
   end
 
   def generate_link_preview_for_url(raw_url, clear: false, generate_if_nil: false)
-    return if Rails.env.development? && raw_url.include?("localhost:4357")
     raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
     return if raw_url[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods together
     url = "http://#{raw_url.gsub(/^\/*/, '')}" if raw_url[/http/i].nil?
@@ -15,8 +14,9 @@ module LinkPreviewHelper
 
     Rails.cache.delete(url) if clear
     return if Rails.cache.read(url).nil? && !generate_if_nil
+    puts "Collecting meta data for: ~#{url}~".colorize(:green)
     meta_data = Rails.cache.fetch(url) do
-      puts "Running Cache Fetch for: #{url}".colorize(:yellow)
+      puts "Running Cache Fetch for: ~#{url}~".colorize(:yellow)
       res = RestClient.get(url) rescue nil
       next {} if res.nil?
 
@@ -37,7 +37,7 @@ module LinkPreviewHelper
       iframe_video_url ||= url if url.present? && (url.include?("player.vimeo") || url.include?("youtube.com/embed"))
       iframe_video_url ||= "https://player.vimeo.com/video/#{url[/\d+$/]}" if url =~ /vimeo.com\/\d+$/
 
-      meta_data = {
+      url_meta_data = {
         iframe_video_url: iframe_video_url,
         video_url: iframe_video_url.presence || video_url.presence,
         only_image: only_image,
@@ -48,13 +48,15 @@ module LinkPreviewHelper
         image: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
       }
       if !only_image && (tags.empty? || image_data?(res.body))
-        meta_data[:image] ||= url
+        url_meta_data[:image] ||= url
+        url_meta_data[:only_image] = true
       end
 
-      meta_data
+      url_meta_data
     end
 
     return if meta_data.blank?
+    puts "#{meta_data}".colorize(:light_black)
     response_data = {
       title: meta_data[:title].presence || meta_data[:url],
       original_url: raw_url,

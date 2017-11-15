@@ -65,13 +65,15 @@ loadImages = function() {
 addCards = function(cards_data) {
   $(cards_data).each(function() {
     var card = this
-    var $link = $('[data-loading-preview] > a[href="' + card.original_url + '"]'), $wrapper = $link.parent()
-    $link.parent().removeAttr("data-loading-preview")
+    var $link = $('[data-loading-preview][href="' + card.original_url + '"]')
+    var no_preview = $link.attr("data-loading-preview") == "no"
+    if (no_preview && !card.inline) { return }
+    $link.removeAttr("data-loading-preview")
 
     if (card.inline || $link.parents("[data-inline-links]").length > 0) {
       $link.html(card.html)
     } else {
-      $link.html('<a rel="nofollow" href="' + card.url + '">[' + card.title + "]</a>")
+      $link.html('<a rel="nofollow" target="_blank" href="' + card.url + '">[' + card.title + "]</a>")
       new_link = $(card.html)
       $link.closest("quote, .reply-content, .shout-body").append(new_link)
     }
@@ -85,21 +87,16 @@ addCards = function(cards_data) {
 
 loadAllLinks = function() {
   if ($.active != 0) { return }
-  var $links = $("[data-load-link]"), links_to_generate = []
+  var $links = $("[data-load-preview]"), links_to_generate = []
 
   if ($links.length == 0) { return }
 
   $links.each(function() {
-    var $link = $(this), link_href = $link.attr("data-load-link")
-    $link.removeAttr("data-load-link").attr("data-loading-preview", "")
+    var $link = $(this)
+    links_to_generate.push($link.attr("href"))
 
-    if (email_regex.test(link_href)) { return }
-    var max_link_length = 60
-    var short_text_link = link_href.length > max_link_length ? (link_href.substr(0, max_link_length) + "...") : link_href
-
-    $link.html('<a rel="nofollow" href="' + link_href + '"><i class="fa fa-spinner fa-spin"></i> ' + short_text_link + "</a>")
-
-    links_to_generate.push(link_href)
+    $link.attr("data-loading-preview", $link.attr("data-load-preview")).removeAttr("data-load-preview")
+    $link.prepend('<i class="fa fa-spinner fa-spin"></i>')
   })
 
   $.ajax({

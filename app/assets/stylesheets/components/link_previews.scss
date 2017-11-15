@@ -1,3 +1,4 @@
+.link-preview-wrapper { display: inline-block; }
 .link-preview {
   background: rgba(209, 209, 223, 0.5); // Container color
   display: inline-block;
@@ -47,10 +48,10 @@
   }
 }
 
+.video-container { width: 100%; }
 .link-img, .video-container {
-  display: block;
-  width: 100%;
-  max-width: 450px;
+  display: inline-block;
+  max-width: 48%;
 
   &.broken {
     width: 20px;

@@ -21,7 +21,7 @@ module Accountable
   end
   def offline?; !online?; end
   def verified?; verified_at?; end
-  def medium_term_user?; created_at < 3.months.ago || id.to_i < 50; end
+  def medium_term_user?; created_at < 3.months.ago || id.to_i < 100; end
   def long_term_user?; created_at < 1.year.ago; end
   def long_time_user?; long_term_user?; end
   def deactivated?; !verified? && created_at < 1.day.ago; end
@@ -165,7 +165,7 @@ module Accountable
   private
 
   def reset_cache
-    ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username")
+    ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username") || created_at == updated_at
   end
 
   def reset_auth_token
