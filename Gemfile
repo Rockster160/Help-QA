@@ -43,6 +43,7 @@ gem 'obscenity'
 gem 'aws-sdk'
 gem 'paperclip'
 gem 'exception_notification'
+gem 'stripe'
 
 group :development, :test do
   gem 'byebug', platform: :mri

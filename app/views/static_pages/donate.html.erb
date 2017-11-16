@@ -1,0 +1,41 @@
+<h1>Donate</h1>
+
+<h5>First of all- Thank you! Help-QA is completely non-profit, so all costs for hosting and development are out of pocket.</h5>
+
+<p>Second, we must stress that Help-QA.com is COMPLETELY free to use, forever.</p>
+
+<p>Finally, Donating is 100% voluntary and does not affect status, role, or how likely it is for your post to be seen or replied to by more users.</p>
+
+<hr>
+
+<div class="skinny-container">
+  <p>Enter the amount you would like to donate and then click the button below.</p>
+  <p>A form will pop up on your screen (or you will be redirected to a new page with the form)</p>
+  <p><strong>This form belongs to Stripe, the payment processor. At no point does your card information get transferred in an insecure manner and your details never touch the Help-QA servers.</strong></p>
+  <p>We use a known and trusted payment processing portal in order to collect donations. If you have any questions, please see the <a class="underline" href="https://stripe.com/docs/security/stripe">Stripe Security Information page</a>.</p>
+  <%= form_tag :donate, class: "text-center" do %>
+    <%= label_tag :currency_usd, "USD" %>
+    <%= radio_button_tag :currency, :usd, checked: true %>
+    <%= label_tag :currency_gbp, "GBP" %>
+    <%= radio_button_tag :currency, :gbp %>
+    <br>
+    <%= label_tag :amount, "Enter amount: " %>
+    <br>
+    <span data-currency-show="usd">$</span><span class="hidden" data-currency-show="gbp">&pound;</span><%= text_field_tag :amount, "", class: "wide" %>
+    <br>
+    <script
+      src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+      data-key="<%= ENV['HELPQA_STRIPE_PUB'] %>"
+      data-currency="usd"
+      data-amount=""
+      data-panel-label="Submit Donation"
+      data-label="Enter card information"
+      data-email="<%= current_user.try(:email) %>"
+      data-name="Help-QA Donation"
+      data-description="Help-QA.com"
+      data-image="<%= asset_url('favicon/android-chrome-256x256.png') %>"
+      data-locale="auto"
+      data-zip-code="true">
+    </script>
+  <% end %>
+</div>

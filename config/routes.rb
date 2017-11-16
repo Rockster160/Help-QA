@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get :"terms-of-service", controller: :static_pages
   get :"privacy-policy", controller: :static_pages
   get :faq, controller: :static_pages
+  get :donate, controller: :static_pages
+  post :donate, controller: :static_pages, action: :one_time_donation
   get :emoji, controller: :static_pages
   get :chat, controller: :chat
   get "chat/remove_message/:id" => "chat#remove_message", as: :remove_message

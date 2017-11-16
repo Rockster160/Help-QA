@@ -4,6 +4,7 @@
 
 <div class="faq-wrapper">
   <ol id="new-user-nav">
+    <li><a href="#sect0">How is Help-QA.com maintained?</a></li>
     <li><a href="#sect1">What can I do on Help-QA.com?</a></li>
     <li><a href="#sect2">How do I find people to help?</a></li>
     <li><a href="#sect3">What are the benefits of a verified membership account on Help-QA.com?</a></li>
@@ -35,6 +36,13 @@
   </ol>
 
   <div id="new-user-sections">
+    <div id="sect0">
+      <h3>How is Help-QA.com maintained?</h3>
+      <p>Help-QA is currently being developed and maintained by the sole developer, <a href="<%= user_path(User.find_by(username: 'Rockster160')) %>" class="tagged-user">@Rockster160</a>. Feel free to leave him a shout if you feel like saying thank you! He loves talking to fellow Helpers.</p>
+      <p>The code is all open-source and hosted on <a class="underline" href="https://github.com/Rockster160/helpernow">Github</a>. If you'd like to make a contribution, feel free to pull down the project and submit a Pull Request.</p>
+      <p>Don't know how to code, but still want to support the site? We accept Donations via the <a class="underline" href="<%= donate_path %>">Donate Page</a>.</p>
+    </div>
+
     <div id="sect1">
       <h3>What can I do on Help-QA.com?</h3>
       <p>The concept behind Help-QA.com is easy. This is an online community for asking questions and giving advice.</p>
