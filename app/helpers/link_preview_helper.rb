@@ -6,12 +6,7 @@ module LinkPreviewHelper
     end.compact
   end
 
-  def generate_link_preview_for_url(raw_url, clear: false, generate_if_nil: false)
-    raw_url = raw_url.gsub("&amp;", "&") # Hack because JS persistently escapes ampersands
-    return if raw_url[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods together
-    url = "http://#{raw_url.gsub(/^\/*/, '')}" if raw_url[/http/i].nil?
-    url ||= raw_url
-
+  def generate_link_preview_for_url(url, clear: false, generate_if_nil: false)
     Rails.cache.delete(url) if clear
     return if Rails.cache.read(url).nil? && !generate_if_nil
     puts "Collecting meta data for: ~#{url}~".colorize(:green)
@@ -59,7 +54,7 @@ module LinkPreviewHelper
     puts "#{meta_data}".colorize(:light_black)
     response_data = {
       title: meta_data[:title].presence || meta_data[:url],
-      original_url: raw_url,
+      original_url: url,
       url: meta_data[:url].presence || url,
       inline: meta_data[:video_url].present? || meta_data[:only_image],
       html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)

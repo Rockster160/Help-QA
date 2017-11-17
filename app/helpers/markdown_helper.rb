@@ -156,16 +156,33 @@ module MarkdownHelper
 
   def link_previews(text)
     # BLACKLIST: idolosol
-    url_regex = /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~;#?&\/\/=]*))/
+    url_regex = /(((http(s)?:)?\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~;#?&\/\/=]*))/
 
     to_replace = []
     scan_idx = 0
     text.scan(url_regex).each_with_index do |link, idx|
       link = link.first
-      before_text, split_text = text[0..scan_idx-1], text[scan_idx..-1]
+      punctuation_characters = /[\.\?\! \n\r]/
+      invalid_pre_char_count = 0
+      invalid_post_char_count = 0
+
+      while link[0] =~ punctuation_characters # Remove punctuation before url.
+        invalid_pre_char_count
+        link[0] = ""
+      end
+      while link[-1] =~ punctuation_characters # Remove punctuation after url.
+        invalid_post_char_count
+        link[-1] = ""
+      end
+      next unless link =~ url_regex
+      next if link[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods together
+
       if scan_idx == 0
         before_text = ""
         split_text = text.dup
+      else
+        before_text = text[0..scan_idx-1 + invalid_pre_char_count]
+        split_text = text[scan_idx..-1]
       end
 
       first_idx = scan_idx + split_text.index(link)
@@ -197,42 +214,36 @@ module MarkdownHelper
 
       link = link_hash[:url]
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
+      url = link[/http|\/\//i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
       preview_hash = link_hash[:preview_hash]
 
-      new_link = if link_hash[:no_action]
+      new_link = if link =~ Devise::email_regexp
+        "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
+      elsif link_hash[:no_action]
         replace_link = "\\#{link}"
-        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
+        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:show_preview] || link_hash[:inline]
         if preview_hash.nil?
           # Offload to JS to speed up page load time
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
         elsif link_hash[:inline]
           "#{preview_hash[:html]}"
         else
           add_to_text << preview_hash[:html]
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\">[#{preview_hash[:title]}]</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">[#{preview_hash[:title]}]</a>"
         end
       else
         if preview_hash.nil?
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
         else
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
         end
       end
-# binding.pry
+
       link_idx = split_text.index(replace_link)
       new_after_text = split_text.sub(replace_link, new_link)
-      puts "#{split_text}".colorize(:green)
-      puts "#{replace_link}".colorize(:yellow)
-      puts "#{new_link}".colorize(:yellow)
-      puts "#{new_after_text}".colorize(:green)
-      puts "#~~~~~~~~~~~~~~~~~~~~~~".colorize(:red)
       text = before_text + split_text.sub(replace_link, new_link)
-      puts "#{current_idx} = #{before_text.length} + #{link_idx} + #{new_link.length}".colorize(:red)
       current_idx = before_text.length + link_idx + new_link.length
-      puts "#{current_idx}: #{text[current_idx-10..current_idx+10].gsub("\n", '')}".colorize(:light_black)
-      puts "#{current_idx}: ..........^...........".colorize(:light_black)
-
     end
 
     "#{text}#{add_to_text.uniq.join(" ")}"
