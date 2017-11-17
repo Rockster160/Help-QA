@@ -36,5 +36,9 @@
         &.inactive:before { background-color: $inactive; }
       }
     }
+
+    @include xsmall-down {
+      @include unsplit;
+    }
   }
 }
