@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114005005) do
+ActiveRecord::Schema.define(version: 20171117035034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20171114005005) do
     t.integer  "reply_id"
     t.datetime "read_at"
     t.datetime "updated_at"
+    t.boolean  "invited_anonymously", default: false
     t.index ["from_user_id"], name: "index_invites_on_from_user_id", using: :btree
     t.index ["invited_user_id"], name: "index_invites_on_invited_user_id", using: :btree
     t.index ["post_id"], name: "index_invites_on_post_id", using: :btree
@@ -122,6 +123,17 @@ ActiveRecord::Schema.define(version: 20171114005005) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id"], name: "index_polls_on_post_id", using: :btree
+  end
+
+  create_table "post_invites", force: :cascade do |t|
+    t.integer  "post_id"
+    t.integer  "user_id"
+    t.integer  "invited_users"
+    t.boolean  "invited_anonymously"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.index ["post_id"], name: "index_post_invites_on_post_id", using: :btree
+    t.index ["user_id"], name: "index_post_invites_on_user_id", using: :btree
   end
 
   create_table "post_tags", force: :cascade do |t|
@@ -294,4 +306,6 @@ ActiveRecord::Schema.define(version: 20171114005005) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   end
 
+  add_foreign_key "post_invites", "posts"
+  add_foreign_key "post_invites", "users"
 end

@@ -118,12 +118,17 @@ class Reply < ApplicationRecord
   end
 
   def invite_users
-    return if posted_anonymously?
+    invited_users = []
     body.scan(/@([^ \`\@]+)/) do |username_tag|
       user = User.by_username($1)
       if user.present? && (user.friends?(author) || !user.settings.friends_only?)
-        user.invites.create(post: post, reply: self, from_user: author)
+        if user.invites.create(post: post, reply: self, from_user: author, invited_anonymously: posted_anonymously?).persisted?
+          invited_users << user
+        end
       end
+    end
+    if invited_users.any?
+      post.post_invites.create(user_id: author_id, invited_users: invited_users.count, invited_anonymously: posted_anonymously?)
     end
   end
 

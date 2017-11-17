@@ -25,6 +25,8 @@ class Post < ApplicationRecord
   has_many :views, class_name: "PostView"
   has_many :edits, class_name: "PostEdit"
   has_many :replies
+  has_many :post_invites
+  has_many :invites
   has_many :subscriptions, -> { subscribed }
   has_many :subscribers, through: :subscriptions, source: :user
   has_many :post_tags
@@ -51,7 +53,7 @@ class Post < ApplicationRecord
   scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :displayable,          ->(user=nil) { not_banned.not_closed.no_moderation.conditional_adult(user) }
 
-  after_create :auto_add_tags, :generate_poll, :alert_helpbot
+  after_create :auto_add_tags, :generate_poll, :alert_helpbot, :invite_users
   after_commit :broadcast_creation, :subscribe_author
   defaults reply_count: 0
   defaults posted_anonymously: false
@@ -214,6 +216,21 @@ class Post < ApplicationRecord
   def subscribe_author
     if created_at == updated_at && !author.helpbot?
       subscriptions.find_or_create_by(user_id: author_id)
+    end
+  end
+
+  def invite_users
+    invited_users = []
+    body.scan(/@([^ \`\@]+)/) do |username_tag|
+      user = User.by_username($1)
+      if user.present? && (user.friends?(author) || !user.settings.friends_only?)
+        if user.invites.create(post_id: id, from_user: author, invited_anonymously: posted_anonymously?).persisted?
+          invited_users << user
+        end
+      end
+    end
+    if invited_users.any?
+      post_invites.create(user_id: author_id, invited_users: invited_users.count, invited_anonymously: posted_anonymously?)
     end
   end
 

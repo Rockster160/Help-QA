@@ -61,7 +61,9 @@ class PostsController < ApplicationController
     @replies = @replies.where("created_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     sherlocks = Sherlock.notifications_for(@post)
     sherlocks = sherlocks.where("created_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
-    @replies_with_notifications = [@replies, sherlocks].flatten.sort_by(&:created_at)
+    invites = @post.post_invites
+    invites = invites.where("created_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    @replies_with_notifications = [@replies, sherlocks, invites].flatten.compact.sort_by(&:created_at)
 
     if request.xhr?
       render partial: "replies/index", locals: { replies: @replies_with_notifications }

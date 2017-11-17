@@ -24,9 +24,9 @@ module MarkdownHelper
     return text.html_safe if posted_by_user.try(:helpbot?)
 
     text = escape_html_characters(text, render_html: render_html)
-    text = escape_markdown_characters(text)
+    text = escape_escaped_markdown_characters(text)
     text = filter_nested_quotes(text, max_nest_level: 3)
-    text = escape_markdown_characters(text)
+    text = escape_escaped_markdown_characters(text)
     text = invite_tagged_users(text) if @markdown_options[:tags]
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
@@ -70,7 +70,7 @@ module MarkdownHelper
 
       text[last_start_quote_idx..next_end_quote_idx] = text[last_start_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do
         quote_text = $2
-        quote_author = $1.squish.gsub(":", "&#58;")
+        quote_author = escape_markdown_characters_in_string($1.squish)
 
         quote_string = quote_author.present? ? "<strong>#{quote_author} wrote:</strong><br>" : ""
         "</p><quote><p>#{quote_string}#{quote_text}</p></quote><p>"
@@ -93,7 +93,7 @@ module MarkdownHelper
     text
   end
 
-  def escape_markdown_characters(text)
+  def escape_escaped_markdown_characters(text)
     text = text.gsub("\\@", "&#64;") # @
     text = text.gsub("\\\\", "&#92;") # \
     text = text.gsub("\\\`\`\`", "&#96;&#96;&#96;") #  ```
@@ -104,13 +104,25 @@ module MarkdownHelper
     text = text.gsub("\\\~", "&#126;") # ~
   end
 
+  def escape_markdown_characters_in_string(str)
+    str = str.gsub("@", "&#64;") # @
+    str = str.gsub("\\", "&#92;") # \
+    str = str.gsub("[", "&#91;") # [
+    str = str.gsub("*", "&#42;") # *
+    str = str.gsub("`", "&#96;") # `
+    str = str.gsub("_", "&#95;") # _
+    str = str.gsub("~", "&#126;") # ~
+    str = str.gsub(":", "&#58;")
+  end
+
   def invite_tagged_users(text)
     text.gsub(/@([^ \`\@]+)/) do |username_tag|
       username = $1.gsub(/\<.*?\>/, "")
       tagged_user = User.by_username(username)
       if tagged_user.present?
         leftovers = username_tag.gsub(/[@#{Regexp.escape(tagged_user.username)}]/i, "")
-        "<a href=\"#{user_path(tagged_user)}\" class=\"tagged-user\">@#{tagged_user.username.gsub(':', '&#58;')}</a>#{leftovers}"
+        escaped_username = escape_markdown_characters_in_string(tagged_user.username)
+        "<a href=\"#{user_path(tagged_user)}\" class=\"tagged-user\">@#{escaped_username}</a>#{leftovers}"
       else
         username_tag
       end
@@ -286,7 +298,7 @@ module MarkdownHelper
         unwrap_quotes(quote_to_unwrap, depth: depth + 1, quotes: quotes, max_nest_level: max_nest_level)
       else
         quote_author = quote_to_unwrap[/\[quote(.*?)\]/][7..-2]
-        quote_from = quote_author.presence ? " from #{quote_author.gsub(':', '&#58;')}" : ""
+        quote_from = quote_author.presence ? " from #{escape_markdown_characters_in_string(quote_author)}" : ""
         "_*\\[quote#{quote_from}]*_\n"
       end
     end
