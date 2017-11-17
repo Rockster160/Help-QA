@@ -90,7 +90,12 @@ class UsersController < ApplicationController
     moderatable_attrs[:can_use_chat] = false if params[:revoke].to_s == "chat"
     moderatable_attrs[:can_use_chat] = true if params[:grant].to_s == "chat"
     if params[:ban].to_s.to_sym == :ip
-      BannedIp.create(ip: @user.current_sign_in_ip || @user.last_sign_in_ip)
+      ip_bans = BannedIp.where(ip: @user.current_sign_in_ip || @user.last_sign_in_ip)
+      if ip_bans.any?
+        ip_bans.destroy_all
+      else
+        ip_bans.create
+      end
     end
     moderatable_attrs.delete_if { |k, v| v.blank? && v != false }
   end
