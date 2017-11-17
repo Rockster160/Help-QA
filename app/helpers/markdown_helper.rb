@@ -11,7 +11,8 @@ module MarkdownHelper
     only = [only].flatten if only.is_a?(Array) # We want `only` to be `nil` if it wasn't explicitly set.
     except = [except].flatten
 
-    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews, :link_titleize]
+    # Non-default options: [:inline_previews, :ignore_previews]
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews]
     default_markdown_options = only if only.is_a?(Array)
     default_markdown_options -= except
     default_markdown_options += with
@@ -30,8 +31,8 @@ module MarkdownHelper
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
+    text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = censor_language(text)
-    text = link_previews(text)
     text = clean_up_html(text)
 
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
@@ -154,38 +155,87 @@ module MarkdownHelper
   end
 
   def link_previews(text)
-    url_regex = /.((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~;#?&\/\/=]*)|http\:\/\/localhost:[0-9]{4})/
-    add_to_text = ""
+    # BLACKLIST: idolosol
+    url_regex = /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~;#?&\/\/=]*))/
 
-    text = text.gsub(url_regex) do |found_match|
-      pre_char = found_match[0]
-      link = found_match[1..-1]
-      next link if pre_char == "\\"
+    to_replace = []
+    scan_idx = 0
+    text.scan(url_regex).each_with_index do |link, idx|
+      link = link.first
+      before_text, split_text = text[0..scan_idx-1], text[scan_idx..-1]
+      if scan_idx == 0
+        before_text = ""
+        split_text = text.dup
+      end
+
+      first_idx = scan_idx + split_text.index(link)
+      last_idx = first_idx + link.length - 1
+      pre_char = text[first_idx - 1]
+      post_char = text[last_idx + 1]
+      scan_idx = last_idx
+
       preview_hash = generate_link_preview_for_url(link)
 
-      if preview_hash.nil?
-        if @markdown_options[:link_previews]
-          # TODO: Handle the data value in JS instead of grabbing the inner text
-          "#{pre_char}<span data-load-link=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</span>"
-        elsif @markdown_options[:link_titleize]
-          "#{pre_char}<a rel=\"nofollow\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
-        else
-          found_match
-        end
-      elsif @markdown_options[:link_previews]
-        if @markdown_options[:inline_previews] || preview_hash[:inline]
-          "#{pre_char}</p>#{preview_hash[:html]}<p>"
-        else
-          add_to_text += preview_hash[:html]
-          "#{pre_char}<a rel=\"nofollow\" href=\"#{preview_hash[:url]}\">[#{preview_hash[:title]}]</a>"
-        end
-      elsif @markdown_options[:link_titleize]
-        "#{pre_char}<a rel=\"nofollow\" href=\"#{preview_hash[:url]}\">[#{preview_hash[:title]}]</a>"
-      else
-        found_match
-      end
+      to_replace << {
+        url: link,
+        start_idx: first_idx,
+        show_preview: pre_char == "[" && post_char == "]" && @markdown_options[:link_previews],
+        preview_hash: preview_hash,
+        inline: @markdown_options[:inline_previews] || preview_hash&.dig(:inline),
+        no_action: pre_char == "\\"
+      }
     end
-    "#{text}#{add_to_text}"
+
+    add_to_text = []
+    current_idx = 0
+    to_replace.each do |link_hash|
+      before_text, split_text = text[0..current_idx-1], text[current_idx..-1]
+      if current_idx == 0
+        before_text = ""
+        split_text = text.dup
+      end
+
+      link = link_hash[:url]
+      replace_link = link_hash[:show_preview] ? "[#{link}]" : link
+      preview_hash = link_hash[:preview_hash]
+
+      new_link = if link_hash[:no_action]
+        replace_link = "\\#{link}"
+        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
+      elsif link_hash[:show_preview] || link_hash[:inline]
+        if preview_hash.nil?
+          # Offload to JS to speed up page load time
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
+        elsif link_hash[:inline]
+          "#{preview_hash[:html]}"
+        else
+          add_to_text << preview_hash[:html]
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\">[#{preview_hash[:title]}]</a>"
+        end
+      else
+        if preview_hash.nil?
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
+        else
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
+        end
+      end
+# binding.pry
+      link_idx = split_text.index(replace_link)
+      new_after_text = split_text.sub(replace_link, new_link)
+      puts "#{split_text}".colorize(:green)
+      puts "#{replace_link}".colorize(:yellow)
+      puts "#{new_link}".colorize(:yellow)
+      puts "#{new_after_text}".colorize(:green)
+      puts "#~~~~~~~~~~~~~~~~~~~~~~".colorize(:red)
+      text = before_text + split_text.sub(replace_link, new_link)
+      puts "#{current_idx} = #{before_text.length} + #{link_idx} + #{new_link.length}".colorize(:red)
+      current_idx = before_text.length + link_idx + new_link.length
+      puts "#{current_idx}: #{text[current_idx-10..current_idx+10].gsub("\n", '')}".colorize(:light_black)
+      puts "#{current_idx}: ..........^...........".colorize(:light_black)
+
+    end
+
+    "#{text}#{add_to_text.uniq.join(" ")}"
   end
 
   def generate_unique_token(text)
