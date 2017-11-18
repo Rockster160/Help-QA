@@ -6,7 +6,7 @@ $(document).on("mouseenter", ".show-tooltip", function() {
 
 $(document).on("mouseenter", ".dropdown-clickable", function(evt) {
   $(this).siblings(".dropdown-list").removeClass("hidden");
-}).on("click tap", ".dropdown-clickable", function(evt) {
+}).on("click tap touch touchstart", ".dropdown-clickable", function(evt) {
   if ($(this).siblings(".dropdown-list").hasClass("hidden")) {
     evt.preventDefault();
     $(this).siblings(".dropdown-list").removeClass("hidden");

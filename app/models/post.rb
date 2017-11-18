@@ -116,7 +116,9 @@ class Post < ApplicationRecord
   end
 
   def preview_content
-    body[title.length..-1].split("\n").reject(&:blank?).first
+    full_preview = body[title.length..-1].split("\n").reject(&:blank?).first
+    cut_preview = cut_string_before_index_at_char(full_preview, 500)
+    full_preview.to_s.length == cut_preview.to_s.length ? full_preview : "#{cut_preview}..."
   end
 
   def username
@@ -238,7 +240,7 @@ class Post < ApplicationRecord
     # Cuts the string at the given index,
     #   then finds the LAST occurrence of the letter in that string,
     #   and cuts there.
-    return str if str.length <= idx
+    return str if str.to_s.length <= idx
     indices_of_letter = str.split("").map.with_index { |l, i| i if l == letter }.compact
     indices_before_index = indices_of_letter.select { |i| i <= idx }
     str[0..indices_before_index.last.to_i - 1]
