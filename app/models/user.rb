@@ -79,6 +79,7 @@ class User < ApplicationRecord
 
   def self.by_username(username)
     loop do
+      break if username.length == 0
       user = find_by("users.slug = ?", username.parameterize)
       if user.present?
         break user
