@@ -270,7 +270,7 @@
     }
     .post-section .post-section-content .replies-container {
       padding: 0;
-      .reply-container .reply-author {
+      .reply-wrapper .reply-container .reply-author {
         @include unsplit;
         .reply-author-text { padding: 0; }
         .reply-options {
