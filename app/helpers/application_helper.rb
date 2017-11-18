@@ -92,7 +92,7 @@ module ApplicationHelper
 
     if options[:href].present?
       method = options[:method].present? ? "data-method=\"#{options[:method]}\"" : ""
-      "<a rel=\"nofollow\" href=\"#{options[:href]}\" class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
+      "<a rel=\"nofollow\" href=\"#{options[:href]}\" title=\"#{alt}\" class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
     else
       options[:tag] ||= "div"
       "<#{options[:tag]} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
