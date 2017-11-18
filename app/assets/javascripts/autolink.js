@@ -64,11 +64,13 @@ loadImages = function() {
 
 addCards = function(cards_data) {
   $(cards_data).each(function() {
+    console.log(this);
     var card = this
     var $link = $('[data-loading-preview][href="' + card.original_url + '"]')
     var no_preview = $link.attr("data-loading-preview") == "no"
-    if (no_preview && !card.inline) { return }
     $link.removeAttr("data-loading-preview")
+    if (card.invalid_url) { $link.replaceWith($link.text()) }
+    if (no_preview && !card.inline) { return }
 
     if (card.inline || $link.parents("[data-inline-links]").length > 0) {
       $link.html(card.html)
@@ -78,11 +80,20 @@ addCards = function(cards_data) {
       $link.closest("quote, .reply-content, .shout-body").append(new_link)
     }
   })
-  $("[data-loading-preview]").each(function() {
-    var $container = $(this)
-    $container.html($container.text())
-    $container.removeAttr("data-loading-preview")
-  })
+  // $("[data-loading-preview]").each(function() {
+  //   var $container = $(this)
+  //   $container.html($container.text())
+  //   $container.removeAttr("data-loading-preview")
+  // })
+}
+
+function chunkArray(myArray, chunk_size){
+  var results = [];
+  while (myArray.length) {
+    results.push(myArray.splice(0, chunk_size));
+  }
+
+  return results;
 }
 
 loadAllLinks = function() {
@@ -99,16 +110,22 @@ loadAllLinks = function() {
     $link.prepend('<i class="fa fa-spinner fa-spin"></i>')
   })
 
-  $.ajax({
-    url: "/url?" + $.param({urls: links_to_generate}),
-    type: "GET",
-    success: function(data) {
-      addCards(data)
-    },
-    error: function(data) {
-      console.log("Failed to load previews");
-    }
-  })
+  var chunkedLinkGroups = chunkArray(links_to_generate, 3)
+  for (var i=0;i<chunkedLinkGroups.length;i++) {
+    var chunkedLinks = chunkedLinkGroups[i]
+
+    $.ajax({
+      url: "/url?" + $.param({urls: chunkedLinks}),
+      type: "GET",
+      success: function(data) {
+        addCards(data)
+      },
+      error: function(data) {
+        console.log("Failed to load previews");
+      }
+    })
+  }
+
 }
 
 autolinkTick = function() {

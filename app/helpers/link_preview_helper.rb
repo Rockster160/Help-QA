@@ -6,7 +6,8 @@ module LinkPreviewHelper
     end.compact
   end
 
-  def generate_link_preview_for_url(url, clear: false, generate_if_nil: false)
+  def generate_link_preview_for_url(raw_url, clear: false, generate_if_nil: false)
+    url = raw_url.gsub(/^\/\//, "")
     Rails.cache.delete(url) if clear
     return if Rails.cache.read(url).nil? && !generate_if_nil
     puts "Collecting meta data for: ~#{url}~".colorize(:green)
@@ -50,11 +51,11 @@ module LinkPreviewHelper
       url_meta_data
     end
 
-    return if meta_data.blank?
+    return {original_url: raw_url, invalid_url: true} if meta_data.blank?
     puts "#{meta_data}".colorize(:light_black)
     response_data = {
       title: meta_data[:title].presence || meta_data[:url],
-      original_url: url,
+      original_url: raw_url,
       url: meta_data[:url].presence || url,
       inline: meta_data[:video_url].present? || meta_data[:only_image],
       html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)

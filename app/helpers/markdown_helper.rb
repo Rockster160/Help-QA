@@ -204,6 +204,7 @@ module MarkdownHelper
       scan_idx = last_idx
 
       preview_hash = generate_link_preview_for_url(link)
+      next if preview_hash&.dig(:invalid_url)
 
       to_replace << {
         url: link,
@@ -226,8 +227,9 @@ module MarkdownHelper
 
       link = link_hash[:url]
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
-      url = link[/http|\/\//i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
+      url = link[/^[http|\/\/]/i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
       preview_hash = link_hash[:preview_hash]
+      # binding.pry if url.include?("..")
 
       new_link = if link =~ Devise::email_regexp
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
