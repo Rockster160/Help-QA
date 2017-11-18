@@ -93,6 +93,7 @@ class Reply < ApplicationRecord
 
   def post_is_open
     return if post.open?
+    return unless new_record? # Only prevent creating new replies on a closed post.
 
     errors.add(:base, "We're very sorry- but this post has been closed.")
   end
