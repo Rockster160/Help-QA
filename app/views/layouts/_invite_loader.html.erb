@@ -1,4 +1,11 @@
-<% users.each do |user| %>
+<% users = User.displayable.verified.where.not(id: current_user.id).order(last_seen_at: :desc) %>
+<% friend_ids = current_user.friends.pluck(:id) %>
+<% users.where(id: friend_ids).each do |user| %>
+  <div class="searchable-container" data-type="username" data-searchable-by="<%= user.username %>">
+    <div class="option-name">@<%= user.username %></div>
+  </div>
+<% end %>
+<% users.where.not(id: friend_ids).each do |user| %>
   <div class="searchable-container" data-type="username" data-searchable-by="<%= user.username %>">
     <div class="option-name">@<%= user.username %></div>
   </div>

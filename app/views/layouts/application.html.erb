@@ -43,16 +43,7 @@
     <div id="pre-load" class="hidden"></div>
     <% if user_signed_in? %>
       <div class="field-autofiller username-loader hidden">
-        <%= render partial: "layouts/invite_loader", locals: { users: current_user.friends.not_invitable } %>
-        <% current_user.friends.not_invitable.each do |friend| %>
-          <div class="searchable-container" data-type="username" data-searchable-by="<%= friend.username %>">
-            <div class="option-name">@<%= friend.username %></div>
-          </div>
-        <% end %>
-        <% cache "invite_loader", skip_digest: true do %>
-          <% puts "Running cache for invite_loader".colorize(:yellow) %>
-          <%= render partial: "layouts/invite_loader", locals: { users: User.displayable.invitable } %>
-        <% end %>
+        <%= render partial: "layouts/invite_loader" %>
       </div>
     <% end %>
     <% cache "emoji_loader", skip_digest: true do %>

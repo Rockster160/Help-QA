@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
     Rails.cache.delete("emoji_list")
     Rails.cache.delete("emoji_names")
     ActionController::Base.new.expire_fragment("emoji_loader")
-    ActionController::Base.new.expire_fragment("invite_loader")
+    # ActionController::Base.new.expire_fragment("invite_loader")
   end
 
   def preload_emojis

@@ -166,7 +166,7 @@ module Accountable
   private
 
   def reset_cache
-    ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username") || created_at == updated_at
+    # ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username") || created_at == updated_at
   end
 
   def reset_auth_token

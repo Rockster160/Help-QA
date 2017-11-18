@@ -25,7 +25,7 @@ class UserSetting < ApplicationRecord
   private
 
   def reset_cache
-    ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("friends_only")
+    # ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("friends_only")
   end
 
   def set_required

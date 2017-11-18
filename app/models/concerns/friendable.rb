@@ -40,6 +40,9 @@ module Friendable
     fan_ids = User.joins(:requested_friendships).where(friendships: { friend_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
     User.not_banned.where(id: (favorite_ids + fan_ids).uniq)
   end
+  def not_friends
+    User.where.not(id: friends.pluck(:id))
+  end
 
   def add_friend(friend)
     existing_friendship = friendship_with(friend)
