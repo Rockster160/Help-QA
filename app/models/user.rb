@@ -78,7 +78,14 @@ class User < ApplicationRecord
   validates_attachment_content_type :avatar_image, content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"]
 
   def self.by_username(username)
-    find_by("users.slug = ?", username.parameterize)
+    loop do
+      user = find_by("users.slug = ?", username.parameterize)
+      if user.present?
+        break user
+      else
+        username[-1] = ""
+      end
+    end
   end
 
   def current_sign_in_ip; super_ip || super; end

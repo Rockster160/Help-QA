@@ -119,6 +119,7 @@ module MarkdownHelper
     text.gsub(/@([^ \`\@]+)/) do |username_tag|
       username = $1.gsub(/\<.*?\>/, "")
       tagged_user = User.by_username(username)
+
       if tagged_user.present?
         leftovers = username_tag.gsub(/[@#{Regexp.escape(tagged_user.username)}]/i, "")
         escaped_username = escape_markdown_characters_in_string(tagged_user.username)
