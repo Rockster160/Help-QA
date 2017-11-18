@@ -84,7 +84,7 @@ class RepliesController < ApplicationController
       if params[:id].present?
         reply = @post.replies.find(params[:id])
         if current_user == reply.author || current_mod?
-          reply = Sherlock.update_by(current_user, reply, reply_params)
+          Sherlock.update_by(current_user, reply, reply_params)
           @errors = reply.errors.full_messages
         else
           @errors = "You do not have permission to edit this reply."

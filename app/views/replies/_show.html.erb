@@ -1,5 +1,5 @@
 <% author = reply.author %>
-<div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= additional_classes %> <%= 'deactivated' if author.deactivated? %>" data-timestamp="<%= reply.created_at.to_i %>">
+<div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= additional_classes %> <%= 'deactivated' if author.deactivated? %>" data-timestamp="<%= reply.created_at.to_i %>" data-anonymous="<%= reply.posted_anonymously? %>">
   <div class="reply-author">
     <%= avatar(reply.avatar(size: 40), size: 40) %>
     <div class="reply-author-text">
@@ -59,13 +59,13 @@
         <% end %>
       <% end %>
       <% if current_user == reply.author || current_mod? %>
-        <%= link_to "#", rel: :nofollow, class: "edit-reply" do %>
+        <%= link_to "#", rel: :nofollow, class: "edit-reply", data: { reply_id: reply.id } do %>
           <%= hover_icon(:comment_edit, "Edit Reply") %>
         <% end %>
       <% end %>
     </div>
   </div>
-  
+
   <% original_content = current_user.try(:settings).try(:censor_inappropriate_language) ? censor_text(reply.body) : reply.body %>
   <div class="reply-content" data-original-content="<%= original_content %>" <%=  'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
   <% unless reply.posted_anonymously? %>

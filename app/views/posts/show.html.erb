@@ -114,6 +114,11 @@
       <div class="reply-errors hidden"></div>
       <div class="new-reply-container">
         <%= form_for [@post, Reply.new], html: { id: "new-reply-form" } do |f| %>
+          <div class="hidden editing-reply">
+            <%= hidden_field_tag :id %>
+            <a href="" class="underline pull-right cancel-edit">cancel</a>
+            Edit the reply text below, then click "Send Reply" to update your reply.
+          </div>
           <%= f.label :body, "Reply:" %>
           <%= f.text_area :body, rows: 8, class: "js-clear-text-after-focus autofillable-field", value: "Post a reply" %>
           <% if user_signed_in? %>

@@ -240,6 +240,14 @@
           width: 100%;
           resize: vertical;
         }
+        #new-reply-form {
+          .editing-reply {
+            border: 2px solid gold;
+            background: lighten(gold, 40%);
+            color: black;
+            padding: 10px;
+          }
+        }
       }
     }
   }
@@ -260,55 +268,17 @@
       }
       .words { padding: 0 5px; }
     }
-    .post-section {
-      .post-section-content {
-        .replies-container {
-          padding: 0;
-          .reply-container {
-            &.attached {
-              &.pending {}
-              &.removed {}
-            }
-            &.deactivated:after {}
-            .reply-author {
-              @include unsplit;
-              .avatar-container {}
-              .reply-author-text {
-                padding: 0;
-                .reply-author-name {}
-                .reply-author-stats {
-                  .detail-icons {}
-                }
-              }
-              .reply-options {
-                top: 0;
-                bottom: inherit;
-                border-bottom: 1px solid $border-color;
-                border-top: none;
-                width: auto;
-                .hover-icon {}
-              }
-            }
-            .reply-content {
-              p {}
-            }
-            .reply-after-message {
-              p {}
-            }
-            &.highlight {}
-            &.original-poster {
-              .reply-author {}
-              .reply-content {}
-            }
-          }
-          .pending-reply {
-            &.removed {}
-          }
-        }
-        .reply-errors {}
-        .new-reply-container {
-          label {}
-          textarea {}
+    .post-section .post-section-content .replies-container {
+      padding: 0;
+      .reply-container .reply-author {
+        @include unsplit;
+        .reply-author-text { padding: 0; }
+        .reply-options {
+          top: 0;
+          bottom: inherit;
+          border-bottom: 1px solid $border-color;
+          border-top: none;
+          width: auto;
         }
       }
     }

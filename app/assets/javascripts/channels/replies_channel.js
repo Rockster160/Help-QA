@@ -48,7 +48,9 @@ $(".ctr-posts.act-show").ready(function() {
         $(".reply-errors").removeClass("hidden")
       } else {
         $(".reply-errors").addClass("hidden")
+        $(".editing-reply").addClass("hidden")
         $form.find("textarea").val("")
+        $form.find("input[name=id]").val("")
       }
     }).complete(function() {
       $form.find("input, button, textarea").prop("disabled", false)
