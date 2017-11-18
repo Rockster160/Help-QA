@@ -27,6 +27,7 @@
         <%= timeago(reply.created_at) %> (<%= time_difference_in_words(reply.created_at, reply.post.created_at, word_count: 1).presence || "0 minutes" %> after post)
       </div>
     </div>
+
     <div class="reply-options">
       <% if user_signed_in? && current_user.verified? %>
         <% previous_favorite = current_user.favorite_reply_for_post(reply.post) %>
@@ -64,6 +65,7 @@
       <% end %>
     </div>
   </div>
+  
   <% original_content = current_user.try(:settings).try(:censor_inappropriate_language) ? censor_text(reply.body) : reply.body %>
   <div class="reply-content" data-original-content="<%= original_content %>" <%=  'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
   <% unless reply.posted_anonymously? %>

@@ -11,25 +11,20 @@ class RepliesController < ApplicationController
 
   def create
     is_new_user = !user_signed_in?
-    user = create_and_sign_in_user_by_email(params.dig(:new_user, :email)) if is_new_user
-    post = Post.find(params[:post_id])
+    @user = create_and_sign_in_user_by_email(params.dig(:new_user, :email)) if is_new_user
+    @post = Post.find(params[:post_id])
 
-    if user_signed_in?
-      reply = post.replies.create(reply_params.merge(author: current_user))
-      @errors = reply.errors.full_messages
-    else
-      @errors = user.try(:errors).try(:full_messages) || "Failed to submit Reply."
-    end
+    create_or_update_reply
     flash_hash = @errors.any? ? {alert: @errors.first} : {}
 
     additional_data = {}
     if request.xhr? && is_new_user && @errors.none?
-      additional_data[:redirect] = post_path(post)
+      additional_data[:redirect] = post_path(@post)
     end
 
     respond_to do |format|
       format.json { render json: {errors: @errors}.merge(additional_data) }
-      format.html { redirect_to post_path(post), flash_hash }
+      format.html { redirect_to post_path(@post), flash_hash }
     end
   end
 
@@ -83,6 +78,25 @@ class RepliesController < ApplicationController
   end
 
   private
+
+  def create_or_update_reply
+    if user_signed_in?
+      if params[:id].present?
+        reply = @post.replies.find(params[:id])
+        if current_user == reply.author || current_mod?
+          reply = Sherlock.update_by(current_user, reply, reply_params)
+          @errors = reply.errors.full_messages
+        else
+          @errors = "You do not have permission to edit this reply."
+        end
+      else
+        reply = @post.replies.create(reply_params.merge(author: current_user))
+        @errors = reply.errors.full_messages
+      end
+    else
+      @errors = @user.try(:errors).try(:full_messages) || "Failed to submit Reply."
+    end
+  end
 
   def reply_params
     params.require(:reply).permit(
