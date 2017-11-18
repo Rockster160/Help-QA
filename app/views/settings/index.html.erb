@@ -1,5 +1,19 @@
 <% meta_title "Account Settings &bull; Help-QA.com" %>
 
+<div class="text-center">
+  <small>
+    <a class="underline" href="<%= account_settings_path %>">Main</a> -
+    <a class="underline" href="<%= account_notices_path %>">Notices</a> -
+    <a class="underline" href="<%= account_subscriptions_path %>">Subscriptions</a> -
+    <a class="underline" href="<%= account_invites_path %>">Invites</a> -
+    <a class="underline" href="<%= account_profile_index_path %>">Profile</a> -
+    <a class="underline" href="<%= account_friends_path %>">Friends</a> -
+    <a class="underline" href="<%= avatar_account_path %>">Avatar</a> -
+    <a class="underline" href="<%= account_settings_path %>">Settings</a>
+  </small>
+</div>
+<br>
+
 <h1>Account Administration for <%= @user.username %></h1>
 
 <% unless @user.completed_signup? %>
