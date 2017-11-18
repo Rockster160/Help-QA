@@ -31,7 +31,11 @@ class ShoutsController < ApplicationController
     @user = User.find(params[:user_id])
     @shout = @user.shouts_to.create(body: params[:shout][:body], sent_from_id: current_user.id)
 
-    redirect_to user_shouttrail_path(current_user, @user)
+    if @shout.persisted?
+      redirect_to user_shouttrail_path(current_user, @user)
+    else
+      redirect_to user_shouttrail_path(current_user, @user), alert: "No matter how loud you shout it, nobody will hear if you say nothing."
+    end
   end
 
   def destroy

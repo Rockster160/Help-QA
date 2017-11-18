@@ -1,5 +1,9 @@
 $(".ctr-posts.act-show").ready(function() {
 
+  var unread_replies = 0
+  var default_title = document.title
+  $(window).on("click scroll focus", function() { unread_replies = 0; updatePageTitleWithUnreads() })
+
   App.replies = App.cable.subscriptions.create({
     channel: "RepliesChannel",
     channel_id: "replies_for_" + $(".post-container").attr("data-id")
@@ -13,6 +17,16 @@ $(".ctr-posts.act-show").ready(function() {
     }
   })
 
+  updatePageTitleWithUnreads = function() {
+    if (unread_replies == 0) {
+      document.title = default_title
+    } else if (unread_replies == 1) {
+      document.title = "(1 unread reply) " + default_title
+    } else {
+      document.title = "(" + unread_replies + " unread replies) " + default_title
+    }
+  }
+
   updateRepliesSinceLast = function() {
     var url = window.location.href.split("?")[0]
     var last_post_timestamp = $(".replies-container .pending-reply, .replies-container .reply-container").last().attr("data-timestamp")
@@ -24,9 +38,11 @@ $(".ctr-posts.act-show").ready(function() {
         if (existing_reply.length > 0) {
           existing_reply.replaceWith(this)
         } else {
+          unread_replies += 1
           $(".replies-container").append(this)
         }
       })
+      updatePageTitleWithUnreads()
       $(".replies-container").animate({
         "max-height": $(".replies-container").get(0).scrollHeight
       }, {

@@ -21,6 +21,9 @@
         <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
         <div class="text-right">
           <%= f.submit "Shout!" %>
+          <% if @user == current_user %>
+            (Shouting yourself)
+          <% end %>
         </div>
       <% end %>
     <% else %>

@@ -25,7 +25,15 @@ class Shout < ApplicationRecord
 
   after_commit :broadcast_creation, :notify_user
 
+  validate :valid_text
+
   private
+
+  def valid_text
+    if body.to_s.length == 0
+      errors.add(:base, "Try adding some more text! This isn't long enough.")
+    end
+  end
 
   def shouts_path
     Rails.application.routes.url_helpers.user_shouts_path(sent_to_id, anchor: "shout-#{id}")
