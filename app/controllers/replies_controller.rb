@@ -87,14 +87,14 @@ class RepliesController < ApplicationController
           Sherlock.update_by(current_user, reply, reply_params)
           @errors = reply.errors.full_messages
         else
-          @errors = "You do not have permission to edit this reply."
+          @errors = ["You do not have permission to edit this reply."]
         end
       else
         reply = @post.replies.create(reply_params.merge(author: current_user))
         @errors = reply.errors.full_messages
       end
     else
-      @errors = @user.try(:errors).try(:full_messages) || "Failed to submit Reply."
+      @errors = @user.try(:errors).try(:full_messages) || ["Failed to submit Reply."]
     end
   end
 

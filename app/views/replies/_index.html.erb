@@ -11,26 +11,26 @@
         <% end %>
         <%= author_name %> <%= change %> this post <%= timeago(reply.created_at) %>.
       </div>
-      <% next %>
+      <% hide_reply = true %>
     <% end %>
 
     <% if reply.is_a?(PostInvite) %>
       <div class="pending-reply info" data-timestamp="<%= reply.created_at.to_i %>">
         <strong><%= reply.invited_anonymously? ? "Anonymous" : reply.user.username %></strong> invited <%= pluralize(reply.invited_users, "user") %> <%= timeago(reply.created_at) %>.
       </div>
-      <% next %>
+      <% hide_reply = true %>
     <% end %>
 
     <% if reply.in_moderation? %>
       <div class="pending-reply" data-timestamp="<%= reply.created_at.to_i %>">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
       <% hidden_by_default = "attached pending" %>
-      <% next unless current_mod? %>
+      <% hide_reply = true unless current_mod? %>
     <% elsif reply.removed? || reply.author.banned? || (reply.marked_as_adult? && !current_user&.can_view?(reply)) %>
       <div class="pending-reply removed" data-timestamp="<%= reply.created_at.to_i %>">This reply has been removed.</div>
       <% hidden_by_default = "attached removed" %>
-      <% next unless current_mod? %>
+      <% hide_reply = true unless current_mod? %>
     <% end %>
 
-    <%= render partial: "replies/show", locals: { reply: reply, additional_classes: hidden_by_default } %>
+    <%= render partial: "replies/show", locals: { reply: reply, additional_classes: hidden_by_default, hide_reply: hide_reply } %>
   </div>
 <% end %>

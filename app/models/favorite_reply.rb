@@ -13,7 +13,7 @@
 class FavoriteReply < ApplicationRecord
   belongs_to :user
   belongs_to :post
-  belongs_to :reply, counter_cache: :favorite_count 
+  belongs_to :reply, counter_cache: :favorite_count, touch: true
 
   validate :can_only_favorite_one_reply_per_post, :cannot_favorite_own_reply
 
