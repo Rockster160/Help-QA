@@ -30,6 +30,7 @@ class Tag < ApplicationRecord
     url_split_regex = /((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/
     formatted = body.gsub(url_split_regex) { $3.split(".")[-2] || $3 } # Replace URL with just the Host for tagging purposes
                     .gsub("\n", " ")                       # Spaces instead of newlines
+                    .gsub(/[\.\!\?]/i, " ")                # Remove punctuation
                     .gsub(/[^a-z \-]/i, "")                # Without special chars (Include alpha, spaces, and hyphens)
                     .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
                     .gsub(/ \-|\- /i, "")                  # Remove hyphens at beginning and end of words
