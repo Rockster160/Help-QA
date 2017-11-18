@@ -90,6 +90,9 @@
       </div>
     </div>
     <% original_content = current_user.try(:settings).try(:censor_inappropriate_language) ? censor_text(reply.body) : reply.body %>
+    <% if author.helpbot? %>
+      
+    <% end %>
     <div class="reply-content" data-original-content="<%= original_content %>" <%=  'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
     <% unless reply.posted_anonymously? %>
       <% cache [author, author.posts] do %>
