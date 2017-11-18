@@ -64,13 +64,12 @@ loadImages = function() {
 
 addCards = function(cards_data) {
   $(cards_data).each(function() {
-    console.log(this);
     var card = this
     var $link = $('[data-loading-preview][href="' + card.original_url + '"]')
     var no_preview = $link.attr("data-loading-preview") == "no"
     $link.removeAttr("data-loading-preview")
-    if (card.invalid_url) { $link.replaceWith($link.text()) }
-    if (no_preview && !card.inline) { return }
+    if (card.invalid_url) { return $link.replaceWith($link.first().text()) }
+    if (no_preview && !card.inline) { return $link.html($link.first().text()) }
 
     if (card.inline || $link.parents("[data-inline-links]").length > 0) {
       $link.html(card.html)
@@ -80,11 +79,6 @@ addCards = function(cards_data) {
       $link.closest("quote, .reply-content, .shout-body").append(new_link)
     }
   })
-  // $("[data-loading-preview]").each(function() {
-  //   var $container = $(this)
-  //   $container.html($container.text())
-  //   $container.removeAttr("data-loading-preview")
-  // })
 }
 
 function chunkArray(myArray, chunk_size){

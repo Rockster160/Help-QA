@@ -78,7 +78,7 @@ class RepliesController < ApplicationController
 
   def meta
     respond_to do |format|
-      format.json { render json: generate_previews_for_urls(clear: true) }
+      format.json { render json: generate_previews_for_urls }
     end
   end
 
