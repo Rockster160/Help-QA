@@ -87,7 +87,6 @@ class Reply < ApplicationRecord
       ActionCable.server.broadcast("notifications_#{mod.id}", message: mod_message)
     end
 
-    return unless created_at == updated_at
     ActionCable.server.broadcast("replies_for_#{post_id}", {})
   end
 

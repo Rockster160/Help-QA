@@ -42,7 +42,7 @@ Rails.application.routes.draw do
       get :subscribe
       post :mod
     end
-    resources :replies, only: [ :create ] do
+    resources :replies, only: [ :create, :update ] do
       post :mod
       get :favorite
       get :unfavorite

@@ -19,7 +19,14 @@ $(".ctr-posts.act-show").ready(function() {
     $.get(url, {since: last_post_timestamp}).success(function(data) {
       var prev_height = $(".replies-container").get(0).scrollHeight
       $(".replies-container").css({"max-height": prev_height})
-      $(".replies-container").append(data)
+      $(data).each(function() {
+        var existing_reply = $("#" + $(this).attr("id"))
+        if (existing_reply.length > 0) {
+          existing_reply.replaceWith(this)
+        } else {
+          $(".replies-container").append(this)
+        }
+      })
       $(".replies-container").animate({
         "max-height": $(".replies-container").get(0).scrollHeight
       }, {

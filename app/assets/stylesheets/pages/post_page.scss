@@ -117,97 +117,100 @@
         padding-right: 0;
         overflow: hidden;
 
-        .reply-container {
-          border: 1px solid $gray-med;
-          margin-bottom: 10px;
-          position: relative;
+        .reply-wrapper {
 
-          &.attached {
-            margin-top: -13px;
-            &.pending { border: 2px solid $help-default; }
-            &.removed { border: 2px solid red; }
-          }
-          &.deactivated:after {
-            position: absolute;
-            content: "";
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            opacity: 0.6;
-            pointer-events: none;
-          }
-          .reply-author {
-            padding: 5px;
-            border-bottom: 1px solid $gray-med;
-            position: relative;
-            background: white;
-            @include split-page(40px);
-
-            .avatar-container {
-              border-color: black;
-              margin: 0;
-            }
-            .reply-author-text {
-              padding-top: 4px;
-              padding-left: 5px;
-              width: 100%;
-
-              .reply-author-name {
-                display: inline-block;
-                font-weight: bold;
-                font-size: 14px;
-              }
-              .reply-author-stats {
-                display: inline-block;
-
-                .detail-icons {
-                  display: inline-block;
-                }
-              }
-            }
-            .reply-options {
-              position: absolute;
-              bottom: 0;
-              right: 0;
-              width: auto;
-              height: auto;
-              border-top: 1px solid $border-color;
-              border-left: 1px solid $border-color;
-
-              .hover-icon { padding: 5px 3px; }
-            }
-          }
-          .reply-content {
-            background: $off-white;
-            width: 100%;
-            max-width: 745px;
-            padding: 8px 5px;
-
-            p {
-              font-size: 12px;
-              line-height: 1.5;
-            }
-          }
-          .reply-after-message {
-            border-top: 1px solid $border-color;
-            background: white;
-
-            p {
-              font-size: 12px;
-              margin: 0;
-              padding: 3px;
-            }
-          }
-          &.highlight {
+          &.highlight .reply-container {
             border-top: 3px solid limegreen;
           }
-          &.original-poster {
-            border-color: $help-default;
+          .reply-container {
+            border: 1px solid $gray-med;
+            margin-bottom: 10px;
+            position: relative;
 
-            .reply-author { border-color: $help-default; }
-            .reply-content { background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%)); }
+            &.attached {
+              margin-top: -13px;
+              &.pending { border: 2px solid $help-default; }
+              &.removed { border: 2px solid red; }
+            }
+            &.deactivated:after {
+              position: absolute;
+              content: "";
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: white;
+              opacity: 0.6;
+              pointer-events: none;
+            }
+            .reply-author {
+              padding: 5px;
+              border-bottom: 1px solid $gray-med;
+              position: relative;
+              background: white;
+              @include split-page(40px);
+
+              .avatar-container {
+                border-color: black;
+                margin: 0;
+              }
+              .reply-author-text {
+                padding-top: 4px;
+                padding-left: 5px;
+                width: 100%;
+
+                .reply-author-name {
+                  display: inline-block;
+                  font-weight: bold;
+                  font-size: 14px;
+                }
+                .reply-author-stats {
+                  display: inline-block;
+
+                  .detail-icons {
+                    display: inline-block;
+                  }
+                }
+              }
+              .reply-options {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: auto;
+                height: auto;
+                border-top: 1px solid $border-color;
+                border-left: 1px solid $border-color;
+
+                .hover-icon { padding: 5px 3px; }
+              }
+            }
+            .reply-content {
+              background: $off-white;
+              width: 100%;
+              max-width: 745px;
+              padding: 8px 5px;
+
+              p {
+                font-size: 12px;
+                line-height: 1.5;
+              }
+            }
+            .reply-after-message {
+              border-top: 1px solid $border-color;
+              background: white;
+
+              p {
+                font-size: 12px;
+                margin: 0;
+                padding: 3px;
+              }
+            }
+            &.original-poster {
+              border-color: $help-default;
+
+              .reply-author { border-color: $help-default; }
+              .reply-content { background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%)); }
+            }
           }
         }
         .pending-reply {

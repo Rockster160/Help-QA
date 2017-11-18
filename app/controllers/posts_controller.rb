@@ -58,11 +58,11 @@ class PostsController < ApplicationController
     authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
     @replies = @post.replies.order(created_at: :asc)
-    @replies = @replies.where("created_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     sherlocks = Sherlock.notifications_for(@post)
-    sherlocks = sherlocks.where("created_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    sherlocks = sherlocks.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     invites = @post.post_invites
-    invites = invites.where("created_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    invites = invites.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     @replies_with_notifications = [@replies, sherlocks, invites].flatten.compact.sort_by(&:created_at)
 
     if request.xhr?
