@@ -21,11 +21,11 @@
       <% hide_reply = true %>
     <% end %>
 
-    <% if reply.in_moderation? %>
+    <% if reply.is_a?(Reply) && reply.in_moderation? %>
       <div class="pending-reply" data-timestamp="<%= reply.created_at.to_i %>">This reply from <strong><%= reply.username %></strong> is pending approval.</div>
       <% hidden_by_default = "attached pending" %>
       <% hide_reply = true unless current_mod? %>
-    <% elsif reply.removed? || reply.author.banned? || (reply.marked_as_adult? && !current_user&.can_view?(reply)) %>
+    <% elsif reply.is_a?(Reply) && (reply.removed? || reply.author.banned? || (reply.marked_as_adult? && !current_user&.can_view?(reply))) %>
       <div class="pending-reply removed" data-timestamp="<%= reply.created_at.to_i %>">This reply has been removed.</div>
       <% hidden_by_default = "attached removed" %>
       <% hide_reply = true unless current_mod? %>

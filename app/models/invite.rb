@@ -43,12 +43,14 @@ class Invite < ApplicationRecord
   private
 
   def has_not_already_been_invited
+    return unless new_record?
     if post.invites.where.not(id: id).where(invited_user_id: invited_user_id).any?
       errors.add(:base, "User has already been invited to this post.")
     end
   end
 
   def is_not_already_subscribed
+    return unless new_record?
     if invited_user.subscriptions.where(post_id: post_id).any?
       errors.add(:base, "User is already subscribed to post.")
     end
