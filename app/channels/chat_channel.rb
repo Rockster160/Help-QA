@@ -10,7 +10,7 @@ class ChatChannel < ApplicationCable::Channel
 
   def speak(data)
     return unless current_user
-    current_user.chat_messages.create(body: data["message"])
+    Sherlock.update_by(current_user, current_user.chat_messages.new, {body: data["message"]})
   end
 
   def pong

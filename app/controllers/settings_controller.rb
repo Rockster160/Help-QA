@@ -9,7 +9,7 @@ class SettingsController < ApplicationController
   def update
     @settings = current_user.settings
 
-    if @settings.update(user_settings_params)
+    if Sherlock.update_by(current_user, @settings, user_settings_params).persisted?
       redirect_to account_settings_path, notice: "Successfully updated settings!"
     else
       redirect_to account_settings_path, alert: "Failed to update settings. Please try again."

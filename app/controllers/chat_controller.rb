@@ -23,7 +23,7 @@ class ChatController < ApplicationController
 
   def remove_message
     message = ChatMessage.find(params[:id])
-    message.update(removed: params[:restore] != "true")
+    Sherlock.update_by(current_user, message, {removed: params[:restore] != "true"})
     redirect_to chat_path
   end
 

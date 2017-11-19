@@ -78,15 +78,19 @@ class Sherlock < ApplicationRecord
     select { |sherlock| (changes.keys & change_keys.map(&:to_s)).any? }
   end
 
-  def self.update_by(person, obj_to_update, new_params)
-    new_sherlock = person.sherlocks.new(obj: obj_to_update)
+  def self.update_by(person, obj_to_update, new_params, method: :update)
+    new_sherlock = person.sherlocks.new(acting_ip: person.try(:current_sign_in_ip).presence || person.try(:last_sign_in_ip).presence || person.try(:ip_address).presence)
 
     new_sherlock.previous_attributes_raw = obj_to_update.attributes.except("updated_at").to_json
-    result = obj_to_update.update(new_params)
-    new_sherlock.new_attributes_raw = obj_to_update.reload.attributes.except("updated_at").to_json
+    obj_to_update.update(new_params)
+    if obj_to_update.persisted? && obj_to_update.try(:errors).try(:none?)
+      new_sherlock.new_attributes_raw = obj_to_update.reload.attributes.except("updated_at").to_json
 
-    new_sherlock.save
-    result
+      new_sherlock.obj = obj_to_update
+      new_sherlock.save
+    end
+
+    obj_to_update
   end
 
   def obj

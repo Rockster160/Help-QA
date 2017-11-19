@@ -29,7 +29,7 @@ class ShoutsController < ApplicationController
 
   def create
     @user = User.find(params[:user_id])
-    @shout = @user.shouts_to.create(body: params[:shout][:body], sent_from_id: current_user.id)
+    @shout = Sherlock.update_by(current_user, @user.shouts_to.new, {body: params[:shout][:body], sent_from_id: current_user.id})
 
     if @shout.persisted?
       redirect_to user_shouttrail_path(current_user, @user)
@@ -40,7 +40,7 @@ class ShoutsController < ApplicationController
 
   def destroy
     shout = Shout.find(params[:id])
-    shout.update(removed_at: DateTime.current)
+    Sherlock.update_by(current_user, shout, {removed_at: DateTime.current})
     redirect_back fallback_location: user_shouts_path(shout.sent_to)
   end
 

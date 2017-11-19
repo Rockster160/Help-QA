@@ -41,7 +41,7 @@ class PostsController < ApplicationController
     modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
     modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
 
-    if post.update(modded_attrs)
+    if Sherlock.update_by(current_user, post, modded_attrs).persisted?
       redirect_to post_path(post)
     else
       redirect_to post_path(post), alert: post.errors.full_messages.first || "Failed to save Post. Please try again."
@@ -108,7 +108,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    if Sherlock.update_by(current_user, @post, post_params)
+    if Sherlock.update_by(current_user, @post, post_params).persisted?
       redirect_to post_path(@post)
     else
       flash.now[:alert] = @post.errors.full_messages.first
@@ -127,7 +127,7 @@ class PostsController < ApplicationController
       return redirect_to root_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously]), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
     end
 
-    @post = user.posts.create(post_params)
+    @post = Sherlock.update_by(current_user, user.posts.new, post_params)
 
     if @post.persisted?
       redirect_to post_path(@post), notice: "Successfully created post! While you're waiting for replies, consider viewing other posts and helping others."

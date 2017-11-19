@@ -3,7 +3,7 @@ class ProfileController < ApplicationController
   before_action { @user = current_user; @profile = @user.try(:profile) }
 
   def update
-    if @profile.update(profile_params)
+    if Sherlock.update_by(current_user, @profile, profile_params).persisted?
       redirect_to user_path(@user), notice: "Successfully updated Bio!"
     else
       render :index
