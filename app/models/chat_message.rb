@@ -11,6 +11,9 @@
 #
 
 class ChatMessage < ApplicationRecord
+  include Sherlockable
+
+  sherlockable klass: :chat, ignore: [ :updated_at ]
   belongs_to :author, class_name: "User", foreign_key: :author_id
 
   validates :body, presence: true

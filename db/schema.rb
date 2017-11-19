@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171118235655) do
+ActiveRecord::Schema.define(version: 20171119201758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -183,13 +183,14 @@ ActiveRecord::Schema.define(version: 20171118235655) do
     t.integer  "acting_user_id"
     t.string   "obj_klass"
     t.integer  "obj_id"
-    t.text     "previous_attributes_raw"
-    t.text     "new_attributes_raw"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.text     "new_attributes"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.inet     "acting_ip"
     t.text     "explanation"
-    t.integer  "discovery"
+    t.string   "discovery_klass"
+    t.integer  "discovery_type"
+    t.text     "changed_attrs"
     t.index ["acting_user_id"], name: "index_sherlocks_on_acting_user_id", using: :btree
   end
 

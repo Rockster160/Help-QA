@@ -18,8 +18,11 @@ class Post < ApplicationRecord
   include PgSearch
   include Anonicon
   include Defaults
+  include Sherlockable
 
   DEFAULT_POST_TEXT = "Start Here.\n\nAsk a question, post a rant, tell us your story.".freeze
+
+  sherlockable klass: :post, ignore: [ :updated_at, :reply_count ]
 
   belongs_to :author, class_name: "User"
   has_many :views, class_name: "PostView"

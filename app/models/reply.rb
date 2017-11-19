@@ -18,6 +18,9 @@
 class Reply < ApplicationRecord
   include Anonicon
   include MarkdownHelper
+  include Sherlockable
+
+  sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
 
   belongs_to :post, counter_cache: :reply_count
   belongs_to :author, class_name: "User"

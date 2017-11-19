@@ -2,95 +2,71 @@
 #
 # Table name: sherlocks
 #
-#  id                      :integer          not null, primary key
-#  acting_user_id          :integer
-#  obj_klass               :string
-#  obj_id                  :integer
-#  previous_attributes_raw :text
-#  new_attributes_raw      :text
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
-#  acting_ip               :inet
-#  explanation             :text
-#  discovery               :integer
+#  id              :integer          not null, primary key
+#  acting_user_id  :integer
+#  obj_klass       :string
+#  obj_id          :integer
+#  new_attributes  :text
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  acting_ip       :inet
+#  explanation     :text
+#  discovery_klass :string
+#  discovery_type  :integer
+#  changed_attrs   :text
 #
 
 class Sherlock < ApplicationRecord
-  belongs_to :acting_user, class_name: "User"
+  belongs_to :acting_user, class_name: "User", optional: true
+
+  class JSONWrapper
+    # Allows directly setting pre-stringified JSON.
+    def self.dump(hash); hash.is_a?(String) ? hash : JSON.dump(hash); end
+    def self.load(str); JSON.parse(str) rescue {}; end
+  end
+  serialize :new_attributes, JSONWrapper
+  serialize :changed_attrs, JSONWrapper
 
   validate :some_changes_made
 
+  before_save :set_discovery_type
   after_commit :broadcast_creation
 
-  enum discovery: {
-    # unknown: nil
+  scope :by_type, ->(*types) { where(discovery_type: types_for(types)) }
+  scope :by_klass, ->(*klasses) { where(discovery_klass: klasses) }
 
-    # New x00
-    # Edit x02
-    # Remove x04
-    # Ban x05
+  class << self
+    attr_writer :acting_user, :acting_ip
 
-    #-- Users: 0xx
-    new_user:     000,
-    edit_user:    002,
-    remove_user:  004,
-    ban_user:     005,
-
-    #-- Posts: 1xx
-    new_post:     100,
-    edit_post:    102,
-    remove_post:  104,
-    # ban_post:     105,
-
-    #-- Replies: 2xx
-    new_reply:    200,
-    edit_reply:   202,
-    remove_reply: 204,
-    # ban_reply:    205,
-
-    #-- Chat: 3xx
-    new_chat:     300,
-    # edit_chat:    302,
-    remove_chat:  304,
-    # ban_chat:     305,
-
-    #-- Shouts: 4xx
-    new_shout:    400,
-    edit_shout:   402,
-    remove_shout: 404,
-    # ban_shout:    405,
-
-    #-- IP: 9xx
-    # new_ip:       900,
-    # edit_ip:      902,
-    # remove_ip:    904,
-    ban_ip:       905
-  }
-
-  def self.notifications_for(post)
-    where(obj_klass: "Post", obj_id: post.id)
-  end
-  def self.user_changes(user)
-    where(obj_klass: "User", obj_id: user.id)
-  end
-
-  def self.by_changed_attr(*change_keys)
-    select { |sherlock| (changes.keys & change_keys.map(&:to_s)).any? }
-  end
-
-  def self.update_by(person, obj_to_update, new_params, method: :update)
-    new_sherlock = person.sherlocks.new(acting_ip: person.try(:current_sign_in_ip).presence || person.try(:last_sign_in_ip).presence || person.try(:ip_address).presence)
-
-    new_sherlock.previous_attributes_raw = obj_to_update.attributes.except("updated_at").to_json
-    obj_to_update.update(new_params)
-    if obj_to_update.persisted? && obj_to_update.try(:errors).try(:none?)
-      new_sherlock.new_attributes_raw = obj_to_update.reload.attributes.except("updated_at").to_json
-
-      new_sherlock.obj = obj_to_update
-      new_sherlock.save
+    def types_for(*syms)
+      discovery_types.slice(*syms).values
     end
 
-    obj_to_update
+    def discovery_types
+      {
+        new:    0,
+        edit:   1,
+        remove: 2,
+        ban:    3,
+        other:  4
+      }
+    end
+
+    def discover(obj, active_record_changes, discovery_klass)
+      return if active_record_changes.none?
+
+      new_changes = active_record_changes.each_with_object({}) { |(changed_key, changed_array), memo| memo[changed_key] = changed_array.first }
+      acting_ip = @acting_ip.presence || @acting_user.try(:current_sign_in_ip).presence || @acting_user.try(:last_sign_in_ip).presence || @acting_user.try(:ip_address).presence
+
+      create(
+        obj: obj,
+        changed_attrs: new_changes,
+        acting_user: @acting_user,
+        acting_ip: acting_ip,
+        discovery_klass: discovery_klass,
+        new_attributes: obj.attributes
+      )
+    end
   end
 
   def obj
@@ -102,33 +78,39 @@ class Sherlock < ApplicationRecord
     self.obj_id = new_obj.try(:id)
   end
 
-  def previous_attributes
-    @previous_attributes ||= JSON.parse(previous_attributes_raw.to_s) rescue {}
+  def discovery_type=(new_type)
+    super(self.class.types_for(new_type).first)
   end
 
-  def new_attributes
-    @new_attributes ||= JSON.parse(new_attributes_raw.to_s) rescue {}
+  def set_discovery
+    return unless discovery_klass_to_enum.present?
+    mod_type = discovery_type
+    self.discovery = "#{mod_type}_#{discovery_klass_to_enum}".to_sym
   end
 
-  def changes
-    diff = previous_attributes.dup
-    diff.delete_if { |prev_key, prev_val| new_attributes[prev_key] == prev_val }
-    diff.each do |changed_key, changed_val|
-      diff[changed_key] = [changed_val, new_attributes[changed_key]]
+  def set_discovery_type
+    changed_keys = changed_attrs.keys
+    self.discovery_type = if changed_keys.find { |changed_key| changed_key == "id" }
+      :new
+    elsif changed_keys.find { |changed_key| changed_key =~ /banned/ }
+      :ban
+    elsif changed_keys.find { |changed_key| changed_key =~ /remove/ }
+      :remove
+    else
+      :edit
     end
-    diff
   end
 
   private
 
   def broadcast_creation
-    if obj_klass == "Post"
-      ActionCable.server.broadcast("replies_for_#{obj_id}", {})
-    end
+    return unless obj_klass == :post
+
+    ActionCable.server.broadcast("replies_for_#{obj_id}", {})
   end
 
   def some_changes_made
-    return if changes.any?
+    return if changed_attrs.any?
 
     errors.add(:base, "No changes made.")
   end

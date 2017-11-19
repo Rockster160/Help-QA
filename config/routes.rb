@@ -55,6 +55,8 @@ Rails.application.routes.draw do
   resource :mod, only: [] do
     member do
       get :queue
+      get :audit
+      post :audit, action: :audit_redirect
     end
   end
 
