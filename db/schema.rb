@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117035034) do
+ActiveRecord::Schema.define(version: 20171118235655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,14 +180,17 @@ ActiveRecord::Schema.define(version: 20171117035034) do
   end
 
   create_table "sherlocks", force: :cascade do |t|
-    t.integer  "changed_by_id"
+    t.integer  "acting_user_id"
     t.string   "obj_klass"
     t.integer  "obj_id"
     t.text     "previous_attributes_raw"
     t.text     "new_attributes_raw"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
-    t.index ["changed_by_id"], name: "index_sherlocks_on_changed_by_id", using: :btree
+    t.inet     "acting_ip"
+    t.text     "explanation"
+    t.integer  "discovery"
+    t.index ["acting_user_id"], name: "index_sherlocks_on_acting_user_id", using: :btree
   end
 
   create_table "shouts", force: :cascade do |t|

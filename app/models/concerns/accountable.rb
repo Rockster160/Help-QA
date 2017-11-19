@@ -229,6 +229,9 @@ module Accountable
     if username.include?(" ")
       errors.add(:username, "cannot contain spaces")
     end
+    if username.include?("%")
+      errors.add(:username, "cannot contain %'s")
+    end
     if username.include?("@")
       errors.add(:username, "cannot contain @'s")
     end

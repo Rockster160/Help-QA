@@ -49,7 +49,7 @@ class User < ApplicationRecord
   has_one :location
   has_one :profile, class_name: "UserProfile",      dependent: :destroy
   has_one :settings, class_name: "UserSetting",     dependent: :destroy
-  has_many :sherlocks, foreign_key: :changed_by_id, dependent: :destroy
+  has_many :sherlocks, foreign_key: :acting_user_id, dependent: :destroy
 
   scope :order_by_last_online, -> { order("last_seen_at DESC NULLS LAST") }
   scope :online_now,           -> { order_by_last_online.where("last_seen_at > ?", 5.minutes.ago) }
