@@ -1,0 +1,19 @@
+<% audits.each do |audit| %>
+  <tr>
+    <td><a href="<%= mod_audit_path(audit) %>" class="underline"><%= audit.id %></a></td>
+    <td>
+      <%= audit.created_at.to_formatted_s(:basic) %> <br>
+      <small><%= timeago(audit.created_at) %></small>
+    </td>
+    <td><%= audit.discovery_type %></td>
+    <td><%= audit.acting_ip.presence || "--" %></td>
+    <td><%= audit.acting_user_id.presence || "--" %></td>
+    <td><%= audit.obj_id.presence || "--" %>
+      <br>
+      <small>Link to Audit path</small>
+    </td>
+  </tr>
+<% end %>
+<% if audits.none? && !request.xhr? %>
+  <p>No audits found</p>
+<% end %>

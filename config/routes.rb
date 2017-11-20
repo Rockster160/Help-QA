@@ -53,10 +53,10 @@ Rails.application.routes.draw do
   end
 
   resource :mod, only: [] do
-    member do
-      get :queue
-      get :audit
-      post :audit, action: :audit_redirect
+    get :queue, on: :member
+
+    resources :audit, only: [ :index, :show ] do
+      post :search, on: :collection
     end
   end
 

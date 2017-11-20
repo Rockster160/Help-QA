@@ -1,0 +1,72 @@
+<%= meta_no_index %>
+<% total_audits = @audits.total_count || 0 %>
+<% first_audit = [(@audits.limit_value * (@audits.current_page - 1)) + 1, total_audits, 0].sort[1] %>
+<% last_audit = [@audits.limit_value * @audits.current_page, total_audits, 0].sort[1] %>
+<% title = "#{pluralize_with_delimiter(total_audits, 'audit')}, Audits #{number_with_delimiter(first_audit)} to #{number_with_delimiter(last_audit)}" %>
+<% meta_title title  %>
+
+<h2><i>Audits:</i> <br class="xsmall-down"><%= title %></h2>
+
+<div class="history-page">
+  <%= form_tag search_mod_audit_index_path do %>
+    <div class="search-form">
+      <!-- Time range -->
+      <h6>Action Type</h6>
+      <div class="split-half">
+        <div class="discovery-type">
+          <% dicovery_type_filter = current_filter[:discovery_types].to_a.map(&:to_sym) %>
+          <% Sherlock.discovery_types.keys.each do |discovery_type| %>
+            <%= check_box_tag "discovery_types[]", discovery_type, dicovery_type_filter.include?(discovery_type), id: "discovery_type_#{discovery_type}" %>
+            <label for="discovery_type_<%= discovery_type %>"><%= discovery_type %></label>
+            <br>
+          <% end %>
+        </div>
+        <div class="discovery-klass">
+          <% dicovery_klass_filter = current_filter[:discovery_klasses].to_a.map(&:to_sym) %>
+          <% Sherlock.discovery_klasses.each do |discovery_klass| %>
+            <%= check_box_tag "discovery_klasses[]", discovery_klass, dicovery_klass_filter.include?(discovery_klass), id: "discovery_klass_#{discovery_klass}" %>
+            <label for="discovery_klass_<%= discovery_klass %>"><%= discovery_klass %></label>
+            <br>
+          <% end %>
+        </div>
+      </div>
+      <h6>IP Address</h6>
+      <input type="text" name="ip" value="<%= params[:ip] %>">
+      <h6>Acting UID</h6>
+      <input type="text" name="acting_uid" value="<%= params[:acting_uid] %>">
+      <h6>Meta ID</h6>
+      <input type="text" name="meta_id" value="<%= params[:meta_id] %>">
+      <%= submit_tag "Search" %>
+      <br>
+      <small>&bull; "Meta ID" refers to the ID of the object the Audit is tracking. For example, in an edited post, the Meta ID refers to the Post ID.</small>
+      <br>
+      <small>&bull; In order to specify a specific object id, append the object type with a hyphen before the id. "post-100" to search for all audits related to post with id 100.</small>
+      <br>
+      <small>&bull; All values can be searched for multiple at once by splitting with commas. ("post-100, user-54")</small>
+    </div>
+  <% end %>
+  <div class="search-results">
+    <% total_pages = 5 %>
+    <% window_sizes = {
+      default: (total_pages / 2).floor,
+      low: total_pages - @audits.current_page,
+      high: total_pages - (@audits.total_pages - @audits.current_page) - 1
+    } %>
+
+    <%= paginate @audits, window: window_sizes.values.max, outer_window: 1, params: current_filter %>
+    <table>
+      <thead>
+        <th>Audit ID</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Acting IP</th>
+        <th>Acting UID</th>
+        <th>Meta ID</th>
+      </thead>
+      <tbody>
+        <%= render partial: "index", locals: { audits: @audits } %>
+      </tbody>
+    </table>
+    <%= paginate @audits, window: window_sizes.values.max, outer_window: 1, params: current_filter %>
+  </div>
+</div>

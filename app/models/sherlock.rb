@@ -32,14 +32,14 @@ class Sherlock < ApplicationRecord
   before_save :set_discovery_type
   after_commit :broadcast_creation
 
-  scope :by_type, ->(*types) { where(discovery_type: types_for(types)) }
+  scope :by_type, ->(*types) { where(discovery_type: Sherlock.types_for(types)) }
   scope :by_klass, ->(*klasses) { where(discovery_klass: klasses) }
 
   class << self
     attr_writer :acting_user, :acting_ip
 
     def types_for(*syms)
-      discovery_types.slice(*syms).values
+      discovery_types.slice(*syms.flatten.map(&:to_sym)).values
     end
 
     def discovery_types
@@ -50,6 +50,17 @@ class Sherlock < ApplicationRecord
         ban:    3,
         other:  4
       }
+    end
+
+    def discovery_klasses
+      [
+        :user,
+        :post,
+        :reply,
+        :shout,
+        :chat,
+        :ip
+      ]
     end
 
     def discover(obj, active_record_changes, discovery_klass)
@@ -76,6 +87,10 @@ class Sherlock < ApplicationRecord
   def obj=(new_obj)
     self.obj_klass = new_obj.class.to_s
     self.obj_id = new_obj.try(:id)
+  end
+
+  def discovery_type
+    "#{self.class.discovery_types.key(super)}_#{discovery_klass}"
   end
 
   def discovery_type=(new_type)
