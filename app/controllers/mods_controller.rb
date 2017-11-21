@@ -1,4 +1,5 @@
 class ModsController < ApplicationController
+  before_action :authenticate_mod
 
   def queue
     @posts = Post.needs_moderation.order(created_at: :desc).page(params[:posts_page]).per(50)

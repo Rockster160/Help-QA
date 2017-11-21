@@ -1,6 +1,7 @@
 class AuditController < ApplicationController
   include AuditHelper
   helper_method :current_filter
+  before_action :authenticate_mod
 
   def index
     set_audit_filters

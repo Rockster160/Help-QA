@@ -59,7 +59,7 @@ class PostsController < ApplicationController
 
     @replies = @post.replies.order(created_at: :asc)
     @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
-    sherlocks = Sherlock.posts.where(obj_id: @post.id)
+    sherlocks = Sherlock.posts.where(obj_id: @post.id).by_type(:edit)
     sherlocks = sherlocks.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     invites = @post.post_invites
     invites = invites.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?

@@ -97,11 +97,12 @@ module Accountable
 
   def aka
     previous_usernames = []
-    Sherlock.user_changes(self).each do |sherlock|
-      next unless sherlock.changes.keys.include?("username")
-      previous_usernames << sherlock.changes["username"].first
+    Sherlock.users.where(obj_id: id).each do |sherlock|
+      next unless sherlock.new_attributes.keys.include?("username")
+      previous_usernames << sherlock.new_attributes["username"]
     end
     previous_usernames.shift
+    previous_usernames.pop
     previous_usernames.uniq
   end
 
