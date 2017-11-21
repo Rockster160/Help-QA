@@ -32,8 +32,19 @@ class Sherlock < ApplicationRecord
   before_save :set_discovery_type
   after_commit :broadcast_creation
 
-  scope :by_type, ->(*types) { where(discovery_type: Sherlock.types_for(types)) }
-  scope :by_klass, ->(*klasses) { where(discovery_klass: klasses) }
+  scope :by_type,   ->(*types) { where(discovery_type: types_for(types)) }
+  scope :by_klass,  ->(*klasses) { where(discovery_klass: klasses) }
+  scope :search_ip, ->(*searched_ips) {
+    q = searched_ips.flatten.map { |ip| "TEXT(acting_ip) LIKE ?" }.join(" OR ")
+    ips = searched_ips.flatten.map { |ip| "#{ip.squish}/%" }
+    where(q, *ips)
+  }
+  scope :users,     -> { by_klass(:user) }
+  scope :posts,     -> { by_klass(:post) }
+  scope :replies,   -> { by_klass(:reply) }
+  scope :shouts,    -> { by_klass(:shout) }
+  scope :chats,     -> { by_klass(:chat) }
+  scope :ips,       -> { by_klass(:ip) }
 
   class << self
     attr_writer :acting_user, :acting_ip

@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     sign_in_again = current_user == @user
     did_update_age = params.dig(:user, :date_of_birth).present?
 
-    if Sherlock.update_by(current_user, @user, user_params).persisted?
+    if @user.update(user_params)
       if did_update_age && @user.age.nil?
         flash.now[:alert] = "Your birthday must match the format MM/DD/YYYY"
         render "settings/index"
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
   def moderate
     @user = User.find(params[:id])
 
-    if Sherlock.update_by(current_user, @user, moderatable_params).persisted?
+    if @user.update(moderatable_params)
       redirect_to @user, notice: "Success!"
     else
       redirect_to @user, alert: "Failed to make changes."

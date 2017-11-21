@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
   end
 
   def create_and_sign_in_user_by_email(email)
-    user = Sherlock.update_by(current_user, User.new, {email: email})
+    user = User.create(email: email)
     sign_in(user) if user.persisted?
     user
   end

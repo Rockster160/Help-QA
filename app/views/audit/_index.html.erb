@@ -8,10 +8,7 @@
     <td><%= audit.discovery_type %></td>
     <td><%= audit.acting_ip.presence || "--" %></td>
     <td><%= audit.acting_user_id.presence || "--" %></td>
-    <td><%= audit.obj_id.presence || "--" %>
-      <br>
-      <small>Link to Audit path</small>
-    </td>
+    <td><%= audit.obj_id.presence || "--" %> <br> <small><%= audit.obj_klass %></small></td>
   </tr>
 <% end %>
 <% if audits.none? && !request.xhr? %>

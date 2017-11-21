@@ -40,7 +40,7 @@ class RepliesController < ApplicationController
     modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
     modded_attrs[:removed_at] = nil if params[:remove].present? && params[:remove] == "false"
 
-    if Sherlock.update_by(current_user, reply, modded_attrs).persisted?
+    if reply.update(modded_attrs)
       redirect_to post_path(post, anchor: "reply-#{reply.id}")
     else
       redirect_to post_path(post, anchor: "reply-#{reply.id}"), alert: reply.errors.full_messages.first || "Failed to save Reply. Please try again."
@@ -84,13 +84,13 @@ class RepliesController < ApplicationController
       if params[:id].present?
         reply = @post.replies.find(params[:id])
         if current_user == reply.author || current_mod?
-          Sherlock.update_by(current_user, reply, reply_params)
+          reply.update(reply_params)
           @errors = reply.errors.full_messages
         else
           @errors = ["You do not have permission to edit this reply."]
         end
       else
-        reply = Sherlock.update_by(current_user, @post.replies.new, reply_params.merge(author: current_user))
+        reply = @post.replies.create(reply_params.merge(author: current_user))
         @errors = reply.errors.full_messages
       end
     else

@@ -41,7 +41,7 @@ class PostsController < ApplicationController
     modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
     modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
 
-    if Sherlock.update_by(current_user, post, modded_attrs).persisted?
+    if post.update(modded_attrs)
       redirect_to post_path(post)
     else
       redirect_to post_path(post), alert: post.errors.full_messages.first || "Failed to save Post. Please try again."
@@ -59,7 +59,7 @@ class PostsController < ApplicationController
 
     @replies = @post.replies.order(created_at: :asc)
     @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
-    sherlocks = Sherlock.notifications_for(@post)
+    sherlocks = Sherlock.posts.where(obj_id: @post.id)
     sherlocks = sherlocks.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     invites = @post.post_invites
     invites = invites.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
@@ -108,7 +108,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    if Sherlock.update_by(current_user, @post, post_params).persisted?
+    if @post.update(post_params)
       redirect_to post_path(@post)
     else
       flash.now[:alert] = @post.errors.full_messages.first
@@ -127,7 +127,7 @@ class PostsController < ApplicationController
       return redirect_to root_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously]), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
     end
 
-    @post = Sherlock.update_by(current_user, user.posts.new, post_params)
+    @post = user.posts.create(post_params)
 
     if @post.persisted?
       redirect_to post_path(@post), notice: "Successfully created post! While you're waiting for replies, consider viewing other posts and helping others."

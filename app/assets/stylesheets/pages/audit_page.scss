@@ -1,6 +1,7 @@
 .ctr-audit.act-index {
   table {
     border-spacing: 10px 5px;
+
     thead th {
       text-align: left;
       font-size: 14px;
@@ -9,6 +10,7 @@
     tr td {
       vertical-align: top;
       font-size: 12px;
+
       small { font-size: 10px; }
     }
   }
