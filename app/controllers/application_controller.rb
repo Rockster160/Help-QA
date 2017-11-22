@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications
   skip_before_action :logit, only: [:flash_message]
-  # skip_before_action :verify_authenticity_token
 
   rescue_from ActionController::UnknownFormat, with: :not_found
   rescue_from ActionController::UnknownController, with: :not_found
