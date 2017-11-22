@@ -3,6 +3,7 @@ Rails.application.configure do
 
   # Code is not reloaded between requests.
   config.cache_classes = true
+  config.force_ssl = true
 
   config.action_mailer.default_url_options = { host: 'help-qa.com' }
   config.action_mailer.raise_delivery_errors = false
