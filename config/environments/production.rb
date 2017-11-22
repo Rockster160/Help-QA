@@ -20,7 +20,7 @@ Rails.application.configure do
   }
 
   config.action_cable.url = "ws://help-qa.com/cable"
-  config.action_cable.allowed_request_origins = [ "https://www.help-qa.com", "https://help-qa.com" ]
+  config.action_cable.allowed_request_origins = [ "http://www.help-qa.com", "http://help-qa.com" ]
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
