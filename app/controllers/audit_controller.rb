@@ -15,7 +15,7 @@ class AuditController < ApplicationController
 
   def current_filter
     @current_filter ||= begin
-      params.permit(:ip, :acting_uid, :meta_id, discovery_types: [], discovery_klasses: []).to_h
+      params.permit(:ip, :acting_uid, :meta_id, audit_types: [], discovery_klasses: []).to_h
     end
   end
 

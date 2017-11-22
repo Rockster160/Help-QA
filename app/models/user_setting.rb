@@ -16,7 +16,7 @@
 class UserSetting < ApplicationRecord
   include Sherlockable
 
-  sherlockable klass: :user, ignore: [ :last_email_sent ]
+  sherlockable klass: :user, ignore: [ :last_email_sent ], skip: :new
   belongs_to :user
 
   before_validation :set_required

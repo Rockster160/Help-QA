@@ -141,7 +141,7 @@ class ApplicationController < ActionController::Base
   end
 
   def block_ip_addresses
-    head :unauthorized if BannedIp.pluck(:ip).include?(current_ip_address)
+    head :unauthorized if BannedIp.where(ip: current_ip_address).any?
   end
 
   def current_ip_address

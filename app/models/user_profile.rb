@@ -22,7 +22,7 @@
 class UserProfile < ApplicationRecord
   include Sherlockable
 
-  sherlockable klass: :user, ignore: [ :created_at, :updated_at ]
+  sherlockable klass: :user, ignore: [ :created_at, :updated_at ], skip: :new
   belongs_to :user
 
   def editable_attributes

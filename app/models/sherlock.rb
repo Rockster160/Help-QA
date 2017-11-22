@@ -80,7 +80,7 @@ class Sherlock < ApplicationRecord
       new_changes = active_record_changes.each_with_object({}) { |(changed_key, changed_array), memo| memo[changed_key] = changed_array.first }
       acting_ip = @acting_ip.presence || @acting_user.try(:current_sign_in_ip).presence || @acting_user.try(:last_sign_in_ip).presence || @acting_user.try(:ip_address).presence
 
-      create(
+      new(
         obj: obj,
         changed_attrs: new_changes,
         acting_user: @acting_user,
@@ -100,23 +100,23 @@ class Sherlock < ApplicationRecord
     self.obj_id = new_obj.try(:id)
   end
 
+  def audit_type
+    "#{discovery_type}_#{discovery_klass}"
+  end
+
   def discovery_type
-    "#{self.class.discovery_types.key(super)}_#{discovery_klass}"
+    self.class.discovery_types.key(super)
   end
 
   def discovery_type=(new_type)
     super(self.class.types_for(new_type).first)
   end
 
-  def set_discovery
-    return unless discovery_klass_to_enum.present?
-    mod_type = discovery_type
-    self.discovery = "#{mod_type}_#{discovery_klass_to_enum}".to_sym
-  end
-
   def set_discovery_type
     changed_keys = changed_attrs.keys
-    self.discovery_type = if changed_keys.find { |changed_key| changed_key == "id" }
+    self.discovery_type = if discovery_klass =~ /ip/
+      :ban # Forcefully set as ip if klass is an IP ban
+    elsif changed_keys.find { |changed_key| changed_key == "id" }
       :new
     elsif changed_keys.find { |changed_key| changed_key =~ /banned/ }
       :ban

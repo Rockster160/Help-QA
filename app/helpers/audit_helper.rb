@@ -3,8 +3,8 @@ module AuditHelper
   def set_audit_filters
     @audits = Sherlock.order(created_at: :desc).page(params[:page]).per(50)
 
-    dicovery_type_filter = current_filter[:discovery_types].to_a.map(&:to_sym)
-    @audits = @audits.by_type(*dicovery_type_filter) if dicovery_type_filter.any?
+    discovery_type_filter = current_filter[:discovery_types].to_a.map(&:to_sym)
+    @audits = @audits.by_type(*discovery_type_filter) if discovery_type_filter.any?
     dicovery_klass_filter = current_filter[:discovery_klasses].to_a.map(&:to_sym)
     @audits = @audits.by_klass(*dicovery_klass_filter) if dicovery_klass_filter.any?
 

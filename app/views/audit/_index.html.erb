@@ -5,7 +5,7 @@
       <%= audit.created_at.to_formatted_s(:basic) %> <br>
       <small><%= timeago(audit.created_at) %></small>
     </td>
-    <td><%= audit.discovery_type %></td>
+    <td><%= audit.audit_type %></td>
     <td><%= audit.acting_ip.presence || "--" %></td>
     <td><%= audit.acting_user_id.presence || "--" %></td>
     <td><%= audit.obj_id.presence || "--" %> <br> <small><%= audit.obj_klass %></small></td>

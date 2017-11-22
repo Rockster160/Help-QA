@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171119201758) do
+ActiveRecord::Schema.define(version: 20171122162834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20171119201758) do
   create_table "banned_ips", force: :cascade do |t|
     t.inet     "ip"
     t.datetime "created_at"
+    t.datetime "banned_until"
   end
 
   create_table "chat_messages", force: :cascade do |t|
