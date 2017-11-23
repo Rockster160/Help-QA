@@ -18,7 +18,7 @@
   <% when "Shout" %>
     Author: <%= link_to obj.sent_from.username, obj.sent_from %>
     <br>
-    <%= link_to user_shouts_path(obj.sent_to_id, anchor: "shout-#{id}") do %>
+    <%= link_to user_shouts_path(obj.sent_to_id, anchor: "shout-#{obj.id}") do %>
       Shout:
       <small><%= obj.body %></small>
     <% end %>
