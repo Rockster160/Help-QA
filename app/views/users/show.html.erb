@@ -19,14 +19,18 @@
         <a href="<%= moderate_user_path(@user, ban: :day) %>" data-method="post">1 day</a> -
         <a href="<%= moderate_user_path(@user, ban: :week) %>" data-method="post">1 week</a> -
         <a href="<%= moderate_user_path(@user, ban: :month) %>" data-method="post">1 month</a> -
-        <a href="<%= moderate_user_path(@user, ban: :permanent) %>" data-method="post">Perma-Ban</a> -
-        <a href="<%= moderate_user_path(@user, ban: :ip) %>" data-method="post">
-          <% if BannedIp.where(ip: @user.current_sign_in_ip || @user.last_sign_in_ip).any? %>
-            Unban IP Address
-          <% else %>
-            Ban IP Address
-          <% end %>
-        </a>
+        <a href="<%= moderate_user_path(@user, ban: :permanent) %>" data-method="post">Perma-Ban</a>
+      </li>
+      <li>
+        Ban IP:
+        <% if @user.ip_banned? %>
+          <a href="<%= moderate_user_path(@user, ip_ban: :none) %>" data-method="post">Unban</a> -
+        <% else %>
+          <a href="<%= moderate_user_path(@user, ip_ban: :day) %>" data-method="post">1 day</a> -
+          <a href="<%= moderate_user_path(@user, ip_ban: :week) %>" data-method="post">1 week</a> -
+          <a href="<%= moderate_user_path(@user, ip_ban: :month) %>" data-method="post">1 month</a> -
+          <a href="<%= moderate_user_path(@user, ip_ban: :permanent) %>" data-method="post">Perma-Ban</a>
+        <% end %>
       </li>
       <% if @user.can_use_chat? %>
         <li>Revoke access: <a href="<%= moderate_user_path(@user, revoke: :chat) %>" data-method="post">Chat</a></li>

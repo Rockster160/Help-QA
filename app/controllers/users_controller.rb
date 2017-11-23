@@ -80,7 +80,7 @@ class UsersController < ApplicationController
 
   def moderatable_params
     moderatable_attrs = {}
-    moderatable_attrs[:banned_until] = case params[:ban].to_s.to_sym
+    moderatable_attrs[:banned_until] = case (params[:ban] || params[:ip_ban]).to_s.to_sym
     when :none then 1.second.ago
     when :day then 1.day.from_now
     when :week then 1.week.from_now
@@ -89,13 +89,9 @@ class UsersController < ApplicationController
     end
     moderatable_attrs[:can_use_chat] = false if params[:revoke].to_s == "chat"
     moderatable_attrs[:can_use_chat] = true if params[:grant].to_s == "chat"
-    if params[:ban].to_s.to_sym == :ip
-      ip_bans = BannedIp.where(ip: @user.current_sign_in_ip || @user.last_sign_in_ip)
-      if ip_bans.any?
-        ip_bans.destroy_all
-      else
-        ip_bans.create
-      end
+    if params[:ip_ban].present?
+      ip_ban = BannedIp.find_or_create_by(ip: @user.current_sign_in_ip || @user.last_sign_in_ip)
+      ip_ban.update(banned_until: moderatable_attrs.delete(:banned_until))
     end
     moderatable_attrs.delete_if { |k, v| v.blank? && v != false }
   end
