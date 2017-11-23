@@ -8,7 +8,13 @@
   </tr>
   <tr>
     <td>Acting Ip</td>
-    <td><%= @audit.acting_ip || ">> Manually edited from Console" %></td>
+    <td>
+      <% if @audit.acting_ip.present? %>
+        <%= link_to @audit.acting_ip, mod_audit_index_path(ip: @audit.acting_ip) %>
+      <% else %>
+        &gt;&gt; Manually edited from Console
+      <% end %>
+    </td>
   </tr>
   <% if @audit.acting_user_id.present? %>
     <tr>
