@@ -1,17 +1,38 @@
-.ctr-audit.act-index {
-  table {
-    border-spacing: 10px 5px;
+.ctr-audit {
+  &.act-index {
+    table {
+      border-spacing: 10px 5px;
 
-    thead th {
-      text-align: left;
-      font-size: 14px;
-      font-weight: bold;
+      thead th {
+        text-align: left;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      tr td {
+        vertical-align: top;
+        font-size: 12px;
+
+        small { font-size: 10px; }
+      }
     }
-    tr td {
-      vertical-align: top;
-      font-size: 12px;
+  }
+  &.act-show {
+    .audit-table {
+      border-spacing: 0 10px;
 
-      small { font-size: 10px; }
+      tr {
+        td {
+          background: $form-highlight;
+          margin-top: 10px;
+          padding: 5px;
+          vertical-align: top;
+        }
+      }
+    }
+    .data-table {
+      tr td {
+        border: 1px solid black;
+      }
     }
   }
 }

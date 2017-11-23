@@ -1,0 +1,15 @@
+<table class="data-table">
+  <% data.each do |data_key, data_val| %>
+    <tr>
+      <td><%= data_key.titleize %></td>
+      <td><%=
+        case data_val.to_s
+        when "true" then "Yes"
+        when "false" then "No"
+        when "" then "--"
+        else DateTime.parse(data_val).to_formatted_s(:basic) rescue data_val
+        end
+      %></td>
+    </tr>
+  <% end %>
+</table>

@@ -92,7 +92,7 @@ class Sherlock < ApplicationRecord
   end
 
   def obj
-    obj_klass.constantize.find(obj_id)
+    @_obj ||= obj_klass.constantize.find(obj_id)
   end
 
   def obj=(new_obj)

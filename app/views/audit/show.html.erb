@@ -1,0 +1,31 @@
+<%= meta_no_index %>
+<h1>Audit #<%= @audit.id %>: <%= @audit.audit_type %></h1>
+
+<table class="audit-table">
+  <tr>
+    <td>Timestamp</td>
+    <td><%= @audit.created_at.to_formatted_s(:basic) %></td>
+  </tr>
+  <tr>
+    <td>Acting Ip</td>
+    <td><%= @audit.acting_ip || ">> Manually edited from Console" %></td>
+  </tr>
+  <% if @audit.acting_user_id.present? %>
+    <tr>
+      <td>Acting User</td>
+      <td><%= link_to @audit.acting_user.username, @audit.acting_user %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td>Audited Object</td>
+    <td><%= render partial: "object_cell", locals: {obj: @audit.obj} %></td>
+  </tr>
+  <tr>
+    <td>Pre-change Data</td>
+    <td><%= render partial: "hash_cell", locals: {data: @audit.changed_attrs} %></td>
+  </tr>
+  <tr>
+    <td>Current Data</td>
+    <td><%= render partial: "hash_cell", locals: {data: @audit.new_attributes} %></td>
+  </tr>
+</table>
