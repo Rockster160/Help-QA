@@ -1,6 +1,7 @@
 <% if current_mod? %>
   <li>Unban User: <a href="<%= moderate_user_path(@user, ban: :none) %>" data-method="post">Unban</a></li>
   <li>
+    Ip Ban User:
     <% if @user.ip_banned? %>
       <a href="<%= moderate_user_path(@user, ip_ban: :none) %>" data-method="post">Unban</a> -
     <% else %>

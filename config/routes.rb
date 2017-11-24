@@ -52,9 +52,15 @@ Rails.application.routes.draw do
   resources :replies, only: [ :index ] do
   end
 
-  resource :mod, only: [] do
+  resource :mod, only: [:show] do
     get :queue, on: :member
 
+    resources :bans, only: [:index, :new, :create] do
+      collection do
+        get :edit
+        post :update
+      end
+    end
     resources :audit, only: [ :index, :show ] do
       post :search, on: :collection
     end

@@ -1,0 +1,39 @@
+<div class="text-center">
+  <%= link_to "New Ban", new_mod_ban_path %>
+</div>
+<div class="split-half">
+  <div class="user-half">
+    <table>
+      <thead>
+        <th>Banned User</th>
+        <th>Banned Until</th>
+      </thead>
+      <% @banned_users.each do |banned_user| %>
+        <tr>
+          <td><%= banned_user.username %></td>
+          <td>
+            <%= banned_user.banned_until&.to_formatted_s(:basic_short) %>
+            <small> - <%= link_to "Edit", edit_mod_bans_path(user: banned_user) %></small>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <div class="ip-half">
+    <table>
+      <thead>
+        <th>Banned IP</th>
+        <th>Banned Until</th>
+      </thead>
+      <% @banned_ips.each do |banned_ip| %>
+        <tr>
+          <td><%= banned_ip.ip %></td>
+          <td>
+            <%= banned_ip.banned_until&.to_formatted_s(:basic_short) || "Permanently" %>
+            <small> - <%= link_to "Edit", edit_mod_bans_path(ip: banned_ip) %></small>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

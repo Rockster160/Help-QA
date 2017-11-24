@@ -13,6 +13,8 @@ module Accountable
     after_create :set_gravatar_if_exists, :create_associated_objects
     after_commit :reset_cache, :deliver_initial_confirmation_email
     after_update :reset_auth_token, if: :encrypted_password_changed?
+
+    scope :banned, -> { where("users.banned_until > ?", DateTime.current) }
   end
 
   def online?
@@ -25,7 +27,7 @@ module Accountable
   def long_term_user?; created_at < 1.year.ago; end
   def long_time_user?; long_term_user?; end
   def deactivated?; !verified? && created_at < 1.day.ago; end
-  def ip_banned?; BannedIp.where(ip: current_sign_in_ip.presence || last_sign_in_ip).any?; end
+  def ip_banned?; BannedIp.where(ip: current_sign_in_ip.presence || last_sign_in_ip).current.any?; end
   def banned?; ip_banned? || (banned_until? && banned_until > DateTime.current); end
   def perma_banned?; banned? && banned_until > 50.years.from_now; end
 
