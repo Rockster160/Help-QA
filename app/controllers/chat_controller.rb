@@ -3,7 +3,7 @@ class ChatController < ApplicationController
   before_action :authenticate_mod, only: :remove_message
 
   def chat
-    limit = 1000
+    limit = 10
     @messages = ChatMessage.includes(:author).order(created_at: :desc).limit(limit) # Intentionally ordering backwards so that limit gets the last N records
     @messages = @messages.displayable
     if params[:message].to_i > 0
@@ -15,7 +15,7 @@ class ChatController < ApplicationController
       @messages = @messages.where(id: params[:id])
     end
     if params[:since].to_i > 0
-      @messages = @messages.where("chat_messages.created_at > ?", Time.at(params[:since].to_i))
+      @messages = @messages.where("chat_messages.created_at > ?", Time.at(params[:since].to_i + 1))
     end
     @messages = @messages.reverse # Array reversal so that we get the LAST N records instead of the first.
     render partial: "messages" if request.xhr?

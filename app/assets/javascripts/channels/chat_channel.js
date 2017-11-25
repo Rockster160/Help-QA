@@ -1,10 +1,16 @@
 received_sound = new Audio("https://www.soundjay.com/button/sounds/button-47.mp3")
+// https://www.soundjay.com/mechanical/sounds/multi-plier-open-1.mp3
+// https://www.soundjay.com/mechanical/sounds/camera-shutter-click-08.mp3
+// https://www.soundjay.com/misc/sounds/whip-whoosh-03.mp3
+// https://www.soundjay.com/misc/sounds/briefcase-lock-6.mp3
+// https://www.soundjay.com/misc/sounds/coin-drop-5.mp3
 
 $(".ctr-chat.act-chat").ready(function() {
   var currently_typing = {}
   var unread_count = 0
   var auto_scroll = true
   var user_scrolling = true
+  var guest_token
 
   $(window).on("click scroll focus", function() { unread_count = 0; updatePageTitleWithUnreads() })
 
@@ -20,6 +26,8 @@ $(".ctr-chat.act-chat").ready(function() {
       $(".connection-trouble").removeClass("hidden")
     },
     received: function(data) {
+      guest_token = data["token"]
+      this.perform("pong", { guest_token: guest_token })
       if (data["message"] != undefined) {
         addMessage(data["message"])
       } else if (data["removed"] != undefined) {
@@ -27,7 +35,7 @@ $(".ctr-chat.act-chat").ready(function() {
       } else if (data["users"] != undefined) {
         updateOnlineList(data["users"])
       } else if (data["ping"] != undefined) {
-        this.perform("pong")
+        // No op, the pong takes care of this
       } else {
         console.log("Unknown error: " + data)
       }
@@ -40,18 +48,7 @@ $(".ctr-chat.act-chat").ready(function() {
   })
 
   updateOnlineList = function(users_html) {
-    $(".online-list").append(users_html)
-    var usernames = $(".online-list .message-container").map(function() { return $(this).find(".username").text() }).toArray()
-    var guest_count = $(".online-list .message-container").filter(function() {
-      var username = $(this).find(".username").text()
-      return username.startsWith("Guest ")
-    }).last()
-    var non_guests = $(".online-list .message-container").filter(function(index, user_html) {
-      var username = $(user_html).find(".username").text()
-      if (username.startsWith("Guest ")) { return false }
-      return usernames.indexOf(username) === index
-    })
-    $(".online-list").html($.merge(non_guests, guest_count))
+    $(".online-list").html(users_html)
   }
 
   highlightCurrentUsername = function(html) {
@@ -63,11 +60,14 @@ $(".ctr-chat.act-chat").ready(function() {
 
   addMessagesByHTML = function(messages_html) {
     if ($(messages_html).length > 0) {
-      received_sound.play()
+      $(messages_html).each(function() {
+        if (current_userid != $(this).attr("data-author-id")) {
+          received_sound.play()
+          unread_count += $(messages_html).length
+        }
+      })
       $(".messages-container").append(messages_html)
-      unread_count += $(messages_html).length
       updatePageTitleWithUnreads()
-      reorderMessages()
       if (auto_scroll) { scrollTo(300) }
     }
   }
@@ -79,16 +79,6 @@ $(".ctr-chat.act-chat").ready(function() {
 
   removeId = function(removed_id) {
     $("[data-message-id=" + removed_id + "]").remove()
-  }
-
-  reorderMessages = function() {
-    var messages = $(".messages-container .message-container")
-    messages.sort(function(a, b) {
-      return parseInt($(a).attr("data-timestamp")) - parseInt($(b).attr("data-timestamp"))
-    })
-    var message_ids = messages.map(function() { return $(this).attr("data-message-id") }).toArray()
-    messages = messages.filter(function(index, message) { return message_ids.indexOf($(message).attr("data-message-id")) === index })
-    $(".messages-container").html(messages.slice(-1000))
   }
 
   updatePageTitleWithUnreads = function() {

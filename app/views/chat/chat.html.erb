@@ -9,7 +9,7 @@
   <div class="chat-container">
     <div class="title">Help-QA Chat</div>
     <div class="messages-container">
-      <%= render partial: "messages" %>
+      <%= render partial: "messages", locals: { should_show_date: true } %>
     </div>
   </div>
 </div>

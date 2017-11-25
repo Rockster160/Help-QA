@@ -1,8 +1,20 @@
-<% usernames ||= Rails.cache.read("users_chatting") || [] %>
-<% usernames.uniq.compact.each do |username| %>
-  <% is_guest = username == "Guest" %>
-  <% username = "Guest (#{usernames.count('Guest')})" if is_guest %>
-  <% avatar_icon = User.by_username(username)&.avatar(size: 20) || image_path("status_offline.png") %>
+<% usernames ||= Rails.cache.fetch("users_chatting") { {} } %>
+<% guest_count = usernames.keys.count { |username| username.starts_with?("Guest ") } %>
+<% usernames.each do |username, timestamp| %>
+  <% next if username.starts_with?("Guest ") %>
+  <% user = User.by_username(username) %>
+  <% avatar_icon = user&.avatar(size: 20) || image_path("status_offline.png") %>
+  <div class="message-container">
+    <%= avatar(avatar_icon, size: 20, href: user_path(user)) %>
+    <div class="body">
+      <div class="username"><%= username %></div>
+    </div>
+  </div>
+<% end %>
+
+<% if guest_count > 0 %>
+  <% username = "Guest (#{guest_count})" %>
+  <% avatar_icon = image_path("status_offline.png") %>
   <div class="message-container">
     <%= avatar(avatar_icon, size: 20) %>
     <div class="body">

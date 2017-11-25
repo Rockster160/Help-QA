@@ -1,8 +1,9 @@
+<% should_show_date ||= false %>
 <% messages ||= @messages %>
 <% previous_message_date = Date.new %>
 <% messages.each do |message| %>
   <% new_message_date = message.created_at.to_date %>
-  <% if previous_message_date != new_message_date %>
+  <% if should_show_date && previous_message_date != new_message_date %>
     <div class="date-splitter"><%= new_message_date.strftime("%A, %B %-d") %></div>
   <% end %>
   <% previous_message_date = new_message_date %>
@@ -20,4 +21,7 @@
       <%= markdown(only: [:bold, :italic, :strike, :code]) { message.body } %>
     </div>
   </div>
+<% end %>
+<% if should_show_date && Date.today != previous_message_date %>
+  <div class="date-splitter"><%= Date.today.strftime("%A, %B %-d") %></div>
 <% end %>
