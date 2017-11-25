@@ -75,6 +75,13 @@
           color: $text-med-dark;
           font-weight: bold;
         }
+        .mute {
+          display: inline;
+          
+          .hover-icon {
+            top: 3px;
+          }
+        }
         p {
           display: inline;
           margin: 0;

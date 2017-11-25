@@ -11,6 +11,7 @@ $(".ctr-chat.act-chat").ready(function() {
   var auto_scroll = true
   var user_scrolling = true
   var guest_token
+  var ignored_ids = []
 
   $(window).on("click scroll focus", function() { unread_count = 0; updatePageTitleWithUnreads() })
 
@@ -60,10 +61,17 @@ $(".ctr-chat.act-chat").ready(function() {
 
   addMessagesByHTML = function(messages_html) {
     if ($(messages_html).length > 0) {
+      var $new_messages = $(messages_html)
       $(messages_html).each(function() {
-        if (current_userid != $(this).attr("data-author-id")) {
-          received_sound.play()
-          unread_count += $(messages_html).length
+        var author_id = $(this).attr("data-author-id")
+        if (current_userid != author_id) {
+          if (ignored_ids.indexOf(author_id) >= 0) {
+            this.remove()
+            // TODO: Test me
+          } else {
+            received_sound.play()
+            unread_count += $(messages_html).length
+          }
         }
       })
       $(".messages-container").append(messages_html)
@@ -125,6 +133,11 @@ $(".ctr-chat.act-chat").ready(function() {
       auto_scroll = $(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight
     }
   })
+
+  $(".mute").click(function() {
+    $(this).find(".hover-icon").toggleClass("hidden")
+  })
+
   scrollTo()
   scrollToSelectedMessage()
   highlightCurrentUsername($(".messages-container"), current_username)

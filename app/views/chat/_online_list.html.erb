@@ -7,6 +7,10 @@
   <div class="message-container">
     <%= avatar(avatar_icon, size: 20, href: user_path(user)) %>
     <div class="body">
+      <div class="mute">
+        <%= hover_icon "chat", "Mute User" %>
+        <%= hover_icon "chat-t", "Unmute User", class: "hidden" %>
+      </div>
       <div class="username"><%= username %></div>
     </div>
   </div>
