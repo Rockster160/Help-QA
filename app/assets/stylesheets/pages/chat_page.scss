@@ -77,7 +77,7 @@
         }
         .mute {
           display: inline;
-          
+
           .hover-icon {
             top: 3px;
           }
@@ -95,13 +95,21 @@
 
   form {
     width: calc(100% - 200px);
-    display: flex;
     margin-top: 10px;
 
-    input { width: 100%; }
-    button {
-      margin-left: 10px;
-      padding: 0 7px;
+    .field-wrapper {
+      display: flex;
+
+      input { width: 100%; }
+      button {
+        margin-left: 10px;
+        padding: 0 7px;
+      }
+    }
+    .volume-container {
+      display: block;
+
+      * { vertical-align: middle; }
     }
   }
 

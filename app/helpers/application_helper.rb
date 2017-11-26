@@ -89,13 +89,14 @@ module ApplicationHelper
   def hover_icon(icon, alt, options={})
     style = "background-image: url(#{ActionController::Base.helpers.asset_path('icon_sheet.png', digest: false)})"
     img = ActionController::Base.helpers.image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon.to_s.gsub('_', '-')}")
+    data = options[:data]&.map { |k,v| "data-#{k}=\"#{v}\"" }&.join(" ") || ""
 
     if options[:href].present?
       method = options[:method].present? ? "data-method=\"#{options[:method]}\"" : ""
-      "<a rel=\"nofollow\" href=\"#{options[:href]}\" title=\"#{alt}\" class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
+      "<a rel=\"nofollow\" href=\"#{options[:href]}\" title=\"#{alt}\" #{data} class=\"hover-icon #{options[:class]}\" #{method}>#{img}#{options[:text]}</a>".html_safe
     else
       options[:tag] ||= "div"
-      "<#{options[:tag]} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
+      "<#{options[:tag]} #{data} class=\"hover-icon #{options[:class]}\">#{img}#{options[:text]}</#{options[:tag]}>".html_safe
     end
   end
   module_function :hover_icon

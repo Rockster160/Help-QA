@@ -15,16 +15,22 @@
 </div>
 
 <p class="connection-trouble nsfw hidden">Trouble connecting to server. Messages sent now may not be delivered. Try refreshing the page if problems continue.</p>
-<% if user_signed_in? && current_user.verified? %>
-  <form class="chat-form">
-    <input type="text" name="chat-message" class="autofillable-field">
-    <button type="button" name="button">Send</button>
-  </form>
-<% else %>
-  <form class="chat-form">
-    <input disabled="disabled" type="text" name="" value="" placeholder="Only logged in and verified members may participate in the chat.">
-    <button disabled="disabled" type="button" name="button">Send</button>
-  </form>
-  <p><strong>Get an account or verify your current one by <a href="<%= new_user_session_path %>" class="underline">entering your email on our login page</a> and clicking the link in the email you receive.</strong></p>
-<% end %>
+<form class="chat-form">
+  <% if user_signed_in? && current_user.verified? %>
+      <div class="field-wrapper">
+        <input type="text" name="chat-message" class="autofillable-field">
+        <button type="button" name="button">Send</button>
+      </div>
+  <% else %>
+    <div class="field-wrapper">
+      <input disabled="disabled" type="text" name="" value="" placeholder="Only logged in and verified members may participate in the chat.">
+      <button disabled="disabled" type="button" name="button">Send</button>
+    </div>
+    <p><strong>Get an account or verify your current one by <a href="<%= new_user_session_path %>" class="underline">entering your email on our login page</a> and clicking the link in the email you receive.</strong></p>
+  <% end %>
+  <small class="volume-container">
+    Volume:
+    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-level">
+  </small>
+</form>
 <i><small>Messages may take a few seconds to send &amp; update. Please be patient.</small></i>

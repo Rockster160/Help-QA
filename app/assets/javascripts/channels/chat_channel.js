@@ -48,8 +48,38 @@ $(".ctr-chat.act-chat").ready(function() {
     }
   })
 
+  updateMutedUsers = function() {
+    var muted_users = $(".online-list .message-container").filter(function() {
+      return $(this).find("[data-mute=true]").hasClass("hidden")
+    })
+    ignored_ids = muted_users.map(function() {
+      return $(this).attr("data-user-id")
+    }).toArray()
+  }
+
+  updateIgnoredIcons = function() {
+    $(ignored_ids).each(function() {
+      var matchingUsers = $(".online-list .message-container[data-user-id=" + this.toString() + "]")
+      matchingUsers.each(function() {
+        $(this).find(".mute .hover-icon[data-mute=true]").addClass("hidden")
+        $(this).find(".mute .hover-icon[data-mute=false]").removeClass("hidden")
+      })
+    })
+  }
+
+  hideIgnoredMessages = function() {
+    $(".chat-container .messages-container").find("[data-author-id]").removeClass("hidden")
+    $(ignored_ids).each(function() {
+      $(".chat-container .messages-container").find("[data-author-id=" + this.toString() + "]").addClass("hidden")
+    })
+  }
+
   updateOnlineList = function(users_html) {
-    $(".online-list").html(users_html)
+    if (users_html) {
+      $(".online-list").html(users_html)
+    }
+    updateIgnoredIcons()
+    hideIgnoredMessages()
   }
 
   highlightCurrentUsername = function(html) {
@@ -61,20 +91,19 @@ $(".ctr-chat.act-chat").ready(function() {
 
   addMessagesByHTML = function(messages_html) {
     if ($(messages_html).length > 0) {
-      var $new_messages = $(messages_html)
+      var hidden_messages = []
       $(messages_html).each(function() {
         var author_id = $(this).attr("data-author-id")
         if (current_userid != author_id) {
-          if (ignored_ids.indexOf(author_id) >= 0) {
-            this.remove()
-            // TODO: Test me
-          } else {
+          if (ignored_ids.indexOf(author_id) == -1) {
+            received_sound.volume = $(".volume-level").val()
             received_sound.play()
             unread_count += $(messages_html).length
           }
         }
       })
       $(".messages-container").append(messages_html)
+      updateOnlineList()
       updatePageTitleWithUnreads()
       if (auto_scroll) { scrollTo(300) }
     }
@@ -134,8 +163,10 @@ $(".ctr-chat.act-chat").ready(function() {
     }
   })
 
-  $(".mute").click(function() {
+  $(document).on("click", ".mute", function() {
     $(this).find(".hover-icon").toggleClass("hidden")
+    updateMutedUsers()
+    updateOnlineList()
   })
 
   scrollTo()
