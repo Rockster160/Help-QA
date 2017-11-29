@@ -22,7 +22,7 @@
   <% end %>
 <% end %>
 
-<div class="post-container" data-id="<%= @post.id %>">
+<div class="post-container" data-id="<%= @post.id %>" id="post-container">
   <div class="author-details text-center">
     <% if @post.posted_anonymously? %>
       <% options = {size: 200} %>
@@ -54,7 +54,7 @@
       <% if @post.author == current_user || current_user.try(:can_edit_posts?) %>
         <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
       <% end %>
-      <a rel="nofollow" href="#reply_body" class="underline">Leave a reply</a> |
+      <a rel="nofollow" data-smooth-scroll href="#reply_body" class="underline">Leave a reply</a> |
       <% if user_signed_in? %>
         <% if @post.user_subscribed?(current_user) %>
           <a rel="nofollow" href="<%= subscribe_post_path(@post, subscribe: false) %>" class="underline">Unsubscribe from Replies</a> |
@@ -63,6 +63,8 @@
         <% end %>
       <% end %>
       <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
+      <br>
+      <a data-smooth-scroll href="#last-reply">&#x21E9; Zoom to bottom</a>
     </div>
   </div>
 </div>
@@ -138,10 +140,12 @@
     <% end %>
   </div>
 </div>
+<div id="last-reply"></div>
 
 <div class="invites post-section">
   <div class="post-section-detail"></div>
   <div class="post-section-content">
+    <a data-smooth-scroll href="#post-container">&#x21E7; Zoom to top</a>
     <p>
       <small>Help-QA supports basic <a rel="nofollow" href="<%= faq_path(anchor: 'sect21') %>" class="underline">Markdown</a>,
       <a rel="nofollow" href="<%= faq_path(anchor: 'sect21') %>" class="underline">emoji 😁</a>,

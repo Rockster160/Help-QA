@@ -23,4 +23,10 @@ $(document).ready(function() {
     }
   });
 
+  $("[data-smooth-scroll]").click(function() {
+    $("html, body").animate({
+      scrollTop: $($(this).attr("href")).offset().top
+    }, 300)
+  })
+
 })
