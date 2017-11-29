@@ -94,6 +94,7 @@ module MarkdownHelper
   end
 
   def escape_escaped_markdown_characters(text)
+    # Shrug loses left arm because it's a \_ which is interpreted as escaping an underscore.
     text = text.gsub("\\@", "&#64;") # @
     text = text.gsub("\\\\", "&#92;") # \
     text = text.gsub("\\\`\`\`", "&#96;&#96;&#96;") #  ```
@@ -229,7 +230,6 @@ module MarkdownHelper
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
       url = link[/^[http|\/\/]/i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
       preview_hash = link_hash[:preview_hash]
-      # binding.pry if url.include?("..")
 
       new_link = if link =~ Devise::email_regexp
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
