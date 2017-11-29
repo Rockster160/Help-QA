@@ -2,7 +2,11 @@
   <% author = reply.author %>
   <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= additional_classes %> <%= 'deactivated' if author.deactivated? %>" data-timestamp="<%= reply.created_at.to_i %>" data-anonymous="<%= reply.posted_anonymously? %>">
     <div class="reply-author">
-      <%= avatar(reply.avatar(size: 40), size: 40) %>
+      <% if !reply.posted_anonymously? || current_mod? %>
+        <%= avatar(reply.avatar(size: 40), size: 40, href: user_path(reply.author)) %>
+      <% else %>
+        <%= avatar(reply.avatar(size: 40), size: 40) %>
+      <% end %>
       <div class="reply-author-text">
         <div class="reply-author-info">
           <div class="reply-author-name">
