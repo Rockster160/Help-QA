@@ -25,7 +25,7 @@
   </head>
 
   <% class_list = ["ctr-#{controller_name}", "act-#{action_name}"] %>
-  <% class_list << user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor" %>
+  <% class_list << (user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor") %>
   <% class_list << "mod" if current_mod? %>
   <body class="<%= content_for :body_classes %> <%= class_list.join(' ') %>">
     <%= render 'layouts/flashes' %>
