@@ -24,8 +24,10 @@
     </script>
   </head>
 
-  <% censor_class = user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor" %>
-  <body class="ctr-<%= controller_name %> act-<%= action_name %> <%= content_for :body_classes %> <%= censor_class %>">
+  <% class_list = ["ctr-#{controller_name}", "act-#{action_name}"] %>
+  <% class_list << user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor" %>
+  <% class_list << "mod" if current_mod? %>
+  <body class="<%= content_for :body_classes %> <%= class_list.join(' ') %>">
     <%= render 'layouts/flashes' %>
     <%= render 'layouts/navigation' %>
     <div class="body-wrapper">

@@ -7,11 +7,9 @@
   <div class="message-container" data-user-id="<%= user.id %>">
     <%= avatar(avatar_icon, size: 20, href: user_path(user)) %>
     <div class="body">
-      <% if @current_user.try(:mod?) %>
-        <div class="ban">
-          <%= hover_icon "hammer", "Ban User" %>
-        </div>
-      <% end %>
+      <div class="ban mod-only">
+        <%= hover_icon "ban", "Ban User", href: revoke_access_path(user) %>
+      </div>
       <div class="mute">
         <%= hover_icon "chat", "Mute User", data: { mute: true } %>
         <%= hover_icon "chat-t", "Unmute User", class: "hidden", data: { mute: false } %>

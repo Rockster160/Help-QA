@@ -19,3 +19,5 @@
 .danger { color: red; font-size: 10px; }
 
 .split-half { @include split-page(50%); }
+
+body:not(.mod) .mod-only { display: none !important; }

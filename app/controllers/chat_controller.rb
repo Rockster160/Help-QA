@@ -1,6 +1,6 @@
 class ChatController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_mod, only: :remove_message
+  before_action :authenticate_mod, only: [:remove_message, :revoke_access]
 
   def chat
     return render :banned if user_signed_in? && !current_user.can_use_chat?
@@ -25,6 +25,12 @@ class ChatController < ApplicationController
   def remove_message
     message = ChatMessage.find(params[:id])
     message.update(removed: params[:restore] != "true")
+    redirect_to chat_path
+  end
+
+  def revoke_access
+    user = User.find(params[:id])
+    user.update(can_use_chat: false)
     redirect_to chat_path
   end
 
