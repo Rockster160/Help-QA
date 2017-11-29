@@ -34,7 +34,7 @@ class Reply < ApplicationRecord
 
   after_create :invite_users, :notify_subscribers
 
-  after_commit :broadcast_creation
+  after_commit :broadcast_creation, :update_popular_post
 
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
@@ -83,6 +83,10 @@ class Reply < ApplicationRecord
   end
 
   private
+
+  def update_popular_post
+    UpdatePopularPostWorker.perform_async
+  end
 
   def broadcast_creation
     mod_message = in_moderation? ? "<a href=\"/mod/queue\">There is a new reply that requires approval.</a>" : ""

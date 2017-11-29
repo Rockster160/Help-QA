@@ -73,7 +73,7 @@ class Post < ApplicationRecord
   end
 
   def self.currently_popular
-    pluck_last_replies = 100
+    pluck_last_replies = 200
     replies_for_age_appropriate_posts = Reply.displayable.joins(:post).where(posts: { marked_as_adult: [nil, false] })
     uniq_replies_by_author_for_posts = replies_for_age_appropriate_posts.order(created_at: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
     counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
