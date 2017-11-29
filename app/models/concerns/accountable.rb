@@ -11,7 +11,7 @@ module Accountable
     validate :at_least_13_years_of_age
 
     after_create :set_gravatar_if_exists, :create_associated_objects
-    after_commit :reset_cache, :deliver_initial_confirmation_email
+    after_commit :reset_cache, :deliver_initial_confirmation_email, :broadcast_changes
     after_update :reset_auth_token, if: :encrypted_password_changed?
 
     scope :banned, -> { where("users.banned_until > ?", DateTime.current) }
@@ -170,6 +170,10 @@ module Accountable
 
   def reset_cache
     # ActionController::Base.new.expire_fragment("invite_loader") if previous_changes.keys.include?("username") || created_at == updated_at
+  end
+
+  def broadcast_changes
+    ActionCable.server.broadcast("chat", banned: id) if previous_changes["can_use_chat"].present? && !can_use_chat?
   end
 
   def reset_auth_token

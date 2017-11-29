@@ -41,6 +41,7 @@ class Tag < ApplicationRecord
   end
 
   def self.sounds_depressed?(body)
+    # To include phrases, should split by newline and instead build a big regex that can be filtered by.
     (depressed_words & body.downcase.gsub(/[^a-z ]/i, "").split(" ")).any?
   end
 

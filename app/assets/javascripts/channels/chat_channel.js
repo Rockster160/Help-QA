@@ -29,7 +29,9 @@ $(".ctr-chat.act-chat").ready(function() {
     received: function(data) {
       guest_token = data["token"]
       this.perform("pong", { guest_token: guest_token })
-      if (data["message"] != undefined) {
+      if (data["banned"] == current_userid) {
+        window.location.reload()
+      } else if (data["message"] != undefined) {
         addMessage(data["message"])
       } else if (data["removed"] != undefined) {
         removeId(data["removed"])

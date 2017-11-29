@@ -9,7 +9,7 @@ class ChatChannel < ApplicationCable::Channel
   end
 
   def speak(data)
-    return unless current_user
+    return unless current_user.try(:can_use_chat?)
     current_user.chat_messages.create(body: data["message"])
   end
 
