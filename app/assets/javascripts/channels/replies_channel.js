@@ -48,6 +48,7 @@ $(".ctr-posts.act-show").ready(function() {
       }, {
         duration: 1000,
         complete: function() {
+          $(".reply-counter").html($(".reply-container").length)
           $(".replies-container").css({"max-height": ""})
         }
       })

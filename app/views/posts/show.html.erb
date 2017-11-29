@@ -104,7 +104,7 @@
 </div>
 
 <div class="replies post-section">
-  <div class="post-section-detail">Replies (<%= @replies.count %>)</div>
+  <div class="post-section-detail">Replies (<span class="reply-counter"><%= @replies.count %></span>)</div>
   <div class="post-section-content">
     <div class="replies-container">
       <%= render partial: "replies/index", locals: { replies: @replies_with_notifications } %>
