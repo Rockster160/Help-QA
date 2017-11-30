@@ -17,6 +17,7 @@ class ShoutsController < ApplicationController
   def shouttrail
     @user = User.find(params[:user_id])
     @other_user = User.find(params[:other_user_id])
+    @user, @other_user = @other_user, @user if @other_user == current_user
     @shouts = Shout.displayable.between(@user, @other_user).order(created_at: :desc).first(50)
 
     if @user == current_user

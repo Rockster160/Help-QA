@@ -1,7 +1,7 @@
 <% meta_title "#{@user.username}'s ShoutTrail with #{@other_user.username} &bull; Help-QA.com" %>
 
 <div class="shout-title">
-  <i>ShoutTrail: </i> <a href="<%= user_path(@user) %>" class="underline"><%= @user.username %></a> and <a href="<%= user_path(@other_user) %>" class="underline"><%= @other_user.username %></a>
+  <i>ShoutTrail: </i> <a href="<%= user_shouts_path(@user) %>" class="underline"><%= @user.username %></a> and <a href="<%= user_shouts_path(@other_user) %>" class="underline"><%= @other_user.username %></a>
   <p>Just a simple "Hello", "Thanks", or chat! <a href="<%= user_path(@other_user) %>" class="underline">Back to <%= @other_user.username %>'s profile...</a></p>
   <hr>
 </div>
@@ -12,19 +12,10 @@
   </div>
   <div class="new-shout">
     <% if user_signed_in? %>
-      <% if @other_user == current_user %>
-        <p>You're welcome to leave a shout for yourself... But you'll have to provide both sides of the conversation!</p>
-      <% else %>
+      <% if @user == current_user %>
         <p>Leave a shout for <%= @other_user.username %></p>
-      <% end %>
-      <%= form_for [@other_user, Shout.new] do |f| %>
-        <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
-        <div class="text-right">
-          <%= f.submit "Shout!" %>
-          <% if @other_user == current_user %>
-            (Shouting yourself)
-          <% end %>
-        </div>
+      <% else %>
+        <p>This shout trail doesn't involve you. Visit the shoutbox of either user to leave a shout for them!</p>
       <% end %>
     <% else %>
       <p>You must be signed in to leave shouts for Helpers</p>
