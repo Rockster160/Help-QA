@@ -5,7 +5,7 @@
   <% when "UserProfile", "UserSetting" %>
     User: <%= link_to obj.user.username, obj.user %>
   <% when "Post" %>
-    Post: <%= link_to obj.title, post_path(obj.post_id) %>
+    Post: <%= link_to obj.title, post_path(obj) %>
     <br>
     Author: <%= link_to obj.author.username, obj.author %>
   <% when "Reply" %>
