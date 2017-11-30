@@ -1,10 +1,9 @@
 <% meta_title "#{@user.username}'s Profile at Help-QA.com" %>
 <% content_for(:description) do %>
-  <%= "#{@user.username} has #{@user.friends.count} and helps in #{@user.tags_from_replies.count} tags like: #{@user.tags_from_replies.count_order.first(5).join(', ')}" %>
+  <%= "#{@user.username} has #{@user.friends.count} friends and helps in #{@user.tags_from_replies.count} tags like: #{@user.tags_from_replies.count_order.first(5).pluck(:tag_name).join(', ')}" %>
 <% end %>
 
 <div class="user-page-container">
-
   <div class="user-info">
     <div class="username"><%= @user.username %></div>
     <%= render partial: "users/detail_icons", locals: { user: @user } %>
