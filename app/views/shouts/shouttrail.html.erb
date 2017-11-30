@@ -14,6 +14,15 @@
     <% if user_signed_in? %>
       <% if @user == current_user %>
         <p>Leave a shout for <%= @other_user.username %></p>
+        <%= form_for [@other_user, Shout.new] do |f| %>
+          <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
+          <div class="text-right">
+            <%= f.submit "Shout!" %>
+            <% if @other_user == current_user %>
+              (Shouting yourself)
+            <% end %>
+          </div>
+        <% end %>
       <% else %>
         <p>This shout trail doesn't involve you. Visit the shoutbox of either user to leave a shout for them!</p>
       <% end %>
