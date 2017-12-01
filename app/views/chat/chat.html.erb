@@ -18,7 +18,7 @@
 <form class="chat-form">
   <% if user_signed_in? && current_user.verified? %>
       <div class="field-wrapper">
-        <input type="text" name="chat-message" class="autofillable-field" autocomplete="false">
+        <input type="text" name="chat-message" class="autofillable-field" autocomplete="off">
         <button type="button" name="button">Send</button>
       </div>
   <% else %>

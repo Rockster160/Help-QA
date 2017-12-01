@@ -103,9 +103,9 @@ module Accountable
       next unless sherlock.new_attributes.keys.include?("username")
       previous_usernames << sherlock.new_attributes["username"]
     end
+    previous_usernames.uniq!
     previous_usernames.shift
-    previous_usernames.pop
-    previous_usernames.uniq
+    previous_usernames -= [username]
   end
 
   def email=(new_email)
