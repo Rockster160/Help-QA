@@ -72,6 +72,7 @@ class PostsController < ApplicationController
     @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     sherlocks = Sherlock.posts.where(obj_id: @post.id).by_type(:edit)
     sherlocks = sherlocks.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    sherlocks = sherlocks.displayable_post_edits
     invites = @post.post_invites
     invites = invites.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     @replies_with_notifications = [@replies, sherlocks, invites].flatten.compact.sort_by(&:created_at)

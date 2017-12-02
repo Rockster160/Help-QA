@@ -90,6 +90,12 @@ class Sherlock < ApplicationRecord
         new_attributes: obj.attributes
       )
     end
+
+    def displayable_post_edits
+      select do |audit|
+        (audit.changed_attrs.keys & ["body", "closed_at"]).any?
+      end
+    end
   end
 
   def obj
