@@ -33,6 +33,7 @@ module Postable
   end
 
   def can_edit_post?(post)
+    return false if revoked_public_edit_access?
     post.author == self || trusted_user? || medium_term_user? || can?(:edit_posts)
   end
 

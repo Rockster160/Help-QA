@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171202171549) do
+ActiveRecord::Schema.define(version: 20171202205149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -287,12 +287,12 @@ ActiveRecord::Schema.define(version: 20171202171549) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                     default: "",    null: false
-    t.string   "encrypted_password",        default: "",    null: false
+    t.string   "email",                      default: "",    null: false
+    t.string   "encrypted_password",         default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",             default: 0,     null: false
+    t.integer  "sign_in_count",              default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.inet     "current_sign_in_ip"
@@ -301,18 +301,18 @@ ActiveRecord::Schema.define(version: 20171202171549) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.string   "username"
     t.datetime "last_seen_at"
     t.string   "avatar_url"
     t.datetime "verified_at"
     t.date     "date_of_birth"
-    t.boolean  "has_updated_username",      default: false
+    t.boolean  "has_updated_username",       default: false
     t.string   "slug"
-    t.integer  "role",                      default: 0
-    t.boolean  "completed_signup",          default: false
-    t.boolean  "can_use_chat",              default: true
+    t.integer  "role",                       default: 0
+    t.boolean  "completed_signup",           default: false
+    t.boolean  "can_use_chat",               default: true
     t.datetime "banned_until"
     t.string   "authorization_token"
     t.string   "avatar_image_file_name"
@@ -320,6 +320,7 @@ ActiveRecord::Schema.define(version: 20171202171549) do
     t.integer  "avatar_image_file_size"
     t.datetime "avatar_image_updated_at"
     t.inet     "super_ip"
+    t.boolean  "revoked_public_edit_access"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
