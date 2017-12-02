@@ -142,7 +142,7 @@ class Reply < ApplicationRecord
   def format_body
     self.body = filter_nested_quotes(body, max_nest_level: 4)
 
-    if new_record? && !author.medium_term_user?
+    if new_record? && !author.trusted_user?
       self.in_moderation = Tag.adult_words_in_body(body).any?
     end
   end
