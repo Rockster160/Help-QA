@@ -28,4 +28,8 @@ module Moddable
 
   def become!(new_role); update(role: self.class.roles[new_role]); end
 
+  def can?(ability)
+    mod_abilities.send(ability)
+  end
+
 end

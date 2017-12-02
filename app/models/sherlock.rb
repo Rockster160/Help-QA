@@ -132,25 +132,28 @@ class Sherlock < ApplicationRecord
     new_attributes.each_with_object({previous: {}, current: {}}) do |(attr_key, attr_val), formatted_changes|
       old_val = changed_attrs[attr_key]
       formatted_changes[:current][attr_key] = format_change_for_display(attr_key, old_val, attr_val)
+      next if old_val.to_s == attr_val.to_s
       formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val, body_flip: false)
     end
   end
 
   private
 
+  def should_ignore_changes?(change_key)
+    /password|super|created_at|updated_at|sign_in|confirmation|token/.match(change_key)
+  end
+
   def format_change_for_display(change_key, start_val, end_val, body_flip: true)
-    return if change_key.starts_with?("super")
+    return if should_ignore_changes?(change_key)
     case end_val.to_s
     when "true" then "Yes"
     when "false" then "No"
     else
-      if change_key.include?("_at")
+      if /_at|date/.match(change_key)
         DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
-      elsif /body|about|grow_up|live_now|education|subjects|sports|jobs|hobbies|causes|political|religion/.match(change_key)
+      else
         start_val, end_val = end_val, start_val if body_flip
         Differ.diff_by_char(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
-      else
-        end_val
       end
     end
   end
