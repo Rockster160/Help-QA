@@ -1,5 +1,6 @@
 module Sherlockable
   extend ActiveSupport::Concern
+  attr_accessor :acting_user_id
 
   class_methods do
     def sherlockable(klass:, ignore: nil, skip: nil)

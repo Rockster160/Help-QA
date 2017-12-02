@@ -10,7 +10,7 @@ class ChatChannel < ApplicationCable::Channel
 
   def speak(data)
     return unless current_user.try(:can_use_chat?)
-    current_user.chat_messages.create(body: data["message"])
+    current_user.chat_messages.create(body: data["message"], acting_user_id: current_user.id)
   end
 
   def pong(data: nil)
