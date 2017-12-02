@@ -10,7 +10,7 @@
   <div class="message-container <%= 'highlight' if params[:message] == message.id.to_s %>" data-timestamp="<%= message.created_at.to_i %>" data-author-id="<%= message.author.id %>" data-message-id="<%= message.id %>">
     <div class="report">
       <%= hover_icon("flag-red", "Report this message to moderators", href: feedback_path(report_url: chat_url(message: message.id))) %>
-      <% if current_mod? %>
+      <% if can?(:remove_chat_messages) %>
         <%= hover_icon(:cross, "Remove Message", href: remove_message_path(message)) %>
       <% end %>
     </div>

@@ -28,8 +28,12 @@ module Postable
     self == postable.author
   end
 
-  def can_edit_posts?
-    long_time_user? || mod?
+  def can_edit_reply?(reply)
+    post.author == self || can?(:edit_replies)
+  end
+
+  def can_edit_post?(post)
+    post.author == self || long_time_user? || can?(:edit_posts)
   end
 
   def favorite_reply_for_post(post)

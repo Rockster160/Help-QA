@@ -83,7 +83,7 @@ class RepliesController < ApplicationController
     if user_signed_in?
       if params[:id].present?
         reply = @post.replies.find(params[:id])
-        if current_user == reply.author || current_mod?
+        if current_user.can_edit_reply?(reply)
           reply.update(reply_params)
           @errors = reply.errors.full_messages
         else

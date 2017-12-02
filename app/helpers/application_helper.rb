@@ -8,6 +8,11 @@ module ApplicationHelper
     current_user.try(:settings).try(:default_anonymous?)
   end
 
+  def can?(sym)
+    return false unless user_signed_in?
+    current_user.can?(sym)
+  end
+
   def current_mod?
     current_user.try(:mod?)
   end

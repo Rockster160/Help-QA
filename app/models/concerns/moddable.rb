@@ -2,13 +2,16 @@ module Moddable
   extend ActiveSupport::Concern
 
   included do
+    has_one :mod_abilities, dependent: :destroy
     has_many :feedbacks, dependent: :destroy
 
     enum role: {
-      default: 0,
-      mod:     3,
-      admin:   4,
-      dev:     5
+      default:      0,
+      trusted_user: 1,
+      ancient_user: 2,
+      mod:          3,
+      admin:        4,
+      dev:          5
     }
 
     self.defined_enums["role"].each do |initial_enum_str_val, initial_enum_int_val|
@@ -28,8 +31,12 @@ module Moddable
 
   def become!(new_role); update(role: self.class.roles[new_role]); end
 
-  def can?(ability)
-    mod_abilities.send(ability)
+  def abilities
+    mod_abilities || create_mod_abilities
   end
 
+  def can?(ability)
+    return false unless mod?
+    abilities&.send(ability)
+  end
 end

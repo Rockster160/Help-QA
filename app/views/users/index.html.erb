@@ -14,10 +14,6 @@
     <div class="search-form">
       <h6>Search by Username</h6>
       <input type="text" name="search" value="<%= params[:search] %>">
-      <% if current_mod? %>
-        <h6>Search by IP Address (Enter complete IP)</h6>
-        <input type="text" name="ip_search" value="<%= params[:ip_search] %>">
-      <% end %>
       <%= submit_tag "Search" %>
 
       <div class="filters">

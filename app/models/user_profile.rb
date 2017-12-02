@@ -27,17 +27,17 @@ class UserProfile < ApplicationRecord
 
   def editable_attributes
     {
-      about: "Bio (Tell us about yourself)",
-      grow_up: "Where did you grow up?",
-      live_now: "Where do you live now?",
+      about:     "Bio (Tell us about yourself)",
+      grow_up:   "Where did you grow up?",
+      live_now:  "Where do you live now?",
       education: "What is the highest level of education you have attained?",
-      subjects: "What subjects did/do you enjoy most at school?",
-      sports: "What's your favorite sport or sports?",
-      jobs: "What kind of jobs have you held? Industries too!",
-      hobbies: "What hobbies are you into?",
-      causes: "What causes are you concerned about today?",
+      subjects:  "What subjects did/do you enjoy most at school?",
+      sports:    "What's your favorite sport or sports?",
+      jobs:      "What kind of jobs have you held? Industries too!",
+      hobbies:   "What hobbies are you into?",
+      causes:    "What causes are you concerned about today?",
       political: "If you claim a political party affiliation, which is it?",
-      religion: "Which religion (if any) do you follow?"
+      religion:  "Which religion (if any) do you follow?"
     }
   end
 end

@@ -7,7 +7,6 @@ class UsersController < ApplicationController
     @users = @users.verified if params[:status] == "verified"
     @users = @users.unverified if params[:status] == "unverified"
     @users = @users.search_username(params[:search]) if params[:search].present?
-    @users = @users.search_ip(params[:ip_search]) if current_mod? && params[:ip_search].present?
     @users = @users.page(params[:page])
   end
 

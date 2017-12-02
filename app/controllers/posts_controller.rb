@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   include ApplicationHelper
   include PostsHelper
+  before_action :authenticate_mod, only: [:mod]
 
   def index
     @posts = Post.displayable(current_user).order(created_at: :desc)
@@ -31,15 +32,20 @@ class PostsController < ApplicationController
 
   def mod
     post = Post.find(params[:id])
-    return redirect_to post_path(post) unless current_mod?
 
     modded_attrs = {}
-    modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
-    modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
-    modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
-    modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
-    modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
-    modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
+    if can?(:post_moderation)
+      modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
+      modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
+    end
+    if can?(:adult_mark_posts)
+      modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
+      modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
+    end
+    if can?(:edit_posts)
+      modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
+      modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
+    end
 
     if post.update(modded_attrs)
       redirect_to post_path(post)
@@ -100,13 +106,16 @@ class PostsController < ApplicationController
   def edit
     @post = Post.find(params[:id])
 
-    unless user_signed_in? && (@post.author == current_user || current_user.can_edit_posts?)
+    unless current_user&.can_edit_post?(@post)
       redirect_to post_path(@post), alert: "You do not have permission to edit this post."
     end
   end
 
   def update
     @post = Post.find(params[:id])
+    unless current_user&.can_edit_post?(@post)
+      return redirect_to post_path(@post), alert: "You do not have permission to edit this post."
+    end
 
     if @post.update(post_params)
       redirect_to post_path(@post)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171122162834) do
+ActiveRecord::Schema.define(version: 20171202161417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,27 @@ ActiveRecord::Schema.define(version: 20171122162834) do
     t.float   "latitude"
     t.float   "longitude"
     t.index ["user_id"], name: "index_locations_on_user_id", using: :btree
+  end
+
+  create_table "mod_abilities", force: :cascade do |t|
+    t.integer "user_id"
+    t.boolean "ip_banning",           default: false
+    t.boolean "ban_users",            default: false
+    t.boolean "revoke_chat_ability",  default: false
+    t.boolean "remove_chat_messages", default: false
+    t.boolean "view_anonymous_user",  default: false
+    t.boolean "view_user_details",    default: false
+    t.boolean "view_user_email",      default: false
+    t.boolean "post_moderation",      default: false
+    t.boolean "adult_mark_posts",     default: false
+    t.boolean "edit_posts",           default: false
+    t.boolean "remove_posts",         default: false
+    t.boolean "reply_moderation",     default: false
+    t.boolean "adult_mark_reples",    default: false
+    t.boolean "edit_replies",         default: false
+    t.boolean "remove_replies",       default: false
+    t.boolean "reports_moderation",   default: false
+    t.index ["user_id"], name: "index_mod_abilities_on_user_id", using: :btree
   end
 
   create_table "notices", force: :cascade do |t|

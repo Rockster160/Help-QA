@@ -10,31 +10,41 @@
   </div>
   <% if current_mod? %>
     <ul class="moddable">
-      <li>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></li>
-      <li>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></li>
+      <% if can?(:view_user_details) %>
+        <li>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></li>
+      <% end %>
+      <% if can?(:view_user_email) %>
+        <li>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></li>
+      <% end %>
       <li>--</li>
-      <li>
-        Ban User:
-        <a href="<%= moderate_user_path(@user, ban: :day) %>" data-method="post">1 day</a> -
-        <a href="<%= moderate_user_path(@user, ban: :week) %>" data-method="post">1 week</a> -
-        <a href="<%= moderate_user_path(@user, ban: :month) %>" data-method="post">1 month</a> -
-        <a href="<%= moderate_user_path(@user, ban: :permanent) %>" data-method="post">Perma-Ban</a>
-      </li>
-      <li>
-        Ban IP:
-        <% if @user.ip_banned? %>
+      <% if can?(:ban_users) %>
+        <li>
+          Ban User:
+          <a href="<%= moderate_user_path(@user, ban: :day) %>" data-method="post">1 day</a> -
+          <a href="<%= moderate_user_path(@user, ban: :week) %>" data-method="post">1 week</a> -
+          <a href="<%= moderate_user_path(@user, ban: :month) %>" data-method="post">1 month</a> -
+          <a href="<%= moderate_user_path(@user, ban: :permanent) %>" data-method="post">Perma-Ban</a>
+        </li>
+      <% end %>
+      <% if can?(:ip_banning) %>
+        <li>
+          Ban IP:
+          <% if @user.ip_banned? %>
           <a href="<%= moderate_user_path(@user, ip_ban: :none) %>" data-method="post">Unban</a> -
-        <% else %>
+          <% else %>
           <a href="<%= moderate_user_path(@user, ip_ban: :day) %>" data-method="post">1 day</a> -
           <a href="<%= moderate_user_path(@user, ip_ban: :week) %>" data-method="post">1 week</a> -
           <a href="<%= moderate_user_path(@user, ip_ban: :month) %>" data-method="post">1 month</a> -
           <a href="<%= moderate_user_path(@user, ip_ban: :permanent) %>" data-method="post">Perma-Ban</a>
+          <% end %>
+        </li>
+      <% end %>
+      <% if can?(:revoke_chat_ability) %>
+        <% if @user.can_use_chat? %>
+          <li>Revoke access: <a href="<%= moderate_user_path(@user, revoke: :chat) %>" data-method="post">Chat</a></li>
+        <% else %>
+          <li>Grant access: <a href="<%= moderate_user_path(@user, grant: :chat) %>" data-method="post">Chat</a></li>
         <% end %>
-      </li>
-      <% if @user.can_use_chat? %>
-        <li>Revoke access: <a href="<%= moderate_user_path(@user, revoke: :chat) %>" data-method="post">Chat</a></li>
-      <% else %>
-        <li>Grant access: <a href="<%= moderate_user_path(@user, grant: :chat) %>" data-method="post">Chat</a></li>
       <% end %>
     </ul>
   <% end %>
@@ -166,7 +176,7 @@
             <% end %>
             <%= @user.username %> has been granted the following permissions at Help-QA.com
           </h6>
-          <p>IP Banning, Post Moderation, Adult Mark Posts, Edit Posts, Reply Moderation, Adult Mark Replies, Remove Replies, Reports Moderation, Tag Moderation, Ban Users, Revoke Chat Ability, View Anonymous User, View User Details, View User Email</p>
+          <p><%= @user.abilities.granted_permissions.map { |sym| sym.to_s.titleize }.join(", ") %></p>
           <p>Help-QA.com gives certain volunteer users moderator permissions. However, these moderators are not employees of Help-QA, and do not necessarily represent our views. Additionally, volunteer moderators should <strong>never</strong> ask for personal information such as email address, passwords, credit card numbers, or social security numbers. As a user, you are permitted to deny any requested information from these moderators. If you believe a moderator is abusing the permissions granted to them, please <a href="<%= feedback_path %>" class="underline">file a report</a> so that we may look into this breach.</p>
         </div>
       <% end %>

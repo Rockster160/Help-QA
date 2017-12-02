@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="report-flag">
-        <% if current_mod? %>
+        <% if can?(:remove_shouts) %>
           <%= hover_icon(:cross, "Remove Shout", href: shout_path(shout), method: :delete) %>
         <% end %>
         <%= hover_icon("flag-red", "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shout.sent_to, anchor: "shout-#{shout.id}"))) %>
