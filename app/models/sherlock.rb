@@ -131,14 +131,14 @@ class Sherlock < ApplicationRecord
   def changes
     new_attributes.each_with_object({previous: {}, current: {}}) do |(attr_key, attr_val), formatted_changes|
       old_val = changed_attrs[attr_key]
-      formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val)
-      formatted_changes[:current][attr_key] = format_change_for_display(attr_key, attr_val, old_val)
+      formatted_changes[:current][attr_key] = format_change_for_display(attr_key, old_val, attr_val)
+      formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val, body_flip: false)
     end
   end
 
   private
 
-  def format_change_for_display(change_key, start_val, end_val)
+  def format_change_for_display(change_key, start_val, end_val, body_flip: true)
     return if change_key.starts_with?("super")
     case end_val.to_s
     when "true" then "Yes"
@@ -146,8 +146,9 @@ class Sherlock < ApplicationRecord
     else
       if change_key.include?("_at")
         DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
-      elsif /body/.match(change_key)
-        Differ.diff_by_char(escape_html_tags(start_val), escape_html_tags(end_val))
+      elsif /body|about|grow_up|live_now|education|subjects|sports|jobs|hobbies|causes|political|religion/.match(change_key)
+        start_val, end_val = end_val, start_val if body_flip
+        Differ.diff_by_char(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
       else
         end_val
       end
