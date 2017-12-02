@@ -1,5 +1,10 @@
 $(document).on("mouseenter", ".show-tooltip", function() {
-  $(this).find(".tooltip").removeClass("hidden")
+  var $tooltip = $(this).find(".tooltip")
+  $tooltip.removeClass("hidden")
+  var right_offset = $tooltip.offset().left + $tooltip.width()
+  if ($(document).width() < right_offset) {
+    $tooltip.css({right: "20px", left: "inherit"})
+  }
 }).on("mouseleave", ".show-tooltip", function() {
   $(this).find(".tooltip").addClass("hidden")
 })
