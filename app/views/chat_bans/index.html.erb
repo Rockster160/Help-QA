@@ -1,0 +1,14 @@
+<table>
+  <thead>
+    <th>Username</th>
+    <th></th>
+  </thead>
+  <% @users.each do |banned_user| %>
+    <tr>
+      <td><%= banned_user.username %></td>
+      <td>
+        <!-- <small> - <%#= link_to "Edit", edit_mod_bans_path(ip: banned_ip) %></small> -->
+      </td>
+    </tr>
+  <% end %>
+</table>

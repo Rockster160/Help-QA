@@ -56,11 +56,10 @@ Rails.application.routes.draw do
   resource :mod, only: [:show] do
     get :queue, on: :member
 
-    resources :bans, only: [:index, :new, :create] do
-      collection do
-        get :edit
-        post :update
-      end
+    resource :bans, only: [:show] do
+      resources :banned_users, path: :users
+      resources :banned_ips, path: :ip
+      resources :chat_bans, path: :chat
     end
     resources :audit, only: [ :index, :show ] do
       post :search, on: :collection

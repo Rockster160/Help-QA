@@ -1,0 +1,15 @@
+<table>
+  <thead>
+    <th>Banned User</th>
+    <th>Banned Until</th>
+  </thead>
+  <% @users.each do |banned_user| %>
+    <tr>
+      <td><%= banned_user.username %></td>
+      <td>
+        <%= banned_user.banned_until&.to_formatted_s(:basic_short) %>
+        <!-- <small> - <%#= link_to "Edit", edit_mod_bans_path(user: banned_user) %></small> -->
+      </td>
+    </tr>
+  <% end %>
+</table>

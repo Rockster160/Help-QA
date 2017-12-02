@@ -1,0 +1,15 @@
+<table>
+  <thead>
+    <th>Banned IP</th>
+    <th>Banned Until</th>
+  </thead>
+  <% @ips.each do |banned_ip| %>
+    <tr>
+      <td><%= banned_ip.ip %></td>
+      <td>
+        <%= banned_ip.banned_until&.to_formatted_s(:basic_short) || "Permanently" %>
+        <!-- <small> - <%#= link_to "Edit", edit_mod_bans_path(ip: banned_ip) %></small> -->
+      </td>
+    </tr>
+  <% end %>
+</table>
