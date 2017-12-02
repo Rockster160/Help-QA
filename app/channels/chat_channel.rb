@@ -27,6 +27,8 @@ class ChatChannel < ApplicationCable::Channel
   def send_user_list
     rendered_message = ChatController.render partial: "chat/online_list"
     ActionCable.server.broadcast "chat", users: rendered_message, token: @token
+    user_list = Rails.cache.read("users_chatting").try(:keys) || []
+    ActionCable.server.broadcast "chat_list", count: user_list.reject { |username| username.starts_with?("Guest ") }.count
   end
 
   def user_disconnected
