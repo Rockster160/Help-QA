@@ -103,9 +103,9 @@ module Accountable
       next unless sherlock.new_attributes.keys.include?("username")
       previous_usernames << sherlock.new_attributes["username"]
     end
-    previous_usernames.uniq!
-    previous_usernames.shift
-    previous_usernames -= [username]
+    previous_usernames.uniq! # No duplicates
+    previous_usernames.shift # Remove first (Changes in place)
+    previous_usernames - [username] # Remove current
   end
 
   def email=(new_email)
@@ -250,8 +250,8 @@ module Accountable
     if username.include?("`")
       errors.add(:username, "cannot contain `'s")
     end
-    unless username.length > 3
-      errors.add(:username, "must be at least 4 characters")
+    unless username.length > 2
+      errors.add(:username, "must be at least 3 characters")
     end
     unless username.length < 25
       errors.add(:username, "must be less than 25 characters")
