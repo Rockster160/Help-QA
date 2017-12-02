@@ -219,10 +219,20 @@
           color: black;
           margin-bottom: 10px;
           padding: 10px;
+          position: relative;
 
           &.removed {
             border-color: red;
             background-color: lighten(red, 40%);
+
+            & + .reply-container { display: none; }
+          }
+          .toggle-reply-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            cursor: pointer;
           }
         }
       }

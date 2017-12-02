@@ -33,6 +33,11 @@ $(".ctr-posts.act-show").ready(function() {
     return false
   })
 
+  $(document).on("click", ".toggle-reply-display", function() {
+    var $container = $(this).parents(".pending-reply").siblings(".reply-container")
+    $container.slideToggle()
+  })
+
 })
 
 

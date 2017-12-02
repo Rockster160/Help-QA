@@ -26,7 +26,12 @@
       <% hidden_by_default = "attached pending" %>
       <% hide_reply = true unless current_mod? %>
     <% elsif reply.is_a?(Reply) && (reply.removed? || reply.author.banned? || (reply.marked_as_adult? && !current_user&.can_view?(reply))) %>
-      <div class="pending-reply removed" data-timestamp="<%= reply.created_at.to_i %>">This reply has been removed.</div>
+      <div class="pending-reply removed" data-timestamp="<%= reply.created_at.to_i %>">
+        This reply has been removed.
+        <% if current_mod? %>
+          <i class="fa fa-chevron-down toggle-reply-display"></i>
+        <% end %>
+      </div>
       <% hidden_by_default = "attached removed" %>
       <% hide_reply = true unless current_mod? %>
     <% end %>
