@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171202215241) do
+ActiveRecord::Schema.define(version: 20171202223806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,14 @@ ActiveRecord::Schema.define(version: 20171202215241) do
     t.boolean "remove_replies",       default: false
     t.boolean "reports_moderation",   default: false
     t.index ["user_id"], name: "index_mod_abilities_on_user_id", using: :btree
+  end
+
+  create_table "mod_messages", force: :cascade do |t|
+    t.integer  "author_id"
+    t.text     "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_mod_messages_on_author_id", using: :btree
   end
 
   create_table "notices", force: :cascade do |t|

@@ -1,4 +1,25 @@
-This should be a mod chat
-<br>
-- Maybe show live feed of Audits coming through?
-<br>
+<div class="chat-wrapper">
+  <div class="users-container">
+    <div class="title">Users Chatting</div>
+    <div class="online-list"></div>
+  </div>
+  <div class="chat-container">
+    <div class="title">Moderator Chat</div>
+    <div class="messages-container">
+      <%= render partial: "chat/messages", locals: { should_show_date: true } %>
+    </div>
+  </div>
+</div>
+
+<p class="connection-trouble nsfw hidden">Trouble connecting to server. Messages sent now may not be delivered. Try refreshing the page if problems continue.</p>
+<form class="chat-form">
+  <div class="field-wrapper">
+    <input type="text" name="chat-message" class="autofillable-field" autocomplete="off">
+    <button type="button" name="button">Send</button>
+  </div>
+  <small class="volume-container">
+    Volume:
+    <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-level">
+  </small>
+</form>
+<i><small>Messages may take a few seconds to send &amp; update. Please be patient.</small></i>

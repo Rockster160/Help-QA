@@ -36,6 +36,7 @@
                 <!-- <a href="/map">Map</a> -->
                 <% if current_mod? %>
                   <h6>Mod Tools</h6>
+                  <a href="<%= mod_path %>">Mod Chat</a>
                   <a href="<%= all_feedback_path(resolution_status: :unresolved) %>">Feedback</a>
                   <a href="<%= users_path %>">Search Users</a>
                   <a href="<%= mod_bans_path %>">Bans</a>

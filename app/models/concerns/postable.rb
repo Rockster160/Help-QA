@@ -5,6 +5,7 @@ module Postable
     has_many :posts,            foreign_key: :author_id, class_name: "Post",        dependent: :destroy
     has_many :replies,          foreign_key: :author_id, class_name: "Reply",       dependent: :destroy
     has_many :chat_messages,    foreign_key: :author_id, class_name: "ChatMessage", dependent: :destroy
+    has_many :mod_messages,     foreign_key: :author_id, class_name: "ModMessage",  dependent: :destroy
     has_many :post_edits,       foreign_key: :edited_by_id
     has_many :post_views,       foreign_key: :viewed_by_id
     has_many :votes, class_name: "UserPollVote",                                    dependent: :destroy
