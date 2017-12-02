@@ -7,7 +7,7 @@ module Accountable
     before_validation :set_default_username, :set_slug
 
     validates_uniqueness_of :username, :slug, message: "Sorry, that Username has already been taken."
-    validate :username_meets_requirements
+    validate :username_meets_requirements?
     validate :at_least_13_years_of_age
 
     after_create :set_gravatar_if_exists, :create_associated_objects
@@ -201,7 +201,12 @@ module Accountable
       t += 1
       break try_username if User.where(username: try_username).none?
     end
-    username.try(:squish!)
+    username_reserved = RESERVED_WORDS_FOR_USERNAME.include?(self.username.to_s.downcase)
+    username_profane = ObscenityChecker.maybe_profane?(self.username)
+    if username_reserved || username_profane || self.username.nil?
+      self.username = "Guest#{User.count}"
+    end
+    self.username.try(:squish!)
   end
 
   def set_slug
@@ -221,7 +226,7 @@ module Accountable
     build_settings.save
   end
 
-  def username_meets_requirements
+  def username_meets_requirements?
     return unless email.present?
 
     if RESERVED_WORDS_FOR_USERNAME.include?(username.to_s.downcase)
@@ -254,6 +259,8 @@ module Accountable
     unless username.gsub(/[^a-z]/i, "").length > 1
       errors.add(:username, "must have at least 2 normal alpha characters (A-Z)")
     end
+
+    errors[:username].any?
   end
 
 end
