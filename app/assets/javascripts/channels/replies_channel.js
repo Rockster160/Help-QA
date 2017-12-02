@@ -42,6 +42,7 @@ $(".ctr-posts.act-show").ready(function() {
           $(".replies-container").append(this)
         }
       })
+      showSelectedHash()
       updatePageTitleWithUnreads()
       $(".replies-container").animate({
         "max-height": $(".replies-container").get(0).scrollHeight

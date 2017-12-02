@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  function showSelectedHash() {
+  showSelectedHash = function() {
     var withoutTag = window.location.hash;
     if (withoutTag.length != 0) {
       $(".highlight").removeClass("highlight");
