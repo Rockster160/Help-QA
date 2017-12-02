@@ -16,7 +16,6 @@
 #
 
 class Reply < ApplicationRecord
-  include Anonicon
   include MarkdownHelper
   include Sherlockable
 
@@ -63,7 +62,7 @@ class Reply < ApplicationRecord
 
   def avatar(size: nil)
     if posted_anonymously?
-      anonicon_src(author.ip_address)
+      author.anonicon
     else
       author.avatar(size: size)
     end
@@ -145,9 +144,5 @@ class Reply < ApplicationRecord
     if new_record? && !author.trusted_user?
       self.in_moderation = Tag.adult_words_in_body(body).any?
     end
-  end
-
-  def anonicon_src(ip)
-    Anonicon.generate(ip)
   end
 end

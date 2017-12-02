@@ -17,7 +17,6 @@
 
 class Post < ApplicationRecord
   include PgSearch
-  include Anonicon
   include Defaults
   include Sherlockable
 
@@ -138,7 +137,7 @@ class Post < ApplicationRecord
 
   def avatar(size: nil)
     if posted_anonymously?
-      anonicon_src(author.ip_address)
+      author.anonicon
     else
       author.avatar(size: size)
     end
@@ -251,10 +250,6 @@ class Post < ApplicationRecord
     indices_of_letter = str.split("").map.with_index { |l, i| i if l == letter }.compact
     indices_before_index = indices_of_letter.select { |i| i <= idx }
     str[0..indices_before_index.last.to_i - 1]
-  end
-
-  def anonicon_src(ip)
-    Anonicon.generate(ip)
   end
 
 end

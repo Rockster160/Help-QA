@@ -85,7 +85,7 @@ module Accountable
 
   def ip_address
     location&.update(ip: current_sign_in_ip.presence || last_sign_in_ip) if location.try(:ip).nil?
-    location.try(:ip) || current_sign_in_ip.presence || last_sign_in_ip.presence || username.presence || email.presence || id.presence
+    super_ip.presence || location.try(:ip) || current_sign_in_ip.presence || last_sign_in_ip.presence
   end
 
   def adult?; age.present? && age >= 18; end

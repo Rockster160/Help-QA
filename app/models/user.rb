@@ -37,6 +37,7 @@
 #  avatar_image_updated_at    :datetime
 #  super_ip                   :inet
 #  revoked_public_edit_access :boolean
+#  anonicon_seed              :string
 #
 
 class User < ApplicationRecord
@@ -47,6 +48,7 @@ class User < ApplicationRecord
   include Postable
   include Moddable
   include Sherlockable
+  include Anonicon
 
   sherlockable klass: :user, ignore: [ :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :super_ip, :confirmation_token, :confirmation_sent_at, :updated_at, :last_seen_at ]
 
@@ -107,6 +109,11 @@ class User < ApplicationRecord
     return :knowledgable if long_time_user?
     return :active if replies.where("replies.created_at > ?", 1.week.ago).length > 5
     :inactive
+  end
+
+  def anonicon
+    src = anonicon_seed.presence || ip_address.presence || username.presence || email.presence || id.presence
+    Anonicon.generate(src)
   end
 
 end

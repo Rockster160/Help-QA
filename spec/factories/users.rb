@@ -37,6 +37,7 @@
 #  avatar_image_updated_at    :datetime
 #  super_ip                   :inet
 #  revoked_public_edit_access :boolean
+#  anonicon_seed              :string
 #
 
 FactoryGirl.define do
