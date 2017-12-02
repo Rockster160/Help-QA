@@ -26,12 +26,13 @@
     <td>Audited Object</td>
     <td><%= render partial: "object_cell", locals: {obj: @audit.obj} %></td>
   </tr>
+  <% changes = @audit.changes %>
   <tr>
     <td>Pre-change Data</td>
-    <td><%= render partial: "hash_cell", locals: {data: @audit.changed_attrs} %></td>
+    <td class="show-deleted"><%= render partial: "hash_cell", locals: {data: changes[:previous]} %></td>
   </tr>
   <tr>
     <td>Current Data</td>
-    <td><%= render partial: "hash_cell", locals: {data: @audit.new_attributes} %></td>
+    <td class="show-added"><%= render partial: "hash_cell", locals: {data: changes[:current]} %></td>
   </tr>
 </table>

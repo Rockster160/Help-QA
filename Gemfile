@@ -44,6 +44,7 @@ gem 'aws-sdk'
 gem 'paperclip'
 gem 'exception_notification'
 gem 'stripe'
+gem 'differ'
 
 group :development, :test do
   gem 'byebug', platform: :mri

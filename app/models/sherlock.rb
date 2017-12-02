@@ -18,6 +18,7 @@
 
 class Sherlock < ApplicationRecord
   belongs_to :acting_user, class_name: "User", optional: true
+  include MarkdownHelper
 
   class JSONWrapper
     # Allows directly setting pre-stringified JSON.
@@ -127,7 +128,31 @@ class Sherlock < ApplicationRecord
     end
   end
 
+  def changes
+    new_attributes.each_with_object({previous: {}, current: {}}) do |(attr_key, attr_val), formatted_changes|
+      old_val = changed_attrs[attr_key]
+      formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val)
+      formatted_changes[:current][attr_key] = format_change_for_display(attr_key, attr_val, old_val)
+    end
+  end
+
   private
+
+  def format_change_for_display(change_key, start_val, end_val)
+    return if change_key.starts_with?("super")
+    case end_val.to_s
+    when "true" then "Yes"
+    when "false" then "No"
+    else
+      if change_key.include?("_at")
+        DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
+      elsif /body/.match(change_key)
+        Differ.diff_by_char(escape_html_tags(start_val), escape_html_tags(end_val))
+      else
+        end_val
+      end
+    end
+  end
 
   def broadcast_creation
     return unless obj_klass == :post

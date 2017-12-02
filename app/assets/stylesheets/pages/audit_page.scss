@@ -36,3 +36,17 @@
     }
   }
 }
+.show-deleted {
+  ins { display: none; }
+  del {
+    background: #FFBBC3;
+    text-decoration: none;
+  }
+}
+.show-added {
+  del { display: none; }
+  ins {
+    background: #B3FFC8;
+    text-decoration: none;
+  }
+}

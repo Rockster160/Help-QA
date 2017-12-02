@@ -1,20 +1,9 @@
 <table class="data-table">
   <% data.each do |data_key, data_val| %>
-    <% next if data_val.blank? || data_key.starts_with?("super") %>
+    <% next unless data_val.present? %>
     <tr>
       <td><%= data_key.titleize %></td>
-      <td><%=
-        case data_val.to_s
-        when "true" then "Yes"
-        when "false" then "No"
-        else
-          if data_key.include?("_at")
-            DateTime.parse(data_val).to_formatted_s(:basic) rescue data_val
-          else
-            data_val
-          end
-        end
-      %></td>
+      <td><%= data_val.to_s.html_safe %></td>
     </tr>
   <% end %>
 </table>

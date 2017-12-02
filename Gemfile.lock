@@ -88,6 +88,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
+    differ (0.1.2)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
@@ -324,6 +325,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   colorize
   devise
+  differ
   exception_notification
   factory_girl_rails
   faker
