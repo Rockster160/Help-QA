@@ -136,7 +136,7 @@ class Sherlock < ApplicationRecord
 
   def changes
     new_attributes.each_with_object({previous: {}, current: {}}) do |(attr_key, attr_val), formatted_changes|
-      old_val = changed_attrs[attr_key]
+      old_val = changed_attrs[attr_key] || attr_val
       formatted_changes[:current][attr_key] = format_change_for_display(attr_key, old_val, attr_val)
       next if old_val.to_s == attr_val.to_s
       formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val, body_flip: false)
@@ -156,11 +156,11 @@ class Sherlock < ApplicationRecord
     when "false" then "No"
     else
       if /_at|date/.match(change_key)
-        DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
-      else
-        start_val, end_val = end_val, start_val if body_flip
-        Differ.diff_by_char(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
+        start_val = DateTime.parse(start_val).to_formatted_s(:basic) rescue start_val
+        end_val = DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
       end
+      start_val, end_val = end_val, start_val if body_flip
+      Differ.diff_by_char(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
     end
   end
 
