@@ -46,6 +46,10 @@ class PostsController < ApplicationController
       modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
       modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
     end
+    if can?(:remove_posts)
+      modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
+      modded_attrs[:removed_at] = nil if params[:remove].present? && params[:remove] == "false"
+    end
 
     if post.update(modded_attrs)
       redirect_to post_path(post)
@@ -56,6 +60,7 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
+    return redirect_to root_path, alert: "Sorry, this post has been removed." if @post.removed? && !current_mod?
     if user_signed_in?
       current_user.invites.unread.where(post: @post).each(&:read)
       current_user.notices.subscription.unread.where(post: @post).each(&:read)

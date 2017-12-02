@@ -29,7 +29,7 @@ module Postable
   end
 
   def can_edit_reply?(reply)
-    post.author == self || can?(:edit_replies)
+    reply.author == self || can?(:edit_replies)
   end
 
   def can_edit_post?(post)

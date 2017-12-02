@@ -3,6 +3,13 @@
 <% content_for(:mod_tools) do %>
   <% if current_mod? %>
     <div class="mod-tools">
+      <% if can?(:remove_posts) %>
+        <% if @post.removed? %>
+          <a rel="nofollow" href="<%= mod_post_path(@post, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Mark post as Safe") %></a>
+        <% else %>
+          <a rel="nofollow" href="<%= mod_post_path(@post, remove: true) %>" data-method="POST"><%= hover_icon(:bin_t, "Mark post as NSFW/Adult") %></a>
+        <% end %>
+      <% end %>
       <% if can?(:adult_mark_posts) %>
         <% if @post.nsfw? %>
           <a rel="nofollow" href="<%= mod_post_path(@post, adult: false) %>" data-method="POST"><%= hover_icon(:link, "Mark post as Safe") %></a>
@@ -57,7 +64,7 @@
       Views: <%= @post.views.count %>,
       Subscribers: <%= @post.subscriptions.count %> |
       <br class="xsmall-down">
-      <% if current_user.can_edit_post?(@post) %>
+      <% if current_user&.can_edit_post?(@post) %>
         <strong><a href="<%= edit_post_path(@post) %>" class="underline">Edit Post</a></strong> |
       <% end %>
       <a rel="nofollow" data-smooth-scroll href="#reply_body" class="underline">Leave a reply</a> |

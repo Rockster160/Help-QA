@@ -8,19 +8,24 @@
 #  ban_users            :boolean          default("false")
 #  revoke_chat_ability  :boolean          default("false")
 #  remove_chat_messages :boolean          default("false")
+#  remove_shouts        :boolean          default("false")
+#  remove_whispers      :boolean          default("false")
 #  view_anonymous_user  :boolean          default("false")
 #  view_user_details    :boolean          default("false")
 #  view_user_email      :boolean          default("false")
 #  post_moderation      :boolean          default("false")
 #  adult_mark_posts     :boolean          default("false")
 #  edit_posts           :boolean          default("false")
-#  remove_posts         :boolean          default("false") ------------- Unused
+#  remove_posts         :boolean          default("false")
 #  reply_moderation     :boolean          default("false")
-#  adult_mark_reples    :boolean          default("false")
+#  adult_mark_replies   :boolean          default("false")
 #  edit_replies         :boolean          default("false")
 #  remove_replies       :boolean          default("false")
-#  reports_moderation   :boolean          default("false") ------------- Unused
+#  reports_moderation   :boolean          default("false")
 #
+
+# Unused: reports_moderation
+# Implied: Can view Audits
 
 class ModAbilities < ApplicationRecord
   belongs_to :user

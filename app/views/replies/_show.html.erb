@@ -70,7 +70,7 @@
             <% end %>
           <% end %>
         <% end %>
-        <% if current_user&.can_edit_reply(reply) %>
+        <% if current_user&.can_edit_reply?(reply) %>
           <%= link_to "#", rel: :nofollow, class: "edit-reply", data: { reply_id: reply.id } do %>
             <%= hover_icon(:comment_edit, "Edit Reply") %>
           <% end %>

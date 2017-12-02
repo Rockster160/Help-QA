@@ -12,6 +12,7 @@
 #  reply_count        :integer
 #  marked_as_adult    :boolean
 #  in_moderation      :boolean          default("false")
+#  removed_at         :datetime
 #
 
 class Post < ApplicationRecord
@@ -45,6 +46,8 @@ class Post < ApplicationRecord
   scope :not_banned,           -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :closed,               -> { where.not(closed_at: nil) }
   scope :not_closed,           -> { where(closed_at: nil) }
+  scope :removed,              -> { where.not(removed_at: nil) }
+  scope :not_removed,          -> { where(removed_at: nil) }
   scope :needs_moderation,     -> { where(in_moderation: true) }
   scope :no_moderation,        -> { where(in_moderation: [nil, false]) }
   scope :no_replies,           -> { where("posts.reply_count = 0 OR posts.reply_count IS NULL") }
@@ -54,7 +57,7 @@ class Post < ApplicationRecord
   scope :by_tags,              ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
   scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
   scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
-  scope :displayable,          ->(user=nil) { not_banned.not_closed.no_moderation.conditional_adult(user) }
+  scope :displayable,          ->(user=nil) { not_banned.not_closed.not_removed.no_moderation.conditional_adult(user) }
 
   after_create :auto_add_tags, :generate_poll, :alert_helpbot, :invite_users
   after_commit :broadcast_creation, :subscribe_author
@@ -104,6 +107,7 @@ class Post < ApplicationRecord
 
   def open?; !closed?; end
   def closed?; closed_at?; end
+  def removed?; removed_at?; end
   def safe?; !nsfw?; end
   def nsfw?; marked_as_adult?; end
 

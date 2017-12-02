@@ -12,6 +12,7 @@
 #  reply_count        :integer
 #  marked_as_adult    :boolean
 #  in_moderation      :boolean          default("false")
+#  removed_at         :datetime
 #
 
 FactoryGirl.define do

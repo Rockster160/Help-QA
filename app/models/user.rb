@@ -47,7 +47,7 @@ class User < ApplicationRecord
   include Moddable
   include Sherlockable
 
-  sherlockable klass: :user, ignore: [ :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :confirmation_token, :confirmation_sent_at, :updated_at, :last_seen_at ]
+  sherlockable klass: :user, ignore: [ :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :super_ip, :confirmation_token, :confirmation_sent_at, :updated_at, :last_seen_at ]
 
   has_one :location
   has_one :profile,   class_name: "UserProfile",     dependent: :destroy

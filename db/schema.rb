@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171202161417) do
+ActiveRecord::Schema.define(version: 20171202171549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,6 +100,8 @@ ActiveRecord::Schema.define(version: 20171202161417) do
     t.boolean "ban_users",            default: false
     t.boolean "revoke_chat_ability",  default: false
     t.boolean "remove_chat_messages", default: false
+    t.boolean "remove_shouts",        default: false
+    t.boolean "remove_whispers",      default: false
     t.boolean "view_anonymous_user",  default: false
     t.boolean "view_user_details",    default: false
     t.boolean "view_user_email",      default: false
@@ -108,7 +110,7 @@ ActiveRecord::Schema.define(version: 20171202161417) do
     t.boolean "edit_posts",           default: false
     t.boolean "remove_posts",         default: false
     t.boolean "reply_moderation",     default: false
-    t.boolean "adult_mark_reples",    default: false
+    t.boolean "adult_mark_replies",   default: false
     t.boolean "edit_replies",         default: false
     t.boolean "remove_replies",       default: false
     t.boolean "reports_moderation",   default: false
@@ -183,6 +185,7 @@ ActiveRecord::Schema.define(version: 20171202161417) do
     t.integer  "reply_count"
     t.boolean  "marked_as_adult"
     t.boolean  "in_moderation",      default: false
+    t.datetime "removed_at"
     t.index ["author_id"], name: "index_posts_on_author_id", using: :btree
   end
 
