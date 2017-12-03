@@ -60,6 +60,10 @@ module ApplicationHelper
     "#{number_with_delimiter(count)} #{count == 1 ? word : word.pluralize}"
   end
 
+  def number_of_users_in_chat
+    (Rails.cache.read("users_chatting").try(:keys) || []).reject { |username| username.starts_with?("Guest ") }.count
+  end
+
   def time_length
     @time_length ||= begin
       length = {}

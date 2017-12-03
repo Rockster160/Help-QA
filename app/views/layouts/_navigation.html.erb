@@ -7,7 +7,7 @@
     <a href="<%= faq_path %>">FAQ</a>
     <br class="xxsmall-only">
     <a href="<%= new_post_path %>">Start a New Post</a>
-    <a href="<%= chat_path %>">Chat</a>
+    <a href="<%= chat_path %>">Chat <div class="chat-list blip hidden"><%= number_of_users_in_chat %></div></a>
     <% if user_signed_in? %>
       <div class="profile-tab">
         <div class="account-wrapper">

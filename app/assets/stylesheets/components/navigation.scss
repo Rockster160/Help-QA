@@ -20,6 +20,22 @@
       text-decoration: none;
       color: white;
       white-space: nowrap;
+      position: relative;
+
+      .blip {
+        position: absolute;
+        top: 0;
+        right: -5px;
+        width: auto;
+        height: 10px;
+        min-width: 10px;
+        line-height: 10px;
+        font-size: 8px;
+        text-align: center;
+        color: $help-default;
+        background: white;
+        border-radius: 100%;
+      }
     }
     .navigation-head {
       font-size: 40px;
