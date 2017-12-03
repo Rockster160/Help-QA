@@ -68,7 +68,7 @@ addCards = function(cards_data) {
     var $link = $('[data-loading-preview][href="' + card.original_url + '"]')
     var no_preview = $link.attr("data-loading-preview") == "no"
     $link.removeAttr("data-loading-preview")
-    if (card.invalid_url) { return $link.replaceWith($link.first().text()) }
+    if (card.invalid_url) { return $link.replaceWith(card.original_url) }
     if (no_preview && !card.inline) { return $link.html($link.first().text()) }
 
     if (card.inline || $link.parents("[data-inline-links]").length > 0) {

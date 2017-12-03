@@ -17,9 +17,11 @@ $(document).ready(function() {
     }
   })
 
-  $("textarea").keydown(function (e) {
+  $("textarea, input").keydown(function (e) {
     if (e.keyCode == 13 && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault()
       $(this).parents("form").submit()
+      return false
     }
   });
 

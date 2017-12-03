@@ -28,10 +28,10 @@ module MarkdownHelper
     text = filter_nested_quotes(text, max_nest_level: 3)
     text = escape_escaped_markdown_characters(text)
     text = invite_tagged_users(text) if @markdown_options[:tags]
+    text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = parse_markdown(text)
     text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
-    text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = censor_language(text)
     text = clean_up_html(text)
 
@@ -137,6 +137,9 @@ module MarkdownHelper
   end
 
   def parse_markdown(text)
+    text = text.gsub(/<a(.*?)<\/a>/) do |found_match|
+      "<a#{escape_markdown_characters_in_string($1)}</a>"
+    end
     text = text.gsub(/\`\`\`(.|\n)*?\`\`\`/) do |found_match|
       inner_text = found_match[3..-4]
       # Using loop because `gsub` tries to look at each line individually, which removes all white space at the beginning of other lines.
@@ -185,11 +188,11 @@ module MarkdownHelper
       invalid_post_char_count = 0
 
       while link[0] =~ punctuation_characters # Remove punctuation before url.
-        invalid_pre_char_count
+        invalid_pre_char_count += 1
         link[0] = ""
       end
       while link[-1] =~ punctuation_characters # Remove punctuation after url.
-        invalid_post_char_count
+        invalid_post_char_count += 1
         link[-1] = ""
       end
       next unless link =~ url_regex
