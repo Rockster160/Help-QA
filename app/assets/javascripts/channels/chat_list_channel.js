@@ -9,6 +9,11 @@ $(document).ready(function() {
     },
     received: function(data) {
       $(".chat-list.blip").text(data.count)
+      if (data.count > 0) {
+        $(".chat-list.blip").removeClass("hidden")
+      } else {
+        $(".chat-list.blip").addClass("hidden")
+      }
     }
   })
 })
