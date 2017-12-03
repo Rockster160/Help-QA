@@ -124,7 +124,7 @@ class Tag < ApplicationRecord
   def set_similar_tags
     return unless persisted?
 
-    required_to_match = 2
+    required_to_match = 1
     all_tag_ids_used_in_posts = posts.map(&:tag_ids).flatten - [id]
     tag_occurence_counter = all_tag_ids_used_in_posts.each_with_object(Hash.new(0)) { |instance, count_hash| count_hash[instance] += 1 }
     strong_matches = tag_occurence_counter.reject { |tag_id, similar_count| similar_count <= required_to_match } # Less than or equal here because it INCLUDES the initial tag. So 3 occurrences of the tag mean there are 2 other posts with the same tag combo
