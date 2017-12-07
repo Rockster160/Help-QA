@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   post :donate, controller: :static_pages, action: :one_time_donation
   get :emoji, controller: :static_pages
   get :chat, controller: :chat
+  get :chat_list, controller: :chat
   get "chat/remove_message/:id" => "chat#remove_message", as: :remove_message
   get "chat/revoke_access/:id" => "chat#revoke_access", as: :revoke_access
 

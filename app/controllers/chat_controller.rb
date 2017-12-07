@@ -22,6 +22,12 @@ class ChatController < ApplicationController
     render partial: "messages" if request.xhr?
   end
 
+  def chat_list
+    respond_to do |format|
+      format.json { render json: { count: number_of_users_in_chat }}
+    end
+  end
+
   def remove_message
     message = ChatMessage.find(params[:id])
     message.update(removed: params[:restore] != "true")
