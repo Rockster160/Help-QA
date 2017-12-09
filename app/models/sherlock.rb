@@ -136,10 +136,14 @@ class Sherlock < ApplicationRecord
 
   def changes
     new_attributes.each_with_object({previous: {}, current: {}}) do |(attr_key, attr_val), formatted_changes|
-      old_val = changed_attrs[attr_key] || attr_val
-      formatted_changes[:current][attr_key] = format_change_for_display(attr_key, old_val, attr_val)
-      next if old_val.to_s == attr_val.to_s
-      formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val, body_flip: false)
+
+      old_val = changed_attrs[attr_key]
+      if changed_attrs.keys.include?(attr_key)
+        formatted_changes[:current][attr_key] = format_change_for_display(attr_key, old_val, attr_val)
+        formatted_changes[:previous][attr_key] = format_change_for_display(attr_key, attr_val, old_val, body_flip: false)
+      else
+        formatted_changes[:current][attr_key] = format_change_for_display(attr_key, attr_val, attr_val)
+      end
     end
   end
 
