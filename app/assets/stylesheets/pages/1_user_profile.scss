@@ -55,9 +55,10 @@
         padding: 0;
         border-color: $grey-light;
       }
-      p, span {
+      p, p * {
         font-size: 10px;
         font-weight: normal;
+        strong { font-weight: bold; }
       }
       .user-stats {
         border-collapse: collapse;
