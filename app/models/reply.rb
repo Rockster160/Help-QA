@@ -142,7 +142,10 @@ class Reply < ApplicationRecord
     self.body = filter_nested_quotes(body, max_nest_level: 4)
 
     if new_record? && !author.trusted_user?
-      self.in_moderation = Tag.adult_words_in_body(body).any?
+      has_adult_words = Tag.adult_words_in_body(body).any?
+      is_verified_user = author.verified?
+      contains_link = body =~ MarkdownHelper::URL_REGEX
+      self.in_moderation = has_adult_words || (!is_verified_user && contains_link)
     end
   end
 end

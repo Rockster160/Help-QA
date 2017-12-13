@@ -1,4 +1,5 @@
 module MarkdownHelper
+  URL_REGEX = /(((http(s)?:)?\/\/)?(www.?\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b(([-a-zA-Z0-9@:%_\+.~;#?&\/\/=]|\[.*?\])*))/
   def censor_text(text)
     adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
 
@@ -178,10 +179,10 @@ module MarkdownHelper
 
   def link_previews(text)
     # BLACKLIST: idolosol
-    url_regex = /(((http(s)?:)?\/\/)?(www.?\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b(([-a-zA-Z0-9@:%_\+.~;#?&\/\/=]|\[.*?\])*))/
+
     to_replace = []
     scan_idx = 0
-    text.scan(url_regex).each_with_index do |link, idx|
+    text.scan(URL_REGEX).each_with_index do |link, idx|
       link = link.first
       punctuation_characters = /[\.\?\! \n\r]/
       invalid_pre_char_count = 0
@@ -195,7 +196,7 @@ module MarkdownHelper
         invalid_post_char_count += 1
         link[-1] = ""
       end
-      next unless link =~ url_regex
+      next unless link =~ URL_REGEX
       next if link[/^\w+(\.){2,}\w+$/] # Skip url if there is 2 periods together
 
       if scan_idx == 0
