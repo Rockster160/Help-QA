@@ -11,7 +11,7 @@
   <% if current_mod? %>
     <ul class="moddable">
       <% if can?(:view_user_details) %>
-        <li>IP: <a href="<%= users_path(ip_search: @user.current_sign_in_ip || @user.last_sign_in_ip) %>"><%= @user.current_sign_in_ip || @user.last_sign_in_ip %></a></li>
+        <li>IP: <a href="<%= mod_audit_index_path(ip: @user.ip_address) %>"><%= @user.ip_address %></a></li>
       <% end %>
       <% if can?(:view_user_email) %>
         <li>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></li>
@@ -30,12 +30,12 @@
         <li>
           Ban IP:
           <% if @user.ip_banned? %>
-          <a href="<%= moderate_user_path(@user, ip_ban: :none) %>" data-method="post">Unban</a> -
+            <a href="<%= moderate_user_path(@user, ip_ban: :none) %>" data-method="post">Unban</a> -
           <% else %>
-          <a href="<%= moderate_user_path(@user, ip_ban: :day) %>" data-method="post">1 day</a> -
-          <a href="<%= moderate_user_path(@user, ip_ban: :week) %>" data-method="post">1 week</a> -
-          <a href="<%= moderate_user_path(@user, ip_ban: :month) %>" data-method="post">1 month</a> -
-          <a href="<%= moderate_user_path(@user, ip_ban: :permanent) %>" data-method="post">Perma-Ban</a>
+            <a href="<%= moderate_user_path(@user, ip_ban: :day) %>" data-method="post">1 day</a> -
+            <a href="<%= moderate_user_path(@user, ip_ban: :week) %>" data-method="post">1 week</a> -
+            <a href="<%= moderate_user_path(@user, ip_ban: :month) %>" data-method="post">1 month</a> -
+            <a href="<%= moderate_user_path(@user, ip_ban: :permanent) %>" data-method="post">Perma-Ban</a>
           <% end %>
         </li>
       <% end %>
