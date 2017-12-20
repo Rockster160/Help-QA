@@ -40,7 +40,7 @@ class Reply < ApplicationRecord
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :favorited,         -> { where("favorite_count > 0") }
   scope :removed,           -> { where.not(removed_at: nil) }
-  scope :not_removed,       -> { where(removed_at: nil) }
+  scope :not_removed,       -> { joins(:post).where(posts: { removed_at: nil }, replies: { removed_at: nil }) }
   scope :adult,             -> { where(marked_as_adult: true) }
   scope :child_safe,        -> { where(marked_as_adult: [nil, false]) }
   scope :needs_moderation,  -> { where(in_moderation: true) }
@@ -50,7 +50,7 @@ class Reply < ApplicationRecord
   scope :displayable,       ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) }
 
   def safe?; !marked_as_adult?; end
-  def removed?; removed_at?; end
+  def removed?; removed_at? || post.removed?; end
 
   def username
     if posted_anonymously?

@@ -17,9 +17,10 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     return render :banned if @user.banned?
-    @recent_posts = @user.posts.claimed.order(created_at: :desc).limit(5)
-    @top_replies = @user.replies.claimed.favorited.order(favorite_count: :desc, created_at: :desc)
-    @replies = @user.replies.displayable(current_user).claimed.order(created_at: :desc)
+    @recent_posts = @user.posts.displayable(current_user).order(created_at: :desc).limit(5)
+    replies = @user.replies.displayable(current_user)
+    @top_replies = replies.favorited.order(favorite_count: :desc, created_at: :desc)
+    @replies = replies.order(created_at: :desc)
   end
 
   def update

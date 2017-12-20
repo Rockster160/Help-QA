@@ -90,7 +90,7 @@
         <% if author.deactivated? %>
           <div class="reply-after-message"><p class="text-right"><strong>This account has been deactivated.</strong></p></div>
         <% elsif author.reciprocity.positive? && author.posts.claimed.any? %>
-          <% recent_post = author.posts.claimed.order(created_at: :desc).first %>
+          <% recent_post = author.posts.claimed.displayable.order(created_at: :desc).first %>
           <div class="reply-after-message"><p><strong>Help me with:</strong> <a href="<%= post_path(recent_post) %>" class="underline"><%= recent_post.title %></a></p></div>
         <% end %>
       <% end %>
