@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root to: 'index#index'
 
+  get :form_redirect, controller: :application
   get :flash_message, controller: :application
   get :"terms-of-service", controller: :static_pages
   get :"privacy-policy", controller: :static_pages

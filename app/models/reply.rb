@@ -18,6 +18,7 @@
 class Reply < ApplicationRecord
   include MarkdownHelper
   include Sherlockable
+  include PgSearch
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
 
@@ -35,6 +36,7 @@ class Reply < ApplicationRecord
 
   after_commit :broadcast_creation, :update_popular_post
 
+  pg_search_scope :by_fuzzy_text, against: :body
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }

@@ -5,12 +5,24 @@
 <% meta_title title  %>
 <h2><%= title %></h2>
 
-<%= paginate @replies %>
+<% if current_mod? %>
+  <div class="text-center">
+    <p>
+      <form action="<%= form_redirect_path %>" method="get">
+        <input type="hidden" name="path" value="<%= request.path %>">
+        Search replies by text:
+        <input type="text" name="by_fuzzy_text" value="">
+      </form>
+    </p>
+  </div>
+<% end %>
+
+<%= paginate @replies, params: params.permit(:by_fuzzy_text) %>
 
 <div class="recent-replies">
   <% @replies.each do |reply| %>
     <% next if (reply.removed? || reply.author.banned?) %>
-    <% next unless current_user&.can_view?(reply) %>
+    <% next if current_user&.can_view?(reply) == false %>
     <div class="post-reply-container" style="margin-bottom: 30px;">
       <div class="post-reply-title">
         <% if @user.nil? %>
@@ -37,4 +49,4 @@
   <% end %>
 </div>
 
-<%= paginate @replies %>
+<%= paginate @replies, params: params.permit(:by_fuzzy_text) %>

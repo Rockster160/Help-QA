@@ -9,13 +9,17 @@ class ApplicationController < ActionController::Base
   skip_before_action :logit, only: [:flash_message]
   # skip_before_action :verify_authenticity_token
 
-  rescue_from ActionController::UnknownFormat, with: :not_found
+  rescue_from ActionController::UnknownFormat,     with: :not_found
   rescue_from ActionController::UnknownController, with: :not_found
-  rescue_from ActionView::MissingTemplate, with: :not_found
+  rescue_from ActionView::MissingTemplate,         with: :not_found
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message].html_safe
     render partial: 'layouts/flashes'
+  end
+
+  def form_redirect
+    redirect_to Rails.application.routes.recognize_path(params[:path]).merge(params.permit!.except(:path, :commit, :controller, :action))
   end
 
   private
