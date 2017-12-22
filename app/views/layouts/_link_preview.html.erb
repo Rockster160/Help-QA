@@ -1,8 +1,10 @@
-<% if video_url %>
+<% if invalid_url %>
+  <%= url %>
+<% elsif video_url %>
   <div class="video-container">
     <div class="video-wrapper">
-      <% if iframe_video_url %>
-        <iframe class="link-vid" src="<%= iframe_video_url %>" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
+      <% if should_iframe %>
+        <iframe class="link-vid" src="<%= video_url %>" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
       <% else %>
         <video class="link-vid" src="<%= video_url %>" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></video>
       <% end %>
@@ -12,11 +14,11 @@
 <% elsif only_image %>
   <a rel="nofollow" href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
     <span class="hidden"><%= truncate(url, length: 50, omission: "...") %></span>
-    <img src="<%= url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
+    <img src="<%= image_url || image || url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
   </a>
 <% else %>
   <div class="link-preview-wrapper">
-    <a rel="nofollow" href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image %>" target="_blank">
+    <a rel="nofollow" href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image_url %>" target="_blank">
       <div class="page-title">
         <%= truncate(title.to_s, length: 50, omission: "...") %>
       </div>

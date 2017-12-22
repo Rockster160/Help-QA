@@ -177,9 +177,7 @@ module MarkdownHelper
     /(\W|\*|\`|\_|\~)#{regex_safe_character}(#{not_space}.*?#{not_space}?)#{regex_safe_character}/m
   end
 
-  def link_previews(text)
-    # BLACKLIST: idolosol
-
+  def find_links_in_text(text)
     to_replace = []
     scan_idx = 0
     text.scan(URL_REGEX).each_with_index do |link, idx|
@@ -213,22 +211,37 @@ module MarkdownHelper
       post_char = text[last_idx + 1]
       scan_idx = last_idx
 
-      preview_hash = generate_link_preview_for_url(link)
-      next if preview_hash&.dig(:invalid_url)
+      meta_data = retrieve_meta_data_for_url(link)
 
       to_replace << {
         url: link,
         start_idx: first_idx,
         show_preview: pre_char == "[" && post_char == "]" && @markdown_options[:link_previews],
-        preview_hash: preview_hash,
-        inline: @markdown_options[:inline_previews] || preview_hash&.dig(:inline),
-        no_action: pre_char == "\\"
+        meta_data: meta_data,
+        inline: @markdown_options[:inline_previews] || meta_data&.dig(:inline),
+        escaped: pre_char == "\\",
+        no_action: meta_data&.dig(:invalid_url)
+        # url
+        # favicon
+        # title
+        # description
+        # inline
+        # should_iframe
+        # video_url
+        # image_url
+        # only_image
+        # invalid_url
       }
     end
+    to_replace
+  end
 
+  def link_previews(text)
+    # BLACKLIST: idolosol
     add_to_text = []
     current_idx = 0
-    to_replace.each do |link_hash|
+    find_links_in_text(text).each do |link_hash|
+      puts "#{link_hash}".colorize(:red)
       before_text, split_text = text[0..current_idx-1], text[current_idx..-1]
       if current_idx == 0
         before_text = ""
@@ -238,26 +251,27 @@ module MarkdownHelper
       link = link_hash[:url]
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
       url = link[/^http|\/\//i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
-      preview_hash = link_hash[:preview_hash]
+      meta_data = link_hash[:meta_data]
 
       new_link = if link =~ Devise::email_regexp
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
-      elsif link_hash[:no_action]
-        replace_link = "\\#{link}"
+      elsif link_hash[:no_action] || link_hash[:escaped]
+        replace_link = "\\#{link}" if link_hash[:escaped]
         "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:show_preview] || link_hash[:inline]
-        if preview_hash.nil?
+        if meta_data.nil?
           # Offload to JS to speed up page load time
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-original-url=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
         elsif link_hash[:inline]
-          "#{preview_hash[:html]}"
+          render_link_from_meta_data(meta_data)
         else
-          add_to_text << preview_hash[:html]
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">[#{preview_hash[:title]}]</a>"
+          add_to_text << render_link_from_meta_data(meta_data)
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">[#{meta_data[:title]}]</a>"
         end
       else
-        if preview_hash.nil?
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
+        if meta_data.nil?
+          # Offload to JS to speed up page load time
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-original-url=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
         else
           "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
         end

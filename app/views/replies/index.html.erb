@@ -17,7 +17,7 @@
   </div>
 <% end %>
 
-<%= paginate @replies, params: params.permit(:by_fuzzy_text) %>
+<%= paginate @replies, params: params.permit(:by_fuzzy_text).to_h %>
 
 <div class="recent-replies">
   <% @replies.each do |reply| %>
@@ -49,4 +49,4 @@
   <% end %>
 </div>
 
-<%= paginate @replies, params: params.permit(:by_fuzzy_text) %>
+<%= paginate @replies, params: params.permit(:by_fuzzy_text).to_h %>

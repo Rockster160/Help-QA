@@ -4,6 +4,10 @@ module ApplicationHelper
   include ActionView::Helpers::NumberHelper
   using CoreExtensions
 
+  def log(str, color: :red)
+    puts "#{str}".colorize(color)
+  end
+
   def default_anonymous?
     current_user.try(:settings).try(:default_anonymous?)
   end

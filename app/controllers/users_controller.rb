@@ -17,8 +17,8 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     return render :banned if @user.banned?
-    @recent_posts = @user.posts.displayable(current_user).order(created_at: :desc).limit(5)
-    replies = @user.replies.displayable(current_user)
+    @recent_posts = @user.posts.claimed.displayable(current_user).order(created_at: :desc).limit(5)
+    replies = @user.replies.claimed.displayable(current_user)
     @top_replies = replies.favorited.order(favorite_count: :desc, created_at: :desc)
     @replies = replies.order(created_at: :desc)
   end
@@ -81,10 +81,10 @@ class UsersController < ApplicationController
   def moderatable_params
     moderatable_attrs = {}
     moderatable_attrs[:banned_until] = case (params[:ban] || params[:ip_ban]).to_s.to_sym
-    when :none then 1.second.ago
-    when :day then 1.day.from_now
-    when :week then 1.week.from_now
-    when :month then 1.month.from_now
+    when :none      then 1.second.ago
+    when :day       then 1.day.from_now
+    when :week      then 1.week.from_now
+    when :month     then 1.month.from_now
     when :permanent then 100.years.from_now
     end
     moderatable_attrs[:can_use_chat] = false if params[:revoke].to_s == "chat"

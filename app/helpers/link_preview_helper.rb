@@ -2,19 +2,34 @@ module LinkPreviewHelper
 
   def generate_previews_for_urls(clear: false)
     [params[:urls]].flatten.compact.uniq.map do |raw_url|
-      generate_link_preview_for_url(raw_url, clear: clear, generate_if_nil: true)
+      meta_data = retrieve_meta_data_for_url(raw_url, clear: clear, generate_if_nil: true)
+      meta_data[:html] = render_link_from_meta_data(meta_data)
+      meta_data
     end.compact
   end
 
-  def generate_link_preview_for_url(raw_url, clear: false, generate_if_nil: false)
+  def retrieve_meta_data_for_url(raw_url, clear: false, generate_if_nil: false)
     url = raw_url.gsub(/^\/\//, "")
     Rails.cache.delete(url) if clear
-    return if Rails.cache.read(url).nil? && !generate_if_nil
+    meta_data = Rails.cache.read(url)
+    return if meta_data.blank? && !generate_if_nil
+    return meta_data unless meta_data.nil?
     puts "Collecting meta data for: ~#{url}~".colorize(:green)
-    meta_data = Rails.cache.fetch(url) do
+    meta_data = get_meta_data_for_url(url)
+    raise("Broken stuff") if meta_data.blank?
+    puts "#{meta_data}".colorize(:light_black)
+    meta_data
+  end
+
+  def render_link_from_meta_data(meta_data)
+    ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
+  end
+
+  def get_meta_data_for_url(url)
+    Rails.cache.fetch(url) do
       puts "Running Cache Fetch for: ~#{url}~".colorize(:yellow)
       res = RestClient.get(url) rescue nil
-      next {} if res.nil?
+      next {url: url, invalid_url: true} if res.nil?
 
       doc = Nokogiri::HTML(res.body)
       only_image = MIME::Types.type_for(url).first.try(:content_type)&.starts_with?("image")
@@ -29,37 +44,38 @@ module LinkPreviewHelper
       favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first
 
       video_url = tags["twitter:player"]
-      iframe_video_url = video_url if video_url.present? && (video_url.include?("player.vimeo") || video_url.include?("youtube.com/embed"))
-      iframe_video_url ||= url if url.present? && (url.include?("player.vimeo") || url.include?("youtube.com/embed"))
-      iframe_video_url ||= "https://player.vimeo.com/video/#{url[/\d+$/]}" if url =~ /vimeo.com\/\d+$/
+      should_iframe = if video_url.present?
+        video_url.include?("player.vimeo") || video_url.include?("youtube.com/embed")
+      elsif url.present?
+        if url.include?("player.vimeo") || url.include?("youtube.com/embed")
+          video_url = url
+          true
+        elsif url =~ /vimeo.com\/\d+$/
+          video_url = "https://player.vimeo.com/video/#{url[/\d+$/]}"
+          true
+        end
+      end
 
       url_meta_data = {
-        iframe_video_url: iframe_video_url,
-        video_url: iframe_video_url.presence || video_url.presence,
-        only_image: only_image,
         url: url,
         favicon: favicon_element.present? ? favicon_element["href"] : nil,
         title: doc.title,
-        # description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
-        image: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
+        description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
+        inline: video_url.present? || only_image,
+        should_iframe: should_iframe,
+        video_url: video_url,
+        image_url: tags["twitter:image"].presence || tags["og:image"].presence || tags["image"].presence,
+        only_image: only_image,
+        invalid_url: false
       }
       if !only_image && (tags.empty? || image_data?(res.body))
         url_meta_data[:image] ||= url
         url_meta_data[:only_image] = true
+        url_meta_data[:inline] = true
       end
 
       url_meta_data
     end
-
-    return {original_url: raw_url, invalid_url: true} if meta_data.blank?
-    puts "#{meta_data}".colorize(:light_black)
-    response_data = {
-      title: meta_data[:title].presence || meta_data[:url],
-      original_url: raw_url,
-      url: meta_data[:url].presence || url,
-      inline: meta_data[:video_url].present? || meta_data[:only_image],
-      html: ApplicationController.render(partial: "layouts/link_preview", locals: meta_data)
-    }
   end
 
   def image_data?(data)
@@ -67,19 +83,19 @@ module LinkPreviewHelper
   end
 
   def png_data?(data)
-    data.starts_with?("\x89PNG".b) rescue false
+    data.starts_with?("\x89PNG".b) || data.starts_with?("\x89png".b) rescue false
   end
 
   def jpeg_data?(data)
-    data.starts_with?("\xff\xd8\xff\xe0".b) rescue false
+    data.starts_with?("\xff\xd8\xff\xe0".b) || data.starts_with?("\xFF\xD8\xFF\xE0".b) rescue false
   end
 
   def gif_data?(data)
-    data.starts_with?("GIF8".b) rescue false
+    data.starts_with?("GIF8".b) || data.starts_with?("gif8".b) rescue false
   end
 
   def bitmap_data?(data)
-    data.starts_with?("MB".b) rescue false
+    data.starts_with?("MB".b) || data.starts_with?("mb".b) rescue false
   end
 
 end
