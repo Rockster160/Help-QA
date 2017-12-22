@@ -14,7 +14,7 @@
 <% elsif only_image %>
   <a rel="nofollow" href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
     <span class="hidden"><%= truncate(url, length: 50, omission: "...") %></span>
-    <img src="<%= image_url || image || url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
+    <img src="<%= image_url || url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
   </a>
 <% else %>
   <div class="link-preview-wrapper">
