@@ -20,7 +20,7 @@ class Post < ApplicationRecord
   include Defaults
   include Sherlockable
 
-  DEFAULT_POST_TEXT = "Start Here.\n\nAsk a question, post a rant, tell us your story.".freeze
+  DEFAULT_POST_TEXT = "Start Here. \n\nAsk a question, post a rant, tell us your story.".freeze
 
   sherlockable klass: :post, ignore: [ :updated_at, :reply_count ]
 

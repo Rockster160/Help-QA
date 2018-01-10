@@ -44,6 +44,11 @@ a {
   &:hover { color: $link-hovered; }
 }
 
+textarea, input { color: $text-dark; }
+::placeholder {
+  color: $text-dark;
+}
+
 .footer .links {
   text-align: center;
   font-size: 12px;

@@ -135,19 +135,23 @@
             Edit the reply text below, then click "Send Reply" to update your reply.
           </div>
           <%= f.label :body, "Reply:" %>
-          <%= f.text_area :body, rows: 8, class: "js-clear-text-after-focus autofillable-field", value: "Post a reply" %>
-          <% if user_signed_in? %>
-            Post as <strong><%= current_user.username %></strong> (No? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)
-          <% else %>
-            <%= label_tag "new_user[email]", "Your Email:" %>
-            <%= text_field_tag "new_user[email]", "", class: "full-width" %>
-          <% end %>
+          <%= f.text_area :body, rows: 8, class: "autofillable-field", placeholder: "Post a reply" %>
 
-          <div class="input-wrapper">
-            <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
-            <%= f.label :posted_anonymously, "Post Anonymously?" %>
+          <div class="reply-controls-wrapper">
+            <%= f.submit "Send Reply" %>
+            <% if user_signed_in? %>
+              <span>Post as <strong><%= current_user.username %></strong></span>
+              <span>(Not you? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)</span>
+            <% else %>
+              <%= label_tag "new_user[email]", "Your Email:" %>
+              <%= text_field_tag "new_user[email]", "", class: "full-width" %>
+            <% end %>
+
+            <div class="input-wrapper">
+              <%= f.check_box :posted_anonymously, checked: params[:anonymous] == "1" || default_anonymous? %>
+              <%= f.label :posted_anonymously, "Post Anonymously?" %>
+            </div>
           </div>
-          <%= f.submit "Send Reply" %>
         <% end %>
       </div>
     <% end %>

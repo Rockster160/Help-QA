@@ -41,7 +41,7 @@ module LinkPreviewHelper
 
         tags[meta_type] = meta_tag["content"]
       end
-      favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first
+      favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first || doc.xpath('//link[@rel="icon"]').first || doc.xpath('//link[@rel="favicon"]').first
 
       video_url = tags["twitter:player"]
       should_iframe = if video_url.present?
