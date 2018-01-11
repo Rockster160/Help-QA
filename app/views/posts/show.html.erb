@@ -141,7 +141,6 @@
             <%= f.submit "Send Reply" %>
             <% if user_signed_in? %>
               <span>Post as <strong><%= current_user.username %></strong></span>
-              <span>(Not you? <%= link_to "Logout", destroy_user_session_path, class: "underline", method: :delete %>)</span>
             <% else %>
               <%= label_tag "new_user[email]", "Your Email:" %>
               <%= text_field_tag "new_user[email]", "", class: "full-width" %>
