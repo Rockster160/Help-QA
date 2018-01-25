@@ -9,8 +9,8 @@ class NoticesController < ApplicationController
   end
 
   def mark_all_read
-    @all_notices = current_user.notices.each(&:read)
-    
+    @all_notices = current_user.notices.unread.each(&:read)
+
     redirect_to account_notices_path
   end
 
