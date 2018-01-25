@@ -83,7 +83,9 @@ Rails.application.routes.draw do
     resources :settings, only: [ :index ] do
       post :update, on: :collection
     end
-    resources :notices, only: [ :index ]
+    resources :notices, only: [ :index ] do
+      post :mark_all_read, on: :collection
+    end
     resources :invites, only: [ :index ]
   end
 

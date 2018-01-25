@@ -1,5 +1,9 @@
 <% meta_title "Account Notices &bull; Help-QA.com" %>
 
+<% if @unread.any? %>
+  <%= link_to "Mark all as Read", mark_all_read_account_notices_path, method: :post %>
+<% end %>
+
 <% @unread.each do |groupable_identifier, notices| %>
   <p><%= hover_icon("new", "New Notice!") %> <%= notices.last.notice_message %></p>
 <% end %>

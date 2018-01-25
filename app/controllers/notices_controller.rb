@@ -8,6 +8,12 @@ class NoticesController < ApplicationController
     @unread = @all_notices.unread.group_by(&:groupable_identifier)
   end
 
+  def mark_all_read
+    @all_notices = current_user.notices.each(&:read)
+    
+    redirect_to account_notices_path
+  end
+
   private
 
   def mark_as_read
