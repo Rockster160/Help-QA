@@ -9,6 +9,7 @@ class Devise::User::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
+    return redirect_to root_path, alert: "Sorry, accounts can not be created in Archive mode." if Rails.env.archive?
     if params.dig(:user, :password).blank?
       @user = User.find_for_database_authentication(user_params)
       if @user.nil?
