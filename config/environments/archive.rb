@@ -8,9 +8,9 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = false
 
-  config.force_ssl = false
-  config.action_cable.url = "ws://help-qa.com/cable"
-  config.action_cable.allowed_request_origins = [ "http://www.archive.help-qa.com", "http://archive.help-qa.com" ]
+  config.force_ssl = true
+  config.action_cable.url = "wss://help-qa.com/cable"
+  config.action_cable.allowed_request_origins = [ "https://www.archive.help-qa.com", "https://archive.help-qa.com" ]
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
