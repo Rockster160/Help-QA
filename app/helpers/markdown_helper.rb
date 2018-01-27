@@ -32,6 +32,7 @@ module MarkdownHelper
     text = invite_tagged_users(text) if @markdown_options[:tags]
     text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = parse_markdown(text)
+    text = text.gsub(/ \** /) { |found_match| " #{escape_markdown_characters_in_string(found_match)} " }
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
     text = censor_language(text)
     text = clean_up_html(text)
@@ -138,6 +139,7 @@ module MarkdownHelper
   end
 
   def parse_markdown(text)
+    text = text.gsub(/([ >\n\r])(\**)([ <\n\r])/) { |found_match| "#{$1}#{escape_markdown_characters_in_string($2)}#{$3}" }
     text = text.gsub(/<a(.*?)<\/a>/) do |found_match|
       "<a#{escape_markdown_characters_in_string($1)}</a>"
     end
@@ -220,7 +222,7 @@ module MarkdownHelper
         meta_data: meta_data,
         inline: @markdown_options[:inline_previews] || meta_data&.dig(:inline),
         escaped: pre_char == "\\",
-        no_action: meta_data&.dig(:invalid_url)
+        invalid: meta_data&.dig(:invalid_url)
         # url
         # favicon
         # title
@@ -255,7 +257,7 @@ module MarkdownHelper
 
       new_link = if link =~ Devise::email_regexp
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
-      elsif link_hash[:no_action]
+      elsif link_hash[:invalid]
         link
       elsif link_hash[:escaped]
         replace_link = "\\#{link}" if link_hash[:escaped]
