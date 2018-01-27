@@ -27,11 +27,11 @@ module MarkdownHelper
     text = escape_html_characters(text, render_html: render_html)
     text = escape_escaped_markdown_characters(text)
     text = filter_nested_quotes(text, max_nest_level: 3)
+    text = parse_directive_quotes(text)
     text = escape_escaped_markdown_characters(text)
     text = invite_tagged_users(text) if @markdown_options[:tags]
     text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = parse_markdown(text)
-    text = parse_directive_quotes(text)
     text = parse_directive_poll(text, post: post) if post.present? && @markdown_options[:poll]
     text = censor_language(text)
     text = clean_up_html(text)
@@ -255,7 +255,9 @@ module MarkdownHelper
 
       new_link = if link =~ Devise::email_regexp
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
-      elsif link_hash[:no_action] || link_hash[:escaped]
+      elsif link_hash[:no_action]
+        link
+      elsif link_hash[:escaped]
         replace_link = "\\#{link}" if link_hash[:escaped]
         "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:show_preview] || link_hash[:inline]
