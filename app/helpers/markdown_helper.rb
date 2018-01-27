@@ -27,8 +27,8 @@ module MarkdownHelper
     text = escape_html_characters(text, render_html: render_html)
     text = escape_escaped_markdown_characters(text)
     text = filter_nested_quotes(text, max_nest_level: 3)
-    text = parse_directive_quotes(text)
     text = escape_escaped_markdown_characters(text)
+    text = parse_directive_quotes(text)
     text = invite_tagged_users(text) if @markdown_options[:tags]
     text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = parse_markdown(text)
