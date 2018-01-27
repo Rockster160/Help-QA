@@ -164,7 +164,7 @@ class Sherlock < ApplicationRecord
         end_val = DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
       end
       start_val, end_val = end_val, start_val if body_flip
-      Differ.diff_by_char(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
+      Differ.diff_by_word(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
     end
   end
 

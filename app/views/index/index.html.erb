@@ -1,6 +1,10 @@
-<!-- <div class="announcement">
-  Welcome back! We hope you enjoy your stay at Help-QA.com. If there is anything we've missed, or if there is there is anything not working as you expect- please let us know from <a href="<%= feedback_path %>">the feedback page</a>.
-</div> -->
+<% if Rails.env.archive? %>
+  <div class="announcement">
+    Welcome to the Help.com archives! These pages contain the data from the original Help.com site. While you're welcome to <a href="<%= history_path %>">explore</a>, creating new content is not allowed at this time.
+    <br><br>
+    If you need help, or you've landed here by accident, <a href="https://help-qa.com">head back to the main site!</a>
+  </div>
+<% end %>
 
 <div class="front-page">
   <div class="users-side">

@@ -124,7 +124,7 @@ class User < ApplicationRecord
     return unless Rails.env.archive?
     return if archived
 
-    errors.add(:base, "Sorry, accounts can not be created in archive mode.")
+    errors.add(:base, "Sorry, accounts can not be created in archive mode. If you need help, or you've landed here by accident, head over to https://help-qa.com to get started.")
   end
 
 end
