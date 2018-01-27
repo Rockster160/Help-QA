@@ -41,6 +41,7 @@
 #
 
 class User < ApplicationRecord
+  attr_accessor :archived
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
   include Friendable
   include DeviseOverrides
@@ -82,6 +83,7 @@ class User < ApplicationRecord
     small: '100x100#'
   }
   validates_attachment_content_type :avatar_image, content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"]
+  validate :not_archive
 
   def self.by_username(username)
     loop do
@@ -114,6 +116,15 @@ class User < ApplicationRecord
   def anonicon
     src = anonicon_seed.presence || ip_address.presence || username.presence || email.presence || id.presence
     Anonicon.generate(src)
+  end
+
+  private
+
+  def not_archive
+    return unless Rails.env.archive?
+    return if archived
+
+    errors.add(:base, "Sorry, accounts can not be created in archive mode.")
   end
 
 end
