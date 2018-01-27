@@ -75,6 +75,8 @@ module PostsHelper
 
   def filter_query_string
     additional_queries = []
+    additional_queries << "regex_body=#{params[:regex_body]}" if params[:regex_body].present?
+    additional_queries << "regex_user=#{params[:regex_user]}" if params[:regex_user].present?
     additional_queries << "search=#{params[:search]}" if params[:search].present?
     additional_queries << "by_user=#{params[:by_user]}" if params[:by_user].present?
     additional_queries << "new_tag=#{params[:new_tag]}" if params[:new_tag].present?

@@ -6,7 +6,7 @@ class RepliesController < ApplicationController
   def index
     @replies = Reply.displayable(current_user).order(created_at: :desc).page(params[:page]).per(10)
     @replies = @replies.claimed.where(author_id: params[:user_id]) if params[:user_id].present?
-    @replies = @replies.by_fuzzy_text(params[:by_fuzzy_text]) if params[:by_fuzzy_text].present? && current_mod?
+    @replies = @replies.by_fuzzy_text(params[:by_fuzzy_text]) if params[:by_fuzzy_text].present?
     @user = User.find(params[:user_id]) if params[:user_id].present?
   end
 

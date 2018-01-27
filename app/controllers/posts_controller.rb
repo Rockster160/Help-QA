@@ -24,8 +24,10 @@ class PostsController < ApplicationController
     @posts = @posts.more_replies_than(0).less_replies_than_or(16) if @filter_options["some-replies"]
     @posts = @posts.more_replies_than(16).less_replies_than_or(30) if @filter_options["few-replies"]
     @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
-    @posts = @posts.search_for(params[:search]) if params[:search].present?
-    @posts = @posts.by_username(params[:by_user]) if params[:by_user].present?
+    @posts = @posts.regex_search(params[:search]) if params[:search].present? && params[:regex_body] == "true"
+    @posts = @posts.search_for(params[:search]) if params[:search].present? && params[:regex_body] != "true"
+    @posts = @posts.regex_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] == "true"
+    @posts = @posts.by_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] != "true"
     @posts = @posts.by_tags(@filter_options[:tags]) if @filter_options[:tags].present?
     @posts = @posts.page(params[:page])
   end

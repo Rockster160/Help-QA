@@ -38,7 +38,8 @@ class Post < ApplicationRecord
   has_one :poll
 
   pg_search_scope :search_for, against: :body
-  scope :claimed,              -> { where.not(posted_anonymously: true) }
+  scope :regex_search,         ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :claimed,              -> { where(posted_anonymously: [false, nil]) }
   scope :unclaimed,            -> { where(posted_anonymously: true) }
   scope :verified_user,        -> { joins(:author).where.not(users: { verified_at: nil }) }
   scope :unverified_user,      -> { joins(:author).where(users: { verified_at: nil }) }
@@ -53,6 +54,7 @@ class Post < ApplicationRecord
   scope :more_replies_than,    ->(count_of_replies) { where("posts.reply_count > ?", count_of_replies) }
   scope :less_replies_than_or, ->(count_of_replies) { where("posts.reply_count <= ?", count_of_replies) }
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
+  scope :regex_username,       ->(username) { claimed.joins(:author).where("users.username ~* ?", username.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :by_tags,              ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
   scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
   scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }

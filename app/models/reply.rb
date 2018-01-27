@@ -37,6 +37,7 @@ class Reply < ApplicationRecord
   after_commit :broadcast_creation, :update_popular_post
 
   pg_search_scope :by_fuzzy_text, against: :body
+  scope :regex_search,      ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
@@ -48,6 +49,7 @@ class Reply < ApplicationRecord
   scope :needs_moderation,  -> { where(in_moderation: true) }
   scope :no_moderation,     -> { where(in_moderation: [nil, false]) }
   scope :without_adult,     -> { where(replies: { marked_as_adult: [nil, false] }) }
+  scope :not_helpbot,       -> { joins(:author).where.not("users.username = 'HelpBot'") }
   scope :conditional_adult, ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :displayable,       ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) }
 
