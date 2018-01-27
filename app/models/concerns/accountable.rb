@@ -4,7 +4,7 @@ module Accountable
   RESERVED_WORDS_FOR_USERNAME = ["anonymous", "guest"].freeze
 
   included do
-    before_validation :set_default_username, :set_slug
+    before_validation :set_default_username, :set_slug, :set_anonicon_str
 
     validates_uniqueness_of :username, :slug, message: "Sorry, that Username has already been taken."
     validate :username_meets_requirements?
@@ -185,6 +185,10 @@ module Accountable
     return unless gravatar?
     hash = Digest::MD5.hexdigest(email.to_s.downcase)
     update(avatar_url: "https://www.gravatar.com/avatar/#{hash}?rating=pg")
+  end
+
+  def set_anonicon_str
+    self.anonicon_seed ||= anonicon_seed.presence || ip_address.presence || username.presence || email.presence || id.presence
   end
 
   def set_default_username
