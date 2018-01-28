@@ -28,7 +28,7 @@ module LinkPreviewHelper
   def get_meta_data_for_url(url)
     Rails.cache.fetch(url) do
       puts "Running Cache Fetch for: ~#{url}~".colorize(:yellow)
-      res = RestClient.get(url) rescue nil
+      res = RestClient.get(url, timeout: 3) rescue nil
       next {url: url, invalid_url: true} if res.nil?
 
       doc = Nokogiri::HTML(res.body)
