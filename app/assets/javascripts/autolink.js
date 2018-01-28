@@ -24,35 +24,7 @@ $(".ctr-posts.act-show, .ctr-users.act-show, .ctr-shouts, .ctr-replies").ready(f
   setInterval(autolinkTick, 500)
 })
 
-buildUrlRegex = function() {
-  // https://perishablepress.com/stop-using-unsafe-characters-in-urls/#character-encoding-chart
-  var alphanumeric = /a-zA-Z0-9/.source,
-      specialChars = /\$\-\_\.\+\!\*\'\(\)\,\;/.source,
-      permittedChars = "[" + alphanumeric + specialChars + "]",
-      // [a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]
-      paramChars = "[" + alphanumeric + specialChars + "\\%\\&\\=\\[\\]]"
-      // [a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\%\&\=\[\]]
-
-  var protocol = /(http(s)?:\/\/)?/.source,
-      // (http(s)?:\/\/)?
-      domain = "(" + permittedChars + "{2,256}\\.)+", // Includes subdomains and www
-      // ([a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,256}\.)+
-      tld = "(" + permittedChars + "{2,6})"
-      // ([a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,6})
-      port = /(:([\d]{2,4}))?/.source,
-      // (:([\d]{2,4}))?
-      path = "(\\/" + permittedChars + "+)*\\/?",
-      // (\/[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]+)*\/?
-      params = "(\\?" + paramChars + "+)?",
-      // (\?[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\%\&\=\[\]]+)?
-      anchor = "(\\#" + paramChars + "+)?"
-      // (\#[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\%\&\=\[\]]+)?
-
-  return (new RegExp("." + protocol + domain + tld + port + path + params + anchor, "g"))
-  //
-}
-
-var url_regex = /(http(s)?:\/\/)?([a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,256}\.)+([a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,6})(:([\d]{2,4}))?(\/[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;]+)*\/?(\?[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\%\&\=\[\]]+)?(\#[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\%\&\=\[\]]+)?/
+var url_regex = /(https?:\/\/)?((?:\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,256}\.)+)(\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,6})(:[\d]{2,4})?([\/a-z0-9\$\-\_\+\!\*\'\(\)\,\;\.]+)*(\/?\?[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?(\#[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?/ig
 var email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g
 var last_catch_url_regex = /^\w+(\.){2,}\w+$/g
 

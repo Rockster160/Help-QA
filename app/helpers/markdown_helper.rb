@@ -204,15 +204,12 @@ module MarkdownHelper
         before_text = text[0..scan_idx-1 + invalid_pre_char_count]
         split_text = text[scan_idx..-1]
       end
-    begin
+
       first_idx = scan_idx + split_text.index(link)
       last_idx = first_idx + link.length - 1
       pre_char = text[first_idx - 1]
       post_char = text[last_idx + 1]
       scan_idx = last_idx
-    rescue => e
-      binding.pry
-    end
 
       meta_data = retrieve_meta_data_for_url(link)
 
@@ -243,6 +240,7 @@ module MarkdownHelper
     # BLACKLIST: idolosol
     add_to_text = []
     current_idx = 0
+
     find_links_in_text(text).each do |link_hash|
       puts "#{link_hash}".colorize(:red)
       before_text, split_text = text[0..current_idx-1], text[current_idx..-1]
@@ -339,51 +337,35 @@ module MarkdownHelper
     @url_regex ||= begin
       # Regex groups
       alphanumeric = "a-z0-9"
-      specialChars = "$-_.+!*'(),;".split("").map { |char| "\\#{char}" }.join("")
+      specialChars = "$-_+!*'(),;".split("").map { |char| "\\#{char}" }.join("")
       paramChars = "&%=[]".split("").map { |char| "\\#{char}" }.join("")
       alphaspecial = "#{alphanumeric}#{specialChars}"
 
       # Url Parts
       protocol = "(https?:\\/\\/)?"
       # OPTIONAL - http or https followed by :// - https://
-      domain = "([#{alphaspecial}]{2,256}\\.)+" # Includes subdomains and www
+      domain = "((?:\\w[#{alphaspecial}]{1,256}\\.)+)" # Includes subdomains and www
       # REQUIRED - At least one grouping of permitted characters of size 2-256 followed by a period - sup.foo.domain.
-      tld = "([#{alphaspecial}]{2,6})"
+      tld = "(\\w[#{alphaspecial}]{1,6})"
       # REQUIRED - One grouping of permitted characters of size 2-6 - .com
-      port = "(:[\\d]{2,4})?"
+      port = "(\:[\\d]{2,4})?"
       # OPTIONAL - colon followed by 2-4 digits - :1234
-      path = "([\\/#{alphaspecial}]+)*"
+      path = "([\\/#{alphaspecial}\\.]+)*"
       # OPTIONAL - Any number (including 0) of groups of a forward slash / followed by any number of permitted characters - /this/that/foo/bar
-      params = "(\\/?\\?[#{alphaspecial}#{paramChars}]+)?"
+      params = "(\\/?\\?[#{alphaspecial}#{paramChars}\\.]+)?"
       # OPTIONAL - A ? followed by any number of characters, including the param types
-      anchor = "(\\#[#{alphaspecial}#{paramChars}]+)?"
+      anchor = "(\\#[#{alphaspecial}#{paramChars}\\.]+)?"
       # OPTIONAL - A # followed by any number of characters, including the param types
-      # /(https?:\/\/)?([a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,256}\.)+([a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,6})(:[\d]{2,4})?([\/a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;]+)*(\/?\?[a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;\&\%\=\[\]]+)?(\#[a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;\&\%\=\[\]]+)?/ig
+      # /(https?:\/\/)?((?:\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,256}\.)+)(\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,6})(:[\d]{2,4})?([\/a-z0-9\$\-\_\+\!\*\'\(\)\,\;\.]+)*(\/?\?[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?(\#[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?/ig
       /#{protocol}#{domain}#{tld}#{port}#{path}#{params}#{anchor}/i
     end
   end
 end
 
 # 1 protocol (https?:\/\/)?
-# 2 domain   ([a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,256}\.)+
-# 3 tld      ([a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;]{2,6})
+# 2 domain   (\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,256}\.)+
+# 3 tld      (\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,6})
 # 4 port     (:[\d]{2,4})?
-# 5 path     ([\/a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;]+)*
-# 6 params   (\/?\?[a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;\&\%\=\[\]]+)?
-# 7 anchor   (\#[a-z0-9\$\-\_\.\+\!\*\'\(\)\,\;\&\%\=\[\]]+)?
-
-# https://en.wikipedia.org/wiki/Chicken_Ranch_(Nevada)
-# http://www.example.com:1030/software/index.html
-# http://www.example.com/software/index.html
-# localhost:9949
-# foo://example.com:8042/over/there?name=ferret#nose-thiing
-# http://ar.wikipedia.org/wiki/%D8%A7%D9%84%D8%A5%D9%85%D8%A7%D8%B1%D8%A7%D8%AA_%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9_%D8%A7%D9%84%D9%85%D8%AA%D8%AD%D8%AF%D8%A9
-# http://www.ietf.org/rfc/rfc3986.txt
-# help-qa.com
-# https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js
-# https://platform.twitter.com/widgets/widget_iframe.83d5793f6ebbe2046330abda6016ae93.html?origin=https%3A%2F%2Fperishablepress.com
-# https://accounts.google.com/o/oauth2/postmessageRelay?parent=https%3A%2F%2Fperishablepress.com&jsh=m%3B%2F_%2Fscs%2Fapps-static%2F_%2Fjs%2Fk%3Doz.gapi.en.R44Wtk-gxDE.O%2Fm%3D__features__%2Fam%3DAQE%2Frt%3Dj%2Fd%3D1%2Frs%3DAGLTcCPte9SScuiQap0QQNwXhM_udO59RQ#rpctoken=654941641&forcesecure=1
-# https://secure.gravatar.com/avatar/ae21e3af46811c9ad1c8494e867d45d7?s=70&d=https%3A%2F%2Fperishablepress.com%2Fwp%2Fwp-content%2Fthemes%2Fwire%2Fimg%2Favatar.png&r=pg
-# something.com/sup.jpg
-# text.com/sup/foor/?user[nest][sup]=name%20last&user[another]=thing
-# http://www.sup.domain.com:80/my/path/to/file.jpg/?user[group]=%20stuff&something#jump-here
+# 5 path     ([\/a-z0-9\$\-\_\+\!\*\'\(\)\,\;\.]+)*
+# 6 params   (\/?\?[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?
+# 7 anchor   (\#[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?
