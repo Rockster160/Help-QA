@@ -344,19 +344,19 @@ module MarkdownHelper
       # Url Parts
       protocol = "(https?:\\/\\/)?"
       # OPTIONAL - http or https followed by :// - https://
-      domain = "((?:\\w[#{alphaspecial}]{1,256}\\.)+)" # Includes subdomains and www
+      domain = "((?:\\w[#{alphaspecial}]{0,256}\\.)+)" # Includes subdomains and www
       # REQUIRED - At least one grouping of permitted characters of size 2-256 followed by a period - sup.foo.domain.
       tld = "(\\w[#{alphaspecial}]{1,6})"
       # REQUIRED - One grouping of permitted characters of size 2-6 - .com
-      port = "(\:[\\d]{2,4})?"
+      port = "(\\:[\\d]{2,4})?"
       # OPTIONAL - colon followed by 2-4 digits - :1234
-      path = "([\\/#{alphaspecial}\\.]+)*"
+      path = "([\\/\\:#{alphaspecial}\\.]+)*"
       # OPTIONAL - Any number (including 0) of groups of a forward slash / followed by any number of permitted characters - /this/that/foo/bar
-      params = "(\\/?\\?[#{alphaspecial}#{paramChars}\\.]+)?"
+      params = "(\\/?\\?[\\:#{alphaspecial}#{paramChars}\\.]+)?"
       # OPTIONAL - A ? followed by any number of characters, including the param types
-      anchor = "(\\#[#{alphaspecial}#{paramChars}\\.]+)?"
+      anchor = "(\\#[\\:#{alphaspecial}#{paramChars}\\.]+)?"
       # OPTIONAL - A # followed by any number of characters, including the param types
-      # /(https?:\/\/)?((?:\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,256}\.)+)(\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;]{1,6})(:[\d]{2,4})?([\/a-z0-9\$\-\_\+\!\*\'\(\)\,\;\.]+)*(\/?\?[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?(\#[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\&\%\=\[\]\.]+)?/ig
+      # /(https?:\/\/)?((?:\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:]{0,256}\.)+)(\w[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:]{1,6})(:[\d]{2,4})?([\/a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:\.]+)*(\/?\?[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:\&\%\=\[\]\.]+)?(\#[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:\&\%\=\[\]\.]+)?/ig
       /#{protocol}#{domain}#{tld}#{port}#{path}#{params}#{anchor}/i
     end
   end
