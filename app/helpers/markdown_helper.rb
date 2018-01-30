@@ -256,7 +256,7 @@ module MarkdownHelper
 
       link = link_hash[:url]
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
-      url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
+      url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "http://#{link.gsub(/^\/*/, '')}" : link
       meta_data = link_hash[:meta_data]
 
       new_link = if link =~ Devise::email_regexp
