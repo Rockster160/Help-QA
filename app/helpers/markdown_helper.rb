@@ -50,9 +50,13 @@ module MarkdownHelper
   def censor_language(text)
     adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
 
-    text.gsub(/\b(#{adult_word_regex})\b/i) do |found|
-      "<span class=\"profane-wrapper\"><span class=\"safe\" title=\"#{found}\">#{'*'*found.length}</span><span class=\"unsafe\">#{found}</span></span>"
+    text = text.gsub(/\>.*?\</) do |found|
+      safe_words = found.gsub(/\b(#{adult_word_regex})\b/i) do |found|
+        "<span class=\"profane-wrapper\"><span class=\"safe\" title=\"#{found}\">#{'*'*found.length}</span><span class=\"unsafe\">#{found}</span></span>"
+      end
+      "#{safe_words}"
     end
+    text
   end
 
   def parse_directive_poll(text, post:)
