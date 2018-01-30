@@ -10,15 +10,15 @@
       <% end %>
     </div>
   </div>
-  <br><a rel="nofollow" href="<%= url %>" target="_blank" title="<%= title || url %>">[Original Link]</a><br>
+  <br><a rel="nofollow" href="<%= request_url %>" target="_blank" title="<%= title || url %>">[Original Link]</a><br>
 <% elsif only_image %>
-  <a rel="nofollow" href="<%= url %>" class="link-img" target="_blank" title="<%= title || url %>">
+  <a rel="nofollow" href="<%= request_url %>" class="link-img" target="_blank" title="<%= title || url %>">
     <span class="hidden"><%= truncate(url, length: 50, omission: "...") %></span>
     <img src="<%= image_url || url %>" alt="<%= title || url %>" onerror="this.className += 'hidden'; $(this).siblings().removeClass('hidden')">
   </a>
 <% else %>
   <div class="link-preview-wrapper">
-    <a rel="nofollow" href="<%= url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image_url %>" target="_blank">
+    <a rel="nofollow" href="<%= request_url %>" class="link-preview" title="<%= url %>" data-img-src="<%= image_url %>" target="_blank">
       <div class="page-title">
         <%= truncate(title.to_s, length: 50, omission: "...") %>
       </div>

@@ -226,6 +226,7 @@ module MarkdownHelper
         escaped: pre_char == "\\",
         invalid: meta_data&.dig(:invalid_url)
         # url
+        # request_url
         # favicon
         # title
         # description
@@ -255,7 +256,7 @@ module MarkdownHelper
 
       link = link_hash[:url]
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
-      url = link[/^http|\/\//i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
+      url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "//#{link.gsub(/^\/*/, '')}" : link
       meta_data = link_hash[:meta_data]
 
       new_link = if link =~ Devise::email_regexp

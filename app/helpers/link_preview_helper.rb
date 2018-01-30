@@ -58,6 +58,7 @@ module LinkPreviewHelper
 
       url_meta_data = {
         url: url,
+        request_url: res.request.url,
         favicon: favicon_element.present? ? favicon_element["href"] : nil,
         title: doc.title,
         description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
