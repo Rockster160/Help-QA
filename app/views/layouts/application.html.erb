@@ -27,10 +27,17 @@
   <% class_list = ["ctr-#{controller_name}", "act-#{action_name}"] %>
   <% class_list << (user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor") %>
   <% class_list << "mod" if current_mod? %>
-  <body class="<%= content_for :body_classes %> <%= class_list.join(' ') %>">
+  <body class="<%= content_for :body_classes %> <%= class_list.join(' ') %> <%= 'archive' if Rails.env.archive? %>">
     <%= render 'layouts/flashes' %>
     <%= render 'layouts/navigation' %>
     <div class="body-wrapper">
+      <% if Rails.env.archive? %>
+        <div class="announcement">
+          Welcome to the Help.com archives! These pages contain the data from the original Help.com site. While you're welcome to <a href="<%= history_path %>">explore</a>, creating new content is not allowed at this time.
+          <br><br>
+          If you need help, or you've landed here by accident, <a href="https://help-qa.com">head back to the main site!</a>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
     <div class="footer">
