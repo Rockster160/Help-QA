@@ -106,12 +106,15 @@ class ApplicationController < ActionController::Base
 
   def see_current_user
     Rails.logger.silence do
+      exception_data = {}
       Sherlock.acting_user = current_user
       Sherlock.acting_ip = current_ip_address
       if user_signed_in?
         current_user.see!
-        request.env['exception_notifier.exception_data'] = { current_user: current_user }
+        exception_data.merge!({ current_user: current_user })
       end
+      exception_data.merge!({ params: params.permit!.except(:action, :controller).to_h })
+      request.env['exception_notifier.exception_data'] = exception_data
     end
   end
 

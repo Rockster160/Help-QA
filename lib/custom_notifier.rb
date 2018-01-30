@@ -29,6 +29,9 @@ module ExceptionNotifier
       if exception.backtrace
         fields.push({ title: 'Focused Backtrace', value: exception.backtrace.map {|l|l.include?('app') ? l.gsub("`", "'") : nil}.compact.join("\n") })
       end
+      if options.dig(:env, 'exception_notifier.exception_data', :params).present?
+        fields.push({ title: 'Params', value: options.dig(:env, 'exception_notifier.exception_data', :params) })
+      end
 
       exception_message = fields.map { |h| "*#{h[:title]}*\n#{h[:value]}" }.join("\n\n")
       attchs = [color: 'danger', text: exception_message, mrkdwn_in: %w(text fields)]
