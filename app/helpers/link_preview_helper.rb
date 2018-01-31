@@ -4,7 +4,6 @@ module LinkPreviewHelper
     [params[:urls]].flatten.compact.uniq.map do |raw_url|
       meta_data = retrieve_meta_data_for_url(raw_url, clear: clear, generate_if_nil: true)
       meta_data[:html] = render_link_from_meta_data(meta_data)
-puts "#{raw_url}: #{meta_data}".colorize(:light_red)
       meta_data
     end.compact
   end
@@ -15,10 +14,8 @@ puts "#{raw_url}: #{meta_data}".colorize(:light_red)
     meta_data = Rails.cache.read(url)
     return if meta_data.blank? && !generate_if_nil
     return meta_data unless meta_data.nil?
-    puts "Collecting meta data for: ~#{url}~".colorize(:green)
     meta_data = get_meta_data_for_url(url)
     raise("Broken stuff") if meta_data.blank?
-    puts "#{meta_data}".colorize(:light_black)
     meta_data
   end
 
@@ -28,7 +25,6 @@ puts "#{raw_url}: #{meta_data}".colorize(:light_red)
 
   def get_meta_data_for_url(url)
     Rails.cache.fetch(url, expires_in: 30.days) do
-      puts "Running Cache Fetch for: ~#{url}~".colorize(:yellow)
       res = RestClient.get(url, timeout: 3) rescue nil
       next {url: url, invalid_url: true} if res.nil?
 
