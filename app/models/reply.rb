@@ -144,7 +144,7 @@ class Reply < ApplicationRecord
 
   def format_body
     if new_record? && !author.trusted_user?
-      has_adult_words = Tag.adult_words_in_body(body).any?
+      has_adult_words = Tag.sounds_nsfw?(body).any?
       is_verified_user = author.verified?
       contains_link = body =~ url_regex
       self.in_moderation = has_adult_words || (!is_verified_user && contains_link)

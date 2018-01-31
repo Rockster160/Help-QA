@@ -8,8 +8,6 @@ anguish
 antisocial
 anxious
 breakdown
-brittle
-broken
 catatonic
 consumed
 crisis
@@ -19,8 +17,11 @@ death
 defeated
 defensive
 dejected
+demon
+demons
 demoralized
 depressed
+depression
 desolate
 despair
 desperate
@@ -37,11 +38,13 @@ dreadful
 dreary
 edgy
 emotional
-empty
+empty of feeling
+empty feeling
 excluded
 exhausted
 exposed
 fatalistic
+feeling empty
 forlorn
 fragile
 freaking
@@ -49,7 +52,9 @@ gloomy
 grouchy
 helpless
 hopeless
+harm
 hurt
+hurting
 inadequate
 inconsolable
 injured
@@ -59,13 +64,10 @@ irritable
 isolated
 lonely
 lousy
-low
 melancholy
 miserable
 moody
 morbid
-needy
-nervous
 nightmarish
 oppressed
 overwhelmed
@@ -77,8 +79,11 @@ rejected
 resigned
 sad
 sadness
+selfharm
 self-conscious
 self-disgust
+self-grieving
+self-harm
 shattered
 sobbing
 sorrowful
@@ -91,7 +96,6 @@ uneasy
 unhappy
 unhinged
 unpredictable
-upset
 vulnerable
 wailing
 weak

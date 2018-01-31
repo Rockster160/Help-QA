@@ -25,86 +25,87 @@ class Tag < ApplicationRecord
   scope :count_order, -> { order("tags.tags_count DESC NULLS LAST") }
   scope :by_words, ->(*words) { where(tag_name: [words].flatten.map { |word| word.try(:downcase).try(:squish) }.compact) }
 
-  def self.auto_extract_tags_from_body(body)
-    stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
-    url_split_regex = /((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/
-    formatted = body.gsub(url_split_regex) { $3.split(".")[-2] || $3 } # Replace URL with just the Host for tagging purposes
-                    .gsub("\n", " ")                       # Spaces instead of newlines
-                    .gsub(/[\.\!\?]/i, " ")                # Remove punctuation
-                    .gsub(/[^a-z \-]/i, "")                # Without special chars (Include alpha, spaces, and hyphens)
-                    .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
-                    .gsub(/ \-|\- /i, "")                  # Remove hyphens at beginning and end of words
-                    .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
-    tags = formatted.squish.split(" ")
-    tags = add_similar_common_tags_to_tags_list(tags)
-    sort_frequency(tags)
-  end
-
-  def self.sounds_depressed?(body)
-    # To include phrases, should split by newline and instead build a big regex that can be filtered by.
-    (depressed_words & body.downcase.gsub(/[^a-z ]/i, "").split(" ")).any?
-  end
-
-  def self.depressed_words
-    @@depressed_words ||= File.read("lib/sad_words.txt").split("\n").reject(&:blank?)
-  end
-
-  def self.stop_words
-    @@stop_words ||= File.read("lib/tag_stop_words.txt").split("\n").reject { |word| word.to_s.length < 2 }
-  end
-
-  def self.adult_words
-    @@adult_words ||= File.read("lib/adult_words.txt").split("\n").reject { |word| word.to_s.length < 2 }
-  end
-
-  def self.tags_grouped_by_similar
-    # Warning: Slow method
-    tag_hash = {}
-    Tag.find_each { |tag| tag_hash[tag.tag_name] = tag.similar_tags.map(&:tag_name) }
-    tag_hash.reject! { |tag_name, similar_tags| similar_tags.none? }
-    tag_hash
-  end
-
-  def self.auto_mapper_hash
-    {
-      depression: [
-        :sad,
-        :crying,
-        :cry,
-        :sorrow,
-        :dead,
-        :dread
-      ],
-      suicide: [
-        :"self-harm"
-      ]
-    }
-  end
-
-  def self.add_similar_common_tags_to_tags_list(tags)
-    auto_mapper_hash.each do |mapped_to, mapped_from|
-      tags.push(mapped_to.to_s) if tags.include?(mapped_from.to_s)
+  class << self
+    def auto_extract_tags_from_body(body)
+      stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
+      url_split_regex = /((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/
+      formatted = body.gsub(url_split_regex) { $3.split(".")[-2] || $3 } # Replace URL with just the Host for tagging purposes
+                      .gsub("\n", " ")                       # Spaces instead of newlines
+                      .gsub(/[\.\!\?]/i, " ")                # Remove punctuation
+                      .gsub(/[^a-z \-]/i, "")                # Without special chars (Include alpha, spaces, and hyphens)
+                      .gsub(/\b[a-z]{1,2}\b/i, "")           # Without shorts (1-2 character words)
+                      .gsub(/ \-|\- /i, "")                  # Remove hyphens at beginning and end of words
+                      .gsub(/\b(#{stop_word_regex})\b/i, "") # Without stop words
+      tags = formatted.squish.split(" ")
+      tags = add_similar_common_tags_to_tags_list(tags)
+      sort_frequency(tags)
     end
-    tags.reverse
-  end
 
-  def self.adult_words_in_body(body)
-    auto_extract_tags_from_body(body).map(&:downcase) & adult_words
-  end
+    def sounds_depressed?(body)
+      body.match(regex_for_words(depressed_words)).present?
+    end
 
-  def self.adult_words_in_list(list)
-    list & adult_words
-  end
+    def sounds_nsfw?(body)
+      body.match(regex_for_words(adult_words)).present?
+    end
 
-  def self.tags_list_contains_adult_words?(tags)
-    adult_words_in_list(tags).any?
-  end
+    def regex_for_words(words)
+      Regexp.new("\\b(#{words.join("|")})\\b", :i)
+    end
 
-  def self.similar_tags
-    tags = all
-    similar_ids = tags.map(&:similar_tag_ids).inject(&:&)
-    return none if similar_ids.blank?
-    unscoped.where(id: similar_ids -  tags.pluck(:id))
+    def words_from_file(file)
+      File.read(file).split("\n").reject { |word| word.to_s.length < 2 }
+    end
+
+    def depressed_words
+      @@depressed_words ||= words_from_file("lib/sad_words.txt")
+    end
+
+    def stop_words
+      @@stop_words ||= words_from_file("lib/tag_stop_words.txt")
+    end
+
+    def adult_words
+      @@adult_words ||= words_from_file("lib/adult_words.txt")
+    end
+
+    def tags_grouped_by_similar
+      # Warning: Slow method
+      tag_hash = {}
+      Tag.find_each { |tag| tag_hash[tag.tag_name] = tag.similar_tags.map(&:tag_name) }
+      tag_hash.reject! { |tag_name, similar_tags| similar_tags.none? }
+      tag_hash
+    end
+
+    def auto_mapper_hash
+      {
+        depression: [
+          :sad,
+          :crying,
+          :cry,
+          :sorrow,
+          :dead,
+          :dread
+        ],
+        suicide: [
+          :"self-harm"
+        ]
+      }
+    end
+
+    def add_similar_common_tags_to_tags_list(tags)
+      auto_mapper_hash.each do |mapped_to, mapped_from|
+        tags.push(mapped_to.to_s) if tags.include?(mapped_from.to_s)
+      end
+      tags.reverse
+    end
+
+    def similar_tags
+      tags = all
+      similar_ids = tags.map(&:similar_tag_ids).inject(&:&)
+      return none if similar_ids.blank?
+      unscoped.where(id: similar_ids -  tags.pluck(:id))
+    end
   end
 
   def similar_tag_ids
