@@ -110,7 +110,6 @@ loadAllLinks = function() {
     success: function(data) {
       addCards(data)
       $("[data-loading-preview]").each(function() {
-        debugger
         $(this).replaceWith($(this).attr("data-original-url"))
       })
       currentlyLoadingLinks = false

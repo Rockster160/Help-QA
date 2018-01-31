@@ -25,7 +25,7 @@ module LinkPreviewHelper
 
   def get_meta_data_for_url(url)
     Rails.cache.fetch(url, expires_in: 30.days) do
-      res = RestClient.get(url, timeout: 3) rescue nil
+      res, req, u = RestClient.get(url, timeout: 3) { |response, request, result| [response, request, result] } rescue nil
       next {url: url, invalid_url: true} if res.nil?
 
       doc = Nokogiri::HTML(res.body)
@@ -57,7 +57,7 @@ module LinkPreviewHelper
         url: url,
         request_url: res.request.url,
         favicon: favicon_element.present? ? favicon_element["href"] : nil,
-        title: doc.title,
+        title: doc.try(:title).presence || url,
         description: tags["twitter:description"].presence || tags["twitter:title"].presence || tags["og:description"].presence || tags["og:title"].presence || tags["description"].presence,
         inline: video_url.present? || only_image,
         should_iframe: should_iframe,
