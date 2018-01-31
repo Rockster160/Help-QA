@@ -27,7 +27,7 @@ puts "#{raw_url}: #{meta_data}".colorize(:light_red)
   end
 
   def get_meta_data_for_url(url)
-    Rails.cache.fetch(url) do
+    Rails.cache.fetch(url, expires_in: 30.days) do
       puts "Running Cache Fetch for: ~#{url}~".colorize(:yellow)
       res = RestClient.get(url, timeout: 3) rescue nil
       next {url: url, invalid_url: true} if res.nil?
