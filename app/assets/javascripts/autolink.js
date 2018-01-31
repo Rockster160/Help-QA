@@ -67,7 +67,7 @@ addCards = function(cards_data) {
     var $link = $('[data-loading-preview][data-original-url="' + card.url + '"]')
     var no_preview = $link.attr("data-loading-preview") == "no"
     $link.removeAttr("data-loading-preview")
-debugger
+
     if (card.invalid_url) { return $link.replaceWith(card.url) }
     if (no_preview && !card.inline) { return $link.html($link.first().text()) }
 
