@@ -32,7 +32,7 @@ class Reply < ApplicationRecord
 
   validate :post_is_open, :debounce_replies, :valid_text
 
-  after_create :invite_users, :notify_subscribers
+  after_create :notify_subscribers, :invite_users
 
   after_commit :broadcast_creation, :update_popular_post
 
@@ -55,6 +55,20 @@ class Reply < ApplicationRecord
 
   def safe?; !marked_as_adult?; end
   def removed?; removed_at? || post.removed?; end
+
+  def unquoted_text
+    text = body.dup
+    loop do
+      last_start_quote_idx = text.rindex(/\[quote(.*?)\]/)
+      break if last_start_quote_idx.nil?
+      next_end_quote_idx = text[last_start_quote_idx..-1].index(/\[\/quote\]/)
+      break if next_end_quote_idx.nil?
+      next_end_quote_idx += last_start_quote_idx + 7
+
+      text[last_start_quote_idx..next_end_quote_idx] = ""
+    end
+    text
+  end
 
   def username
     if posted_anonymously?
@@ -102,7 +116,7 @@ class Reply < ApplicationRecord
 
   def post_is_open
     return unless post.closed? || post.removed?
-    return unless new_record? # Only prevent creating new replies on a closed post.
+    return unless new_obj? # Only prevent creating new replies on a closed post.
 
     errors.add(:base, "We're very sorry- but this post has been closed.")
   end
@@ -128,23 +142,25 @@ class Reply < ApplicationRecord
   end
 
   def invite_users
-    invited_users = []
-    body.scan(/@([^ \`\@]+)/) do |username_tag|
+    newly_invited_users = []
+    unquoted_text.scan(/(?:@([^ \`\@]+))/) do |username_tag|
       user = User.by_username($1)
       if user.present? && (user.friends?(author) || !user.settings.friends_only?)
-        if user.invites.create(post: post, reply: self, from_user: author, invited_anonymously: posted_anonymously?).persisted?
-          invited_users << user
+        invite = user.invites.find_or_create_by(post: post, from_user: author, invited_anonymously: posted_anonymously?)
+        if invite.persisted?
+          newly_invited_users << user if invite.new_obj? && user.subscriptions.where(post_id: post_id).none?
+          invite.update(read_at: nil, reply: self)
         end
       end
     end
-    if invited_users.any?
-      post.post_invites.create(user_id: author_id, invited_users: invited_users.count, invited_anonymously: posted_anonymously?)
+    if newly_invited_users.any?
+      post.post_invites.create(user_id: author_id, invited_users: newly_invited_users.count, invited_anonymously: posted_anonymously?)
     end
   end
 
   def format_body
-    if new_record? && !author.trusted_user?
-      has_adult_words = Tag.sounds_nsfw?(body).any?
+    if new_obj? && !author.trusted_user?
+      has_adult_words = Tag.sounds_nsfw?(body)
       is_verified_user = author.verified?
       contains_link = body =~ url_regex
       self.in_moderation = has_adult_words || (!is_verified_user && contains_link)

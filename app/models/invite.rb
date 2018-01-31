@@ -33,7 +33,7 @@ class Invite < ApplicationRecord
   end
 
   def notice_message
-    "#{display_name} invited you to the post <a href=\"#{invite_link}\">#{post.title}</a>".html_safe
+    "#{display_name} mentioned you in the post <a href=\"#{invite_link}\">#{post.title}</a>".html_safe
   end
 
   def groupable_identifier
@@ -43,24 +43,24 @@ class Invite < ApplicationRecord
   private
 
   def has_not_already_been_invited
-    return unless new_record?
+    return unless new_obj?
     if post.invites.where.not(id: id).where(invited_user_id: invited_user_id).any?
       errors.add(:base, "User has already been invited to this post.")
     end
   end
 
   def is_not_already_subscribed
-    return unless new_record?
+    return unless new_obj?
     if invited_user.subscriptions.where(post_id: post_id).any?
       errors.add(:base, "User is already subscribed to post.")
     end
   end
 
   def broadcast_creation
-    if updated_at == created_at
-      ActionCable.server.broadcast("notifications_#{invited_user_id}", message: notice_message)
-    else
+    if read?
       ActionCable.server.broadcast("notifications_#{invited_user_id}", {})
+    else
+      ActionCable.server.broadcast("notifications_#{invited_user_id}", message: notice_message)
     end
   end
 
