@@ -12,7 +12,7 @@ module MarkdownHelper
     except = [except].flatten
 
     # Non-default options: [:inline_previews, :ignore_previews]
-    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :link_previews]
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :allow_link_previews]
     default_markdown_options = only if only.is_a?(Array)
     default_markdown_options -= except
     default_markdown_options += with
@@ -220,7 +220,7 @@ module MarkdownHelper
       to_replace << {
         url: link,
         start_idx: first_idx,
-        show_preview: pre_char == "[" && post_char == "]" && @markdown_options[:link_previews],
+        show_preview: pre_char == "[" && post_char == "]" && @markdown_options[:allow_link_previews],
         meta_data: meta_data,
         inline: @markdown_options[:inline_previews] || meta_data&.dig(:inline),
         escaped: pre_char == "\\",
@@ -247,7 +247,6 @@ module MarkdownHelper
     current_idx = 0
 
     find_links_in_text(text).each do |link_hash|
-      puts "#{link_hash}".colorize(:red)
       before_text, split_text = text[0..current_idx-1], text[current_idx..-1]
       if current_idx == 0
         before_text = ""
@@ -256,7 +255,7 @@ module MarkdownHelper
 
       link = link_hash[:url]
       replace_link = link_hash[:show_preview] ? "[#{link}]" : link
-      url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "http://#{link.gsub(/^\/*/, '')}" : link
+      request_url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "http://#{link.gsub(/^\/*/, '')}" : link
       meta_data = link_hash[:meta_data]
 
       new_link = if link =~ Devise::email_regexp
@@ -265,23 +264,23 @@ module MarkdownHelper
         link
       elsif link_hash[:escaped]
         replace_link = "\\#{link}" if link_hash[:escaped]
-        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
+        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:show_preview] || link_hash[:inline]
         if meta_data.nil?
           # Offload to JS to speed up page load time
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-original-url=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
         elsif link_hash[:inline]
           render_link_from_meta_data(meta_data)
         else
           add_to_text << render_link_from_meta_data(meta_data)
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">[#{meta_data[:title]}]</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">[#{meta_data[:title]}]</a>"
         end
       else
         if meta_data.nil?
           # Offload to JS to speed up page load time
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\" data-original-url=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
         else
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{url}\">#{truncate(link, length: 50, omission: "...")}</a>"
+          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
         end
       end
 

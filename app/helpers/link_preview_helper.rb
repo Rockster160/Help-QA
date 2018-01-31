@@ -4,6 +4,7 @@ module LinkPreviewHelper
     [params[:urls]].flatten.compact.uniq.map do |raw_url|
       meta_data = retrieve_meta_data_for_url(raw_url, clear: clear, generate_if_nil: true)
       meta_data[:html] = render_link_from_meta_data(meta_data)
+puts "#{raw_url}: #{meta_data}".colorize(:light_red)
       meta_data
     end.compact
   end
