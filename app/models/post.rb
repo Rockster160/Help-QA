@@ -212,7 +212,7 @@ class Post < ApplicationRecord
   end
 
   def auto_adult
-    self.marked_as_adult = Tag.sounds_nsfw?(body).any?
+    self.marked_as_adult = Tag.sounds_nsfw?(body)
   end
 
   def auto_add_tags
