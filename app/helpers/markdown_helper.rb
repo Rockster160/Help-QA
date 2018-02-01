@@ -183,10 +183,15 @@ module MarkdownHelper
   end
 
   def find_links_in_text(text)
+    extension_blacklist = [:to]
+    domain_blacklist = [:idolosol]
+    # These are exact matches, so something like sub.idolosol would not be counted.
     to_replace = []
     scan_idx = 0
     text.scan(url_regex).each_with_index do |link_parts, idx|
       protocol, domain, tld, port, path, params, anchor = link_parts
+      next if extension_blacklist.include?(tld)
+      next if domain_blacklist.include?(domain)
       link = link_parts.compact.join("")
       punctuation_characters = /[\.\?\! \n\r,'"’“”]/
       invalid_pre_char_count = 0
@@ -216,6 +221,10 @@ module MarkdownHelper
       scan_idx = last_idx
 
       meta_data = retrieve_meta_data_for_url(link)
+      looks_youtube = domain.include?("youtu")
+      looks_vimeo = domain.include?("vimeo")
+      has_path_extension = path.to_s[/\.\w{2,4}$/].present?
+      should_parse = looks_youtube || looks_vimeo || has_path_extension
 
       to_replace << {
         url: link,
@@ -224,7 +233,8 @@ module MarkdownHelper
         meta_data: meta_data,
         inline: @markdown_options[:inline_previews] || meta_data&.dig(:inline),
         escaped: pre_char == "\\",
-        invalid: meta_data&.dig(:invalid_url)
+        invalid: meta_data&.dig(:invalid_url),
+        should_parse: should_parse
         # url
         # request_url
         # favicon
@@ -242,7 +252,6 @@ module MarkdownHelper
   end
 
   def link_previews(text)
-    # BLACKLIST: idolosol
     add_to_text = []
     current_idx = 0
 
@@ -262,7 +271,7 @@ module MarkdownHelper
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:invalid]
         link
-      elsif link_hash[:escaped]
+      elsif link_hash[:escaped] || !link_hash[:should_parse]
         replace_link = "\\#{link}" if link_hash[:escaped]
         "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:show_preview] || link_hash[:inline]

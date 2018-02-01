@@ -25,7 +25,12 @@ module LinkPreviewHelper
 
   def get_meta_data_for_url(url)
     Rails.cache.fetch(url, expires_in: 30.days) do
-      res, req, u = RestClient.get(url, timeout: 3) { |response, request, result| [response, request, result] } rescue nil
+      # res, req, u = [nil, nil, nil]
+      3.times do |t|
+        res, req, u = RestClient.get(url, timeout: 3) { |response, request, result| [response, request, result] } rescue nil
+        break unless res.try(:code).in?(300..399)
+        url = res.headers[:location]
+      end
       next {url: url, invalid_url: true} if res.nil?
 
       doc = Nokogiri::HTML(res.body)
@@ -39,8 +44,9 @@ module LinkPreviewHelper
         tags[meta_type] = meta_tag["content"]
       end
       favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first || doc.xpath('//link[@rel="icon"]').first || doc.xpath('//link[@rel="favicon"]').first
-
-      video_url = tags["twitter:player"]
+      puts "Video: #{tags["og:video:url"]}".colorize(:yellow)
+      binding.pry if url.include?("youtu")
+      video_url = tags["twitter:player"] || tags["og:video:url"]
       should_iframe = if video_url.present?
         video_url.include?("player.vimeo") || video_url.include?("youtube.com/embed")
       elsif url.present?

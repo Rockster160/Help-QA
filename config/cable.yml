@@ -1,6 +1,9 @@
 development:
   adapter: redis
 
+archivedev:
+  adapter: redis
+
 test:
   adapter: redis
 
