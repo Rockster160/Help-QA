@@ -271,10 +271,7 @@ module MarkdownHelper
         "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
       elsif link_hash[:invalid]
         link
-      elsif link_hash[:escaped] || !link_hash[:should_parse]
-        replace_link = "\\#{link}" if link_hash[:escaped]
-        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
-      elsif link_hash[:show_preview] || link_hash[:inline]
+      elsif (link_hash[:show_preview] || link_hash[:inline]) && !link_hash[:escaped]
         if meta_data.nil?
           # Offload to JS to speed up page load time
           "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
@@ -284,6 +281,9 @@ module MarkdownHelper
           add_to_text << render_link_from_meta_data(meta_data)
           "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">[#{meta_data[:title]}]</a>"
         end
+      elsif link_hash[:escaped] || !link_hash[:should_parse]
+        replace_link = "\\#{link}" if link_hash[:escaped]
+        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       else
         if meta_data.nil?
           # Offload to JS to speed up page load time
