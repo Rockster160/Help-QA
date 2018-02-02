@@ -25,16 +25,17 @@ module LinkPreviewHelper
 
   def get_meta_data_for_url(url)
     Rails.cache.fetch(url, expires_in: 30.days) do
-      # res, req, u = [nil, nil, nil]
+      request_url = url.dup
+      res, req, u = [nil, nil, nil]
       3.times do |t|
-        res, req, u = RestClient.get(url, timeout: 3) { |response, request, result| [response, request, result] } rescue nil
+        res, req, u = RestClient.get(request_url, timeout: 3) { |response, request, result| [response, request, result] } rescue nil
         break unless res.try(:code).in?(300..399)
-        url = res.headers[:location]
+        request_url = res.headers[:location]
       end
       next {url: url, invalid_url: true} if res.nil?
 
       doc = Nokogiri::HTML(res.body)
-      only_image = MIME::Types.type_for(url).first.try(:content_type)&.starts_with?("image")
+      only_image = MIME::Types.type_for(request_url).first.try(:content_type)&.starts_with?("image")
 
       tags = {}
       doc.search("meta").each do |meta_tag|
@@ -44,17 +45,16 @@ module LinkPreviewHelper
         tags[meta_type] = meta_tag["content"]
       end
       favicon_element = doc.xpath('//link[@rel="shortcut icon"]').first || doc.xpath('//link[@rel="icon"]').first || doc.xpath('//link[@rel="favicon"]').first
-      puts "Video: #{tags["og:video:url"]}".colorize(:yellow)
-      binding.pry if url.include?("youtu")
+
       video_url = tags["twitter:player"] || tags["og:video:url"]
       should_iframe = if video_url.present?
         video_url.include?("player.vimeo") || video_url.include?("youtube.com/embed")
-      elsif url.present?
-        if url.include?("player.vimeo") || url.include?("youtube.com/embed")
-          video_url = url
+      elsif request_url.present?
+        if request_url.include?("player.vimeo") || request_url.include?("youtube.com/embed")
+          video_url = request_url
           true
-        elsif url =~ /vimeo.com\/\d+$/
-          video_url = "https://player.vimeo.com/video/#{url[/\d+$/]}"
+        elsif request_url =~ /vimeo.com\/\d+$/
+          video_url = "https://player.vimeo.com/video/#{request_url[/\d+$/]}"
           true
         end
       end
