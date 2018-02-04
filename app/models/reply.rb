@@ -121,7 +121,8 @@ class Reply < ApplicationRecord
   end
 
   def debounce_replies
-    return if author.replies.where("created_at > ?", 5.seconds.ago).none?
+    return unless new_obj? # Only prevent creating new replies when debouncing
+    return if author.replies.where("created_at > ?", 5.seconds.ago).where.not(id: id).none?
 
     errors.add(:base, "Slow down there! You're posting too fast. You can only reply once every 5 seconds.")
   end
@@ -142,13 +143,20 @@ class Reply < ApplicationRecord
 
   def invite_users
     newly_invited_users = []
+    tags_to_replace = []
     unquoted_text.scan(/(?:@([^ \`\@]+))/) do |username_tag|
       user = User.by_username($1)
       if user.present? && (user.friends?(author) || !user.settings.friends_only?)
+        tags_to_replace << ["@#{user.username}", user]
         invite = user.invites.create(post: post, from_user: author, invited_anonymously: posted_anonymously?, reply: self)
         newly_invited_users << user if invite.persisted? && user.subscriptions.where(post_id: post_id).none?
       end
     end
+    replaced_invites = body.dup
+    tags_to_replace.uniq.each do |username_tag, user|
+      replaced_invites = replaced_invites.gsub(username_tag, "@[#{user.username}:#{user.id}]")
+    end
+    did_update = update(body: replaced_invites) if tags_to_replace.any?
     if newly_invited_users.any?
       post.post_invites.create(user_id: author_id, invited_users: newly_invited_users.count, invited_anonymously: posted_anonymously?)
     end

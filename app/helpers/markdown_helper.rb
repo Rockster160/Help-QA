@@ -128,7 +128,23 @@ module MarkdownHelper
   end
 
   def invite_tagged_users(text)
-    text.gsub(/@([^ \`\@]+)/) do |username_tag|
+    text = text.gsub(/@\[([^ \`\@]+):(\d+)\]/) do |username_tag|
+      puts "REPLACE #{username_tag}".colorize(:yellow)
+      user_id = $2
+      tagged_user = User.find_by(id: user_id)
+      puts "ID #{user_id}".colorize(:yellow)
+      puts "Username #{tagged_user.username}".colorize(:yellow)
+
+      if tagged_user.present?
+        escaped_username = escape_markdown_characters_in_string(tagged_user.username)
+        "<a href=\"#{user_path(user_id)}-#{tagged_user.slug}\" class=\"tagged-user\">&#64;#{escaped_username}</a>"
+      else
+        "@#{$1}"
+      end
+    end
+    # The below is deprecated. Users are no longer tagged with @username, but @[username:id]
+    # This should eventually be backfilled.
+    text = text.gsub(/@([^ \[\]\`\@]+)/) do |username_tag|
       username = $1.gsub(/\<.*?\>/, "")
       tagged_user = User.by_username(username)
 
