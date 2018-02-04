@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
   def set_notifications
     return unless user_signed_in?
     @notifications = {
-      notices: current_user.notices.unread.group_by(&:post_id).count,
+      notices: current_user.notices.unread.group_by(&:groupable_identifier).count,
       shouts: current_user.shouts.unread.count,
       invites: current_user.invites.unread.count
     }

@@ -76,7 +76,9 @@ Rails.application.routes.draw do
     get :notifications
 
     resources :subscriptions, only: [ :index, :destroy ]
-    resources :friends, only: [ :index, :update, :destroy ]
+    resources :friends, only: [ :index, :update, :destroy ] do
+      post :mark_all_read, on: :collection
+    end
     resources :profile, only: [ :index ] do
       post :update, on: :collection
     end
