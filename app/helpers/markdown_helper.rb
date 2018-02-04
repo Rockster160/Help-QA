@@ -124,6 +124,7 @@ module MarkdownHelper
     str = str.gsub("_", "&#95;") # _
     str = str.gsub("~", "&#126;") # ~
     str = str.gsub(":", "&#58;")
+    str = str.gsub(".", "&#46;")
   end
 
   def invite_tagged_users(text)
