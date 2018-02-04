@@ -36,8 +36,8 @@ class Post < ApplicationRecord
   has_many :favorite_replies
   has_one :poll
 
-  scope :search_for,           ->(text) { where("body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
-  scope :regex_search,         ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :search_for,           ->(text) { where("posts.body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :regex_search,         ->(text) { where("posts.body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :claimed,              -> { where(posted_anonymously: [false, nil]) }
   scope :unclaimed,            -> { where(posted_anonymously: true) }
   scope :verified_user,        -> { joins(:author).where.not(users: { verified_at: nil }) }

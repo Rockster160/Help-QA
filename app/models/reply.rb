@@ -18,6 +18,7 @@
 class Reply < ApplicationRecord
   include MarkdownHelper
   include Sherlockable
+  attr_accessor :hide_update
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
 
@@ -35,8 +36,8 @@ class Reply < ApplicationRecord
 
   after_commit :broadcast_creation, :update_popular_post
 
-  scope :by_fuzzy_text,     ->(text) { where("body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
-  scope :regex_search,      ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :by_fuzzy_text,     ->(text) { where("replies.body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :regex_search,      ->(text) { where("replies.body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
@@ -105,6 +106,7 @@ class Reply < ApplicationRecord
   end
 
   def broadcast_creation
+    return if hide_update
     mod_message = in_moderation? ? "<a href=\"/mod/queue\">There is a new reply that requires approval.</a>" : ""
     User.mod.each do |mod|
       ActionCable.server.broadcast("notifications_#{mod.id}", message: mod_message)
@@ -156,7 +158,7 @@ class Reply < ApplicationRecord
     tags_to_replace.uniq.each do |username_tag, user|
       replaced_invites = replaced_invites.gsub(username_tag, "@[#{user.username}:#{user.id}]")
     end
-    did_update = update(body: replaced_invites) if tags_to_replace.any?
+    update(body: replaced_invites) if tags_to_replace.any?
     if newly_invited_users.any?
       post.post_invites.create(user_id: author_id, invited_users: newly_invited_users.count, invited_anonymously: posted_anonymously?)
     end

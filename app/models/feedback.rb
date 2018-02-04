@@ -23,8 +23,8 @@ class Feedback < ApplicationRecord
   after_create :notify_slack
   after_commit :broadcast_creation
 
-  scope :search_for,   ->(text) { where("body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
-  scope :regex_search, ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :search_for,   ->(text) { where("feedbacks.body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :regex_search, ->(text) { where("feedbacks.body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :unresolved,   -> { where(completed_at: nil) }
   scope :resolved,     -> { where.not(completed_at: nil) }
   scope :by_username,  ->(username) { where.not(user_id: nil).joins(:user).where("users.username ILIKE ?", "%#{username}%") }
