@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery with: :exception
-  before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications
+  before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications, :set_theme
   skip_before_action :logit, only: [:flash_message]
   # skip_before_action :verify_authenticity_token
 
@@ -154,6 +154,13 @@ class ApplicationController < ActionController::Base
 
   def current_ip_address
     current_user.try(:super_ip) || request.env['HTTP_X_REAL_IP'] || request.env['REMOTE_ADDR']
+  end
+
+  def set_theme
+    return unless params[:theme].present?
+    return session.delete(:theme) if params[:theme] == "clear"
+
+    session[:theme] = params[:theme]
   end
 
 end

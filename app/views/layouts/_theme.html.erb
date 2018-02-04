@@ -1,0 +1,32 @@
+<% color = ColorGenerator.conform_hex(session[:theme]) rescue nil %>
+<% puts "COLOR: #{color}".colorize(:red) %>
+<% return unless color.present? %>
+<% light_55 = ColorGenerator.lighten(color, 55) %>
+<% light_60 = ColorGenerator.lighten(color, 60) %>
+<% light_75 = ColorGenerator.lighten(color, 75) %>
+
+<meta name="theme-color" content="<%= color %>">
+<style media="screen">
+  .avatar-container .avatar-img-wrapper .avatar { color: <%= color %>; }
+  .navigation-wrapper { background: <%= color %>; }
+  .navigation-wrapper .navigation-container a .blip { color: <%= color %>; }
+  nav.pagination a:hover { border-color: <%= color %>; }
+  .front-page .users-side .popular-post {
+    border-color: <%= light_55 %>;
+    background: linear-gradient(to bottom, <%= light_55 %>, white);
+  }
+  .front-page .users-side .popular-post h6,
+  .ctr-posts.act-show .post-section .post-section-content .replies-container .reply-wrapper .reply-container.attached.pending,
+  .ctr-posts.act-show .post-section .post-section-content .replies-container .reply-wrapper .reply-container.original-poster,
+  .ctr-posts.act-show .post-section .post-section-content .replies-container .reply-wrapper .reply-container.original-poster .reply-author {
+    border-color: <%= color %>;
+  }
+  .ctr-posts.act-show .post-section .post-section-content .replies-container .pending-reply {
+    border-color: <%= color %>;
+    background: <%= light_60 %>;
+  }
+  .ctr-posts.act-show .post-section .post-section-content .replies-container .reply-wrapper .reply-container.original-poster .reply-content,
+  .ctr-shouts .shout-wrapper .shout-list .shout-container .shout-author.highlight {
+    background: linear-gradient(to bottom, <%= light_60 %>, <%= light_75 %>);
+  }
+</style>
