@@ -76,9 +76,7 @@ Rails.application.routes.draw do
     get :notifications
 
     resources :subscriptions, only: [ :index, :destroy ]
-    resources :friends, only: [ :index, :update, :destroy ] do
-      post :mark_all_read, on: :collection
-    end
+    resources :friends, only: [ :index, :update, :destroy ]
     resources :profile, only: [ :index ] do
       post :update, on: :collection
     end
@@ -88,7 +86,9 @@ Rails.application.routes.draw do
     resources :notices, only: [ :index ] do
       post :mark_all_read, on: :collection
     end
-    resources :invites, only: [ :index ]
+    resources :invites, only: [ :index ] do
+      post :mark_all_read, on: :collection
+    end
   end
 
   post "update_user_search" => "users#update_user_search", as: :update_user_search

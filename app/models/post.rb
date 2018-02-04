@@ -16,7 +16,6 @@
 #
 
 class Post < ApplicationRecord
-  include PgSearch
   include Defaults
   include Sherlockable
 

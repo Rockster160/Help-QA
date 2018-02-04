@@ -18,7 +18,6 @@
 class Reply < ApplicationRecord
   include MarkdownHelper
   include Sherlockable
-  include PgSearch
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
 
@@ -146,11 +145,8 @@ class Reply < ApplicationRecord
     unquoted_text.scan(/(?:@([^ \`\@]+))/) do |username_tag|
       user = User.by_username($1)
       if user.present? && (user.friends?(author) || !user.settings.friends_only?)
-        invite = user.invites.find_or_create_by(post: post, from_user: author, invited_anonymously: posted_anonymously?)
-        if invite.persisted?
-          newly_invited_users << user if invite.new_obj? && user.subscriptions.where(post_id: post_id).none?
-          invite.update(read_at: nil, reply: self)
-        end
+        invite = user.invites.create(post: post, from_user: author, invited_anonymously: posted_anonymously?, reply: self)
+        newly_invited_users << user if invite.persisted? && user.subscriptions.where(post_id: post_id).none?
       end
     end
     if newly_invited_users.any?

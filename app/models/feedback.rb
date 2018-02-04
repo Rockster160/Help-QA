@@ -14,7 +14,6 @@
 #
 
 class Feedback < ApplicationRecord
-  include PgSearch
   include UrlHelper
   belongs_to :user, optional: true
   belongs_to :completed_by, optional: true, class_name: "User"

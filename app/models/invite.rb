@@ -21,7 +21,6 @@ class Invite < ApplicationRecord
   belongs_to :post
   belongs_to :reply, optional: true
 
-  validate :has_not_already_been_invited, :is_not_already_subscribed
   after_commit :broadcast_creation
 
   def display_name
@@ -37,24 +36,10 @@ class Invite < ApplicationRecord
   end
 
   def groupable_identifier
-    "post-#{post_id}"
+    reply.present? ? "reply-#{reply_id}" : "post-#{post_id}"
   end
 
   private
-
-  def has_not_already_been_invited
-    return unless new_obj?
-    if post.invites.where.not(id: id).where(invited_user_id: invited_user_id).any?
-      errors.add(:base, "User has already been invited to this post.")
-    end
-  end
-
-  def is_not_already_subscribed
-    return unless new_obj?
-    if invited_user.subscriptions.where(post_id: post_id).any?
-      errors.add(:base, "User is already subscribed to post.")
-    end
-  end
 
   def broadcast_creation
     if read?

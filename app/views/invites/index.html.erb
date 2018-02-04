@@ -1,5 +1,9 @@
 <% meta_title "Account Invites &bull; Help-QA.com" %>
 
+<% if @unread.any? %>
+  <%= link_to "Mark all as Read", mark_all_read_account_invites_path, method: :post %>
+<% end %>
+
 <% @unread.each do |groupable_identifier, invites| %>
   <p><%= hover_icon("new", "New Invite!") %> <%= invites.first.notice_message %></p>
 <% end %>
