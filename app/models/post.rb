@@ -37,7 +37,7 @@ class Post < ApplicationRecord
   has_many :favorite_replies
   has_one :poll
 
-  pg_search_scope :search_for, against: :body
+  scope :search_for,           ->(text) { where("body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :regex_search,         ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :claimed,              -> { where(posted_anonymously: [false, nil]) }
   scope :unclaimed,            -> { where(posted_anonymously: true) }

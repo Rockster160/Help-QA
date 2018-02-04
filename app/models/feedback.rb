@@ -24,10 +24,11 @@ class Feedback < ApplicationRecord
   after_create :notify_slack
   after_commit :broadcast_creation
 
-  pg_search_scope :search_for, against: :body
-  scope :unresolved, -> { where(completed_at: nil) }
-  scope :resolved, -> { where.not(completed_at: nil) }
-  scope :by_username, ->(username) { where.not(user_id: nil).joins(:user).where("users.username ILIKE ?", "%#{username}%") }
+  scope :search_for,   ->(text) { where("body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :regex_search, ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :unresolved,   -> { where(completed_at: nil) }
+  scope :resolved,     -> { where.not(completed_at: nil) }
+  scope :by_username,  ->(username) { where.not(user_id: nil).joins(:user).where("users.username ILIKE ?", "%#{username}%") }
 
   def resolved?; completed_at?; end
   def unresolved?; !resolved?; end

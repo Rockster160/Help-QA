@@ -36,7 +36,7 @@ class Reply < ApplicationRecord
 
   after_commit :broadcast_creation, :update_popular_post
 
-  pg_search_scope :by_fuzzy_text, against: :body
+  scope :by_fuzzy_text,     ->(text) { where("body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :regex_search,      ->(text) { where("body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :claimed,           -> { where.not(posted_anonymously: true) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
