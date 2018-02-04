@@ -34,12 +34,12 @@ class RepliesController < ApplicationController
     reply = post.replies.find(params[:reply_id])
 
     modded_attrs = {}
-    modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
-    modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
-    modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
-    modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
-    modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
-    modded_attrs[:removed_at] = nil if params[:remove].present? && params[:remove] == "false"
+    modded_attrs[:in_moderation] = true if true_param?(:in_moderation)
+    modded_attrs[:in_moderation] = false if false_param?(:in_moderation) || true_param?(:remove) || true_param?(:adult)
+    modded_attrs[:marked_as_adult] = true if true_param?(:adult)
+    modded_attrs[:marked_as_adult] = false if false_param?(:adult)
+    modded_attrs[:removed_at] = DateTime.current if true_param?(:remove)
+    modded_attrs[:removed_at] = nil if false_param?(:remove)
 
     if reply.update(modded_attrs)
       redirect_to post_path(post, anchor: "reply-#{reply.id}")

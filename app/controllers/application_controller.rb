@@ -156,6 +156,14 @@ class ApplicationController < ActionController::Base
     current_user.try(:super_ip) || request.env['HTTP_X_REAL_IP'] || request.env['REMOTE_ADDR']
   end
 
+  def true_param?(param_key)
+    params[param_key].present? && params[param_key] == "true"
+  end
+
+  def false_param?(param_key)
+    params[param_key].present? && params[param_key] == "false"
+  end
+
   def set_theme
     return unless params[:theme].present?
     return session.delete(:theme) if params[:theme] == "clear"
