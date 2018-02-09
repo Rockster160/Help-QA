@@ -57,7 +57,7 @@ class Post < ApplicationRecord
   scope :by_tags,              ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
   scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
   scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
-  scope :displayable,          ->(user=nil) { not_banned.not_closed.not_removed.no_moderation.conditional_adult(user) }
+  scope :displayable,          ->(user=nil) { not_banned.not_closed.not_removed.no_moderation.conditional_adult(user) unless Rails.env.archive? }
 
   after_create :auto_add_tags, :generate_poll, :alert_helpbot, :invite_users
   after_commit :broadcast_creation, :subscribe_author
@@ -93,12 +93,13 @@ class Post < ApplicationRecord
     new_tags_string.split(",").each do |new_tag|
       new_tag = new_tag.downcase.squish
       tag = Tag.find_or_create_by(tag_name: new_tag)
-      post_tags.create(tag: tag)
+      post_tags.find_or_create_by(tag: tag)
     end
   end
 
+  def body; super || ""; end
   def title
-    return "BROKEN" unless body.present?
+    return "No Content" unless body.present?
     first_sentence = body.split(/[\!\.\n\;\?\r][ \r\n]/).reject(&:blank?).first
     long_title = body[0..first_sentence.try(:length) || -1].gsub(/\[poll\]/, "")
     max_title_length = 200
@@ -160,6 +161,7 @@ class Post < ApplicationRecord
   private
 
   def broadcast_creation
+    return if Rails.env.archive?
     ActionCable.server.broadcast("posts_channel", {})
   end
 
@@ -187,6 +189,7 @@ class Post < ApplicationRecord
   end
 
   def alert_helpbot
+    return if Rails.env.archive?
     return unless Tag.sounds_depressed?(body)
 
     replies.create(author_id: helpbot.id, body: ApplicationController.render(partial: "replies/helpbot_message"))
@@ -199,6 +202,7 @@ class Post < ApplicationRecord
   end
 
   def debounce_posts
+    return if Rails.env.archive?
     return if !new_obj? || author.posts.where("created_at > ?", 5.minutes.ago).none?
 
     errors.add(:base, "Slow down there! You're posting too fast. You can only make 1 new post every 5 minutes.")
@@ -216,13 +220,15 @@ class Post < ApplicationRecord
 
   def auto_add_tags
     new_tag_strs = Tag.auto_extract_tags_from_body(body)
-    new_tag_strs.first(5).each do |new_tag_str|
+    auto_tags = Rails.env.archive? ? new_tag_strs : new_tag_strs.first(5)
+    auto_tags&.each do |new_tag_str|
       new_tag = Tag.find_or_create_by(tag_name: new_tag_str.to_s.downcase)
-      post_tags.create(tag: new_tag)
+      post_tags.find_or_create_by(tag: new_tag)
     end
   end
 
   def subscribe_author
+    return unless author
     if created_at == updated_at && !author.helpbot?
       subscriptions.find_or_create_by(user_id: author_id)
     end

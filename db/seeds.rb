@@ -1,5 +1,6 @@
 def create_helpbot
   User.create({
+    id: 1,
     email: "rocco11nicholls+helpbot@gmail.com",
     password: (('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a).sample(20),
     created_at: 1.year.ago,
@@ -8,7 +9,8 @@ def create_helpbot
     confirmed_at: 1.year.ago,
     verified_at: 1.year.ago,
     date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),
-    avatar_url: ActionController::Base.helpers.asset_path("HelpBot.jpg")
+    avatar_url: ActionController::Base.helpers.asset_path("HelpBot.jpg"),
+    archived: true
   })
 end
 

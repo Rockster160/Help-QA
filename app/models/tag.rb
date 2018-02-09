@@ -27,6 +27,7 @@ class Tag < ApplicationRecord
 
   class << self
     def auto_extract_tags_from_body(body)
+      return if body.blank?
       stop_word_regex = stop_words.map { |word| Regexp.quote(word) }.join("|")
       url_split_regex = /((http[s]?|ftp):\/?\/?)([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/
       formatted = body.gsub(url_split_regex) { $3.split(".")[-2] || $3 } # Replace URL with just the Host for tagging purposes

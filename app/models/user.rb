@@ -43,13 +43,7 @@
 class User < ApplicationRecord
   attr_accessor :archived
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
-  include Friendable
-  include DeviseOverrides
-  include Accountable
-  include Postable
-  include Moddable
-  include Sherlockable
-  include Anonicon
+  include Friendable, DeviseOverrides, Accountable, Postable, Moddable, Sherlockable, Anonicon
 
   sherlockable klass: :user, ignore: [ :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :super_ip, :confirmation_token, :confirmation_sent_at, :updated_at, :last_seen_at ]
 
@@ -101,6 +95,7 @@ class User < ApplicationRecord
   def last_sign_in_ip; super_ip || super; end
 
   def helpbot?
+    return false if Rails.env.archive?
     return false unless persisted?
     id == helpbot.id
   end
