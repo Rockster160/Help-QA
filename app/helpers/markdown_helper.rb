@@ -128,15 +128,15 @@ module MarkdownHelper
   end
 
   def invite_tagged_users(text)
-    text = text.gsub(/@\[([^ \`\@]+):(\d+)\]/) do |username_tag|
-      user_id = $2
+    text = text.gsub(/(\s|\>)@\[([^ \`\@]+):(\d+)\]/) do |username_tag|
+      user_id = $3
       tagged_user = User.find_by(id: user_id)
 
       if tagged_user.present?
         escaped_username = escape_markdown_characters_in_string(tagged_user.username)
-        "<a href=\"#{user_path(user_id)}-#{tagged_user.slug}\" class=\"tagged-user\">&#64;#{escaped_username}</a>"
+        "#{$1}<a href=\"#{user_path(user_id)}-#{tagged_user.slug}\" class=\"tagged-user\">&#64;#{escaped_username}</a>"
       else
-        "@#{$1}"
+        "@#{$2}"
       end
     end
   end
@@ -180,6 +180,15 @@ module MarkdownHelper
     at_least_one_character_group = "((.|\n)*?)"
 
     /(\W|\*|\`|\_|\~)#{regex_safe_character}(#{not_space}.*?#{not_space}?)#{regex_safe_character}/m
+  end
+
+  def parse_emails_in_text(text)
+    text.gsub(email_regex) do
+      _full_match, pre_char, found_local, found_domain, post_char = Regexp.last_match.to_a
+      found_email = "#{found_local}@#{found_domain}"
+      escaped_email = escape_markdown_characters_in_string(found_email)
+      "#{pre_char}<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{escaped_email}\">#{escaped_email}</a>#{post_char}"
+    end
   end
 
   def find_links_in_text(text)
@@ -255,6 +264,8 @@ module MarkdownHelper
     add_to_text = []
     current_idx = 0
 
+    text = parse_emails_in_text(text)
+
     find_links_in_text(text).each do |link_hash|
       before_text, split_text = text[0..current_idx-1], text[current_idx..-1]
       if current_idx == 0
@@ -267,9 +278,7 @@ module MarkdownHelper
       request_url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "http://#{link.gsub(/^\/*/, '')}" : link
       meta_data = link_hash[:meta_data]
 
-      new_link = if link =~ Devise::email_regexp
-        "<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{link}\">#{truncate(link, length: 50, omission: "...")}</a>"
-      elsif link_hash[:invalid]
+      new_link = if link_hash[:invalid]
         link
       elsif (link_hash[:show_preview] || link_hash[:inline]) && !link_hash[:escaped]
         if meta_data.nil?
@@ -345,13 +354,26 @@ module MarkdownHelper
     end
   end
 
+  def email_regex
+    alphanumeric = "a-z0-9"
+    specialChars = ".!#$%&*+\\/=?^_`{|}~-".split("").map { |char| "\\#{char}" }.join("")
+    local = "((?:[#{alphanumeric}#{specialChars}])+)"
+    # REQUIRED - At least 1 alphanumeric and/or special character
+    domain = "((?:[#{alphanumeric}-]+(?:\\.[#{alphanumeric}-]+)*))"
+    # REQUIRED begins and ends with alphanumeric, allowed to include hyphens and periods (to denote different domains)
+    # /(\W|^)([a-z0-9])+@([a-z0-9-]+(?:\.[a-z0-9-]+)*)(\W|$)/
+    # (\W|^)
+    # (\W|$)
+    /(\s|\>)#{local}@#{domain}(\s|\<)/i
+  end
+
   def url_regex
     # https://perishablepress.com/stop-using-unsafe-characters-in-urls/#character-encoding-chart
     @url_regex ||= begin
       # Regex groups
       alphanumeric = "a-z0-9"
-      specialChars = "$-_+!*'(),;".split("").map { |char| "\\#{char}" }.join("")
-      paramChars = "&%=[]".split("").map { |char| "\\#{char}" }.join("")
+      specialChars = "%$-_+!*'(),;".split("").map { |char| "\\#{char}" }.join("")
+      paramChars = "&=[]".split("").map { |char| "\\#{char}" }.join("")
       alphaspecial = "#{alphanumeric}#{specialChars}"
 
       # Url Parts

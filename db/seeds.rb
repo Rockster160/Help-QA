@@ -1,6 +1,5 @@
 def create_helpbot
   User.create({
-    id: 1,
     email: "rocco11nicholls+helpbot@gmail.com",
     password: (('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a).sample(20),
     created_at: 1.year.ago,
@@ -68,7 +67,7 @@ else
     ((rand - rand).abs * (1 + max - min) + min).floor
   end
 
-  start_date = 5.years.ago
+  start_date = 2.years.ago
 
   # shout_conversations = 5
   # users_count = 5
@@ -76,11 +75,11 @@ else
   # posts = 5
   # replies = 5
 
-  shout_conversations = 100
-  users_count = 100
-  max_friend_count_per_user = 30
-  posts = 100
-  replies = 500
+  shout_conversations = 10
+  users_count = 20
+  max_friend_count_per_user = 15
+  posts = 20
+  replies = 60
 
   create_helpbot
   u = User.create({
