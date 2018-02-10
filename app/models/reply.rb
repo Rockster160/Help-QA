@@ -102,11 +102,12 @@ class Reply < ApplicationRecord
   private
 
   def update_popular_post
+    return if Rails.env.archive?
     UpdatePopularPostWorker.perform_async
   end
 
   def broadcast_creation
-    return if hide_update
+    return if hide_update || Rails.env.archive?
     mod_message = in_moderation? ? "<a href=\"/mod/queue\">There is a new reply that requires approval.</a>" : ""
     User.mod.each do |mod|
       ActionCable.server.broadcast("notifications_#{mod.id}", message: mod_message)
@@ -139,11 +140,13 @@ class Reply < ApplicationRecord
   end
 
   def notify_subscribers
+    return if Rails.env.archive?
     subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id) unless author.helpbot?
     post.notify_subscribers(not_user: author, reply_id: id)
   end
 
   def invite_users
+    return if Rails.env.archive?
     newly_invited_users = []
     tags_to_replace = []
     unquoted_text.scan(/(?:@([^ \`\@]+))/) do |username_tag|
@@ -165,6 +168,7 @@ class Reply < ApplicationRecord
   end
 
   def format_body
+    return if Rails.env.archive?
     if new_obj? && !author.trusted_user?
       has_adult_words = Tag.sounds_nsfw?(body)
       is_verified_user = author.verified?

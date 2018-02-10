@@ -7,6 +7,7 @@ module Sherlockable
       ignore = [ignore].flatten
       skip = [skip].flatten
       self.send :after_save, proc {
+        next if Rails.env.archive?
         discovery = Sherlock.discover(self, changes.reject { |change_key| change_key.blank? || change_key.to_sym.in?(ignore.to_a) }, klass)
         next unless discovery.present?
         discovery_type = discovery.set_discovery_type

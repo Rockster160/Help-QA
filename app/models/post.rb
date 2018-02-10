@@ -235,6 +235,7 @@ class Post < ApplicationRecord
   end
 
   def invite_users
+    return if Rails.env.archive?
     invited_users = []
     body.scan(/@([^ \`\@]+)/) do |username_tag|
       user = User.by_username($1)

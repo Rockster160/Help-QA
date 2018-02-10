@@ -73,7 +73,7 @@ class Archiver
       @previous_string ||= ""
       @previous_counts ||= []
       unless current_count_str == @previous_string
-        puts "" # rubocop:disable Rails/Output
+        puts ""
         @previous_counts = Array.new(max_counts.length) { 1 }
         @previous_counts[-1] = @previous_counts[-1] - 1
       end
@@ -92,7 +92,7 @@ class Archiver
       @previous_string = current_count_str
       count_strings = Array.new(@previous_counts.length) { |t| ": #{@previous_counts[t]} / #{max_counts[t]} (#{((@previous_counts[t] / max_counts[t].to_f) * 100).round(2)}%)" }.join("")
       time = @previous_counts.first != max_counts.first ? "#{show_time_taken} " : ""
-      print "\r#{' ' * 100}\r#{time}#{current_count_str}#{count_strings}  " # rubocop:disable Rails/Output
+      print "\r#{' ' * 100}\r#{time}#{current_count_str}#{count_strings}  "
     end
 
     def restore
@@ -102,35 +102,44 @@ class Archiver
       ActiveRecord::Base.logger = nil
       # restore_from_keys(restore_users_keys)
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE users_id_seq RESTART WITH #{User.maximum(:id) + 100000};")
-      restore_from_keys(restore_posts_keys)
-      # TODO: Alter sequence for each table after it's created
-      # restore_from_keys(restore_replies_keys)
+      # restore_from_keys(restore_posts_keys)
+      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Post.maximum(:id) + 100000};")
+      restore_from_keys(restore_replies_keys)
+      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Reply.maximum(:id) + 100000};")
       # restore_from_keys(restore_shouts_keys)
       # restore_from_keys(restore_shouts_from_message_topics_keys)
       # restore_from_keys(restore_shouts_from_message_posts_keys)
+      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Shout.maximum(:id) + 100000};")
       # restore_from_keys(restore_user_profiles_keys)
       # restore_from_keys(restore_friendships_keys)
+      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Friendship.maximum(:id) + 100000};")
       # restore_from_keys(restore_polls_keys)
+      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Poll.maximum(:id) + 100000};")
       # restore_from_keys(restore_user_poll_votes_keys)
 
       clear_sidekiq_queues
       ActiveRecord::Base.logger = old_logger
+      puts "Success!".colorize(:green)
     end
 
     def column_val_from_header(columns, header)
       header_idx = @headers.index(header.to_s)
-      columns[header_idx]&.gsub(/^"|"$/, "")
+      found_val = columns[header_idx]&.gsub(/^"|"$/, "")
+      case found_val
+      when "1", "true", true then true
+      when "0", "false", false then false
+      when "", "NULL" then nil
+      else found_val
+      end
     end
 
     def restore_from_keys(keys)
       klass, filename = keys[:table]
       filepath = "/Users/zoro/code/helpbackups/#{filename}.csv"
-      file_data = File.read(filepath)
-      header_row, *file_rows = file_data.split("CSVENDROW\n")
-      @headers = header_row.delete("\"").split(",")
-      # file_rows.first(2).each do |row|
-      total_count = file_rows.count
-      file_rows.each do |row|
+      # total_count = file_rows.count
+      total_count = `wc -l "#{filepath}"`.strip.split(' ')[0].to_i
+      File.foreach(filepath).with_index do |row, idx|
+        next @headers = row.delete("\"").split(",") if idx == 0
         begin
           skip_creation_of_object = false
           indices = []
@@ -163,10 +172,10 @@ class Archiver
             when :birthday
               column_value = syntax.map do |archive_header| #[:bday_month, :bday_day, :bday_year]
                 column_val_from_header(cols, archive_header)
-              end.join("/")
-              bad_special_val = true if column_value == "0/0/0" || column_value == "NULL/NULL/NULL"
+              end.compact.join("/")
+              bad_special_val = true if column_value.blank? || column_value == "0/0/0" || column_value == "NULL/NULL/NULL"
             when :anonymous
-              column_value = column_val_from_header(cols, syntax)[/Anonymous\d*/]
+              column_value = !!(column_val_from_header(cols, syntax) =~ /Anonymous\d*/)
             when :fallback_user
               if converted_attrs[:author_id].blank? || converted_attrs[:author_id].to_s == "0"
                 starter_name = column_val_from_header(cols, syntax)
@@ -176,20 +185,22 @@ class Archiver
                 column_value = user.id
               end
             when :append_post
-              skip_creation_of_object = true if column_val_from_header(cols, syntax) == "1"
-              post_id = column_val_from_header(cols, :topic_id)
-              body = column_val_from_header(cols, :post)
-              post = Post.find(post_id)
-              post.body = "#{post.body} #{body}"
-              post.save(validate: false)
+              # skip_creation_of_object = true if column_val_from_header(cols, syntax) == "1"
+              # post_id = column_val_from_header(cols, :topic_id)
+              # body = column_val_from_header(cols, :post)
+              # post = Post.find(post_id)
+              # unless post.body.include?(body)
+              #   post.body = "#{post.body} #{body}"
+              #   post.save(validate: false)
+              # end
               # attach: [:append_post, :new_topic]
             end
             [column_key, column_value] unless bad_special_val || column_value.nil?
           end.compact.to_h.symbolize_keys
-          next if skip_creation_of_object
+          next puts("Skip".colorize(:cyan)) if skip_creation_of_object
           init_attrs = keys.dig(:special, :init) || {}
-          special_attrs.reject! { |k,v| v.blank? || v == "0" }
-          converted_attrs.reject! { |k,v| v.blank? || v == "0" }
+          special_attrs.reject! { |k,v| v.blank? || v == "0" || v == "NULL" }
+          converted_attrs.reject! { |k,v| v.blank? || v == "0" || v == "NULL" }
           obj_attrs = init_attrs.merge(special_attrs.merge(converted_attrs)).symbolize_keys
           obj = klass.find_by(id: obj_attrs[:id]) || klass.new
           obj.assign_attributes(obj_attrs)
@@ -263,9 +274,9 @@ class Archiver
         },
         special: {
           data: {
-            attach: [:append_post, :new_topic]
-            posted_anonymously: [:anonymous, :starter_name],
-            author_id: [:fallback_user, :starter_name]
+            attach: [:append_post, :new_topic],
+            posted_anonymously: [:anonymous, :author_name],
+            author_id: [:fallback_user, :author_name]
           }
         }
       }
