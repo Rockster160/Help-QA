@@ -25,7 +25,7 @@ class Shout < ApplicationRecord
   scope :between, ->(user1, user2) { where("(sent_from_id = :user1 AND sent_to_id = :user2) OR (sent_from_id = :user2 AND sent_to_id = :user1)", user1: user1, user2: user2) }
   scope :not_banned, -> { joins(:sent_from).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :not_removed, -> { where(shouts: { removed_at: nil }) }
-  scope :displayable, -> { not_banned.not_removed }
+  scope :displayable, -> { not_banned.not_removed unless Rails.env.archive? }
 
   after_commit :broadcast_creation, :notify_user
 

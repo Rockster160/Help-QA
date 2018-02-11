@@ -51,7 +51,7 @@ class Reply < ApplicationRecord
   scope :without_adult,     -> { where(replies: { marked_as_adult: [nil, false] }) }
   scope :not_helpbot,       -> { joins(:author).where.not("users.username = 'HelpBot'") }
   scope :conditional_adult, ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
-  scope :displayable,       ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) }
+  scope :displayable,       ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) unless Rails.env.archive? }
 
   def safe?; !marked_as_adult?; end
   def removed?; removed_at? || post.removed?; end

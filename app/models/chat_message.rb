@@ -22,7 +22,7 @@ class ChatMessage < ApplicationRecord
 
   scope :not_removed, -> { where(removed: false) }
   scope :not_banned,  -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
-  scope :displayable, -> { not_removed.not_banned }
+  scope :displayable, -> { not_removed.not_banned unless Rails.env.archive? }
 
   private
 

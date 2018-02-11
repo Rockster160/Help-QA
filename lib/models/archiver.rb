@@ -55,8 +55,12 @@ class Archiver
 
     def show_time_taken
       @start_time ||= Time.now.to_f
-      remaining_seconds = Time.now.to_f - @start_time
+      seconds = Time.now.to_f - @start_time
+      seconds_to_humanized_time(seconds)
+    end
 
+    def seconds_to_humanized_time(remaining_seconds)
+      remaining_seconds = remaining_seconds.round
       seconds_in_hour = 60 * 60
       hours = (remaining_seconds / seconds_in_hour).floor
       remaining_seconds -= (hours * seconds_in_hour)
@@ -66,13 +70,18 @@ class Archiver
       remaining_seconds -= (minutes * seconds_in_minute)
 
       seconds = remaining_seconds.floor
-      "#{hours.to_s.rjust(2, '0')}:#{minutes.to_s.rjust(2, '0')}:#{seconds.to_s.rjust(2, '0')}"
+      [
+        hours.to_s.presence&.rjust(2, "0"),
+        minutes.to_s.presence&.rjust(2, "0"),
+        seconds.to_s.presence&.rjust(2, "0")
+      ].compact.join(":")
     end
 
-    def show_current_count(current_count_str, *max_counts)
+    def show_current_count(current_count_name, *max_counts)
       @previous_string ||= ""
       @previous_counts ||= []
-      unless current_count_str == @previous_string
+      unless current_count_name == @previous_string
+        @current_start_time = Time.now.to_f
         puts ""
         @previous_counts = Array.new(max_counts.length) { 1 }
         @previous_counts[-1] = @previous_counts[-1] - 1
@@ -89,13 +98,23 @@ class Archiver
           @previous_counts[original_idx] = count
         end
       end
-      @previous_string = current_count_str
-      count_strings = Array.new(@previous_counts.length) { |t| ": #{@previous_counts[t]} / #{max_counts[t]} (#{((@previous_counts[t] / max_counts[t].to_f) * 100).round(2)}%)" }.join("")
+      @previous_string = current_count_name
+      count_strings = Array.new(@previous_counts.length) do |t|
+        count_progress = "#{@previous_counts[t]} / #{max_counts[t]}"
+        count_percentage = "#{((@previous_counts[t] / max_counts[t].to_f) * 100).round(2)}"
+        elapsed_time = Time.now.to_f - @current_start_time
+        average_time_per_obj = @previous_counts[t] / elapsed_time.to_f
+        remaining = max_counts[t].to_f - @previous_counts[t]
+        (remaining / average_time_per_obj)
+        ": #{count_progress} (#{count_percentage}%) -- Avg. ~#{average_time_per_obj.round(1)}/sec -- Est ~#{seconds_to_humanized_time(remaining / average_time_per_obj)}"
+      end.join("")
       time = @previous_counts.first != max_counts.first ? "#{show_time_taken} " : ""
-      print "\r#{' ' * 100}\r#{time}#{current_count_str}#{count_strings}  "
+      print "\r#{' ' * 100}\r#{time}#{current_count_name}#{count_strings}  "
     end
 
     def restore
+      # sed '2,2200000d' "/Users/zoro/code/helpbackups/forums_posts.csv" > "/Users/zoro/code/helpbackups/x1-2200000.csv"
+      # sed '2,395000d' "/Users/zoro/code/helpbackups/x1-2200000.csv" > "/Users/zoro/code/helpbackups/x2-395000.csv"
       raise "Can only be run in Archive mode" unless Rails.env.archive?
       # require "models/archiver"; Archiver.restore
       old_logger = ActiveRecord::Base.logger
@@ -136,6 +155,7 @@ class Archiver
     def restore_from_keys(keys)
       klass, filename = keys[:table]
       filepath = "/Users/zoro/code/helpbackups/#{filename}.csv"
+      filepath = "/Users/zoro/code/helpbackups/x2-395000.csv"
       # total_count = file_rows.count
       total_count = `wc -l "#{filepath}"`.strip.split(' ')[0].to_i
       File.foreach(filepath).with_index do |row, idx|
