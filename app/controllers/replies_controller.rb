@@ -32,6 +32,7 @@ class RepliesController < ApplicationController
   def mod
     post = Post.find(params[:post_id])
     reply = post.replies.find(params[:reply_id])
+    reply.touch # Trigger an update so it doesn't appear as a new object.
 
     modded_attrs = {}
     modded_attrs[:in_moderation] = true if true_param?(:in_moderation)
