@@ -18,7 +18,7 @@
 
 .ctr-posts.act-show {
 
-  .body-wrapper > *:not(.mod-tools) {
+  .body-wrapper > *:not(.exempt-split) {
     @include split-page(210px);
   }
 
@@ -272,7 +272,7 @@
   }
 
   @include xsmall-down {
-    .body-wrapper > *:not(.mod-tools) { @include unsplit; }
+    .body-wrapper > *:not(.exempt-split) { @include unsplit; }
     .post-container {
       .author-details .avatar-container {
         display: block !important;

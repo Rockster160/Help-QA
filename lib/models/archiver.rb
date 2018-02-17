@@ -115,6 +115,8 @@ class Archiver
     def restore
       # sed '2,2200000d' "/Users/zoro/code/helpbackups/forums_posts.csv" > "/Users/zoro/code/helpbackups/x1-2200000.csv"
       # sed '2,395000d' "/Users/zoro/code/helpbackups/x1-2200000.csv" > "/Users/zoro/code/helpbackups/x2-395000.csv"
+      # sed '2,730000d' "/Users/zoro/code/helpbackups/x2-395000.csv" > "/Users/zoro/code/helpbackups/x3-730000.csv"
+      # sed '2,65500d' "/Users/zoro/code/helpbackups/x4-1276000.csv" > "/Users/zoro/code/helpbackups/x5-65500.csv"
       raise "Can only be run in Archive mode" unless Rails.env.archive?
       # require "models/archiver"; Archiver.restore
       old_logger = ActiveRecord::Base.logger
@@ -155,7 +157,7 @@ class Archiver
     def restore_from_keys(keys)
       klass, filename = keys[:table]
       filepath = "/Users/zoro/code/helpbackups/#{filename}.csv"
-      filepath = "/Users/zoro/code/helpbackups/x2-395000.csv"
+      filepath = "/Users/zoro/code/helpbackups/x5-65500.csv"
       # total_count = file_rows.count
       total_count = `wc -l "#{filepath}"`.strip.split(' ')[0].to_i
       File.foreach(filepath).with_index do |row, idx|

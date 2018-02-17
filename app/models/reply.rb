@@ -36,9 +36,9 @@ class Reply < ApplicationRecord
 
   after_commit :broadcast_creation, :update_popular_post
 
-  scope :by_fuzzy_text,     ->(text) { where("replies.body ILIKE ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
+  scope :by_fuzzy_text,     ->(text) { where("replies.body ILIKE ?", "%#{text.gsub(/['"’“”]/, "['\"’“”]")}%") }
   scope :regex_search,      ->(text) { where("replies.body ~* ?", text.gsub(/['"’“”]/, "['\"’“”]")) }
-  scope :claimed,           -> { where.not(posted_anonymously: true) }
+  scope :claimed,           -> { where(posted_anonymously: [false, nil]) }
   scope :unclaimed,         -> { where(posted_anonymously: true) }
   scope :not_banned,        -> { joins(:author).where("users.banned_until IS NULL OR users.banned_until < ?", DateTime.current) }
   scope :favorited,         -> { where("favorite_count > 0") }

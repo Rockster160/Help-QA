@@ -187,7 +187,7 @@ module MarkdownHelper
       _full_match, pre_char, found_local, found_domain, post_char = Regexp.last_match.to_a
       found_email = "#{found_local}@#{found_domain}"
       escaped_email = escape_markdown_characters_in_string(found_email)
-      "#{pre_char}<a rel=\"nofollow\" target=\"_blank\" href=\"mailto:#{escaped_email}\">#{escaped_email}</a>#{post_char}"
+      "#{pre_char}<a rel=\"external nofollow\" target=\"_blank\" href=\"mailto:#{escaped_email}\">#{escaped_email}</a>#{post_char}"
     end
   end
 
@@ -283,22 +283,22 @@ module MarkdownHelper
       elsif (link_hash[:show_preview] || link_hash[:inline]) && !link_hash[:escaped]
         if meta_data.nil?
           # Offload to JS to speed up page load time
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
+          "<a rel=\"external nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview>[#{truncate(link, length: 50, omission: "...")}]</a>"
         elsif link_hash[:inline]
           render_link_from_meta_data(meta_data)
         else
           add_to_text << render_link_from_meta_data(meta_data)
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">[#{meta_data[:title]}]</a>"
+          "<a rel=\"external nofollow\" target=\"_blank\" href=\"#{request_url}\">[#{meta_data[:title]}]</a>"
         end
       elsif link_hash[:escaped] || !link_hash[:should_parse]
         replace_link = "\\#{link}" if link_hash[:escaped]
-        "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
+        "<a rel=\"external nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
       else
         if meta_data.nil?
           # Offload to JS to speed up page load time
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
+          "<a rel=\"external nofollow\" target=\"_blank\" href=\"#{request_url}\" data-original-url=\"#{link}\" data-load-preview=\"no\">#{truncate(link, length: 50, omission: "...")}</a>"
         else
-          "<a rel=\"nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
+          "<a rel=\"external nofollow\" target=\"_blank\" href=\"#{request_url}\">#{truncate(link, length: 50, omission: "...")}</a>"
         end
       end
 

@@ -2,7 +2,7 @@
 
 <% content_for(:mod_tools) do %>
   <% if current_mod? %>
-    <div class="mod-tools">
+    <div class="mod-tools exempt-split">
       <% if can?(:remove_posts) %>
         <% if @post.removed? %>
           <a rel="nofollow" href="<%= mod_post_path(@post, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Mark post as Safe") %></a>
