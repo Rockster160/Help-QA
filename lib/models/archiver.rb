@@ -388,29 +388,29 @@ class Archiver
     end
 
     def generate_sql_replace(replace_hash)
-      # require "models/archiver"; Archiver.format_sql_script
+      # RAILS_ENV=archivedev rails runner 'require "models/archiver"; Archiver.format_sql_script'
       final_str = ""
       replace_hash.each do |table_name, column_hashes|
         final_str += "UPDATE #{table_name}"
         column_hashes.each do |column_name, replaces|
           prev_replace = "#{column_name}"
-          replaces[:regex]&.each do |from, to|
-            from = from.gsub("<ANY>", "((?:.|'||CHR(10)||')*?)")
-            prev_replace = "REGEXP_REPLACE(#{prev_replace}, #{from}, #{to}, 'g')"
-          end
           replaces[:quick]&.each do |from, to|
             from = from.gsub("<ANY>", "((?:.|'||CHR(10)||')*?)")
             prev_replace = "REPLACE(#{prev_replace}, #{from}, #{to})"
+          end
+          replaces[:regex]&.each do |from, to|
+            from = from.gsub("<ANY>", "((?:.|'||CHR(10)||')*?)")
+            prev_replace = "REGEXP_REPLACE(#{prev_replace}, #{from}, #{to}, 'gi')"
           end
           final_str += " SET #{column_name} = #{prev_replace}"
         end
         final_str += ";"
       end
-      puts final_str.colorize(:yellow)
+      puts final_str
     end
 
     def format_sql_script
-      # SELECT REGEXP_REPLACE('<img src="stuff">', '<img((?:.|'||CHR(10)||')*?)src="\[?((?:.|'||CHR(10)||')*?)"((?:.|'||CHR(10)||')*?)>', 'CHING:[\2]', 'g');
+      # SELECT REGEXP_REPLACE('<>', '<br ?/?>', 'NL', 'g');
       generate_sql_replace({
         replies: {
           body: {
@@ -419,60 +419,67 @@ class Archiver
               ["'&#34;'", "'\"'"],
               ["'â€™'", "''''"],
               ["' - IMPORT'", "''"],
-              ["'\\n*'", "CHR(10)"],
+              ["'\\n'", "CHR(10)"],
               ["'&lt;'", "'<'"],
               ["'&gt;'", "'>'"],
               ["'&nbsp;'", "' '"]
             ],
             regex: [
+              # Permitted HTML tags
               ["'<br ?/?>'", "CHR(10)"],
-              ["'<p<ANY>><ANY></p>'", "'\\2'||CHR(10)"],
-              ["'<div<ANY>><ANY></div>'", "'\\2'"],
-              ["'<b<ANY>><ANY> *?</b>'", "'*\\2*'"],
-              ["'<strong<ANY>><ANY> *?</strong>'", "'*\\2*'"],
-              ["'<span<ANY>><ANY> *?</span>'", "'\\2'"],
-              ["'<h\\d><ANY> *?</h\\d>'", "CHR(10)||'*\\1*'||CHR(10)"],
-              ["'<i<ANY>><ANY> *?</i>'", "'_\\2_'"],
-              ["'\\[b\\]<ANY>\\[/b\\]'", "'*\\1*'"],
-              ["'\\[i\\]<ANY>\\[/i\\]'", "'_\\1_'"],
-              ["'\\[youtube<ANY>\\]'", "' \\1 '"],
+              ["'<span<ANY>>\\s*'", "' '"], ["'\\s*<\\/span>'", "' '"],
+              ["'<p<ANY>>\\s*'", "' '"], ["'\\s*<\\/p>'", "CHR(10)"],
+              ["'<div<ANY>>\\s*'", "' '"], ["'\\s*<\\/div>'", "CHR(10)"],
+              ["'<ul<ANY>>\\s*'", "CHR(10)"], ["'\\s*<\\/ul>'", "CHR(10)"],
+              ["'<ol<ANY>>\\s*'", "CHR(10)"], ["'\\s*<\\/ol>'", "CHR(10)"],
+              ["'<li<ANY>>\\s*'", "'• '"], ["'\\s*<\\/li>'", "CHR(10)"],
+              ["'<u <ANY>>\\s*'", "' '"], ["'<u>\\s*'", "' '"], ["'\\s*<\\/u>'", "' '"],
+              ["'(<em>)?Anonymous poster hash:<ANY>'", "''"],
+              ["'<a <ANY>href=\"<ANY>\"<ANY>><ANY></a>'", " '\\2 '"],
+              ["'\\[youtube: <ANY>\\]'", "' \\1 '"],
               ["'\\<fileStore\\.core_Emoticons\\>'", "'fileStore.core_Emoticons'"],
-              ["'<img<ANY>src=\"\\[?<ANY>\\]?\"<ANY>>'", "'[\\2]'"],
-              ["'<iframe<ANY>src=\"\\[?<ANY>\\]?\"<ANY>>'", "'\\2'"],
-              ["'<\\/iframe>'", "''"],
-              ["'<blockquote<ANY>(?:data-cite|data-ipsquote-username)=\"<ANY>\"<ANY>><ANY></blockquote>'", "'[quote \\2]\\4[\/quote]'"],
-              ["'<blockquote<ANY>><ANY></blockquote>'", "'[quote]\\2[\/quote]'"],
-              ["'<a<ANY>href=\"<ANY>\"<ANY>><ANY></a>'", "'\\2 (\\4)'"],
-              ["'<u><ANY> *?</u>'", "'\\1'"],
-              ["'<ul><ANY> *?</ul>'", "CHR(10)||'\\1'||CHR(10)"],
-              ["'<ol><ANY> *?</ol>'", "CHR(10)||'\\1'||CHR(10)"],
-              ["'<li><ANY> *?</li>'", "'* \\1'"],
-              ["'<i><ANY> *?</i>'", "'_\\1_'"],
-              ["'<em>Anonymous poster hash:<ANY>*'", "''"],
-              ["'<em><ANY> *?</em>'", "'_\\1_'"],
-              ["'^'||CHR(10)||'*'", "''"],
-              ["CHR(10)||'*$'", "''"],
-              ["CHR(10)||'+'", "CHR(10)"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?smile.png\\]?'", "'🙂'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?tongue.png\\]?'", "'😛'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?biggrin.png\\]?'", "'😃'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?ohmy.png\\]?'", "'😱'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?frown.png\\]?'", "'🙁'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?wink.png\\]?'", "'😉'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?unsure.png\\]?'", "'😕'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?happy.png\\]?'", "'😊'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?sleep.png\\]?'", "'😴'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?huh.png\\]?'", "'🤔'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?cool.png\\]?'", "'😎'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?angry.png\\]?'", "'😡'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?laugh.png\\]?'", "'😆'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?wub.png\\]?'", "'😍'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?mellow.png\\]?'", "'☺'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?wacko.png\\]?'", "'🙃'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?dry.png\\]?'", "'🙄'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?roll_eyes.gif\\]?'", "'🙄'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?blink.png\\]?'", "'😳'"],
-              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?ph34r.png\\]?'", "'😨'"]
+              ["'<img<ANY>src=\"<ANY>\"<ANY>>'", "' [\\2] '"], ["'<\\/img<ANY>>'", "''"],
+              ["'<iframe<ANY>src=\"<ANY>\"<ANY>>\\s*'", "' \\2 '"], ["'<\\/iframe>'", "''"],
+              # Quotes
+              ["'<blockquote<ANY>(?:data-cite|data-ipsquote-username)=\"<ANY>\"<ANY>>\\s*'", "' [quote \\2] '"],
+              ["'<blockquote<ANY>>\\s*'", "' [quote] '"],
+              ["'\\s*</blockquote>\\s*'", "' [\/quote] '"],
+              # Convert to Markdown
+              ["'<h\\d>\\s*'", "CHR(10)||'*'"],
+              ["'\\s*<\\/h\\d>'", "'*'||CHR(10)"],
+              ["'<strong<ANY>>\\s*'", "' *'"], ["'\\s*<\\/strong>'", "'* '"],
+              ["'<b <ANY>>\\s*'", "' '"], ["'<b>\\s*'", "' '"], ["'\\s*<\\/b>'", "' '"],
+              ["'\\[b <ANY>\\]\\s*'", "' *'"], ["'\\s*\\[\\/b\\]'", "'* '"],
+              ["'<em <ANY>>\\s*'", "' _'"], ["'\\s*<\\/em>'", "'_ '"],
+              ["'<i <ANY>>\\s*'", "' '"], ["'<i>\\s*'", "' '"], ["'\\s*<\\/i>'", "' '"],
+              ["'\\[i <ANY>\\]\\s*'", "' _'"], ["'\\s*\\[\\/i\\]'", "'_ '"],
+              # Remove leading/trailing whitespace
+              ["'^\\s*'", "''"],
+              ["'\\s*$'", "''"],
+              # Squish duplicate whitespace characters
+              ["' {2,}'", "'  '"],
+              ["CHR(10)||'{2,}'", "CHR(10)||CHR(10)"],
+              # Emojis!
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?smile.png\\]'", "'🙂'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?tongue.png\\]'", "'😛'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?biggrin.png\\]'", "'😃'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?ohmy.png\\]'", "'😱'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?frown.png\\]'", "'🙁'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?wink.png\\]'", "'😉'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?unsure.png\\]'", "'😕'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?happy.png\\]'", "'😊'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?sleep.png\\]'", "'😴'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?huh.png\\]'", "'🤔'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?cool.png\\]'", "'😎'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?angry.png\\]'", "'😡'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?laugh.png\\]'", "'😆'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?wub.png\\]'", "'😍'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?mellow.png\\]'", "'☺'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?wacko.png\\]'", "'🙃'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?dry.png\\]'", "'🙄'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?roll_eyes.gif\\]'", "'🙄'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?blink.png\\]'", "'😳'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?ph34r.png\\]'", "'😨'"]
             ]
           }
         }
