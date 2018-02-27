@@ -1,42 +1,5 @@
 class Archiver
   class << self
-    # def load_db
-    #   tables = [
-    #     "x_utf_members",
-    #     "core_members",
-    #
-    #     "x_utf_topics",
-    #     "forums_topics",
-    #     "x_utf_message_topics",
-    #     "core_message_topics",
-    #
-    #     "x_utf_posts",
-    #     "forums_posts",
-    #     "x_utf_message_posts",
-    #     "core_message_posts",
-    #
-    #     "x_utf_shoutbox_shouts",
-    #     "shoutbox_shouts",
-    #
-    #     "x_utf_polls",
-    #     "core_polls",
-    #
-    #     "core_voters",
-    #
-    #     "x_utf_profile_friends",
-    #     "x_utf_profile_portal"
-    #   ]
-    #   tables.each do |tablename|
-    #     load_table(tablename)
-    #   end
-    # end
-    #
-    # def load_table(tablename)
-    #   folder_path = "/Users/zoro/code/helpbackups/"
-    #   filepath = "#{folder_path}#{tablename}.csv"
-    #   puts "File Size: #{File.size(filepath) rescue '?'} bytes"
-    # end
-    #
     def suppress_output
       original_stdout, original_stderr = $stdout.clone, $stderr.clone
       $stderr.reopen File.new('/dev/null', 'w')
@@ -84,7 +47,6 @@ class Archiver
         @current_start_time = Time.now.to_f
         puts ""
         @previous_counts = Array.new(max_counts.length) { 1 }
-        @previous_counts[-1] = @previous_counts[-1] - 1
       end
       increment_next = true
       @previous_counts.reverse.each_with_index do |count, ridx|
@@ -126,14 +88,16 @@ class Archiver
       # restore_from_keys(restore_posts_keys)
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Post.maximum(:id) + 100000};")
       restore_from_keys(restore_replies_keys)
+      # NOTE: Shouts seem to be lost to oblivion?
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Reply.maximum(:id) + 100000};")
       # restore_from_keys(restore_shouts_keys)
       # restore_from_keys(restore_shouts_from_message_topics_keys)
       # restore_from_keys(restore_shouts_from_message_posts_keys)
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Shout.maximum(:id) + 100000};")
+      # NOTE: The above aren't actually shouts but appear to be group chats of some sort.
       # restore_from_keys(restore_user_profiles_keys)
       # restore_from_keys(restore_friendships_keys)
-      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Friendship.maximum(:id) + 100000};")
+
       # restore_from_keys(restore_polls_keys)
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Poll.maximum(:id) + 100000};")
       # restore_from_keys(restore_user_poll_votes_keys)
@@ -145,6 +109,7 @@ class Archiver
 
     def column_val_from_header(columns, header)
       header_idx = @headers.index(header.to_s)
+      return if header_idx.nil?
       found_val = columns[header_idx]&.gsub(/^"|"$/, "")
       case found_val
       when "1", "true", true then true
@@ -157,11 +122,10 @@ class Archiver
     def restore_from_keys(keys)
       klass, filename = keys[:table]
       filepath = "/Users/zoro/code/helpbackups/#{filename}.csv"
-      filepath = "/Users/zoro/code/helpbackups/x5-65500.csv"
-      # total_count = file_rows.count
+      filepath = "/Users/zoro/code/helpbackups/ip-export.csv"
       total_count = `wc -l "#{filepath}"`.strip.split(' ')[0].to_i
       File.foreach(filepath).with_index do |row, idx|
-        next @headers = row.delete("\"").split(",") if idx == 0
+        next @headers = row.delete("\"").delete("\n").split(",") if idx == 0
         begin
           skip_creation_of_object = false
           indices = []
@@ -187,7 +151,7 @@ class Archiver
               [column_key, column_value]
             end
           end.compact.to_h.symbolize_keys
-          special_attrs = keys.dig(:special, :data).map do |column_key, (special_functionality, syntax)|
+          special_attrs = (keys.dig(:special, :data) || {}).map do |column_key, (special_functionality, syntax)|
             bad_special_val = false
             column_value = nil
             case special_functionality
@@ -203,6 +167,8 @@ class Archiver
                 starter_name = column_val_from_header(cols, syntax)
                 user = User.find_or_initialize_by(username: starter_name.presence || "Guest #{User.maximum(:id) + 100000}")
                 user.email = user.email.presence || "placeholder#{User.maximum(:id) + 100000}@email.com"
+                user.current_sign_in_ip ||= column_val_from_header(cols, :ip_address)
+                user.last_sign_in_ip ||= column_val_from_header(cols, :ip_address)
                 user.save(validate: false)
                 column_value = user.id
               end
@@ -216,6 +182,26 @@ class Archiver
               #   post.save(validate: false)
               # end
               # attach: [:append_post, :new_topic]
+            when :friends_approved
+              if column_val_from_header(cols, special_functionality).to_s == "1"
+                column_value = Time.at(column_val_from_header(cols, syntax))
+              else
+                column_value = nil
+              end
+            when :lookup
+              profile = UserProfile.find_by(user_id: column_val_from_header(cols, :pp_member_id))
+              converted_attrs[:id] = profile.id if profile
+            when :merge
+              column_value = "#{column_val_from_header(cols, :pp_about_me)}\n#{column_val_from_header(cols, :signature)}"
+            when :user_ip
+              unless converted_attrs[:author_id].blank? || converted_attrs[:author_id].to_s == "0"
+                user = User.find_by(id: converted_attrs[:author_id].to_i)
+                if user
+                  user.last_sign_in_ip ||= column_val_from_header(cols, :ip_address)
+                  user.current_sign_in_ip ||= column_val_from_header(cols, :ip_address)
+                  user.save(validate: false)
+                end
+              end
             end
             [column_key, column_value] unless bad_special_val || column_value.nil?
           end.compact.to_h.symbolize_keys
@@ -298,7 +284,8 @@ class Archiver
           data: {
             attach: [:append_post, :new_topic],
             posted_anonymously: [:anonymous, :author_name],
-            author_id: [:fallback_user, :author_name]
+            author_id: [:fallback_user, :author_name],
+            ip_address: [:user_ip, :ip_address]
           }
         }
       }
@@ -348,8 +335,13 @@ class Archiver
         table: [UserProfile, :x_utf_profile_portal],
         data: {
           user_id:         :pp_member_id,
-          about_me:        :pp_about_me,
           updated_at:      :pp_profile_update
+        },
+        special: {
+          data: {
+            id: [:lookup, :pp_member_id],
+            about: [:merge, [:pp_about_me, :signature]]
+          }
         }
       }
     end
@@ -360,7 +352,11 @@ class Archiver
         data: {
           user_id:         :friends_member_id,
           friend_id:       :friends_friend_id,
-          # friends_approved: :- If this is "1" it's accepted, use `friends_added` for the timestamp
+        },
+        special: {
+          data: {
+            accepted_at: [:friends_approved, :friends_added]
+          }
         }
       }
     end
@@ -389,6 +385,98 @@ class Archiver
           # poll: :-- Need to use this in collab with `member_choices` to get the poll option id
         }
       }
+    end
+
+    def generate_sql_replace(replace_hash)
+      # require "models/archiver"; Archiver.format_sql_script
+      final_str = ""
+      replace_hash.each do |table_name, column_hashes|
+        final_str += "UPDATE #{table_name}"
+        column_hashes.each do |column_name, replaces|
+          prev_replace = "#{column_name}"
+          replaces[:regex]&.each do |from, to|
+            from = from.gsub("<ANY>", "((?:.|'||CHR(10)||')*?)")
+            prev_replace = "REGEXP_REPLACE(#{prev_replace}, #{from}, #{to}, 'g')"
+          end
+          replaces[:quick]&.each do |from, to|
+            from = from.gsub("<ANY>", "((?:.|'||CHR(10)||')*?)")
+            prev_replace = "REPLACE(#{prev_replace}, #{from}, #{to})"
+          end
+          final_str += " SET #{column_name} = #{prev_replace}"
+        end
+        final_str += ";"
+      end
+      puts final_str.colorize(:yellow)
+    end
+
+    def format_sql_script
+      # SELECT REGEXP_REPLACE('<img src="stuff">', '<img((?:.|'||CHR(10)||')*?)src="\[?((?:.|'||CHR(10)||')*?)"((?:.|'||CHR(10)||')*?)>', 'CHING:[\2]', 'g');
+      generate_sql_replace({
+        replies: {
+          body: {
+            quick: [
+              ["'&amp;'", "'&'"],
+              ["'&#34;'", "'\"'"],
+              ["'â€™'", "''''"],
+              ["' - IMPORT'", "''"],
+              ["'\\n*'", "CHR(10)"],
+              ["'&lt;'", "'<'"],
+              ["'&gt;'", "'>'"],
+              ["'&nbsp;'", "' '"]
+            ],
+            regex: [
+              ["'<br ?/?>'", "CHR(10)"],
+              ["'<p<ANY>><ANY></p>'", "'\\2'||CHR(10)"],
+              ["'<div<ANY>><ANY></div>'", "'\\2'"],
+              ["'<b<ANY>><ANY> *?</b>'", "'*\\2*'"],
+              ["'<strong<ANY>><ANY> *?</strong>'", "'*\\2*'"],
+              ["'<span<ANY>><ANY> *?</span>'", "'\\2'"],
+              ["'<h\\d><ANY> *?</h\\d>'", "CHR(10)||'*\\1*'||CHR(10)"],
+              ["'<i<ANY>><ANY> *?</i>'", "'_\\2_'"],
+              ["'\\[b\\]<ANY>\\[/b\\]'", "'*\\1*'"],
+              ["'\\[i\\]<ANY>\\[/i\\]'", "'_\\1_'"],
+              ["'\\[youtube<ANY>\\]'", "' \\1 '"],
+              ["'\\<fileStore\\.core_Emoticons\\>'", "'fileStore.core_Emoticons'"],
+              ["'<img<ANY>src=\"\\[?<ANY>\\]?\"<ANY>>'", "'[\\2]'"],
+              ["'<iframe<ANY>src=\"\\[?<ANY>\\]?\"<ANY>>'", "'\\2'"],
+              ["'<\\/iframe>'", "''"],
+              ["'<blockquote<ANY>(?:data-cite|data-ipsquote-username)=\"<ANY>\"<ANY>><ANY></blockquote>'", "'[quote \\2]\\4[\/quote]'"],
+              ["'<blockquote<ANY>><ANY></blockquote>'", "'[quote]\\2[\/quote]'"],
+              ["'<a<ANY>href=\"<ANY>\"<ANY>><ANY></a>'", "'\\2 (\\4)'"],
+              ["'<u><ANY> *?</u>'", "'\\1'"],
+              ["'<ul><ANY> *?</ul>'", "CHR(10)||'\\1'||CHR(10)"],
+              ["'<ol><ANY> *?</ol>'", "CHR(10)||'\\1'||CHR(10)"],
+              ["'<li><ANY> *?</li>'", "'* \\1'"],
+              ["'<i><ANY> *?</i>'", "'_\\1_'"],
+              ["'<em>Anonymous poster hash:<ANY>*'", "''"],
+              ["'<em><ANY> *?</em>'", "'_\\1_'"],
+              ["'^'||CHR(10)||'*'", "''"],
+              ["CHR(10)||'*$'", "''"],
+              ["CHR(10)||'+'", "CHR(10)"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?smile.png\\]?'", "'🙂'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?tongue.png\\]?'", "'😛'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?biggrin.png\\]?'", "'😃'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?ohmy.png\\]?'", "'😱'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?frown.png\\]?'", "'🙁'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?wink.png\\]?'", "'😉'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?unsure.png\\]?'", "'😕'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?happy.png\\]?'", "'😊'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?sleep.png\\]?'", "'😴'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?huh.png\\]?'", "'🤔'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?cool.png\\]?'", "'😎'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?angry.png\\]?'", "'😡'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?laugh.png\\]?'", "'😆'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?wub.png\\]?'", "'😍'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?mellow.png\\]?'", "'☺'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?wacko.png\\]?'", "'🙃'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?dry.png\\]?'", "'🙄'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?roll_eyes.gif\\]?'", "'🙄'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?blink.png\\]?'", "'😳'"],
+              ["'\\[?fileStore.core_Emoticons/emoticons/(default_)?ph34r.png\\]?'", "'😨'"]
+            ]
+          }
+        }
+      })
     end
 
   end
