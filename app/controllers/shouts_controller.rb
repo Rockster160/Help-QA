@@ -2,11 +2,11 @@ class ShoutsController < ApplicationController
 
   def index
     @user = User.find(params[:user_id])
-    @shouts = @user.shouts_to.displayable.order(created_at: :desc).first(50)
+    @shouts = @user.shouts_to.displayable.order(created_at: :desc, id: :desc).first(50)
     @shouts_from = User.not_banned.joins(:shouts_from)
       .where(shouts: { sent_to_id: @user.id })
       .group("users.id")
-      .order("MAX(shouts.created_at) DESC")
+      .order("MAX(shouts.created_at) DESC, shouts.id DESC")
       .limit(50)
 
     if @user == current_user
@@ -18,7 +18,7 @@ class ShoutsController < ApplicationController
     @user = User.find(params[:user_id])
     @other_user = User.find(params[:other_user_id])
     @user, @other_user = @other_user, @user if @other_user == current_user
-    @shouts = Shout.displayable.between(@user, @other_user).order(created_at: :desc).first(50)
+    @shouts = Shout.displayable.between(@user, @other_user).order(created_at: :desc, id: :desc).first(50)
 
     if @user == current_user
       @user.shouts_to.unread.where(sent_from_id: @other_user.id).each(&:read)

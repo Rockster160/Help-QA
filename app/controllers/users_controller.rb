@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :authenticate_mod, only: [:moderate]
 
   def index
-    @users = User.displayable.order(created_at: :desc)
+    @users = User.displayable.order(created_at: :desc, id: :desc)
     @users = @users.verified if params[:status] == "verified"
     @users = @users.unverified if params[:status] == "unverified"
     @users = @users.search_username(params[:search]) if params[:search].present?
@@ -17,10 +17,10 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     return render :banned if @user.banned?
-    @recent_posts = @user.posts.claimed.displayable(current_user).order(created_at: :desc).limit(5)
+    @recent_posts = @user.posts.claimed.displayable(current_user).order(created_at: :desc, id: :desc).limit(5)
     replies = @user.replies.claimed.displayable(current_user)
-    @top_replies = replies.favorited.order(favorite_count: :desc, created_at: :desc)
-    @replies = replies.order(created_at: :desc)
+    @top_replies = replies.favorited.order(favorite_count: :desc, created_at: :desc, id: :desc)
+    @replies = replies.order(created_at: :desc, id: :desc)
   end
 
   def update

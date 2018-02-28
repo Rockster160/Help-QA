@@ -4,7 +4,7 @@ class RepliesController < ApplicationController
   skip_before_action :logit, only: [:meta]
 
   def index
-    @replies = Reply.displayable(current_user).order(created_at: :desc, id: :asc).page(params[:page]).per(10)
+    @replies = Reply.displayable(current_user).order(created_at: :desc, id: :desc).page(params[:page]).per(10)
     @replies = @replies.claimed.where(author_id: params[:user_id]) if params[:user_id].present?
     @replies = @replies.by_fuzzy_text(params[:by_fuzzy_text]) if params[:by_fuzzy_text].present?
     @user = User.find(params[:user_id]) if params[:user_id].present?

@@ -6,7 +6,7 @@ class FeedbacksController < ApplicationController
   end
 
   def index
-    @feedbacks = Feedback.order(created_at: :desc).page(params[:page])
+    @feedbacks = Feedback.order(created_at: :desc, id: :desc).page(params[:page])
     @feedbacks = @feedbacks.resolved if params[:resolution_status].to_s.to_sym == :resolved
     @feedbacks = @feedbacks.unresolved if params[:resolution_status].to_s.to_sym == :unresolved
     @feedbacks = @feedbacks.search_for(params[:search]) if params[:search].present?

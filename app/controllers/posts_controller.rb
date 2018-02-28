@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   before_action :authenticate_mod, only: [:mod]
 
   def index
-    @posts = Post.displayable(current_user).order(created_at: :desc)
+    @posts = Post.displayable(current_user).order(created_at: :desc, id: :desc)
     @posts = @posts.claimed.where(user_id: params[:user_id]) if params[:user_id].present?
   end
 
@@ -15,7 +15,7 @@ class PostsController < ApplicationController
   def history
     set_post_filter_params
 
-    @posts = Post.displayable(current_user).order(created_at: :desc)
+    @posts = Post.displayable(current_user).order(created_at: :desc, id: :desc)
     @posts = @posts.claimed if @filter_options["claimed"]
     @posts = @posts.unclaimed if @filter_options["unclaimed"]
     @posts = @posts.verified_user if @filter_options["verified"]
@@ -70,7 +70,7 @@ class PostsController < ApplicationController
     end
     authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
-    @replies = @post.replies.order(created_at: :asc)
+    @replies = @post.replies.order(created_at: :asc, id: :asc)
     @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     sherlocks = Sherlock.posts.where(obj_id: @post.id).by_type(:edit)
     sherlocks = sherlocks.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?

@@ -5,7 +5,7 @@ class ChatController < ApplicationController
   def chat
     return render :banned if user_signed_in? && !current_user.can_use_chat?
     limit = 10
-    @messages = ChatMessage.includes(:author).order(created_at: :desc).limit(limit) # Intentionally ordering backwards so that limit gets the last N records
+    @messages = ChatMessage.includes(:author).order(created_at: :desc, id: :desc).limit(limit) # Intentionally ordering backwards so that limit gets the last N records
     @messages = @messages.displayable
     if params[:message].to_i > 0
       start_id = params[:message].to_i - (limit / 2)
