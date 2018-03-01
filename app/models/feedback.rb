@@ -56,7 +56,7 @@ class Feedback < ApplicationRecord
       fallback: "#{body} - Ticket: ##{id}: #{link_url}",
       title: slack_message,
       title_link: link_url,
-      text: body,
+      text: "#{body} - Ticket: ##{id}: #{link_url}",
       color: :good
     }
     SlackNotifier.notify("", attachments: [attachment])
