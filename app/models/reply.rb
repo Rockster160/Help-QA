@@ -124,7 +124,7 @@ class Reply < ApplicationRecord
   end
 
   def debounce_replies
-    return unless new_obj? # Only prevent creating new replies when debouncing
+    return unless new_record? # Only prevent creating new replies when debouncing
     return if author.replies.where("created_at > ?", 5.seconds.ago).where.not(id: id).none?
 
     errors.add(:base, "Slow down there! You're posting too fast. You can only reply once every 5 seconds.")

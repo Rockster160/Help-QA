@@ -203,7 +203,7 @@ class Post < ApplicationRecord
 
   def debounce_posts
     return if Rails.env.archive?
-    return if !new_obj? || author.posts.where("created_at > ?", 5.minutes.ago).none?
+    return if !new_record? || author.posts.where("created_at > ?", 5.minutes.ago).none?
 
     errors.add(:base, "Slow down there! You're posting too fast. You can only make 1 new post every 5 minutes.")
   end
