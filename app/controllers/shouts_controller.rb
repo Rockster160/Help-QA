@@ -6,7 +6,7 @@ class ShoutsController < ApplicationController
     @shouts_from = User.not_banned.joins(:shouts_from)
       .where(shouts: { sent_to_id: @user.id })
       .group("users.id")
-      .order("MAX(shouts.created_at) DESC, shouts.id DESC")
+      .order("MAX(shouts.created_at) DESC")
       .limit(50)
 
     if @user == current_user
