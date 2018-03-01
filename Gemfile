@@ -45,7 +45,7 @@ gem 'exception_notification'
 gem 'stripe'
 gem 'differ'
 
-group :development, :test, :archivedev do
+group :development, :test do
   gem 'byebug', platform: :mri
 
   gem 'annotate'
