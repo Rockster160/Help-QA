@@ -75,28 +75,24 @@ class Archiver
     end
 
     def restore
-      # sed '2,2200000d' "/Users/zoro/code/helpbackups/forums_posts.csv" > "/Users/zoro/code/helpbackups/x1-2200000.csv"
-      # sed '2,395000d' "/Users/zoro/code/helpbackups/x1-2200000.csv" > "/Users/zoro/code/helpbackups/x2-395000.csv"
-      # sed '2,730000d' "/Users/zoro/code/helpbackups/x2-395000.csv" > "/Users/zoro/code/helpbackups/x3-730000.csv"
-      # sed '2,65500d' "/Users/zoro/code/helpbackups/x4-1276000.csv" > "/Users/zoro/code/helpbackups/x5-65500.csv"
-      raise "Can only be run in Archive mode" unless Rails.env.archive?
       # require "models/archiver"; Archiver.restore
+      raise "Can only be run in Archive mode" unless Rails.env.archive?
       old_logger = ActiveRecord::Base.logger
       ActiveRecord::Base.logger = nil
-      # restore_from_keys(restore_users_keys)
-      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE users_id_seq RESTART WITH #{User.maximum(:id) + 100000};")
-      # restore_from_keys(restore_posts_keys)
-      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Post.maximum(:id) + 100000};")
+      restore_from_keys(restore_users_keys)
+      ActiveRecord::Base.connection.execute("ALTER SEQUENCE users_id_seq RESTART WITH #{User.maximum(:id) + 100000};")
+      restore_from_keys(restore_posts_keys)
+      ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Post.maximum(:id) + 100000};")
       restore_from_keys(restore_replies_keys)
+      ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Reply.maximum(:id) + 100000};")
       # NOTE: Shouts seem to be lost to oblivion?
-      # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Reply.maximum(:id) + 100000};")
       # restore_from_keys(restore_shouts_keys)
       # restore_from_keys(restore_shouts_from_message_topics_keys)
       # restore_from_keys(restore_shouts_from_message_posts_keys)
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Shout.maximum(:id) + 100000};")
       # NOTE: The above aren't actually shouts but appear to be group chats of some sort.
-      # restore_from_keys(restore_user_profiles_keys)
-      # restore_from_keys(restore_friendships_keys)
+      restore_from_keys(restore_user_profiles_keys)
+      restore_from_keys(restore_friendships_keys)
 
       # restore_from_keys(restore_polls_keys)
       # ActiveRecord::Base.connection.execute("ALTER SEQUENCE posts_id_seq RESTART WITH #{Poll.maximum(:id) + 100000};")
@@ -478,8 +474,13 @@ class Archiver
               ["'\\[fileStore.core_Emoticons/emoticons/(default_)?wacko.png\\]'", "'🙃'"],
               ["'\\[fileStore.core_Emoticons/emoticons/(default_)?dry.png\\]'", "'🙄'"],
               ["'\\[fileStore.core_Emoticons/emoticons/(default_)?roll_eyes.gif\\]'", "'🙄'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?rolleyes.gif\\]'", "'🙄'"],
               ["'\\[fileStore.core_Emoticons/emoticons/(default_)?blink.png\\]'", "'😳'"],
-              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?ph34r.png\\]'", "'😨'"]
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?ph34r.png\\]'", "'😨'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?sad.png\\]'", "'😢'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?smile.png'", "'🙂'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?tongue.png'", "'😛'"],
+              ["'\\[fileStore.core_Emoticons/emoticons/(default_)?biggrin.png'", "'😃'"],
             ]
           }
         }

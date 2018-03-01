@@ -55,7 +55,7 @@ class Post < ApplicationRecord
   scope :by_username,          ->(username) { claimed.joins(:author).where("users.username ILIKE ?", "%#{username}%") }
   scope :regex_username,       ->(username) { claimed.joins(:author).where("users.username ~* ?", username.gsub(/['"’“”]/, "['\"’“”]")) }
   scope :by_tags,              ->(*tag_words) { where(id: Tag.by_words(tag_words).map(&:post_ids).inject(&:&)) }
-  scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) unless Rails.env.archive? }
+  scope :without_adult,        -> { where(posts: { marked_as_adult: [nil, false] }) }
   scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :displayable,          ->(user=nil) { not_banned.not_closed.not_removed.no_moderation.conditional_adult(user) }
 
