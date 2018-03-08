@@ -26,8 +26,16 @@ class FixArchiveRepliesWorker
     @step += 1
     return set_reply!(found_reply) if found_reply.present?
 
+    clean_body = @post.body.gsub(/[^\wDdpx]/, "")
+    if clean_body.length > 10
+      half_body = clean_body.split("").in_groups(2).first.join("")
+      found_reply = @post.replies.joins(:post).find_by("REGEXP_REPLACE(replies.body, '[^\\wDdpx]', '', 'g') LIKE ?||'%'", half_body)
+      @step += 1
+      return set_reply!(found_reply) if found_reply.present?
+    end
+
     @step += 1
-    return if @post.reload.user.username != "Unclaimed"
+    return if @post.reload.author.username != "Unclaimed"
     puts "Failed post: #{@post.id}".colorize(:red)
     save_post!
   end
