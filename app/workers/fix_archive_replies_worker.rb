@@ -23,17 +23,16 @@ class FixArchiveRepliesWorker
     @step += 1
     return set_reply!(last_reply) if correct_reply?(last_reply)
 
-    found_reply = @post.replies.joins(:post).find_by("REGEXP_REPLACE(replies.body, '[^\\w]', '', 'g') LIKE REGEXP_REPLACE(posts.body, '[^\\w]', '', 'g')||'%'")
+    found_reply = @post.replies.joins(:post).find_by("REGEXP_REPLACE(replies.body, '[^\\wDdpx]', '', 'g') LIKE REGEXP_REPLACE(posts.body, '[^\\wDdpx]', '', 'g')||'%'")
     @step += 1
     return set_reply!(found_reply) if found_reply.present?
 
     @step += 1
     save_post!
-    SlackNotifier.notify("Failed to update: #{@post.id}")
   end
 
   def correct_reply?(reply)
-    reply.body.gsub(/[^\w]/, "").include?(@post.body.gsub(/[^\w]/, ""))
+    reply.body.gsub(/[^\wDdpx]/, "").include?(@post.body.gsub(/[^\wDdpx]/, ""))
   end
 
   def set_reply!(reply)
