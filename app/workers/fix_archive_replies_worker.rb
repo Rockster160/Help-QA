@@ -9,7 +9,6 @@ class FixArchiveRepliesWorker
       @step = 0
       next if @post.blank?
       next save_post! if @post.replies.none?
-      puts "Attempting Post #{@post.id}".colorize(:red)
       handle_post
     end
   end
@@ -28,6 +27,7 @@ class FixArchiveRepliesWorker
     return set_reply!(found_reply) if found_reply.present?
 
     @step += 1
+    puts "Failed post: #{@post.id}".colorize(:red)
     save_post!
   end
 
@@ -43,7 +43,6 @@ class FixArchiveRepliesWorker
   end
 
   def save_post!
-    puts "Saving post: #{@post.id} - Step: #{@step}".colorize(:red)
     @post.updated_at = DateTime.current
     @post.save(validate: false)
   end
