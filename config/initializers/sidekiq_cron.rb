@@ -1,4 +1,4 @@
-every_15_seconds = "*/15 * * * *"
+every_15_seconds = "* * * * *"
 every_hour = "0 * * * *"
 
 cron_jobs = [

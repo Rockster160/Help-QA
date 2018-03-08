@@ -4,11 +4,17 @@ class FixArchiveRepliesWorker
 
   def perform
     user = User.find_by(username: "Unclaimed")
-    @post = user.posts.order(:updated_at).first
-    @step = 0
-    return if @post.blank? || @post.replies.none?
+    10.times do
+      @post = user.posts.order(:updated_at).first
+      @step = 0
+      next if @post.blank?
+      next save_post! if @post.replies.none?
+      puts "Attempting Post #{@post.id}".colorize(:red)
+      handle_post
+    end
+  end
 
-    puts "Attempting Post #{@post.id}".colorize(:red)
+  def handle_post
     first_reply = @post.replies.order(created_at: :asc, id: :asc).first
     @step += 1
     return set_reply!(first_reply) if correct_reply?(first_reply)
@@ -17,7 +23,7 @@ class FixArchiveRepliesWorker
     @step += 1
     return set_reply!(last_reply) if correct_reply?(last_reply)
 
-    found_reply = @post.replies.joins(:post).find_by("REGEXP_REPLACE(replies.body, '\\s', '', 'g') LIKE REGEXP_REPLACE(posts.body, '\\s', '', 'g')||'%'")
+    found_reply = @post.replies.joins(:post).find_by("REGEXP_REPLACE(replies.body, '[^\\w]', '', 'g') LIKE REGEXP_REPLACE(posts.body, '[^\\w]', '', 'g')||'%'")
     @step += 1
     return set_reply!(found_reply) if found_reply.present?
 
@@ -27,7 +33,7 @@ class FixArchiveRepliesWorker
   end
 
   def correct_reply?(reply)
-    reply.body.gsub(/\s/, "").include?(@post.body.gsub(/\s/, ""))
+    reply.body.gsub(/[^\w]/, "").include?(@post.body.gsub(/[^\w]/, ""))
   end
 
   def set_reply!(reply)
