@@ -18,13 +18,14 @@
 class Reply < ApplicationRecord
   include MarkdownHelper
   include Sherlockable
-  attr_accessor :hide_update
+  attr_accessor :hide_update, :has_invited
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
 
   belongs_to :post, counter_cache: :reply_count
   belongs_to :author, class_name: "User"
   has_many :tags, through: :post
+  has_many :invites
   has_many :favorite_replies
   has_many :favorited_by, through: :favorite_replies, source: :user
 
@@ -32,8 +33,9 @@ class Reply < ApplicationRecord
 
   validate :post_is_open, :debounce_replies, :valid_text
 
-  after_create :notify_subscribers, :invite_users
+  after_create :notify_subscribers
 
+  before_save :invite_users
   after_commit :broadcast_creation, :update_popular_post
 
   scope :by_fuzzy_text,     ->(text) { where("replies.body ILIKE ?", "%#{text.gsub(/['"’“”]/, "['\"’“”]")}%") }
@@ -147,21 +149,25 @@ class Reply < ApplicationRecord
 
   def invite_users
     return if Rails.env.archive?
+    return if has_invited
+    self.has_invited = true
     newly_invited_users = []
     tags_to_replace = []
-    unquoted_text.scan(/(?:@([^ \`\@]+))/) do |username_tag|
-      user = User.by_username($1)
-      if user.present? && (user.friends?(author) || !user.settings.friends_only?)
-        tags_to_replace << ["@#{user.username}", user]
-        invite = user.invites.create(post: post, from_user: author, invited_anonymously: posted_anonymously?, reply: self)
-        newly_invited_users << user if invite.persisted? && user.subscriptions.where(post_id: post_id).none?
+    unquoted_text.scan(/(?:@([^\s\`\@]+))/).flatten.each do |username_tag|
+      user_to_invite = User.by_username(username_tag)
+      if user_to_invite.present? && (user_to_invite.friends?(author) || !user_to_invite.settings.friends_only?)
+        tags_to_replace << ["@#{username_tag}", user_to_invite]
+        invite = user_to_invite.invites.find_or_initialize_by(post: post, from_user: author, reply: self)
+        invite.invited_anonymously = posted_anonymously?
+        newly_invited_users << user_to_invite if !invite.persisted? && user_to_invite.subscriptions.where(post_id: post_id).none?
+        invite.save
       end
     end
     replaced_invites = body.dup
-    tags_to_replace.uniq.each do |username_tag, user|
-      replaced_invites = replaced_invites.gsub(username_tag, "@[#{user.username}:#{user.id}]")
+    tags_to_replace.uniq.each do |username_tag, user_to_invite|
+      replaced_invites = replaced_invites.gsub(username_tag, "@[#{user_to_invite.username}:#{user_to_invite.id}]")
     end
-    update(body: replaced_invites) if tags_to_replace.any?
+    self.body = replaced_invites if tags_to_replace.any? && body != replaced_invites
     if newly_invited_users.any?
       post.post_invites.create(user_id: author_id, invited_users: newly_invited_users.count, invited_anonymously: posted_anonymously?)
     end

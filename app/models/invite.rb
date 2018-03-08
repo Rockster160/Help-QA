@@ -42,6 +42,7 @@ class Invite < ApplicationRecord
   private
 
   def broadcast_creation
+    puts "#Inviting #{invited_user.username}".colorize(:green)
     if read?
       ActionCable.server.broadcast("notifications_#{invited_user_id}", {})
     else

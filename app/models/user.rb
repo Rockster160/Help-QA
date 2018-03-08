@@ -80,15 +80,7 @@ class User < ApplicationRecord
   validate :not_archive
 
   def self.by_username(username)
-    loop do
-      break if username.length == 0
-      user = find_by("users.slug = ?", username.parameterize)
-      if user.present?
-        break user
-      else
-        username[-1] = ""
-      end
-    end
+    find_by("users.slug = ?", username.parameterize)
   end
 
   def current_sign_in_ip; super_ip || super; end
