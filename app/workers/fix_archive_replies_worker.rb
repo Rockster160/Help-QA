@@ -27,6 +27,7 @@ class FixArchiveRepliesWorker
     return set_reply!(found_reply) if found_reply.present?
 
     @step += 1
+    return if @post.reload.user.username != "Unclaimed"
     puts "Failed post: #{@post.id}".colorize(:red)
     save_post!
   end
