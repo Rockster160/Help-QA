@@ -4,7 +4,7 @@ class FixArchiveRepliesWorker
 
   def perform
     user = User.find_by(username: "Unclaimed")
-    10.times do
+    250.times do
       @post = user.posts.order(:updated_at).first
       @step = 0
       next if @post.blank?
