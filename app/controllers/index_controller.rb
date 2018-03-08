@@ -1,7 +1,7 @@
 class IndexController < ApplicationController
 
   def index
-    @recent_posts = Post.displayable(current_user).order(created_at: :desc, id: :desc).limit(10)
+    @recent_posts = Post.not_closed.displayable(current_user).order(created_at: :desc, id: :desc).limit(10)
     if request.xhr?
       @recent_posts = @recent_posts.where("posts.created_at > ?", Time.at(params[:since].to_i + 1))
       return render partial: "posts/index", locals: { posts: @recent_posts }

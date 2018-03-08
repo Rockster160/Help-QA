@@ -6,6 +6,7 @@
     <div class="post-description">
       <div class="title"><%= markdown(with: [:ignore_previews], except: [:tags]) { post.title } %></div>
       <div class="post-information">
+        <%= hover_icon(:lock, "This post is closed.", class: :small) if post.closed? %>
         <% if post.marked_as_adult? %>
           <div class="nsfw" title="Not Safe For Work / children - This post will not show up on the home page.">NSFW</div>
         <% end %>

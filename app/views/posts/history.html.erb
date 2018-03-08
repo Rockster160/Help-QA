@@ -61,6 +61,24 @@
             <%= filter_posts_link("Off", user_status: nil) %>
           </div>
         </div>
+        <% if current_user.try(:adult?) %>
+          <div class="filter">
+            <div class="name">Post Rating:</div>
+            <div class="links">
+              <%= filter_posts_link("Safe", rating: "safe") %>,
+              <%= filter_posts_link("Adult / NSFW", rating: "adult") %>,
+              <%= filter_posts_link("Off", rating: nil) %>
+            </div>
+          </div>
+        <% end %>
+        <div class="filter">
+          <div class="name">Post Status:</div>
+          <div class="links">
+            <%= filter_posts_link("Open", status: "open") %>,
+            <%= filter_posts_link("Closed", status: "closed") %>,
+            <%= filter_posts_link("Off", status: nil) %>
+          </div>
+        </div>
         <div class="filter reset-filters">
           <a href="<%= history_path %>" class="underline">Reset All Filters</a>
         </div>

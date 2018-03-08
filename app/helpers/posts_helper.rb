@@ -31,7 +31,7 @@ module PostsHelper
   end
 
   def filter_posts_link(link_text, options={})
-    new_filter_options = options.slice(:claimed_status, :reply_count, :user_status)
+    new_filter_options = options.slice(:claimed_status, :reply_count, :user_status, :rating, :status)
 
     current_filters = @filter_params
 
@@ -144,7 +144,11 @@ module PostsHelper
       "few-replies"  => false,
       "many-replies" => false,
       "verified"     => false,
-      "unverified"   => false
+      "unverified"   => false,
+      "adult"        => false,
+      "safe"         => false,
+      "closed"       => false,
+      "open"         => false
     }
 
     filter_values.each do |filter_val|
@@ -165,6 +169,10 @@ module PostsHelper
     @filter_params[:reply_count] = "many-replies" if @filter_options["many-replies"]
     @filter_params[:user_status] = "verified" if @filter_options["verified"]
     @filter_params[:user_status] = "unverified" if @filter_options["unverified"]
+    @filter_params[:rating] = "adult" if @filter_options["adult"]
+    @filter_params[:rating] = "safe" if @filter_options["safe"]
+    @filter_params[:status] = "closed" if @filter_options["closed"]
+    @filter_params[:status] = "open" if @filter_options["open"]
     @filter_params[:tags] = @filter_options[:tags].uniq if @filter_options[:tags].present?
   end
 

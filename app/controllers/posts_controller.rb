@@ -24,6 +24,10 @@ class PostsController < ApplicationController
     @posts = @posts.more_replies_than(0).less_replies_than_or(16) if @filter_options["some-replies"]
     @posts = @posts.more_replies_than(16).less_replies_than_or(30) if @filter_options["few-replies"]
     @posts = @posts.more_replies_than(30) if @filter_options["many-replies"]
+    @posts = @posts.only_adult if @filter_options["adult"]
+    @posts = @posts.without_adult if @filter_options["safe"]
+    @posts = @posts.closed if @filter_options["closed"]
+    @posts = @posts.not_closed if @filter_options["open"]
     @posts = @posts.regex_search(params[:search]) if params[:search].present? && params[:regex_body] == "true"
     @posts = @posts.search_for(params[:search]) if params[:search].present? && params[:regex_body] != "true"
     @posts = @posts.regex_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] == "true"
