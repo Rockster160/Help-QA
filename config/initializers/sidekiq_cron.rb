@@ -10,13 +10,13 @@ cron_jobs = [
 ]
 
 if Rails.env.archive?
-  cron_jobs += [
-    {
-      name: "Fix Replies",
-      class: "FixArchiveRepliesWorker",
-      cron: every_15_seconds
-    }
-  ]
+  # cron_jobs += [
+  #   {
+  #     name: "Fix Replies",
+  #     class: "FixArchiveRepliesWorker",
+  #     cron: every_15_seconds
+  #   }
+  # ]
 end
 
 Sidekiq::Cron::Job.load_from_array! cron_jobs
