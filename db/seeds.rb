@@ -94,7 +94,7 @@ else
     role: :admin
   })
   u.confirm
-  u.mod_abilities.set_all(true)
+  u.abilities.set_all(true)
 
   puts "\n"
   Rando.people(users_count).each_with_index do |person, person_idx|

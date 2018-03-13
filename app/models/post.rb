@@ -60,8 +60,8 @@ class Post < ApplicationRecord
   scope :conditional_adult,    ->(user=nil) { without_adult unless user.try(:adult?) && !user.try(:settings).try(:hide_adult_posts?) }
   scope :displayable,          ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) }
 
-  after_create :auto_add_tags, :generate_poll, :alert_helpbot, :invite_users
-  after_commit :broadcast_creation, :subscribe_author
+  after_create :auto_add_tags, :alert_helpbot, :invite_users
+  after_commit :broadcast_creation, :subscribe_author, :generate_poll
   defaults reply_count: 0
   defaults posted_anonymously: false
 
@@ -172,7 +172,8 @@ class Post < ApplicationRecord
   end
 
   def generate_poll
-    poll_regex = /\[poll (.*?)\]/
+    return if poll.present?
+    poll_regex = /\[poll:?(.*?)\]/
     poll_markdown = body[poll_regex]
     return unless poll_markdown.present?
 
@@ -210,9 +211,10 @@ class Post < ApplicationRecord
   end
 
   def body_has_alpha_characters
-    unless body.present? && body.gsub(/[^a-z]/, "").length > 10
-      errors.add(:base, "This post isn't long enough! Try adding some more detail.")
-    end
+    return if body.present? && body.gsub(/[^a-z]/, "").length > 10
+    return if title.present? && preview_content.include?("[poll]")
+
+    errors.add(:base, "This post isn't long enough! Try adding some more detail.")
   end
 
   def auto_adult
