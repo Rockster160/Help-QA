@@ -4,7 +4,7 @@ class RepliesController < ApplicationController
   skip_before_action :logit, only: [:meta]
 
   def index
-    if Rails.env.archive? && params[:user_id]
+    if Rails.env.archive? && params[:user_id].nil?
       @replies = Reply.none.page(0)
       flash.now[:alert] = "Sorry, we're unable to load all replies at once. In order to search replies, please filter the replies by opening through a user or specific post."
       return
