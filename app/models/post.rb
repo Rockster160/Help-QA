@@ -187,7 +187,7 @@ class Post < ApplicationRecord
       poll.options.create(body: option)
     end
 
-    update(body: body.sub(poll_regex, "[poll]"))
+    update(body: body.sub(poll_regex, "[poll]"), ignore_sherlock: true)
   end
 
   def alert_helpbot
