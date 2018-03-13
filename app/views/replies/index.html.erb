@@ -2,7 +2,7 @@
 <% first_reply = [(@replies.limit_value * (@replies.current_page - 1)) + 1, total_replies, 0].sort[1] %>
 <% last_reply = [@replies.limit_value * @replies.current_page, total_replies, 0].sort[1] %>
 <% title = "#{pluralize_with_delimiter(total_replies, 'reply')}, Replies #{number_with_delimiter(first_reply)} to #{number_with_delimiter(last_reply)}" %>
-<% meta_title title  %>
+<% meta_title title %>
 <h2><%= title %></h2>
 
 <% if current_mod? || Rails.env.archive? %>

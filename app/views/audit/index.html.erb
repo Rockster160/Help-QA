@@ -3,7 +3,7 @@
 <% first_audit = [(@audits.limit_value * (@audits.current_page - 1)) + 1, total_audits, 0].sort[1] %>
 <% last_audit = [@audits.limit_value * @audits.current_page, total_audits, 0].sort[1] %>
 <% title = "#{pluralize_with_delimiter(total_audits, 'audit')}, Audits #{number_with_delimiter(first_audit)} to #{number_with_delimiter(last_audit)}" %>
-<% meta_title title  %>
+<% meta_title title %>
 
 <h2><i>Audits:</i> <br class="xsmall-down"><%= title %></h2>
 
@@ -38,11 +38,11 @@
       <input type="text" name="meta_id" value="<%= params[:meta_id] %>">
       <%= submit_tag "Search" %>
       <br>
-      <small>&bull; "Meta ID" refers to the ID of the object the Audit is tracking. For example, in an edited post, the Meta ID refers to the Post ID.</small>
+      <small>• "Meta ID" refers to the ID of the object the Audit is tracking. For example, in an edited post, the Meta ID refers to the Post ID.</small>
       <br>
-      <small>&bull; In order to specify a specific object id, append the object type with a hyphen before the id. "post-100" to search for all audits related to post with id 100.</small>
+      <small>• In order to specify a specific object id, append the object type with a hyphen before the id. "post-100" to search for all audits related to post with id 100.</small>
       <br>
-      <small>&bull; All values can be searched for multiple at once by splitting with commas. ("post-100, user-54")</small>
+      <small>• All values can be searched for multiple at once by splitting with commas. ("post-100, user-54")</small>
     </div>
   <% end %>
   <div class="search-results">

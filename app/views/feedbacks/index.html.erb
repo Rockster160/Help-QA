@@ -2,7 +2,7 @@
 <% first_feedback = [(@feedbacks.limit_value * (@feedbacks.current_page - 1)) + 1, total_feedbacks, 0].sort[1] %>
 <% last_feedback = [@feedbacks.limit_value * @feedbacks.current_page, total_feedbacks, 0].sort[1] %>
 <% title = "#{pluralize_with_delimiter(total_feedbacks, 'messages')}, Messages #{number_with_delimiter(first_feedback)} to #{number_with_delimiter(last_feedback)}" %>
-<% meta_title title  %>
+<% meta_title title %>
 <h2><i>Feedback:</i> <%= title %></h2>
 
 <div class="history-page">
