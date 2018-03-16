@@ -60,10 +60,14 @@
 
             span {
               display: table-cell;
+              vertical-align: middle;
+              font-size: 10px;
               width: 50px;
+              white-space: nowrap;
             }
             .vote-bar-wrapper {
               display: table-cell;
+              vertical-align: middle;
 
               .vote-bar {
                 height: 5px;
