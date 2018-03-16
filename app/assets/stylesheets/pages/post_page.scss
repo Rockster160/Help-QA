@@ -61,9 +61,12 @@
             span {
               display: table-cell;
               vertical-align: middle;
+              width: 40px;
+              
+              padding-right: 5px;
+              text-align: right;
               font-size: 10px;
-              width: 50px;
-              white-space: nowrap;
+              line-height: 10px;
             }
             .vote-bar-wrapper {
               display: table-cell;
