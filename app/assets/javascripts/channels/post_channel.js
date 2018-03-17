@@ -1,5 +1,7 @@
 $(".ctr-index.act-index").ready(function() {
 
+  if ($("body.archive").length != 0) { return }
+
   App.posts = App.cable.subscriptions.create({
     channel: "PostsChannel"
   }, {

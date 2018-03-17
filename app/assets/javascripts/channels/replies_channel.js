@@ -1,5 +1,7 @@
 $(".ctr-posts.act-show").ready(function() {
 
+  if ($("body.archive").length != 0) { return }
+
   var unread_replies = 0
   var default_title = document.title
   $(window).on("click scroll focus", function() { unread_replies = 0; updatePageTitleWithUnreads() })

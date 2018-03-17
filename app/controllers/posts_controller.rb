@@ -2,6 +2,8 @@ class PostsController < ApplicationController
   include ApplicationHelper
   include PostsHelper
   before_action :authenticate_mod, only: [:mod]
+  append_before_action { @_time = DateTime.current.to_f }
+  after_action { puts "Time taken: #{(DateTime.current.to_f - @_time).round(2)}".colorize(:red) }
 
   def index
     @posts = Post.displayable(current_user).order(created_at: :desc, id: :desc)
@@ -74,14 +76,18 @@ class PostsController < ApplicationController
     end
     authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
-    @replies = @post.replies.order(created_at: :asc, id: :asc)
+    @replies = @post.replies.includes_for_display
     @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     sherlocks = Sherlock.posts.where(obj_id: @post.id).by_type(:edit)
     sherlocks = sherlocks.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     sherlocks = sherlocks.displayable_post_edits
     invites = @post.post_invites
     invites = invites.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
-    @replies_with_notifications = [@replies, sherlocks, invites].flatten.compact.sort_by(&:created_at)
+    if sherlocks.none? && invites.none?
+      @replies_with_notifications = @replies
+    else
+      @replies_with_notifications = [@replies, sherlocks, invites].flatten.compact.sort_by(&:created_at)
+    end
 
     if request.xhr?
       render partial: "replies/index", locals: { replies: @replies_with_notifications }

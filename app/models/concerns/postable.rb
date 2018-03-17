@@ -43,6 +43,7 @@ module Postable
   end
 
   def reciprocity(since=4.days.ago)
+    return 0 if Rails.env.archive?
     since = [since, 4.days.ago].max
     recent_replies = replies.where("replies.created_at > ?", since)
     replies_for_posts_not_belonging_to_user = recent_replies.joins(:post).where.not(posts: { author_id: self.id })

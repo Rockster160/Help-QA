@@ -10,7 +10,7 @@ module Friendable
   end
 
   def recent_shouts
-    shouts_to.where("created_at > ?", 30.days.ago)
+    @_recent_shouts ||= shouts_to.where("created_at > ?", 30.days.ago)
   end
 
   def friendships
@@ -30,18 +30,20 @@ module Friendable
   end
 
   def favorites
-    User.not_banned.joins(:pending_friendships).where(friendships: { user_id: self.id, accepted_at: nil })
+    @_favorites ||= User.not_banned.joins(:pending_friendships).where(friendships: { user_id: self.id, accepted_at: nil })
   end
   def fans
-    User.not_banned.joins(:requested_friendships).where(friendships: { friend_id: self.id, accepted_at: nil })
+    @_fans ||= User.not_banned.joins(:requested_friendships).where(friendships: { friend_id: self.id, accepted_at: nil })
   end
   def friends
-    favorite_ids = User.joins(:pending_friendships).where(friendships: { user_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
-    fan_ids = User.joins(:requested_friendships).where(friendships: { friend_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
-    User.not_banned.where(id: (favorite_ids + fan_ids).uniq)
+    @_friends ||= begin
+      favorite_ids = User.joins(:pending_friendships).where(friendships: { user_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
+      fan_ids = User.joins(:requested_friendships).where(friendships: { friend_id: self.id }).where.not(friendships: { accepted_at: nil }).pluck(:id)
+      User.not_banned.where(id: (favorite_ids + fan_ids).uniq)
+    end
   end
   def not_friends
-    User.where.not(id: friends.pluck(:id))
+    @_not_friends ||= User.where.not(id: friends.pluck(:id))
   end
 
   def add_friend(friend)

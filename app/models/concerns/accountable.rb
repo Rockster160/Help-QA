@@ -28,7 +28,7 @@ module Accountable
   def long_time_user?; long_term_user?; end
   def deactivated?; !verified? && created_at < 1.day.ago; end
   def ip_banned?; BannedIp.where(ip: current_sign_in_ip.presence || last_sign_in_ip).current.any?; end
-  def banned?; ip_banned? || (banned_until? && banned_until > DateTime.current); end
+  def banned?; banned_until? && banned_until > DateTime.current; end
   def perma_banned?; banned? && banned_until > 50.years.from_now; end
 
   def see!
