@@ -2,8 +2,6 @@ class PostsController < ApplicationController
   include ApplicationHelper
   include PostsHelper
   before_action :authenticate_mod, only: [:mod]
-  append_before_action { @_time = DateTime.current.to_f }
-  after_action { puts "Time taken: #{(DateTime.current.to_f - @_time).round(2)}".colorize(:red) }
 
   def index
     @posts = Post.displayable(current_user).order(created_at: :desc, id: :desc)
