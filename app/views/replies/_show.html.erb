@@ -83,12 +83,12 @@
       </div>
     </div>
 
-    <div class="reply-content" data-original-content="<%= reply.body %>" <%=  'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
+    <div class="reply-content" data-original-content="<%= reply.body %>" <%= 'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
     <% unless reply.posted_anonymously? %>
       <% cache [author, author.posts] do %>
         <% if author.deactivated? %>
           <div class="reply-after-message"><p class="text-right"><strong>This account has been deactivated.</strong></p></div>
-        <% elsif author.reciprocity.positive? && author.posts.claimed.any? && (recent_post = author.posts.claimed.displayable.order(created_at: :desc, id: :desc).first) %>
+        <% elsif !Rails.env.archive? && author.reciprocity.positive? && author.posts.claimed.any? && (recent_post = author.posts.claimed.displayable.order(created_at: :desc, id: :desc).first) %>
           <div class="reply-after-message"><p><strong>Help me with:</strong> <a href="<%= post_path(recent_post) %>" class="underline"><%= recent_post.title %></a></p></div>
         <% end %>
       <% end %>
