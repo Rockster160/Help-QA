@@ -106,6 +106,10 @@ Rails.application.routes.draw do
   end
   delete "shout/:id" => "shouts#destroy", as: :shout
 
+  resources :webhooks, only: [] do
+    get :email
+  end
+
   require 'sidekiq/web'
   authenticate :user, ->(u) { u.admin? } do
     mount Sidekiq::Web => '/sidekiq'
