@@ -78,7 +78,7 @@ class Post < ApplicationRecord
 
   def self.currently_popular
     pluck_last_replies = 200
-    replies_for_age_appropriate_posts = Reply.displayable.joins(:post).where(posts: { marked_as_adult: [nil, false] })
+    replies_for_age_appropriate_posts = Reply.displayable.joins(:post).where(posts: { marked_as_adult: [nil, false], closed_at: nil, in_moderation: [nil, false], removed_at: nil })
     uniq_replies_by_author_for_posts = replies_for_age_appropriate_posts.order(created_at: :desc, id: :desc).limit(pluck_last_replies).pluck(:post_id, :author_id).uniq
     counted_post_ids = uniq_replies_by_author_for_posts.each_with_object(Hash.new(0)) { |(post_id, author_id), count_hash| count_hash[post_id] += 1 }
     post_ids_sorted_by_uniq_author_count = counted_post_ids.sort_by { |(post_id, unique_author_count)| unique_author_count }.map(&:first)

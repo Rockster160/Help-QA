@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   before_action :authenticate_mod, only: [:mod]
 
   def index
-    @posts = Post.displayable(current_user).order(created_at: :desc, id: :desc)
+    @posts = Post.not_closed.displayable(current_user).order(created_at: :desc, id: :desc)
     @posts = @posts.claimed.where(user_id: params[:user_id]) if params[:user_id].present?
   end
 
