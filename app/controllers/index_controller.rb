@@ -1,6 +1,4 @@
 class IndexController < ApplicationController
-  skip_before_action :logit, if: -> { params[:since].present? }
-
   def index
     @recent_posts = Post.not_closed.displayable(current_user).order(created_at: :desc, id: :desc).limit(10)
     if request.xhr?
@@ -16,5 +14,4 @@ class IndexController < ApplicationController
     @current_tags = Tag.where(id: @recent_posts.map(&:tag_ids).flatten.uniq).count_order.limit(5)
     @global_tags = Tag.count_order.limit(5)
   end
-
 end
