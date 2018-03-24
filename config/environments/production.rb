@@ -10,11 +10,10 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
-    address:              'smtp.gmail.com',
+    address:              "email-smtp.us-east-1.amazonaws.com",
     port:                 587,
-    domain:               'gmail.com',
-    user_name:            'helpqacontact@gmail.com',
-    password:             ENV["HELPQA_GMAIL_PASSWORD"],
+    user_name:            ENV["HELPQA_SMTP_USERNAME"],
+    password:             ENV["HELPQA_SMTP_PASSWORD"],
     authentication:       :plain,
     enable_starttls_auto: true
   }
