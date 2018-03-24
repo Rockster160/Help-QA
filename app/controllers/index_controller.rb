@@ -1,4 +1,5 @@
 class IndexController < ApplicationController
+  skip_before_action :logit, if: -> { params[:since].present? }
 
   def index
     @recent_posts = Post.not_closed.displayable(current_user).order(created_at: :desc, id: :desc).limit(10)
