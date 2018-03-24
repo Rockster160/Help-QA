@@ -205,11 +205,13 @@
             .reply-after-message {
               border-top: 1px solid $border-color;
               background: white;
+              margin: 5px 0;
 
               p {
                 font-size: 12px;
                 margin: 0;
                 padding: 3px;
+                display: inline;
               }
             }
             &.original-poster {
