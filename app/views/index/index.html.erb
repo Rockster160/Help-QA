@@ -29,7 +29,7 @@
         <a href="<%= post_path(post) %>" class="post">
           <%= avatar(post.avatar(size: 30), size: 30) %>
           <div class="words">
-            <div class="title"><%= post.title %></div>
+            <div class="title"><%= markdown(with: [:ignore_previews], except: [:tags]) { post.title } %></div>
             <div class="details">
               <strong>- <%= pluralize_with_delimiter(post.reply_count, "reply") %></strong> to <%= post.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
             </div>
