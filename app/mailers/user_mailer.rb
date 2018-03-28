@@ -27,6 +27,14 @@ class UserMailer < ApplicationMailer
       subject: "Help.com needs you!"
     })
   end
+
+  def email(email, subject, body)
+    mail({
+      to: email,
+      subject: subject,
+      body: body
+    })
+  end
 end
 
 # ActionMailer::Base.mail(from: "\"Help-QA\" <contact@help-qa.com>", to: "rocco11nicholls+test@gmail.com", subject: "test", body: "test").deliver

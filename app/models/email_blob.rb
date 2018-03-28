@@ -47,7 +47,8 @@ class EmailBlob < ApplicationRecord
     self.spam = header_from_content("X-SES-Spam-Verdict") != "PASS"
     self.virus = header_from_content("X-SES-Virus-Verdict") != "PASS"
     save
-    SlackNotifier.notify("New Email from #{from}" , channel: '#helpqa', username: 'Help-Bot', icon_emoji: ':mailbox:')
+    path = Rails.application.routes.url_helpers.admin_email_blob_path(self)
+    SlackNotifier.notify("New Email from #{from}\n<#{path}|Click here to view.>" , channel: '#helpqa', username: 'Help-Bot', icon_emoji: ':mailbox:')
   end
 
   def to_html
