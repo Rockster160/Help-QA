@@ -68,6 +68,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :admin, only: [] do
+    resources :email_blobs, path: :emails do
+      post :search, on: :collection
+    end
+  end
+
   resource :account, only: [ :index, :edit, :update ] do
     get :confirm
     patch :confirm, action: :set_confirmation

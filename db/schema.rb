@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171202223806) do
+ActiveRecord::Schema.define(version: 20180328005426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,20 @@ ActiveRecord::Schema.define(version: 20171202223806) do
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.index ["author_id"], name: "index_chat_messages_on_author_id", using: :btree
+  end
+
+  create_table "email_blobs", force: :cascade do |t|
+    t.string   "notification_type"
+    t.string   "subject"
+    t.string   "from"
+    t.string   "to"
+    t.boolean  "spam"
+    t.boolean  "virus"
+    t.text     "text"
+    t.text     "blob"
+    t.datetime "date"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "favorite_replies", force: :cascade do |t|

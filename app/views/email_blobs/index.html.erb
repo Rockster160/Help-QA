@@ -1,0 +1,63 @@
+<%= meta_no_index %>
+<% total_email_blobs = @email_blobs.total_count || 0 %>
+<% first_email_blob = [(@email_blobs.limit_value * (@email_blobs.current_page - 1)) + 1, total_email_blobs, 0].sort[1] %>
+<% last_email_blob = [@email_blobs.limit_value * @email_blobs.current_page, total_email_blobs, 0].sort[1] %>
+<% title = "#{pluralize_with_delimiter(total_email_blobs, 'Email')}, Showing #{number_with_delimiter(first_email_blob)} to #{number_with_delimiter(last_email_blob)}" %>
+<% meta_title title %>
+
+<h2><i>Emails:</i> <br class="xsmall-down"><%= title %></h2>
+
+<div class="history-page">
+  <%= form_tag search_admin_email_blobs_path do %>
+    <div class="search-form">
+      <!-- Time range -->
+      <h6>From</h6>
+      <input type="text" name="from" value="<%= params[:from] %>">
+      <h6>To</h6>
+      <input type="text" name="to" value="<%= params[:to] %>">
+      <h6>Text</h6>
+      <input type="text" name="text" value="<%= params[:text] %>">
+      <%= submit_tag "Search" %>
+    </div>
+  <% end %>
+  <div class="search-results">
+    <% total_pages = 5 %>
+    <% window_sizes = {
+      default: (total_pages / 2).floor,
+      low: total_pages - @email_blobs.current_page,
+      high: total_pages - (@email_blobs.total_pages - @email_blobs.current_page) - 1
+    } %>
+
+    <%= paginate @email_blobs, window: window_sizes.values.max, outer_window: 1, params: @current_filter %>
+    <table class="small">
+      <thead>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Subject</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Date</th>
+      </thead>
+      <tbody>
+        <% @email_blobs.each do |email_blob| %>
+          <tr>
+            <td><a href="<%= admin_email_blob_path(email_blob) %>" class="underline"><%= email_blob.id %></a></td>
+            <td>
+              <%= "spam?" if email_blob.spam? %>
+              <%= "virus?" if email_blob.virus? %>
+              <%= email_blob.notification_type.presence || "--" %>
+            </td>
+            <td><%= email_blob.subject.presence || "--" %></td>
+            <td><%= email_blob.from.presence || "--" %></td>
+            <td><%= email_blob.to.presence || "--" %></td>
+            <td><%= email_blob.date.presence || "--" %></td>
+          </tr>
+        <% end %>
+        <% if @email_blobs.none? && !request.xhr? %>
+          <p>No emails found</p>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @email_blobs, window: window_sizes.values.max, outer_window: 1, params: @current_filter %>
+  </div>
+</div>

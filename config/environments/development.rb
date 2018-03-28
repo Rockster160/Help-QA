@@ -14,15 +14,15 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.perform_caching = false
 
-  ActionMailer::Base.delivery_method = :smtp
-  ActionMailer::Base.smtp_settings = {
-    address:              "email-smtp.us-east-1.amazonaws.com",
-    port:                 587,
-    user_name:            ENV["HELPQA_SMTP_USERNAME"],
-    password:             ENV["HELPQA_SMTP_PASSWORD"],
-    authentication:       :plain,
-    enable_starttls_auto: true
-  }
+  # ActionMailer::Base.delivery_method = :smtp
+  # ActionMailer::Base.smtp_settings = {
+  #   address:              "email-smtp.us-east-1.amazonaws.com",
+  #   port:                 587,
+  #   user_name:            ENV["HELPQA_SMTP_USERNAME"],
+  #   password:             ENV["HELPQA_SMTP_PASSWORD"],
+  #   authentication:       :plain,
+  #   enable_starttls_auto: true
+  # }
 
   config.active_support.deprecation = :log
   config.active_record.migration_error = :page_load

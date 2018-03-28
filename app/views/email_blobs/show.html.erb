@@ -1,0 +1,39 @@
+<%= meta_no_index %>
+<h1>Email #<%= @email_blob.id %></h1>
+
+<table class="audit-table">
+  <tr>
+    <td>Notification Type</td>
+    <td><%= @email_blob.notification_type %></td>
+  </tr>
+  <tr>
+    <td>Subject</td>
+    <td><%= @email_blob.subject %></td>
+  </tr>
+  <tr>
+    <td>From</td>
+    <td><%= @email_blob.from %></td>
+  </tr>
+  <tr>
+    <td>To</td>
+    <td><%= @email_blob.to %></td>
+  </tr>
+  <tr>
+    <td>Date</td>
+    <td><%= @email_blob.date %></td>
+  </tr>
+  <tr>
+    <td>Text</td>
+    <td><%= @email_blob.text %></td>
+  </tr>
+  <tr>
+    <td>Spam</td>
+    <td><%= @email_blob.spam? %></td>
+  </tr>
+  <tr>
+    <td>Virus</td>
+    <td><%= @email_blob.virus? %></td>
+  </tr>
+</table>
+
+<iframe src="data:text/html;charset=utf-8,<%= h @email_blob.to_html %>" width="600px" height="1000px" style="margin: 0 auto; max-width: 100%;"></iframe>
