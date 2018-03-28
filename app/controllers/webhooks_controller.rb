@@ -4,9 +4,10 @@ class WebhooksController < ApplicationController
   def email
     headers_str = request.headers.map { |k,v| "#{k} ::: #{v}\n" }.join("")
     params_str = params.permit!.to_h.map { |k,v| "#{k} ::: #{v}\n" }.join("")
-    CustomLogger.log "\e[32m\nHeaders:\n#{headers_str}\n\e[33m\nParams:\n#{params_str}\n\e[36m\nBody:\n#{request.try(:body).try(:read)}\e[0m"
+    body_str = request.try(:body).try(:read)
+    CustomLogger.log "\e[32m\nHeaders:\n#{headers_str}\n\e[33m\nParams:\n#{params_str}\n\e[36m\nBody:\n#{body_str}\e[0m"
 
-    EmailBlob.create(blob: request.try(:body).try(:read))
+    EmailBlob.create(blob: "#{body_str}")
 
     # HTTP_X_AMZ_SNS_MESSAGE_TYPE ::: SubscriptionConfirmation
     # HTTP_X_AMZ_SNS_MESSAGE_ID ::: b466304b-daf3-4e19-b70b-bb746ba5379b
