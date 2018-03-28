@@ -14,10 +14,12 @@
 #  date              :datetime
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  read_at           :datetime
 #
 
 class EmailBlob < ApplicationRecord
   include UrlHelper
+  include Readable
   after_commit { delay(:parse) if created_at == updated_at }
 
   validates :blob, presence: true

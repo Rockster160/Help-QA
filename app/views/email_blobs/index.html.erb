@@ -15,8 +15,22 @@
       <input type="text" name="from" value="<%= params[:from] %>">
       <h6>To</h6>
       <input type="text" name="to" value="<%= params[:to] %>">
+      <div class="filters">
+        <h6>Filters</h6>
+        <div class="filter">
+          <div class="name">Status</div>
+          <div class="links">
+            <%= filter_link("Unread", status: nil) %>,
+            <%= filter_link("Read", status: "read") %>,
+            <%= filter_link("All", status: "all") %>
+          </div>
+        </div>
+      </div>
       <h6>Text</h6>
       <input type="text" name="text" value="<%= params[:text] %>">
+      <div class="filter reset-filters">
+        <a href="<%= history_path %>" class="underline">Reset All Filters</a>
+      </div>
       <%= submit_tag "Search" %>
     </div>
   <% end %>

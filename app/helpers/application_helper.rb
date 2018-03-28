@@ -166,4 +166,11 @@ module ApplicationHelper
     avatar_container_hash.to_html.html_safe
   end
 
+  def filter_link(link_text, new_params, options={})
+    current_filter_is_selected = new_params.all? { |k,v| params[k] == v }
+    sorted_class = "current-filter" if current_filter_is_selected
+    new_params = params.merge(new_params).except(:action, :controller).reject{|k,v|v.blank?}
+
+    link_to link_text, new_params, class: "#{sorted_class} #{options[:class]}", rel: "nofollow"
+  end
 end
