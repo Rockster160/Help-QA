@@ -8,4 +8,8 @@ class ApplicationRecord < ActiveRecord::Base
       new_record?
     end
   end
+
+  def delay(method)
+    DelayWorker.perform_async(self.class.name, self.id, method)
+  end
 end

@@ -16,7 +16,7 @@ class Tag < ApplicationRecord
 
   before_save :format_name
 
-  after_commit { delay.set_similar_tags }
+  after_commit { delay(:set_similar_tags) }
 
   has_many :post_tags
   has_many :posts, through: :post_tags

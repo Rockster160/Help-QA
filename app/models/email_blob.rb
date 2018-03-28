@@ -17,7 +17,7 @@
 #
 
 class EmailBlob < ApplicationRecord
-  after_commit { delay.parse if created_at == updated_at }
+  after_commit { delay(:parse) if created_at == updated_at }
 
   def json; @json ||= JSON.parse(blob); end
   def message; @message ||= JSON.parse(json["Message"]); end
