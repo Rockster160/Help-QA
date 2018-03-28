@@ -42,6 +42,9 @@
                   <a href="<%= mod_bans_path %>">Bans</a>
                   <a href="<%= mod_audit_index_path %>">Audit Index</a>
                 <% end %>
+                <% if current_admin? %>
+                  <a href="<%= admin_email_blobs_path %>">Emails</a>
+                <% end %>
               </ul>
             </div>
           </div>

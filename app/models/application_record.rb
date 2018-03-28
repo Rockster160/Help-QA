@@ -10,6 +10,6 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def delay(method)
-    DelayWorker.perform_async(self.class.name, self.id, method)
+    DelayWorker.perform_in(5.seconds, self.class.name, self.id, method)
   end
 end

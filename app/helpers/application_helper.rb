@@ -21,6 +21,10 @@ module ApplicationHelper
     current_user.try(:mod?)
   end
 
+  def current_admin?
+    current_user.try(:admin?)
+  end
+
   def errors(resource, error_messages=nil, title: nil)
     if resource.is_a?(String)
       resource_class = resource
