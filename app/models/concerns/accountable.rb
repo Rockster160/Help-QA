@@ -75,7 +75,7 @@ module Accountable
   end
 
   def send_confirmation_email
-    delay.deliver_confirmation_email
+    delay(:deliver_confirmation_email)
   end
 
   def deliver_confirmation_email

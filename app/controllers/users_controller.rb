@@ -35,7 +35,7 @@ class UsersController < ApplicationController
         render "settings/index"
       else
         bypass_sign_in(@user) if sign_in_again
-        @user.delay.deliver_confirmation_email if user_params[:email].present?
+        @user.delay(:deliver_confirmation_email) if user_params[:email].present?
         redirect_to account_settings_path, notice: "Success!"
       end
     else
