@@ -127,7 +127,7 @@ class Post < ApplicationRecord
   def preview_content
     full_preview = body[title.length..-1].split("\n").reject(&:blank?).first
     cut_preview = cut_string_before_index_at_char(full_preview, 500)
-    full_preview.to_s.length == cut_preview.to_s.length ? full_preview : "#{cut_preview}..."
+    full_preview.to_s.length == cut_preview.to_s.length ? "#{full_preview}" : "#{cut_preview}..."
   end
 
   def username

@@ -30,7 +30,6 @@ devastated
 discontented
 disheartened
 dismal
-distractable
 distraught
 distressed
 doomed
@@ -52,9 +51,12 @@ gloomy
 grouchy
 helpless
 hopeless
-harm
-hurt
+harm myself
+hurt myself
 hurting
+(wish|want) to die
+wish i would die
+wish i.?d die
 inadequate
 inconsolable
 injured
@@ -62,6 +64,8 @@ insecure
 irrational
 irritable
 isolated
+kill myself
+(cut|slit)( \w+) (throat|wrist )
 lonely
 lousy
 melancholy
@@ -77,7 +81,6 @@ pessimistic
 reckless
 rejected
 resigned
-sad
 sadness
 selfharm
 self-conscious
@@ -98,7 +101,6 @@ unhinged
 unpredictable
 vulnerable
 wailing
-weak
 weepy
 withdrawn
 woeful
