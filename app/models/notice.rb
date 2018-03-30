@@ -29,6 +29,8 @@ class Notice < ApplicationRecord
 
   defaults notice_type: :other
 
+  validate :can_notify
+
   after_create :notify_user
   after_commit :broadcast_creation
 
@@ -76,11 +78,15 @@ class Notice < ApplicationRecord
 
   private
 
+  def quiet_notify
+    ActionCable.server.broadcast("notifications_#{user_id}", {})
+  end
+
   def broadcast_creation
     if updated_at == created_at
       ActionCable.server.broadcast("notifications_#{user_id}", message: notice_message)
     else
-      ActionCable.server.broadcast("notifications_#{user_id}", {})
+      quiet_notify
     end
   end
 
@@ -96,6 +102,12 @@ class Notice < ApplicationRecord
       end
     end
     UserMailer.notifications(user, notice_message(passed_root: root_domain)).deliver_later
+  end
+
+  def can_notify
+    return unless reply.try(:in_moderation?)
+    quiet_notify
+    errors.add(:base, "No notify")
   end
 
 end
