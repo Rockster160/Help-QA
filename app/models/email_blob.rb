@@ -24,8 +24,8 @@ class EmailBlob < ApplicationRecord
 
   validates :blob, presence: true
 
-  def json; @json ||= JSON.parse(blob); end
-  def message; @message ||= JSON.parse(json["Message"]); end
+  def json; @json ||= JSON.parse(blob) rescue {"content": blob}; end
+  def message; @message ||= JSON.parse(json["Message"]) rescue {"subject": "Failed to parse"}; end
   def content; @content ||= message["content"]; end
 
   def headers
@@ -64,7 +64,8 @@ class EmailBlob < ApplicationRecord
   private
 
   def parse_messages
-    if found_boundary = content[/boundary=\w+/]
+    found_boundary = content[/boundary=\w+/] rescue nil
+    if found_boundary
       boundary = found_boundary[9..-1]
       temp_headers, *temp_messages = content.split("--#{boundary}")
       @headers = temp_headers
