@@ -45,10 +45,10 @@ class EmailBlob < ApplicationRecord
   def parse
     self.notification_type = message["notificationType"]
     self.subject = message.dig("mail", "commonHeaders", "subject")
-    self.from = message.dig("mail", "commonHeaders", "from").join(",")
-    self.to = message.dig("mail", "commonHeaders", "to").join(",")
+    self.from = message.dig("mail", "commonHeaders", "from")&.join(",")
+    self.to = message.dig("mail", "commonHeaders", "to")&.join(",")
     self.date = message.dig("mail", "commonHeaders", "date")
-    self.text = messages.first.gsub(/<.*?>/, "").gsub(/(\r\n\>\=20)+/, "\n").gsub("Content-Transfer-Encoding: quoted-printable Content-Type: text/plain; charset=UTF-8 ", "").squish
+    self.text = messages.first.to_s.gsub(/<.*?>/, "").gsub(/(\r\n\>\=20)+/, "\n").gsub("Content-Transfer-Encoding: quoted-printable Content-Type: text/plain; charset=UTF-8 ", "").squish
     self.spam = header_from_content("X-SES-Spam-Verdict") != "PASS"
     self.virus = header_from_content("X-SES-Virus-Verdict") != "PASS"
     save

@@ -5,7 +5,7 @@ class WebhooksController < ApplicationController
     headers_str = request.headers.map { |k,v| "#{k} ::: #{v}\n" }.join("")
     params_str = params.permit!.to_h.map { |k,v| "#{k} ::: #{v}\n" }.join("")
     body_str = request.try(:body).try(:read)
-    CustomLogger.log "\e[32m\nHeaders:\n#{headers_str}\n\e[33m\nParams:\n#{params_str}\n\e[36m\nBody:\n#{body_str}\e[0m"
+    # CustomLogger.log "\e[32m\nHeaders:\n#{headers_str}\n\e[33m\nParams:\n#{params_str}\n\e[36m\nBody:\n#{body_str}\e[0m"
 
     EmailBlob.create(blob: "#{body_str}")
 
