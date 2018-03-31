@@ -64,10 +64,15 @@ class EmailBlob < ApplicationRecord
   private
 
   def parse_messages
-    boundary = content[/boundary=\w+/][9..-1]
-    temp_headers, *temp_messages = content.split("--#{boundary}")
-    @headers = temp_headers
-    @messages = temp_messages.map { |msg| msg.gsub("=\r\n", "").gsub("=3D\"", "=\"") }
+    if found_boundary = content[/boundary=\w+/]
+      boundary = found_boundary[9..-1]
+      temp_headers, *temp_messages = content.split("--#{boundary}")
+      @headers = temp_headers
+      @messages = temp_messages.map { |msg| msg.gsub("=\r\n", "").gsub("=3D\"", "=\"") }
+    else
+      @headers = ""
+      @messages = [content]
+    end
   end
 
   def header_from_content(header_key)
