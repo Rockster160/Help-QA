@@ -1,5 +1,4 @@
 module UrlHelper
-
   def root_domain
     url_opts = ActionMailer::Base.default_url_options
     port_str = url_opts[:host] == "localhost" ? ":#{url_opts[:port]}" : ""

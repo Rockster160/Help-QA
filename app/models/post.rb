@@ -191,10 +191,7 @@ class Post < ApplicationRecord
   end
 
   def alert_helpbot
-    return if Rails.env.archive?
-    return unless Tag.sounds_depressed?(body)
-
-    replies.create(author_id: helpbot.id, body: ApplicationController.render(partial: "replies/helpbot_message"))
+    HelpBot.react_to_post(self)
   end
 
   def body_is_not_default

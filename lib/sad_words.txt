@@ -59,13 +59,12 @@ wish i would die
 wish i.?d die
 inadequate
 inconsolable
-injured
 insecure
 irrational
 irritable
 isolated
 kill myself
-(cut|slit)( \w+) (throat|wrist )
+(cut|slit)(ting)? ?\w* (throat|wrist)
 lonely
 lousy
 melancholy

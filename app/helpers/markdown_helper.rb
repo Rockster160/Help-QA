@@ -21,7 +21,7 @@ module MarkdownHelper
     user = posted_by_user
     post = poll_post
     text = yield.to_s.dup
-    return text.html_safe if posted_by_user.try(:helpbot?)
+    return text.html_safe if posted_by_user.try(:helpbot?) && render_html
 
     text = escape_html_characters(text, render_html: render_html)
     text = escape_escaped_markdown_characters(text)

@@ -83,7 +83,7 @@
       </div>
     </div>
 
-    <div class="reply-content" data-original-content="<%= reply.body %>" <%= 'data-parsed-links' if author.helpbot? %>><%= markdown(posted_by_user: author) { reply.body } %></div>
+    <div class="reply-content" data-original-content="<%= reply.body %>"><%= markdown(posted_by_user: author, render_html: author.helpbot?) { reply.body } %></div>
     <% unless reply.posted_anonymously? %>
       <% cache [author, author.posts] do %>
         <% if author.deactivated? %>
