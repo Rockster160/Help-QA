@@ -155,17 +155,16 @@ class Sherlock < ApplicationRecord
 
   def format_change_for_display(change_key, start_val, end_val, body_flip: true)
     return if should_ignore_changes?(change_key)
-    case end_val.to_s
-    when "true" then "Yes"
-    when "false" then "No"
-    else
-      if /_at|date/.match(change_key)
-        start_val = DateTime.parse(start_val).to_formatted_s(:basic) rescue start_val
-        end_val = DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
-      end
-      start_val, end_val = end_val, start_val if body_flip
-      Differ.diff_by_word(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
+    start_val = humanize_bool(start_val) || start_val.to_s
+    end_val = humanize_bool(end_val) || end_val.to_s
+
+    if /_at|date/.match(change_key)
+      start_val = DateTime.parse(start_val).to_formatted_s(:basic) rescue start_val
+      end_val = DateTime.parse(end_val).to_formatted_s(:basic) rescue end_val
     end
+
+    start_val, end_val = end_val, start_val if body_flip
+    Differ.diff_by_word(escape_html_tags(start_val.to_s), escape_html_tags(end_val.to_s))
   end
 
   def broadcast_creation

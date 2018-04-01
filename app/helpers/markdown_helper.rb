@@ -7,6 +7,13 @@ module MarkdownHelper
     end
   end
 
+  def humanize_bool(bool)
+    case bool.to_s.downcase
+    when "true" then "Yes"
+    when "false" then "No"
+    end
+  end
+
   def markdown(only: nil, except: [], with: [], render_html: false, poll_post: nil, posted_by_user: nil, &block)
     only = [only].flatten if only.is_a?(Array) # We want `only` to be `nil` if it wasn't explicitly set.
     except = [except].flatten
