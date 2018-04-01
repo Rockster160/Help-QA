@@ -24,6 +24,7 @@ class HelpBot
       ]
       bad_email = message[/(#{bad_messages.join('|')})\s*\S*/][/\S+$/]
       return unless bad_email
+      email.update(subject: "(Failure to deliver) #{bad_email}")
       user = User.where("LOWER(email) = ?", bad_email.squish.downcase)
       return unless user
       url = url_for(route_for(:account_settings_path))
