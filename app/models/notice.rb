@@ -92,6 +92,7 @@ class Notice < ApplicationRecord
 
   def notify_user
     return unless user.settings.send_reply_notifications?
+    return unless user.settings.send_email_notifications?
     return if user.online? || user.banned?
     if subscription?
       post_subscription = user.subscriptions.find_by(post_id: post_id)
