@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     @recent_posts = @user.posts.claimed.not_closed.displayable(current_user).order(created_at: :desc, id: :desc).limit(5)
     replies = @user.replies.claimed.displayable(current_user)
     @top_replies = replies.favorited.order(favorite_count: :desc, created_at: :desc, id: :desc)
-    @replies = replies.order(created_at: :desc, id: :desc)
+    @replies = replies.not_helpbot.order(created_at: :desc, id: :desc)
   end
 
   def update

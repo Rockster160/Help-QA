@@ -9,7 +9,7 @@ class RepliesController < ApplicationController
       flash.now[:alert] = "Sorry, we're unable to load all replies at once. In order to search replies, please filter the replies by opening through a user or specific post."
       return
     end
-    @replies = Reply.displayable(current_user).order(created_at: :desc, id: :desc).page(params[:page]).per(10)
+    @replies = Reply.not_helpbot.displayable(current_user).order(created_at: :desc, id: :desc).page(params[:page]).per(10)
     @replies = @replies.claimed.where(author_id: params[:user_id]) if params[:user_id].present?
     @replies = @replies.by_fuzzy_text(params[:by_fuzzy_text]) if params[:by_fuzzy_text].present?
     @user = User.find(params[:user_id]) if params[:user_id].present?
