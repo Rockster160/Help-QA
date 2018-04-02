@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications, :set_theme
   skip_before_action :logit, only: [:flash_message, :chat_list]
   skip_before_action :logit, if: -> { params[:since].present? }
+  # around_action :display_request_length, except: [:flash_message, :chat_list]
   # skip_before_action :verify_authenticity_token
 
   rescue_from ActionController::UnknownFormat,     with: :not_found
@@ -170,6 +171,13 @@ class ApplicationController < ActionController::Base
     return session.delete(:theme) if params[:theme] == "clear"
 
     session[:theme] = params[:theme]
+  end
+
+  def display_request_length
+    t = Time.now.to_f
+    yield
+    puts "#{params.permit!.to_h}"
+    puts "\e[31m#{(Time.now.to_f - t).round(1)} seconds for \e[0m"
   end
 
 end

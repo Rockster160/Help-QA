@@ -14,13 +14,14 @@ class ObscenityChecker
     end
 
     def whitelist
-      [:as]
+      [:as, :tard]
     end
 
     def maybe_profane?(text)
-      blacklist.select { |b| b.length > 3 }.any? do |profanity|
+      blacklist.select { |word| word.length > 3 }.any? do |profanity|
         found_profanity = text.to_s =~ Regexp.new(leet_regexp(profanity.to_s.downcase))
         # CustomLogger.log("Found Profanity: #{profanity} : #{leet_regexp(profanity.to_s.downcase)} in #{text}") if found_profanity
+        # puts("Found Profanity: #{profanity} : #{leet_regexp(profanity.to_s.downcase)} in #{text}") if found_profanity
         found_profanity.present?
       end
     end
