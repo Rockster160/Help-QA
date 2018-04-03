@@ -88,8 +88,11 @@
         .recent-post {
           padding: 5px 0;
 
-          a {
-            font-size: 16px;
+          a p {
+            font-weight: bold;
+            display: inline;
+
+            &, * { font-size: 16px; }
           }
           i {
             font-size: 8px;

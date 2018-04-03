@@ -4,7 +4,7 @@
   <a href="<%= post_path(post) %>" class="post-container" data-timestamp="<%= post.created_at.to_i %>" data-id="<%= post.id %>">
     <%= avatar(post.avatar(size: 50), size: 50) %>
     <div class="post-description">
-      <div class="title"><%= markdown(with: [:ignore_previews], except: [:tags]) { post.title } %></div>
+      <div class="title"><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.title } %></div>
       <div class="post-information">
         <%= hover_icon(:lock, "This post is closed.", class: :small) if post.closed? %>
         <% if post.marked_as_adult? %>

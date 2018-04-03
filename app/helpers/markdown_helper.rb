@@ -32,9 +32,9 @@ module MarkdownHelper
 
     text = escape_html_characters(text, render_html: render_html)
     text = escape_escaped_markdown_characters(text)
-    text = filter_nested_quotes(text, max_nest_level: 3)
+    text = filter_nested_quotes(text, max_nest_level: 3) if @markdown_options[:quote]
     text = escape_escaped_markdown_characters(text)
-    text = parse_directive_quotes(text)
+    text = parse_directive_quotes(text) if @markdown_options[:quote]
     text = invite_tagged_users(text) if @markdown_options[:tags]
     text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = parse_markdown(text)
@@ -160,6 +160,7 @@ module MarkdownHelper
     text = text.gsub(/<a(.*?)<\/a>/) do |found_match|
       "<a#{escape_markdown_characters_in_string($1)}</a>"
     end
+    text = text.gsub("\`\`\`", "&#96;&#96;&#96;") unless @markdown_options[:codeblock]
     text = text.gsub(/\`\`\`(.|\n)*?\`\`\`/) do |found_match|
       inner_text = found_match[3..-4]
       # Using loop because `gsub` tries to look at each line individually, which removes all white space at the beginning of other lines.
@@ -363,7 +364,7 @@ module MarkdownHelper
       else
         quote_author = quote_to_unwrap[/\[quote(.*?)\]/][7..-2]
         quote_from = quote_author.presence ? " from #{escape_markdown_characters_in_string(quote_author)}" : ""
-        "_*\\[quote#{quote_from}]*_\n"
+        "<br><br>_*\\[quote#{quote_from}]*_<br><br>"
       end
     end
   end

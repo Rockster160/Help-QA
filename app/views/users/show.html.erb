@@ -124,8 +124,8 @@
         <% end %>
         <% @recent_posts.each do |post| %>
           <div class="recent-post">
-            <a href="<%= post_path(post) %>"><%= post.title %></a> <i>written (<%= timeago(post.created_at) %>) ago</i>
-            <p><%= post.preview_content %></p>
+            <a href="<%= post_path(post) %>"><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.title } %></a> <i>written (<%= timeago(post.created_at) %>) ago</i>
+            <p><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.preview_content } %></p>
           </div>
           <hr>
         <% end %>
