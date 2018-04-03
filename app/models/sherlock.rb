@@ -151,7 +151,7 @@ class Sherlock < ApplicationRecord
     return unless changed_attrs.key?("body")
     previous_body = changed_attrs["body"]
     current_body = new_attributes["body"]
-    Differ.diff_by_word(escape_html_tags(previous_body.to_s), escape_html_tags(current_body.to_s))
+    Differ.diff_by_word(escape_html_tags(current_body.to_s), escape_html_tags(previous_body.to_s))
   end
 
   private
