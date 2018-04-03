@@ -1,97 +1,95 @@
-<% unless hide_reply %>
-  <% author = reply.author %>
-  <div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= additional_classes %> <%= 'deactivated' if author.deactivated? %>" data-timestamp="<%= reply.created_at.to_i %>" data-anonymous="<%= reply.posted_anonymously? %>">
-    <div class="reply-author">
-      <% if !reply.posted_anonymously? || can?(:view_anonymous_user) %>
-        <%= avatar(reply.avatar(size: 40), size: 40, href: user_path(reply.author)) %>
-      <% else %>
-        <%= avatar(reply.avatar(size: 40), size: 40) %>
-      <% end %>
-      <div class="reply-author-text">
-        <div class="reply-author-info">
-          <div class="reply-author-name">
-            <%= hover_icon("vcard", "Original Poster") if reply.same_author_as_post? %>
-            <% if reply.posted_anonymously? %>
-              <% if can?(:view_anonymous_user) %>
-                <a href="<%= user_path(reply.author) %>" title="<%= reply.author.username %>"><span class="reply-username">Anonymous</span></a>
-              <% else %>
-                <span class="reply-username">Anonymous</span>
-              <% end %>
+<% author = reply.author %>
+<div class="reply-container <%= 'original-poster' if reply.same_author_as_post? %> <%= additional_classes %> <%= 'deactivated' if author.deactivated? %>" data-timestamp="<%= reply.created_at.to_i %>" data-anonymous="<%= reply.posted_anonymously? %>">
+  <div class="reply-author">
+    <% if !reply.posted_anonymously? || can?(:view_anonymous_user) %>
+      <%= avatar(reply.avatar(size: 40), size: 40, href: user_path(reply.author)) %>
+    <% else %>
+      <%= avatar(reply.avatar(size: 40), size: 40) %>
+    <% end %>
+    <div class="reply-author-text">
+      <div class="reply-author-info">
+        <div class="reply-author-name">
+          <%= hover_icon("vcard", "Original Poster") if reply.same_author_as_post? %>
+          <% if reply.posted_anonymously? %>
+            <% if can?(:view_anonymous_user) %>
+              <a href="<%= user_path(reply.author) %>" title="<%= reply.author.username %>"><span class="reply-username">Anonymous</span></a>
             <% else %>
-              <a href="<%= user_path(reply.author) %>"><span class="reply-username"><%= reply.username %></span></a>
+              <span class="reply-username">Anonymous</span>
             <% end %>
-          </div>
-          <div class="reply-author-stats">
-            <% unless reply.posted_anonymously? %>
-              <%= render partial: "users/detail_icons", locals: { user: reply.author } %>
-            <% end %>
-            <%= link_to "#", "#reply-#{reply.id}" %>
-          </div>
+          <% else %>
+            <a href="<%= user_path(reply.author) %>"><span class="reply-username"><%= reply.username %></span></a>
+          <% end %>
         </div>
-        <div class="reply-info">
-          <%= timeago(reply.created_at) %> (<%= time_difference_in_words(reply.created_at, reply.post.created_at, word_count: 1).presence || "0 minutes" %> after post)
+        <div class="reply-author-stats">
+          <% unless reply.posted_anonymously? %>
+            <%= render partial: "users/detail_icons", locals: { user: reply.author } %>
+          <% end %>
+          <%= link_to "#", "#reply-#{reply.id}" %>
         </div>
       </div>
-
-      <div class="reply-options">
-        <% unless author.helpbot? %>
-          <% if user_signed_in? && current_user.verified? %>
-            <% previous_favorite = current_user.favorite_reply_for_post(reply.post) %>
-            <% posted_by_self = author == current_user %>
-            <% other_users = reply.favorite_replies.any? ? "\nUsers who loved this reply: #{reply.favorited_by.pluck(:username).join(', ')}" : "" %>
-            <% if !posted_by_self && previous_favorite.nil? %>
-              <%= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.#{other_users}", href: post_reply_favorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
-            <% elsif !posted_by_self && previous_favorite.reply == reply %>
-              <%= hover_icon("medal", "Changed your mind? Unmark this as your favorite.#{other_users}", href: post_reply_unfavorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
-            <% elsif posted_by_self %>
-              <%= hover_icon("medal-add", "You cannot favorite your own reply.#{other_users}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
-            <% else %>
-              <%= hover_icon("medal-add", "You've already favorited a reply for this post.#{other_users}", href: "#reply-#{reply.id}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
-            <% end %>
-          <% end %>
-          <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>
-          <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>
-          <% if current_mod? %>
-            <% if can?(:remove_replies) %>
-              <% if reply.removed? %>
-                <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Restore Reply") %></a>
-              <% else %>
-                <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:bin_t, "Delete Reply") %></a>
-              <% end %>
-            <% end %>
-            <% if can?(:adult_mark_replies) %>
-              <% if reply.marked_as_adult? %>
-                <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><%= hover_icon(:link, "Mark Reply as Safe") %></a>
-              <% else %>
-                <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><%= hover_icon(:link_t, "Mark Reply as NSFW/Adult") %></a>
-              <% end %>
-            <% end %>
-            <% if can?(:reply_moderation) %>
-              <% if reply.in_moderation? %>
-                <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell, "Unmoderate") %></a>
-              <% else %>
-                <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell_t, "Moderate") %></a>
-              <% end %>
-            <% end %>
-          <% end %>
-          <% if current_user&.can_edit_reply?(reply) %>
-            <%= link_to "#", rel: :nofollow, class: "edit-reply", data: { reply_id: reply.id } do %>
-              <%= hover_icon(:comment_edit, "Edit Reply") %>
-            <% end %>
-          <% end %>
-        <% end %>
+      <div class="reply-info">
+        <%= timeago(reply.created_at) %> (<%= time_difference_in_words(reply.created_at, reply.post.created_at, word_count: 1).presence || "0 minutes" %> after post)
       </div>
     </div>
 
-    <div class="reply-content" data-original-content="<%= reply.body %>"><%= markdown(posted_by_user: author, render_html: author.helpbot?) { reply.body } %></div>
-    <% unless reply.posted_anonymously? %>
-      <% cache [author, author.posts] do %>
-        <% if author.deactivated? %>
-          <div class="reply-after-message"><p class="text-right"><strong>This account has been deactivated.</strong></p></div>
-        <% elsif !Rails.env.archive? && author.reciprocity.positive? && author.posts.claimed.any? && (recent_post = author.posts.claimed.displayable.not_closed.order(created_at: :desc, id: :desc).first) %>
-          <div class="reply-after-message"><p><strong>Help me with:</strong> <a href="<%= post_path(recent_post) %>" class="underline"><%= markdown(with: [:ignore_previews], except: [:tags]) { recent_post.title } %></a></p></div>
+    <div class="reply-options">
+      <% unless author.helpbot? %>
+        <% if user_signed_in? && current_user.verified? %>
+          <% previous_favorite = current_user.favorite_reply_for_post(reply.post) %>
+          <% posted_by_self = author == current_user %>
+          <% other_users = reply.favorite_replies.any? ? "\nUsers who loved this reply: #{reply.favorited_by.pluck(:username).join(', ')}" : "" %>
+          <% if !posted_by_self && previous_favorite.nil? %>
+            <%= hover_icon("medal-add", "Excellent reply? Mark it as your favorite.#{other_users}", href: post_reply_favorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
+          <% elsif !posted_by_self && previous_favorite.reply == reply %>
+            <%= hover_icon("medal", "Changed your mind? Unmark this as your favorite.#{other_users}", href: post_reply_unfavorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
+          <% elsif posted_by_self %>
+            <%= hover_icon("medal-add", "You cannot favorite your own reply.#{other_users}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
+          <% else %>
+            <%= hover_icon("medal-add", "You've already favorited a reply for this post.#{other_users}", href: "#reply-#{reply.id}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
+          <% end %>
+        <% end %>
+        <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>
+        <%= hover_icon("flag-red", "Report this reply to moderators", href: feedback_path(report_url: post_url(reply.post, anchor: "reply-#{reply.id}"))) %>
+        <% if current_mod? %>
+          <% if can?(:remove_replies) %>
+            <% if reply.removed? %>
+              <a href="<%= post_reply_mod_path(reply.post, reply, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Restore Reply") %></a>
+            <% else %>
+              <a href="<%= post_reply_mod_path(reply.post, reply, remove: true) %>" data-method="POST"><%= hover_icon(:bin_t, "Delete Reply") %></a>
+            <% end %>
+          <% end %>
+          <% if can?(:adult_mark_replies) %>
+            <% if reply.marked_as_adult? %>
+              <a href="<%= post_reply_mod_path(reply.post, reply, adult: false) %>" data-method="POST"><%= hover_icon(:link, "Mark Reply as Safe") %></a>
+            <% else %>
+              <a href="<%= post_reply_mod_path(reply.post, reply, adult: true) %>" data-method="POST"><%= hover_icon(:link_t, "Mark Reply as NSFW/Adult") %></a>
+            <% end %>
+          <% end %>
+          <% if can?(:reply_moderation) %>
+            <% if reply.in_moderation? %>
+              <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: false) %>" data-method="POST"><%= hover_icon(:bell, "Unmoderate") %></a>
+            <% else %>
+              <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell_t, "Moderate") %></a>
+            <% end %>
+          <% end %>
+        <% end %>
+        <% if current_user&.can_edit_reply?(reply) %>
+          <%= link_to "#", rel: :nofollow, class: "edit-reply", data: { reply_id: reply.id } do %>
+            <%= hover_icon(:comment_edit, "Edit Reply") %>
+          <% end %>
         <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
-<% end %>
+
+  <div class="reply-content" data-original-content="<%= reply.body %>"><%= markdown(posted_by_user: author, render_html: author.helpbot?) { reply.body } %></div>
+  <% unless reply.posted_anonymously? %>
+    <% cache [author, author.posts] do %>
+      <% if author.deactivated? %>
+        <div class="reply-after-message"><p class="text-right"><strong>This account has been deactivated.</strong></p></div>
+      <% elsif !Rails.env.archive? && author.reciprocity.positive? && author.posts.claimed.any? && (recent_post = author.posts.claimed.displayable.not_closed.order(created_at: :desc, id: :desc).first) %>
+        <div class="reply-after-message"><p><strong>Help me with:</strong> <a href="<%= post_path(recent_post) %>" class="underline"><%= markdown(with: [:ignore_previews], except: [:tags]) { recent_post.title } %></a></p></div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -39,6 +39,3 @@ $(".ctr-posts.act-show").ready(function() {
   })
 
 })
-
-
-// Test unauthed users cannot edit other replies / non logged in users don't cause issues

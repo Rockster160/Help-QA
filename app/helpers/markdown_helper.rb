@@ -57,11 +57,10 @@ module MarkdownHelper
   def censor_language(text)
     adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
 
-    text = text.gsub(/\>.*?\</) do |found|
-      safe_words = found.gsub(/\b(#{adult_word_regex})\b/i) do |found|
+    text = text.gsub(/(^|\>).*?(\<|$)/) do |found|
+      found.gsub(/\b(#{adult_word_regex})\b/i) do |found|
         "<span class=\"profane-wrapper\"><span class=\"safe\" title=\"#{found}\">#{'*'*found.length}</span><span class=\"unsafe\">#{found}</span></span>"
-      end
-      "#{safe_words}"
+      end.to_s
     end
     text
   end
@@ -73,6 +72,12 @@ module MarkdownHelper
   end
 
   def parse_directive_quotes(text)
+    # Remove whitespace before/after quote blocks
+    whitespace_regex = /(?:\<\/?(?:p|br)\>|\s|\n|\r)*/
+    text = text.gsub(/#{whitespace_regex}(\[\/?quote(?:.*?)\])#{whitespace_regex}/) do
+      $1
+    end
+
     loop do
       last_start_quote_idx = text.rindex(/\[quote(.*?)\]/)
       break if last_start_quote_idx.nil?
@@ -94,6 +99,7 @@ module MarkdownHelper
   def escape_html_tags(text)
     text = text.gsub("&", "&amp;")
     text = text.gsub("<", "&lt;")
+    text = text.gsub(">", "&gt;")
   end
 
   def escape_html_characters(text, render_html: false)
@@ -102,6 +108,7 @@ module MarkdownHelper
 
     unless render_html
       text = text.gsub("<", "&lt;")
+      text = text.gsub(">", "&gt;")
       text = "<p>#{text}</p>"
       text = text.gsub("\r", "")
       text = text.gsub("\n\n", "</p><p>")

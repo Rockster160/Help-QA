@@ -12,6 +12,7 @@ module Helpqa
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.middleware.insert_after ActionDispatch::Static, Rack::Deflater
     config.autoload_paths += %W(#{config.root}/app/workers)
 
     config.paperclip_defaults = {

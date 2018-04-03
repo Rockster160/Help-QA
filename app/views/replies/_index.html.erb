@@ -2,15 +2,21 @@
 <% replies.each do |reply| %>
   <div class="reply-wrapper" id="reply-<%= reply.id %>">
     <% if reply.is_a?(Sherlock) %>
-      <div class="pending-reply info" data-timestamp="<%= reply.created_at.to_i %>">
+      <% display_edits = false %>
+      <% if reply.changed_attrs.keys.include?("closed_at") %>
+        <% change = reply.changed_attrs["closed_at"] ? "reopened" : "closed" %>
+      <% else %>
+        <% display_edits = true %>
+        <% change = "edited" %>
+      <% end %>
+      <div class="pending-reply info <%= 'display-changes' if display_edits %>" data-timestamp="<%= reply.created_at.to_i %>">
         <% author_name = @post.posted_anonymously? && @post.author == reply.acting_user ? "Anonymous" : reply.acting_user.username %>
-        <% change = if reply.changed_attrs.keys.include?("closed_at") %>
-          <% reply.changed_attrs["closed_at"] ? "reopened" : "closed" %>
-        <% else %>
-          <% "edited" %>
-        <% end %>
         <%= author_name %> <%= change %> this post <%= timeago(reply.created_at) %>.
+        <%= content_tag :i, "", class: "fa fa-chevron-down toggle-reply-display" if change == "edited" %>
       </div>
+      <% if display_edits %>
+        <div class="reply-container attached"><p class="show-changed"><%= markdown(render_html: true) { reply.changed_body.to_s.html_safe } %></p></div>
+      <% end %>
       <% hide_reply = true %>
     <% end %>
 
@@ -36,6 +42,6 @@
       <% hide_reply = true unless current_mod? %>
     <% end %>
 
-    <%= render partial: "replies/show", locals: { reply: reply, additional_classes: hidden_by_default, hide_reply: hide_reply } %>
+    <%= render partial: "replies/show", locals: { reply: reply, additional_classes: hidden_by_default } unless hide_reply %>
   </div>
 <% end %>

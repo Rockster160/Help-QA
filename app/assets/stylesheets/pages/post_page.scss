@@ -136,6 +136,7 @@
 
             &.attached {
               margin-top: -13px;
+
               &.pending { border: 2px solid $help-default; }
               &.removed { border: 2px solid red; }
             }
@@ -235,6 +236,20 @@
             background-color: lighten(red, 40%);
 
             & + .reply-container { display: none; }
+          }
+          &.display-changes {
+            border: 2px solid $help-default;
+            background: lighten($help-default, 40%);
+
+            & + .reply-container {
+              display: none;
+              border: 2px solid $help-default;
+              background: lighten($help-default, 40%);
+              padding: 5px 10px;
+              white-space: pre-wrap;
+
+              &, p, p * { font-size: 12px; }
+            }
           }
           .toggle-reply-display {
             position: absolute;
