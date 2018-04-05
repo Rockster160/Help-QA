@@ -249,13 +249,15 @@ module MarkdownHelper
       looks_vimeo = domain.include?("vimeo")
       has_path_extension = path.to_s[/\.\w{2,4}$/].present?
       should_parse = looks_youtube || looks_vimeo || has_path_extension
+      should_show_preview = pre_char == "[" && post_char == "]" && @markdown_options[:allow_link_previews]
 
       to_replace << {
         url: link,
         start_idx: first_idx,
-        show_preview: pre_char == "[" && post_char == "]" && @markdown_options[:allow_link_previews],
+        show_preview: meta_data&.dig(:inline) || should_show_preview,
+        replace_link: should_show_preview ? "[#{link}]" : link,
         meta_data: meta_data,
-        inline: @markdown_options[:inline_previews] || meta_data&.dig(:inline),
+        inline: (@markdown_options[:inline_previews] && should_show_preview) || meta_data&.dig(:inline),
         escaped: pre_char == "\\",
         invalid: meta_data&.dig(:invalid_url),
         should_parse: should_parse
@@ -289,7 +291,7 @@ module MarkdownHelper
       end
 
       link = link_hash[:url]
-      replace_link = link_hash[:show_preview] ? "[#{link}]" : link
+      replace_link = link_hash[:replace_link]
       request_url = link_hash[:request_url] || link[/^http|\/\//i].nil? ? "http://#{link.gsub(/^\/*/, '')}" : link
       meta_data = link_hash[:meta_data]
 

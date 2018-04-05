@@ -15,7 +15,7 @@
         <%= content_tag :i, "", class: "fa fa-chevron-down toggle-reply-display" if change == "edited" %>
       </div>
       <% if display_edits %>
-        <div class="reply-container attached"><p class="show-changed"><%= markdown(render_html: true) { reply.changed_body.to_s.html_safe } %></p></div>
+        <div class="reply-container attached"><p class="show-changed"><%= reply.changed_body.to_s.html_safe %></p></div>
       <% end %>
       <% hide_reply = true %>
     <% end %>
