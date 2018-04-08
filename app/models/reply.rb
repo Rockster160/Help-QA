@@ -88,7 +88,7 @@ class Reply < ApplicationRecord
 
   def avatar(size: nil)
     if posted_anonymously?
-      author.anonicon
+      author.anonicon(post_id)
     else
       author.avatar(size: size)
     end

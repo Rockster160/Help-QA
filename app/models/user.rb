@@ -100,9 +100,9 @@ class User < ApplicationRecord
     :inactive
   end
 
-  def anonicon
+  def anonicon(pre_str="")
     src = anonicon_seed.presence || ip_address.presence || username.presence || email.presence || id.presence
-    Anonicon.generate(src)
+    Anonicon.generate("#{pre_str}#{src}")
   end
 
   private
