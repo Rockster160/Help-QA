@@ -72,12 +72,6 @@ module MarkdownHelper
   end
 
   def parse_directive_quotes(text)
-    # Remove whitespace before/after quote blocks
-    whitespace_regex = /(?:\<\/?(?:p|br)\>|\s|\n|\r)*/
-    text = text.gsub(/#{whitespace_regex}(\[\/?quote(?:.*?)\])#{whitespace_regex}/) do
-      $1
-    end
-
     loop do
       last_start_quote_idx = text.rindex(/\[quote(.*?)\]/)
       break if last_start_quote_idx.nil?
@@ -93,7 +87,10 @@ module MarkdownHelper
         "</p><quote><p>#{quote_string}#{quote_text}</p></quote><p>"
       end
     end
-    text
+
+    # Remove whitespace before/after quote blocks
+    whitespace_regex = /(?:\<\/?(?:p|br)\>|\s|\n|\r)*/
+    text.gsub(/#{whitespace_regex}(\<\/?quote\>)#{whitespace_regex}/) { "</p>#{$1}<p>" }
   end
 
   def escape_html_tags(text)
@@ -357,8 +354,6 @@ module MarkdownHelper
   end
 
   def unwrap_quotes(text, depth: 0, quotes:, max_nest_level:)
-    # TODO: Seems to be a bug here- when there are too many nested quotes and text before and after quote.
-    #   End quote seems to be improperly removed.
     text.gsub(/quotetoken[a-z]{10}/).each do |found_token|
       quote_to_unwrap = quotes.select { |(token, quote)| token == found_token }.first[1]
       if depth < max_nest_level
