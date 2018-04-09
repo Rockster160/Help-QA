@@ -1,0 +1,28 @@
+#loading-notifications {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.loading-container {
+  span {
+    position: absolute;
+    top: 1px;
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+    background: $default-inverse;
+  }
+
+  @for $t from 1 through 3 {
+    span:nth-child(#{$t}) {
+      animation: pan 2s 150ms * $t infinite cubic-bezier(0.4, 0.9, 0.6, 0.1);
+    }
+  }
+
+  @keyframes pan {
+    0% { left: 0%; }
+    100% { left: 100%; }
+  }
+}
