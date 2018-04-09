@@ -51,6 +51,7 @@ $quote-border-left: #009;
 $code-background: #E0E0E5;
 
 $zindex: (
+  loading-indicator: 1001,
   flash: 1000,
   popup: 999,
   tooltip: 2,
@@ -58,9 +59,4 @@ $zindex: (
   header: 0
 );
 
-/*
-Use like...
-.header {
-  z-index: map-get($zindex, header);
-}
-*/
+// .header { z-index: map-get($zindex, header); }

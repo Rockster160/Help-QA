@@ -6,6 +6,8 @@
 }
 
 .loading-container {
+  z-index: map-get($zindex, loading-indicator);
+
   span {
     position: absolute;
     top: 1px;
