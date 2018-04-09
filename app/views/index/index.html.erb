@@ -31,7 +31,7 @@
           <div class="words">
             <div class="title"><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.title } %></div>
             <div class="details">
-              <strong>- <%= pluralize_with_delimiter(post.reply_count, "reply") %></strong> to <%= post.username %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
+              <strong>- <%= pluralize_with_delimiter(post.reply_count, "reply") %></strong> to <%= post.username %><%= "##{post.author_id}" if can?(:view_anonymous_user) && post.posted_anonymously? %> @ <%= post.created_at.to_formatted_s(:short_with_time) %>
             </div>
           </div>
         </a>

@@ -12,7 +12,7 @@
           <%= hover_icon("vcard", "Original Poster") if reply.same_author_as_post? %>
           <% if reply.posted_anonymously? %>
             <% if can?(:view_anonymous_user) %>
-              <a href="<%= user_path(reply.author) %>" title="<%= reply.author.username %>"><span class="reply-username">Anonymous</span></a>
+              <a href="<%= user_path(reply.author) %>" title="<%= reply.author.username %>"><span class="reply-username">Anonymous</span><%= "##{reply.author_id}" %></a>
             <% else %>
               <span class="reply-username">Anonymous</span>
             <% end %>

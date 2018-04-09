@@ -43,7 +43,7 @@
       <%= avatar(@post.avatar, options) %>
       <span class="anonymous">This post left anonymously</span>
       <% if can?(:view_anonymous_user) %>
-        <a href="<%= user_path(@post.author) %>" title="<%= @post.author.username %>">Anonymous*</a>
+        <a href="<%= user_path(@post.author) %>" title="<%= @post.author.username %>">Anonymous<%= "##{@post.author_id}" %></a>
       <% end %>
     <% else %>
       <%= avatar(@post.avatar, size: 200, href: user_path(@post.author)) %>

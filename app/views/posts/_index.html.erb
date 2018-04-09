@@ -10,7 +10,7 @@
         <% if post.marked_as_adult? %>
           <div class="nsfw" title="Not Safe For Work / children - This post will not show up on the home page.">NSFW</div>
         <% end %>
-        by <strong><%= post.username %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.reply_count || 0, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
+        by <strong><%= post.username %><%= "##{post.author_id}" if can?(:view_anonymous_user) && post.posted_anonymously? %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.reply_count || 0, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
       </div>
       <% unless hide_tags %>
         <div class="tags">
