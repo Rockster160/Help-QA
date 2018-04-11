@@ -6,7 +6,9 @@ $(document).ready(function() {
     channel_id: "notifications_" + current_userid
   }, {
     connected: function() {
-      $("#loading-notifications").addClass("hidden")
+      setTimeout(function() {
+        $("#loading-notifications").addClass("hidden")
+      }, 1000)
       updateNotifications()
     },
     disconnected: function() {
