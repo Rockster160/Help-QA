@@ -124,7 +124,7 @@
         <% end %>
         <% @recent_posts.each do |post| %>
           <div class="recent-post">
-            <a href="<%= post_path(post) %>"><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.title } %></a> <i>written (<%= timeago(post.created_at) %>) ago</i>
+            <a href="<%= post_path(post) %>"><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.title } %></a> <i><%= hover_icon(:lock, "This post is closed.", class: :small) if post.closed? %> written (<%= timeago(post.created_at) %>) ago</i>
             <p><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.preview_content } %></p>
           </div>
           <hr>

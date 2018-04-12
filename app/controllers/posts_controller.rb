@@ -133,6 +133,11 @@ class PostsController < ApplicationController
       return redirect_to post_path(@post), alert: "You do not have permission to edit this post."
     end
 
+    if @post.author == current_user && params[:close] == "true"
+      @post.update(closed_at: DateTime.current)
+      return redirect_to post_path(@post), notice: "This post has been closed. Please contact a mod if you would like it to be reopened."
+    end
+
     if @post.update(post_params)
       redirect_to post_path(@post)
     else

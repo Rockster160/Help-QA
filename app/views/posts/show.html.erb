@@ -76,6 +76,10 @@
         <% end %>
       <% end %>
       <a rel="nofollow" href="<%= feedback_path(report_url: post_url(@post)) %>" class="underline danger">Report Post</a>
+      <% if current_user == @post.author && @post.open? %>
+        | <a rel="nofollow" href="<%= post_path(@post, close: true) %>" data-method="PATCH" class="underline danger">Close Post</a>
+      <% end %>
+      <br>
       <br>
       <a data-smooth-scroll href="#last-reply">&#x21E9; Zoom to bottom</a>
     </div>
