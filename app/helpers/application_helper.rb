@@ -173,4 +173,8 @@ module ApplicationHelper
 
     link_to link_text, new_params, class: "#{sorted_class} #{options[:class]}", rel: "nofollow"
   end
+
+  def safe_join(separator, arr)
+    arr.map { |item| capture { yield(*item) }.strip }.join(separator).html_safe
+  end
 end
