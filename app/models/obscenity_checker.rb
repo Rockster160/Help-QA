@@ -14,7 +14,7 @@ class ObscenityChecker
     end
 
     def whitelist
-      [:as, :tard]
+      [:as, :tard, :hell]
     end
 
     def maybe_profane?(text)

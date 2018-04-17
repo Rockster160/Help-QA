@@ -2,7 +2,22 @@ class HelpBot
   extend UrlHelper
 
   class << self
-    def helpbot; $helpbot ||= User.by_username("HelpBot"); end
+    def helpbot; $helpbot ||= User.by_username("HelpBot") || create_helpbot; end
+
+    def create_helpbot
+      User.create({
+        email: "rocco11nicholls+helpbot@gmail.com",
+        password: (('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a).sample(20),
+        created_at: 1.year.ago,
+        remember_created_at: 1.year.ago,
+        username: "HelpBot",
+        confirmed_at: 1.year.ago,
+        verified_at: 1.year.ago,
+        date_of_birth: Date.strptime("07/22/1993", "%m/%d/%Y"),
+        avatar_url: ActionController::Base.helpers.asset_path("HelpBot.jpg"),
+        archived: true
+      })
+    end
 
     def react_to_post(post)
       return if Rails.env.archive?

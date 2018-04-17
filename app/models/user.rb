@@ -89,7 +89,7 @@ class User < ApplicationRecord
   def helpbot?
     return false if Rails.env.archive?
     return false unless persisted?
-    id == helpbot.id
+    id == HelpBot.helpbot.id
   end
 
   def description

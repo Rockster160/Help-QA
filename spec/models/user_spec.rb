@@ -175,7 +175,7 @@ RSpec.describe User, type: :model do
     end
 
     context "letter" do
-      let(:user) { ::FactoryGirl.create(:user, username: "~~!@#hello") }
+      let(:user) { ::FactoryGirl.create(:user, username: "~~!#hello") }
 
       it "should return the first alpha charater in the username" do
         expect(user.letter).to eq("H")

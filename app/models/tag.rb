@@ -114,7 +114,7 @@ class Tag < ApplicationRecord
   end
 
   def similar_tags
-    where(id: similar_tag_ids)
+    self.class.where(id: similar_tag_ids)
   end
 
   def ordered_similar_tags
@@ -126,20 +126,19 @@ class Tag < ApplicationRecord
   def set_similar_tags
     return unless persisted?
 
-    required_to_match = 1
-    all_tag_ids_used_in_posts = posts.map(&:tag_ids).flatten - [id]
-    tag_occurence_counter = all_tag_ids_used_in_posts.each_with_object(Hash.new(0)) { |instance, count_hash| count_hash[instance] += 1 }
-    strong_matches = tag_occurence_counter.reject { |tag_id, similar_count| similar_count <= required_to_match } # Less than or equal here because it INCLUDES the initial tag. So 3 occurrences of the tag mean there are 2 other posts with the same tag combo
-    if strong_matches.none?
-      update(similar_tag_id_string: "")  if similar_tag_id_string.present?
-      return
-    end
+    required_to_match = 2
+    posts_tag_used_in = posts.reload
+    other_tag_ids_from_same_posts = posts_tag_used_in.map(&:tag_ids).flatten - [id]
 
-    sorted_occurences = Hash[strong_matches.sort_by { |tag_id, similar_count| -similar_count }]
-    new_str = ",#{sorted_occurences.keys.join(',')}," # Commas on either side to allow the fuzzy search to pick up the start and end
-    unless new_str == similar_tag_id_string
-      update(similar_tag_id_string: new_str)
-    end
+    tags_by_occurrence_count = other_tag_ids_from_same_posts.each_with_object(Hash.new(0)) { |instance, count_hash| count_hash[instance] += 1 }
+    strong_matched_tags = tags_by_occurrence_count.reject { |tag_id, similar_count| similar_count <= required_to_match } # Less than or equal here because it INCLUDES the initial tag. So 3 occurrences of the tag mean there are 2 other posts with the same tag combo
+
+    sorted_tag_ids_by_relevance = Hash[strong_matched_tags.sort_by { |tag_id, similar_count| -similar_count }].keys
+    new_similar_tag_string = ",#{sorted_tag_ids_by_relevance.join(',')}," # Commas on either side to allow the fuzzy search to pick up the start and end
+
+    return if new_similar_tag_string == self.similar_tag_id_string
+    update(similar_tag_id_string: new_similar_tag_string)
+    Tag.where(id: sorted_tag_ids_by_relevance).find_each(&:set_similar_tags)
   end
 
   def to_param

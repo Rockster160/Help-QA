@@ -46,19 +46,30 @@ module Friendable
     @_not_friends ||= User.where.not(id: friends.pluck(:id))
   end
 
+  def reset_friends_cache
+    @_favorites = nil
+    @_fans = nil
+    @_friends = nil
+    @_not_friends = nil
+  end
+
   def add_friend(friend)
+    result = nil
     existing_friendship = friendship_with(friend)
 
     if existing_friendship.try(:friend_id) == self.id # They requested to be my friend already, so I can accept the request.
-      existing_friendship.update(accepted_at: DateTime.current)
+      result = existing_friendship.update(accepted_at: DateTime.current)
       friend_path = Rails.application.routes.url_helpers.user_path(self)
       ActionCable.server.broadcast("notifications_#{friend.id}", message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!")
     elsif existing_friendship.nil?
       friendships.create(user_id: self.id, friend_id: friend.id)
-      friend.notices.friend_request.create(friend: self)
+      result = friend.notices.friend_request.create(friend: self)
     end
+    reset_friends_cache
+    result
   end
   def remove_friend(friend)
+    result = nil
     existing_friendship = friendship_with(friend)
     return unless existing_friendship.present?
     request_at = existing_friendship.created_at
@@ -69,11 +80,13 @@ module Friendable
       existing_friendship.destroy
       if previously_friends # They should now be my fan
         new_friendship = friend.add_friend(self)
-        new_friendship.update(created_at: accepted_at)
+        result = new_friendship.update(created_at: accepted_at)
       end
     elsif existing_friendship.friend_id == self.id # They made the request first
-      existing_friendship.update(accepted_at: nil)
+      result = existing_friendship.update(accepted_at: nil)
     end
+    reset_friends_cache
+    result
   end
 
 end

@@ -10,6 +10,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def delay(method)
+    return send(method) if Rails.env.test?
     DelayWorker.perform_in(5.seconds, self.class.name, self.id, method)
   end
 end

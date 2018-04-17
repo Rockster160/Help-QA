@@ -18,6 +18,7 @@
 class Post < ApplicationRecord
   include Defaults
   include Sherlockable
+  attr_accessor :skip_debounce
 
   DEFAULT_POST_TEXT = "Start Here. \n\nAsk a question, post a rant, tell us your story.".freeze
 
@@ -202,6 +203,7 @@ class Post < ApplicationRecord
 
   def debounce_posts
     return if Rails.env.archive?
+    return if skip_debounce
     return if !new_record? || author.posts.where("created_at > ?", 5.minutes.ago).none?
 
     errors.add(:base, "Slow down there! You're posting too fast. You can only make 1 new post every 5 minutes.")
