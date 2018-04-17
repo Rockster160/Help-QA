@@ -98,14 +98,18 @@ module Accountable
   end
 
   def aka
-    previous_usernames = []
-    Sherlock.users.where(obj_id: id).each do |sherlock|
-      next unless sherlock.new_attributes.keys.include?("username")
-      previous_usernames << sherlock.new_attributes["username"]
+    @aka ||= begin
+      previous_uses = {}
+      Sherlock.users.by_type(:edit).where(obj_id: id).order(created_at: :desc).each do |sherlock|
+        next unless sherlock.new_attributes.keys.include?("username")
+        previous_uses[sherlock.new_attributes["username"]] ||= []
+        previous_uses[sherlock.new_attributes["username"]] << (Time.zone.parse(sherlock.new_attributes["updated_at"]) rescue nil) || sherlock.created_at
+      end
+      previous_uses.each_with_object({}) do |(new_username, timestamps), aka_hash|
+        next if new_username == username
+        aka_hash[new_username] = {count: timestamps.count, recent: timestamps.sort.last}
+      end
     end
-    previous_usernames.uniq! # No duplicates
-    previous_usernames.shift # Remove first (Changes in place)
-    previous_usernames - [username] # Remove current
   end
 
   def email=(new_email)

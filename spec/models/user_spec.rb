@@ -199,6 +199,29 @@ RSpec.describe User, type: :model do
         end
       end
     end
+
+    context "#aka" do
+      let(:user) { ::FactoryGirl.create(:user, username: "ToStart") }
+      let(:timestamp1) { 1.months.ago }
+      let(:timestamp2) { 2.months.ago }
+      let(:timestamp3) { 3.months.ago }
+      let(:timestamp4) { 4.months.ago }
+      let(:timestamp5) { 5.months.ago }
+
+      before do
+        user.update(username: "SomethingElse", updated_at: timestamp5)
+        user.update(username: "ChangedAgain",  updated_at: timestamp4)
+        user.update(username: "AndAgain",      updated_at: timestamp3)
+        user.update(username: "ChangedAgain",  updated_at: timestamp2)
+        user.update(username: "LastOne",       updated_at: timestamp1)
+      end
+
+      it "returns the names in descending order of what was used" do
+        expect(user.aka.keys).to match_array(["SomethingElse", "ChangedAgain", "AndAgain"])
+        expect(user.aka["ChangedAgain"][:count]).to eq(2)
+        expect(user.aka["ChangedAgain"][:recent]).to be_within(5.seconds).of(timestamp2)
+      end
+    end
   end
 
 end

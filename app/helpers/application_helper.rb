@@ -86,7 +86,7 @@ module ApplicationHelper
     end
   end
 
-  def time_difference_in_words(start_time, end_time, options={})
+  def time_difference_in_words(start_time, end_time=DateTime.current, options={})
     word_count = options[:word_count] || 2
     distanceMs = (start_time.to_f - end_time.to_f).abs * 1000
     words = []

@@ -82,12 +82,12 @@ class Sherlock < ApplicationRecord
       acting_ip = @acting_ip.presence || @acting_user.try(:current_sign_in_ip).presence || @acting_user.try(:last_sign_in_ip).presence || @acting_user.try(:ip_address).presence
 
       new(
-        obj: obj,
-        changed_attrs: new_changes,
-        acting_user: @acting_user,
-        acting_ip: acting_ip,
+        obj:             obj,
+        changed_attrs:   new_changes,
+        acting_user:     @acting_user,
+        acting_ip:       acting_ip,
         discovery_klass: discovery_klass,
-        new_attributes: obj.attributes
+        new_attributes:  obj.attributes
       )
     end
 

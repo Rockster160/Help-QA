@@ -83,7 +83,12 @@
         </div>
         <% if @user.aka.any? %>
           <h6>AKA</h6>
-          <div class="aka"><%= @user.aka.join(", ") %></div>
+          <div class="aka">
+            <% @user.aka.each_with_index do |(username, data), idx| %>
+              <%= ',' unless idx == 0 %>
+              <alias title="Used <%= data[:count] %> <%= 'time'.pluralize(data[:count]) %> <%= time_difference_in_words(data[:recent]) %> ago"><%= username %></alias>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>
