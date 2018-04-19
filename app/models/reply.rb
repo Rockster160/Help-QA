@@ -18,6 +18,7 @@
 class Reply < ApplicationRecord
   include MarkdownHelper
   include Sherlockable
+  include UrlHelper
   attr_accessor :hide_update, :has_invited
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
@@ -151,6 +152,11 @@ class Reply < ApplicationRecord
     return if Rails.env.archive?
     subscription = Subscription.find_or_create_by(user_id: author_id, post_id: post_id) unless author.helpbot?
     post.notify_subscribers(not_user: author, reply_id: id)
+
+    if created_at == updated_at && in_moderation?
+      link = url_for(route_for(:post_path, id: post_id, anchor: "reply-#{id}"))
+      SlackNotifier.notify("A new message requires moderation from #{author.username}.\n<#{link}|Click Here to view>")
+    end
   end
 
   def invite_users
@@ -161,11 +167,13 @@ class Reply < ApplicationRecord
     tags_to_replace = []
     unquoted_text.scan(/(?:@([^\s\`\@]+))/).flatten.each do |username_tag|
       user_to_invite = User.by_username(username_tag)
-      if user_to_invite.present? && (user_to_invite.friends?(author) || !user_to_invite.settings.friends_only?)
+      if user_to_invite.present?
         tags_to_replace << ["@#{username_tag}", user_to_invite]
         invite = user_to_invite.invites.find_or_initialize_by(post: post, from_user: author, reply: self)
         invite.invited_anonymously = posted_anonymously?
-        newly_invited_users << user_to_invite if !invite.persisted? && user_to_invite.subscriptions.where(post_id: post_id).none?
+        not_invited_yet = user_to_invite.subscriptions.where(post_id: post_id).none?
+        can_be_invited = (user_to_invite.friends?(author) || !user_to_invite.settings.friends_only?) && !user_to_invite.helpbot?
+        newly_invited_users << user_to_invite if !invite.persisted? && not_invited_yet && can_be_invited
         invite.save
       end
     end
