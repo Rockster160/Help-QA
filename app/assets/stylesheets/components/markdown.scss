@@ -36,5 +36,7 @@ blockquote {
     max-width: 100%;
     overflow-x: scroll;
     overflow-y: visible;
+
+    p:last-of-type { margin-bottom: 0; }
   }
 }

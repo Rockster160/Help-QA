@@ -162,6 +162,7 @@ module MarkdownHelper
       inner_text = found_match[3..-4]
       # Using loop because `gsub` tries to look at each line individually, which removes all white space at the beginning of other lines.
       loop do
+        # Don't remove leading spaces, otherwise indented code gets unindented
         break unless inner_text[0] =~ /(\n|\r)/
         inner_text[0] = ""
       end
@@ -169,7 +170,18 @@ module MarkdownHelper
         break unless inner_text[-1] =~ /(\n|\r| )/
         inner_text[-1] = ""
       end
-      # inner_text.gsub("</p><p>", "<br>") This didn't do anything?
+      loop do
+        break unless inner_text[0..3] == "<br>"
+        inner_text[0..3] = ""
+      end
+      loop do
+        break unless inner_text[-4..-1] == "<br>"
+        inner_text[-4..-1] = ""
+      end
+      loop do
+        break unless inner_text[-7..-1] == "<p></p>" || inner_text[-7..-1] == "</p><p>"
+        inner_text[-7..-1] = ""
+      end
       "<blockquote><div class=\"wrapper\">#{inner_text}</div></blockquote>"
     end if @markdown_options[:codeblock]
 
