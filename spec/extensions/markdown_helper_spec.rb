@@ -3,6 +3,39 @@ require 'rails_helper'
 describe ::MarkdownHelper do
   include MarkdownHelper
 
+  context "actual markdown" do
+    it "should properly replace markdown at the beginning and end of a string" do
+      expect(markdown { "_italic_" }).to eq("<p><i>italic</i></p>")
+    end
+    it "should properly replace markdown anywhere inside of a string" do
+      expect(markdown { "This is *bold* and ~this is crossed~ out" }).to eq("<p>This is <strong>bold</strong> and <strike>this is crossed</strike> out</p>")
+    end
+
+    it "should properly replace multiple instances of markdown" do
+      expect(markdown { "_*Bold italic*_" }).to eq("<p><i><strong>Bold italic</strong></i></p>")
+    end
+    it "should nest markdown" do
+      expect(markdown { "_Some italics *with some bold* inside_" }).to eq("<p><i>Some italics <strong>with some bold</strong> inside</i></p>")
+    end
+
+    it "does not count if markdown is touching other characters" do
+      expect(markdown { "_this_is_just_snake case_" }).to eq("<p><i>this_is_just_snake case</i></p>")
+    end
+    it "does not count multi-stars as bold" do
+      expect(markdown { "*This is some *** word*" }).to eq("<p><strong>This is some &#42;&#42;&#42; word</strong></p>")
+    end
+
+    it "allows single character usage" do
+      expect(markdown { "_I_" }).to eq("<p><i>I</i></p>")
+    end
+    it "does not allow no chars" do
+      expect(markdown { "__" }).to eq("<p>__</p>")
+    end
+    it "allows a few special characters after the string" do
+      expect(markdown { "I use *markdown*, with _special characters!_" }).to eq("<p>I use <strong>markdown</strong>, with <i>special characters!</i></p>")
+    end
+  end
+
   context "url_regex" do
     context "link_parts" do
       it "properly splits the url into the expected chunks" do

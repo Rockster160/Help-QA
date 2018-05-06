@@ -169,7 +169,7 @@ module MarkdownHelper
         break unless inner_text[-1] =~ /(\n|\r| )/
         inner_text[-1] = ""
       end
-      inner_text.gsub("</p><p>", "<br>")
+      # inner_text.gsub("</p><p>", "<br>") This didn't do anything?
       "<blockquote><div class=\"wrapper\">#{inner_text}</div></blockquote>"
     end if @markdown_options[:codeblock]
 
@@ -181,17 +181,17 @@ module MarkdownHelper
   end
 
   def parse_markdown_character_with(char, text, &string_with_special_replace)
-    text.gsub(regex_for_wrapping_character(char)) do |found_match|
-      $1 + string_with_special_replace.call.gsub("$1", "#{$2}")
+    text.gsub(regex_for_wrapping_character(char)) do
+      _full_match, pre_char, inner_text, post_char = Regexp.last_match.to_a
+      "#{pre_char}" + string_with_special_replace.call.gsub("$1", inner_text) + "#{post_char}"
     end
   end
 
   def regex_for_wrapping_character(character)
     regex_safe_character = Regexp.escape(character)
-    not_space = "[^ ]"
-    at_least_one_character_group = "((.|\n)*?)"
+    permitted_attached_chars = "[\\*\\_\\~\\`\\.\\?!,]*"
 
-    /(\W|\*|\`|\_|\~)#{regex_safe_character}(#{not_space}.*?#{not_space}?)#{regex_safe_character}/m
+    /((?:\s|^|\>)#{permitted_attached_chars})#{regex_safe_character}([^ ].*?[^ ]?)#{regex_safe_character}(#{permitted_attached_chars}(?:\s|$|\<))/
   end
 
   def parse_emails_in_text(text)
