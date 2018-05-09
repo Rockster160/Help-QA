@@ -188,9 +188,7 @@
         <div class="title"><%= @user.username %> is tagged...</div>
         <div class="tags">
           <% tags = @user.tags_from_posts.count_order %>
-          <% tags.first(30).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
-            <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
-          <% end %>
+          <%= tags_container(tags.limit(30), min: 8, max: 24) %>
           <% if tags.length > 30 %>
             and <%= number_with_delimiter(tags.length - 30) %> more...
           <% end %>
@@ -200,9 +198,7 @@
         <div class="title"><%= @user.username %>'s conversations are tagged...</div>
         <div class="tags">
           <% tags = @user.tags_from_replies.count_order %>
-          <% tags.first(30).reverse.to_enum.with_index.reverse_each do |tag, ridx| %>
-            <a href="<%= tag_path(tag) %>" class="underline"><%= tag.tag_name %></a><%= ',' unless ridx == 0 %>
-          <% end %>
+          <%= tags_container(tags.limit(30), min: 8, max: 24) %>
           <% if tags.length > 30 %>
             and <%= number_with_delimiter(tags.length - 30) %> more...
           <% end %>
