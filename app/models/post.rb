@@ -160,6 +160,16 @@ class Post < ApplicationRecord
     [id, title.parameterize].join("-")
   end
 
+  def to_csv
+    csv_array = []
+    username = "sup,world"
+    csv_array << "#{username.gsub(',', '%,')},#{body.gsub(/(\r)?\n/, "\\n")}"
+    replies.order(:created_at).each do |reply|
+      csv_array << "#{reply.username.gsub(',', '%,')},#{reply.body.gsub(/(\r)?\n/, "\\n")}"
+    end
+    csv_array.join("\n")
+  end
+
   private
 
   def broadcast_creation

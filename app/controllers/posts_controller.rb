@@ -89,6 +89,11 @@ class PostsController < ApplicationController
 
     if request.xhr?
       render partial: "replies/index", locals: { replies: @replies_with_notifications }
+    else
+      respond_to do |format|
+        format.html
+        format.csv { render plain: @post.to_csv }
+      end
     end
   end
 
