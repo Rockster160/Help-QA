@@ -104,8 +104,7 @@ module ApplicationHelper
   end
 
   def hover_icon(icon, alt, options={})
-    style = "background-image: url(#{ActionController::Base.helpers.asset_path('icon_sheet.png', digest: false)})"
-    img = ActionController::Base.helpers.image_tag("blank.png", alt: alt, title: alt, style: style, class: "icon #{icon.to_s.gsub('_', '-')}")
+    img = ActionController::Base.helpers.image_tag("blank.png", alt: alt, title: alt, class: "icon #{icon.to_s.gsub('_', '-')}")
     data = options[:data]&.map { |k,v| "data-#{k}=\"#{v}\"" }&.join(" ") || ""
 
     if options[:href].present?
