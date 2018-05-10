@@ -80,11 +80,17 @@ class Sherlock < ApplicationRecord
 
       new_changes = active_record_changes.each_with_object({}) { |(changed_key, changed_array), memo| memo[changed_key] = changed_array.first }
       acting_ip = @acting_ip.presence || @acting_user.try(:current_sign_in_ip).presence || @acting_user.try(:last_sign_in_ip).presence || @acting_user.try(:ip_address).presence
+      acting_user = @acting_user
+      acting_user ||= obj if obj.is_a?(User)
+      acting_user ||= obj.user if obj.is_a?(UserProfile) || obj.is_a?(UserSetting)
+      acting_user ||= obj.try(:author) || obj.try(:user)
+
+      binding.pry if acting_user.nil?
 
       new(
         obj:             obj,
         changed_attrs:   new_changes,
-        acting_user:     @acting_user,
+        acting_user:     acting_user,
         acting_ip:       acting_ip,
         discovery_klass: discovery_klass,
         new_attributes:  obj.attributes

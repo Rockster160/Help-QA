@@ -70,6 +70,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def unauthenticated
+    redirect_to root_path, alert: "Sorry, you do not have access to this page."
+  end
+
   def authenticate_user
     unless user_signed_in?
       redirect_to new_user_session_path, alert: "Please sign in before continuing."

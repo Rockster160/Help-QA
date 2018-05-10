@@ -1,6 +1,7 @@
-class UsersController < ApplicationController
+ class UsersController < ApplicationController
   include PostsHelper
   before_action :authenticate_mod, only: [:moderate]
+  before_action :unauthenticated, only: [:spy], unless: "can?(:view_user_spy)"
 
   def index
     @users = User.displayable.order(created_at: :desc, id: :desc)
@@ -21,6 +22,11 @@ class UsersController < ApplicationController
     replies = @user.replies.claimed.displayable(current_user)
     @top_replies = replies.favorited.order(favorite_count: :desc, created_at: :desc, id: :desc)
     @replies = replies.not_helpbot.order(created_at: :desc, id: :desc)
+  end
+
+  def spy
+    @user = User.find(params[:id])
+    @known_ips = @user.known_accounts
   end
 
   def update

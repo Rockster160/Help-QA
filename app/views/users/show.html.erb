@@ -12,9 +12,13 @@
     <ul class="moddable">
       <% if can?(:view_user_details) %>
         <li>IP: <a href="<%= mod_audit_index_path(ip: @user.ip_address) %>"><%= @user.ip_address %></a></li>
+        <li>Audit: <a href="<%= mod_audit_index_path(acting_uid: @user.id) %>"><%= @user.id %> <%= @user.username %></a></li>
       <% end %>
       <% if can?(:view_user_email) %>
         <li>Email: <a href="mailto:<%= @user.email %>"><%= @user.email %></a></li>
+      <% end %>
+      <% if can?(:view_user_spy) %>
+        <li><a href="<%= spy_user_path %>">Spy Accounts</a></li>
       <% end %>
       <li>--</li>
       <% if can?(:ban_users) %>

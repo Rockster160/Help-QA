@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       put :add_friend
       put :remove_friend
       post :moderate
+      get :spy
     end
     get "shoutbox" => "shouts#index", as: :shouts
     post "shoutbox" => "shouts#create"

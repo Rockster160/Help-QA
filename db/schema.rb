@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180328025138) do
+ActiveRecord::Schema.define(version: 20180510044147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(version: 20180328025138) do
     t.boolean "edit_replies",         default: false
     t.boolean "remove_replies",       default: false
     t.boolean "reports_moderation",   default: false
+    t.boolean "view_user_spy",        default: false
     t.index ["user_id"], name: "index_mod_abilities_on_user_id", using: :btree
   end
 

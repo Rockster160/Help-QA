@@ -22,6 +22,7 @@
 #  edit_replies         :boolean          default("false")
 #  remove_replies       :boolean          default("false")
 #  reports_moderation   :boolean          default("false")
+#  view_user_spy        :boolean          default("false")
 #
 
 # Unused: reports_moderation
