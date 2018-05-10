@@ -162,7 +162,7 @@ class Post < ApplicationRecord
 
   def to_csv
     csv_array = []
-    username = "sup,world"
+    csv_array << "Author,Body"
     csv_array << "#{username.gsub(',', '%,')},#{body.gsub(/(\r)?\n/, "\\n")}"
     replies.order(:created_at).each do |reply|
       csv_array << "#{reply.username.gsub(',', '%,')},#{reply.body.gsub(/(\r)?\n/, "\\n")}"
