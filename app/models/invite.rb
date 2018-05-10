@@ -23,6 +23,8 @@ class Invite < ApplicationRecord
 
   after_commit :broadcast_creation
 
+  validate :cannot_invite_helpbot
+
   def display_name
     if invited_anonymously?
       "Anonymous"
@@ -42,7 +44,6 @@ class Invite < ApplicationRecord
   private
 
   def broadcast_creation
-    puts "#Inviting #{invited_user.username}".colorize(:green)
     if read?
       ActionCable.server.broadcast("notifications_#{invited_user_id}", {})
     else
@@ -56,5 +57,9 @@ class Invite < ApplicationRecord
     else
       Rails.application.routes.url_helpers.post_path(post_id)
     end
+  end
+
+  def cannot_invite_helpbot
+    errors.add(:base, "Helpbot cannot be invited to posts") if invited_user.helpbot?
   end
 end

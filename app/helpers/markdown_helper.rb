@@ -193,6 +193,7 @@ module MarkdownHelper
   end
 
   def parse_markdown_character_with(char, text, &string_with_special_replace)
+    return text unless text.include? char
     text.gsub(regex_for_wrapping_character(char)) do
       _full_match, pre_char, inner_text, post_char = Regexp.last_match.to_a
       "#{pre_char}" + string_with_special_replace.call.gsub("$1", inner_text) + "#{post_char}"
@@ -201,9 +202,9 @@ module MarkdownHelper
 
   def regex_for_wrapping_character(character)
     regex_safe_character = Regexp.escape(character)
-    permitted_attached_chars = "[\\*\\_\\~\\`\\.\\?!,]*"
+    permitted_attached_chars = "[\\*\\_\\~\\`\\.\\?!,\\[\\]\\(\\)]*"
 
-    /((?:\s|^|\>)#{permitted_attached_chars})#{regex_safe_character}([^ ].*?[^ ]?)#{regex_safe_character}(#{permitted_attached_chars}(?:\s|$|\<))/
+    /((?:\s|^|\>|\]|\))#{permitted_attached_chars})#{regex_safe_character}([^ ].*?[^ ]?)#{regex_safe_character}(#{permitted_attached_chars}(?:\s|$|\<|\[|\())/
   end
 
   def parse_emails_in_text(text)
