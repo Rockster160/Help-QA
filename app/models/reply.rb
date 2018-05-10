@@ -165,17 +165,16 @@ class Reply < ApplicationRecord
     self.has_invited = true
     newly_invited_users = []
     tags_to_replace = []
-    unquoted_text.scan(/(?:@([^\s\`\@]+))/).flatten.each do |username_tag|
+    unquoted_text.scan(/(?:[^\\]?@([^\s\`\@]+))/).flatten.each do |username_tag|
       user_to_invite = User.by_username(username_tag)
-      if user_to_invite.present?
-        tags_to_replace << ["@#{username_tag}", user_to_invite]
-        invite = user_to_invite.invites.find_or_initialize_by(post: post, from_user: author, reply: self)
-        invite.invited_anonymously = posted_anonymously?
-        not_invited_yet = user_to_invite.subscriptions.where(post_id: post_id).none?
-        can_be_invited = (user_to_invite.friends?(author) || !user_to_invite.settings.friends_only?) && !user_to_invite.helpbot?
-        newly_invited_users << user_to_invite if !invite.persisted? && not_invited_yet && can_be_invited
-        invite.save
-      end
+      next if user_to_invite.nil?
+      tags_to_replace << ["@#{username_tag.first(user_to_invite.slug.length)}", user_to_invite]
+      invite = user_to_invite.invites.find_or_initialize_by(post: post, from_user: author, reply: self)
+      invite.invited_anonymously = posted_anonymously?
+      not_invited_yet = user_to_invite.subscriptions.where(post_id: post_id).none?
+      can_be_invited = (user_to_invite.friends?(author) || !user_to_invite.settings.friends_only?) && !user_to_invite.helpbot?
+      newly_invited_users << user_to_invite if !invite.persisted? && not_invited_yet && can_be_invited
+      invite.save
     end
     replaced_invites = body.dup
     tags_to_replace.uniq.each do |username_tag, user_to_invite|

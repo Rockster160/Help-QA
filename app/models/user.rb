@@ -80,7 +80,10 @@ class User < ApplicationRecord
   validate :not_archive
 
   def self.by_username(username)
-    find_by("users.slug = ?", username.parameterize)
+    found = find_by("users.slug = ?", username.parameterize)
+    return found if found
+    # Fallback to less match where the username matches the beginning of the passed value
+    find_by("? ILIKE users.slug||'%'", username.parameterize)
   end
 
   def current_sign_in_ip; super_ip || super; end
