@@ -31,6 +31,9 @@
           <a rel="nofollow" href="<%= mod_post_path(@post, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell_t, "Moderate") %></a>
         <% end %>
       <% end %>
+      <% if can?(:view_user_details) %>
+        <a rel="nofollow" href="<%= mod_audit_index_path(acting_uid: @post.author_id) %>"><%= hover_icon(:help, "Audit") %></a>
+      <% end %>
     </div>
   <% end %>
 <% end %>
