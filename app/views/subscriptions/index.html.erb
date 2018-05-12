@@ -1,30 +1,63 @@
 <% meta_title "Account Subscriptions • Help-QA.com" %>
 
-<%= paginate @subscriptions %>
 
-<% @subscriptions.each do |subscription| %>
-  <% post = subscription.post %>
-  <div class="unsubscribe-wrapper">
-    <div class="unsubscribe-btn-container">
-      <%= link_to account_subscription_path(subscription), method: :delete do %>
-        <button type="button" name="button">Unsubscribe</button>
-      <% end %>
-    </div>
-    <a href="<%= post_path(post) %>" class="post-container">
-      <%= avatar(post.avatar(size: 50), size: 50) %>
-      <div class="post-description">
-        <div class="title">
-          <%= post.title %>
-        </div>
-        <div class="post-information">
-          by <strong><%= post.username %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.reply_count || 0, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
-        </div>
-        <div class="tags">
-          Tags: <%= post.tags.count_order.first(5).map(&:tag_name).join(", ") %>
-        </div>
+<div class="small-up-half">
+  <div class="half">
+    <h3>Current Subscriptions</h3>
+    <%= paginate @subscriptions %>
+    <%= form_tag subscribe_account_subscriptions_path, method: :delete do %>
+      <button type="submit" name="button">Unsubscribe Selected</button>
+      <div class="master-checkbox">
+        <%= check_box_tag :master_unsubscribe, "", false, data: { masterCheckbox: true } %>
+        <%= label_tag :master_unsubscribe, "Check All" %>
       </div>
-    </a>
+      <% @subscriptions.each do |subscription| %>
+        <% post = subscription.post %>
+        <% next if post.nil? %>
+        <div class="unsubscribe-wrapper">
+          <!-- account_subscription_path(subscription), method: :delete -->
+          <%= check_box_tag :"unsubscribe[]", post.id, false, data: { followsMaster: "#master_unsubscribe" } %>
+          <a href="<%= post_path(post) %>" class="post-container">
+            <%= avatar(post.avatar(size: 30), size: 30) %>
+            <div class="post-description">
+              <div class="title"><%= post.title %></div>
+              <div class="post-information">
+                by <strong><%= post.username %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.reply_count || 0, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    <% end %>
+    <%= paginate @subscriptions %>
   </div>
-<% end %>
-
-<%= paginate @subscriptions %>
+  <div class="half">
+    <h3>Previous Subscriptions</h3>
+    <%= paginate @unsubscriptions, param_name: :unsubbed_page %>
+    <%= form_tag subscribe_account_subscriptions_path, method: :post do %>
+      <button type="submit" name="button">Subscribe Selected</button>
+      <div class="master-checkbox">
+        <%= check_box_tag :master_subscribe, "", false, data: { masterCheckbox: true } %>
+        <%= label_tag :master_subscribe, "Check All" %>
+      </div>
+      <% @unsubscriptions.each do |subscription| %>
+        <% post = subscription.post %>
+        <% next if post.nil? %>
+        <div class="unsubscribe-wrapper">
+          <!-- account_subscription_path(subscription), method: :delete -->
+          <%= check_box_tag :"subscribe[]", post.id, false, data: { followsMaster: "#master_subscribe" } %>
+          <a href="<%= post_path(post) %>" class="post-container">
+            <%= avatar(post.avatar(size: 30), size: 30) %>
+            <div class="post-description">
+              <div class="title"><%= post.title %></div>
+              <div class="post-information">
+                by <strong><%= post.username %></strong><%#= " from #{post.location}" if post.location.present? %> on <%= post.created_at.to_formatted_s(:short_with_time) %> - <%= pluralize_with_delimiter(post.reply_count || 0, "reply") %> and <%= pluralize_with_delimiter(post.views.count, "view") %>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% end %>
+    <% end %>
+    <%= paginate @unsubscriptions, param_name: :unsubbed_page %>
+  </div>
+</div>

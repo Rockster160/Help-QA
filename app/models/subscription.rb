@@ -6,8 +6,8 @@
 #  post_id          :integer
 #  user_id          :integer
 #  created_at       :datetime
-#  unsubscribed     :boolean
 #  last_notified_at :datetime
+#  unsubscribed_at  :datetime
 #
 
 class Subscription < ApplicationRecord
@@ -15,10 +15,10 @@ class Subscription < ApplicationRecord
   belongs_to :post
   belongs_to :user
 
-  scope :subscribed, -> { where(unsubscribed: [nil, false]) }
+  scope :subscribed,   -> { where(unsubscribed_at: nil) }
+  scope :unsubscribed, -> { where.not(unsubscribed_at: nil) }
 
-  def subscribed?
-    !unsubscribed?
-  end
+  def unsubscribed?; unsubscribed_at?; end
+  def subscribed?; !unsubscribed?; end
 
 end

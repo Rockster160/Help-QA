@@ -31,16 +31,28 @@
   }
 }
 
-.unsubscribe-wrapper {
-  position: relative;
-
-  .unsubscribe-btn-container {
-    position: absolute;
-    top: 5px;
-    left: 0;
+.ctr-subscriptions.act-index {
+  .master-checkbox {
+    font-size: 14px;
+    vertical-align: middle;
   }
-  .post-container {
-    padding-left: 100px;
+  .unsubscribe-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+
+    input[type=checkbox] {
+      margin-top: 15px;
+      margin-right: 10px;
+    }
+    .post-container {
+      @include split-page(30px);
+
+      display: flex;
+
+      .title { font-size: 12px; }
+      .post-information { font-size: 8px; }
+    }
   }
 }
 

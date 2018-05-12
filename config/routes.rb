@@ -82,7 +82,12 @@ Rails.application.routes.draw do
     post :avatar, action: :update_avatar
     get :notifications
 
-    resources :subscriptions, only: [ :index, :destroy ]
+    resources :subscriptions, only: [ :index ] do
+      collection do
+        post :subscribe
+        delete :subscribe, action: :unsubscribe
+      end
+    end
     resources :friends, only: [ :index, :update, :destroy ]
     resources :profile, only: [ :index ] do
       post :update, on: :collection

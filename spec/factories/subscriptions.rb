@@ -6,8 +6,8 @@
 #  post_id          :integer
 #  user_id          :integer
 #  created_at       :datetime
-#  unsubscribed     :boolean
 #  last_notified_at :datetime
+#  unsubscribed_at  :datetime
 #
 
 FactoryGirl.define do

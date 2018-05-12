@@ -2,7 +2,20 @@ class SubscriptionsController < ApplicationController
   before_action :authenticate_user
 
   def index
-    @subscriptions = current_user.subscriptions.order(created_at: :desc).page(params[:page])
+    @subscriptions = current_user.subscriptions.joins(:post).subscribed.order(created_at: :desc).page(params[:page])
+    @unsubscriptions = current_user.subscriptions.joins(:post).unsubscribed.order(unsubscribed_at: :desc).page(params[:unsubbed_page])
+  end
+
+  def subscribe
+    subscriptions = current_user.subscriptions.where(post_id: params[:subscribe])
+    subscriptions.update_all(unsubscribed_at: nil)
+    redirect_to account_subscriptions_path
+  end
+
+  def unsubscribe
+    subscriptions = current_user.subscriptions.where(post_id: params[:unsubscribe])
+    subscriptions.update_all(unsubscribed_at: DateTime.current)
+    redirect_to account_subscriptions_path
   end
 
   def destroy
