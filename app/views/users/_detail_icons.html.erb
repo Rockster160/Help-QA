@@ -3,6 +3,7 @@
   <%= hover_icon(line_status, line_status) %>
   <%= hover_icon("star", "Help-QA Volunteer Moderator") if user.mod? && !user.admin? %>
   <%= hover_icon("shield", "Help-QA Admin") if user.admin? %>
+  <%= hover-icon("grave", "Deceased") if user.deceased? %>
   <% if user.verified? %>
     <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, user.verified_at)})") %>
   <% else %>

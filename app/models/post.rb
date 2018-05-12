@@ -126,7 +126,7 @@ class Post < ApplicationRecord
   end
 
   def preview_content
-    full_preview = body[title.length..-1].split("\n").reject(&:blank?).first
+    full_preview = body[title.length..-1].to_s.split("\n").reject(&:blank?).first
     cut_preview = cut_string_before_index_at_char(full_preview, 500)
     full_preview.to_s.length == cut_preview.to_s.length ? "#{full_preview}" : "#{cut_preview}..."
   end
@@ -164,7 +164,7 @@ class Post < ApplicationRecord
     csv_array = []
     csv_array << "Author,Body"
     csv_array << "#{username.gsub(',', '%,')},#{body.gsub(/(\r)?\n/, "\\n")}"
-    replies.order(:created_at).each do |reply|
+    replies.order(:created_at, :id).each do |reply|
       csv_array << "#{reply.username.gsub(',', '%,')},#{reply.body.gsub(/(\r)?\n/, "\\n")}"
     end
     csv_array.join("\n")

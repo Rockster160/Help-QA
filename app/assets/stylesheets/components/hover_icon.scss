@@ -57,6 +57,9 @@
     &.quote        { background-position: -688px 0; }
     &.medal-add    { background-position: -704px 0; }
     &.medal        { background-position: -720px 0; }
+
+    &.grave { background-image: image-url("custom_sheet.png"); }
+    &.grave        { background-position:      0 0; }
   }
   &.small .icon {
     zoom: 0.6;

@@ -38,6 +38,7 @@
 #  super_ip                   :inet
 #  revoked_public_edit_access :boolean
 #  anonicon_seed              :string
+#  deceased_at                :datetime
 #
 
 require 'rails_helper'
