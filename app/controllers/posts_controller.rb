@@ -101,7 +101,7 @@ class PostsController < ApplicationController
     post = Post.find(params[:id])
     subscription = post.subscriptions.find_or_create_by(user_id: current_user.id)
 
-    if subscription.update(unsubscribed_at: true_param?(params[:subscribe]) ? nil : DateTime.current)
+    if subscription.update(unsubscribed_at: true_param?(:subscribe) ? nil : DateTime.current)
       notice_message = if subscription.subscribed?
         "You'll now receive notifications when there are new replies to this post."
       else
