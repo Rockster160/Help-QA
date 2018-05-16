@@ -15,7 +15,6 @@
         <% post = subscription.post %>
         <% next if post.nil? %>
         <div class="unsubscribe-wrapper">
-          <!-- account_subscription_path(subscription), method: :delete -->
           <%= check_box_tag :"unsubscribe[]", post.id, false, data: { followsMaster: "#master_unsubscribe" } %>
           <a href="<%= post_path(post) %>" class="post-container">
             <%= avatar(post.avatar(size: 30), size: 30) %>
@@ -44,7 +43,6 @@
         <% post = subscription.post %>
         <% next if post.nil? %>
         <div class="unsubscribe-wrapper">
-          <!-- account_subscription_path(subscription), method: :delete -->
           <%= check_box_tag :"subscribe[]", post.id, false, data: { followsMaster: "#master_subscribe" } %>
           <a href="<%= post_path(post) %>" class="post-container">
             <%= avatar(post.avatar(size: 30), size: 30) %>
