@@ -99,7 +99,7 @@ class PostsController < ApplicationController
 
   def subscribe
     post = Post.find(params[:id])
-    subscription = post.subscriptions.find_or_create_by(user_id: current_user.id)
+    subscription = current_user.subscriptions.find_or_create_by(post_id: post.id)
 
     if subscription.update(unsubscribed_at: true_param?(:subscribe) ? nil : DateTime.current)
       notice_message = if subscription.subscribed?
