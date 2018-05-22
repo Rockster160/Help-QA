@@ -42,3 +42,21 @@ keyEvent = function(char) {
       return char.charCodeAt(0)
   }
 }
+
+seconds = second = function(count) { return 1000 * count || 1 }
+minutes = minute = function(count) { return 60 * seconds(count) }
+hours = hour = function(count) { return 60 * minutes(count) }
+days = day = function(count) { return 24 * hours(count) }
+
+function parseParams(str) {
+  var pieces = str.split("&"), data = {}, i, parts;
+  for (i = 0; i < pieces.length; i++) {
+    parts = pieces[i].split("=");
+    if (parts.length < 2) {
+      parts.push("");
+    }
+    data[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+  }
+  return data;
+}
+params = parseParams(window.location.search.slice(1))

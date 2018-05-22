@@ -224,7 +224,7 @@ module Accountable
     username_reserved = RESERVED_WORDS_FOR_USERNAME.include?(self.username.to_s.downcase)
     username_profane = ObscenityChecker.maybe_profane?(self.username)
     if username_reserved || username_profane || self.username.nil?
-      self.username = "Guest#{User.count}"
+      self.username = "Guest#{User.count + 1}"
     end
     self.username.try(:squish!)
   end
