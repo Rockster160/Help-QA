@@ -2,8 +2,8 @@ class SubscriptionsController < ApplicationController
   before_action :authenticate_user
 
   def index
-    @subscriptions = current_user.subscriptions.joins(:post).subscribed.order(created_at: :desc).page(params[:page])
-    @unsubscriptions = current_user.subscriptions.joins(:post).unsubscribed.order(unsubscribed_at: :desc).page(params[:unsubbed_page])
+    @subscriptions = current_user.subscriptions.not_removed.joins(:post).subscribed.order(created_at: :desc).page(params[:page])
+    @unsubscriptions = current_user.subscriptions.not_removed.joins(:post).unsubscribed.order(unsubscribed_at: :desc).page(params[:unsubbed_page])
   end
 
   def subscribe

@@ -11,7 +11,7 @@
       <% end %>
       <div class="pending-reply info <%= 'display-changes' if display_edits %>" data-timestamp="<%= reply.created_at.to_i %>">
         <% author_name = @post.posted_anonymously? && @post.author == reply.acting_user ? "Anonymous" : reply.acting_user.username %>
-        <%= author_name %> <%= change %> this post <%= timeago(reply.created_at) %>.
+        <strong><%= author_name %></strong> <%= change %> this post <%= timeago(reply.created_at) %>.
         <%= content_tag :i, "", class: "fa fa-chevron-down toggle-reply-display" if change == "edited" %>
       </div>
       <% if display_edits %>

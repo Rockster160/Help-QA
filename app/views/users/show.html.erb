@@ -109,12 +109,12 @@
           <td>Favorites, Fans, and Friends</td>
         </tr>
         <tr class="user-stat-value">
-          <td data-label="Posts" title="Posts"><a href="<%= history_path(by_user: @user.username) %>" class="underline"><%= number_with_delimiter(@user.posts.claimed.count) %></a></td> <%# Posts %>
-          <td data-label="Subscriptions" title="Subscriptions"><%= number_with_delimiter(@user.subscriptions.count) %></td> <%# Subscriptions %>
-          <td data-label="Replies" title="Replies"><a href="<%= user_replies_path(@user) %>" class="underline"><%= number_with_delimiter(@user.replies.claimed.count) %></a></td> <%# Replies %>
+          <td data-label="Posts" title="Posts"><a href="<%= history_path(by_user: @user.username) %>" class="underline"><%= number_with_delimiter(@user.posts.claimed.not_removed.count) %></a></td> <%# Posts %>
+          <td data-label="Subscriptions" title="Subscriptions"><%= number_with_delimiter(@user.subscriptions.not_removed.count) %></td> <%# Subscriptions %>
+          <td data-label="Replies" title="Replies"><a href="<%= user_replies_path(@user) %>" class="underline"><%= number_with_delimiter(@user.replies.claimed.not_removed.count) %></a></td> <%# Replies %>
           <td data-label="Shoutouts" title="Shoutouts"><a href="<%= user_shouts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.recent_shouts.count) %></a></td> <%# Shoutouts %>
           <td data-label="Tags Followed" title="Tags Followed"><%= number_with_delimiter(@user.tags_from_posts.count) %></td> <%# Tags Followed %>
-          <td data-label="Posts Touched" title="Posts Touched"><%= number_with_delimiter(@user.replies.claimed.pluck(:post_id).uniq.count) %></td> <%# Posts Touched %>
+          <td data-label="Posts Touched" title="Posts Touched"><%= number_with_delimiter(@user.replies.claimed.not_removed.pluck(:post_id).uniq.count) %></td> <%# Posts Touched %>
           <td data-label="Favs/Fans/Friends" title="Favorites, Fans, and Friends"><%= number_with_delimiter(@user.favorites.count) %>/<%= number_with_delimiter(@user.fans.count) %>/<%= number_with_delimiter(@user.friends.count) %></td> <%# Favorites, Fans, and Friends %>
         </tr>
       </table>

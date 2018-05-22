@@ -17,6 +17,7 @@ class Subscription < ApplicationRecord
 
   scope :subscribed,   -> { where(unsubscribed_at: nil) }
   scope :unsubscribed, -> { where.not(unsubscribed_at: nil) }
+  scope :not_removed, -> { joins(:post).merge(Post.not_removed) }
 
   def unsubscribed?; unsubscribed_at?; end
   def subscribed?; !unsubscribed?; end
