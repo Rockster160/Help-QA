@@ -59,6 +59,7 @@ $(".ctr-posts.act-show").ready(function() {
   }
 
   $(".new-reply-container form").submit(function(evt) {
+    if ($("body.signed-in").length == 0) { return }
     var $form = $(this)
     evt.preventDefault()
     $.post(this.action, $form.serializeArray()).success(function(data) {

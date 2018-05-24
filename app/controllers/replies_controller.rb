@@ -16,20 +16,17 @@ class RepliesController < ApplicationController
   end
 
   def create
-    is_new_user = !user_signed_in?
-    @user = create_and_sign_in_user_by_email(params.dig(:new_user, :email)) if is_new_user
+    request_acceptance unless user_signed_in?
+    return unless user_signed_in?
+
+    @user = current_user
     @post = Post.find(params[:post_id])
 
     create_or_update_reply
     flash_hash = @errors.any? ? {alert: @errors.first} : {}
 
-    additional_data = {}
-    if request.xhr? && is_new_user && @errors.none?
-      additional_data[:redirect] = post_path(@post)
-    end
-
     respond_to do |format|
-      format.json { render json: {errors: @errors}.merge(additional_data) }
+      format.json { render json: {errors: @errors} }
       format.html { redirect_to post_path(@post), flash_hash }
     end
   end

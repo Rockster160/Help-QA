@@ -1,0 +1,35 @@
+<%
+def name_from_keys(keys)
+  keys.map.with_index { |k,idx| idx == 0 ? k : "[#{k}]" }.join("")
+end
+
+def generate_hidden_fields(nested_params, keys=[])
+  nested_params.map do |param_key, param_val|
+    new_keys = keys + [param_key]
+    case param_val.class.to_s
+    when "Hash", "ActiveSupport::HashWithIndifferentAccess"
+      generate_hidden_fields(param_val, new_keys)
+    when "Array"
+      generate_hidden_fields(param_val, new_keys + [nil])
+    else
+      hidden_field_tag name_from_keys(new_keys),  param_val
+    end
+  end.join(" ")
+end
+%>
+
+<%= form_tag @url, method: @method do %>
+  <%= generate_hidden_fields(@params).html_safe %>
+  <div class="skinny-container">
+    <p>Before creating your account, we encourage you to review our <%= link_to "Privacy Policy", privacy_policy_path %> and <%= link_to "Terms of Service", terms_of_service_path %>.</p>
+    <p>We promise to never share your email or any other personal information without your consent where applicable by law.</p>
+    <div class="form-field">
+      <%= check_box_tag :accept_privacy, true, false, required: true %>
+      <%= label_tag :accept_privacy, "By checking this box, you signify that you've read and agreed with our privacy policy and terms of service linked above." %>
+    </div>
+    <br>
+    <div class="form-field">
+      <%= submit_tag "Accept & Submit" %>
+    </div>
+  </div>
+<% end %>

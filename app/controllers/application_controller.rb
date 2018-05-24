@@ -104,6 +104,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def request_acceptance
+    user_email = params.dig(:new_user, :email) || params.dig(:user, :email) || params.dig(:user, :login) || params.dig(:login)
+    return create_and_sign_in_user_by_email(user_email) if true_param?(:accept_privacy)
+    @url = request.path
+    @method = request.method
+    @params = params.permit!.to_h.except(:controller, :action, :authenticity_token, :utf8, :commit)
+
+    render "users/accept_terms"
+  end
+
   def create_and_sign_in_user_by_email(email)
     user = User.create(email: email)
     sign_in(user) if user.persisted?
@@ -163,11 +173,11 @@ class ApplicationController < ActionController::Base
   end
 
   def true_param?(param_key)
-    params[param_key].present? && params[param_key] == "true"
+    params[param_key].present? && params[param_key].to_s.downcase.in?(["true", "t", "1"])
   end
 
   def false_param?(param_key)
-    params[param_key].present? && params[param_key] == "false"
+    params[param_key].present? && params[param_key].to_s.downcase.in?(["false", "f", "0"])
   end
 
   def set_theme
