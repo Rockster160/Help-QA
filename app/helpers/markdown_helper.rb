@@ -19,7 +19,7 @@ module MarkdownHelper
     except = [except].flatten
 
     # Non-default options: [:inline_previews, :ignore_previews]
-    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :allow_link_previews]
+    default_markdown_options = [:quote, :tags, :bold, :italic, :strike, :code, :codeblock, :poll, :allow_link_previews, :whisper, :whisper_reveal]
     default_markdown_options = only if only.is_a?(Array)
     default_markdown_options -= except
     default_markdown_options += with
@@ -33,8 +33,10 @@ module MarkdownHelper
     text = escape_html_characters(text, render_html: render_html)
     text = escape_escaped_markdown_characters(text)
     text = filter_nested_quotes(text, max_nest_level: 3) if @markdown_options[:quote]
+    text = filter_nested_whispers(text, max_nest_level: 3) if @markdown_options[:whisper]
     text = escape_escaped_markdown_characters(text)
     text = parse_directive_quotes(text) if @markdown_options[:quote]
+    text = parse_directive_whispers(text) if @markdown_options[:whisper]
     text = invite_tagged_users(text) if @markdown_options[:tags]
     text = link_previews(text) unless @markdown_options[:ignore_previews]
     text = parse_markdown(text)
@@ -77,7 +79,7 @@ module MarkdownHelper
       break if last_start_quote_idx.nil?
       next_end_quote_idx = text[last_start_quote_idx..-1].index(/\[\/quote\]/)
       break if next_end_quote_idx.nil?
-      next_end_quote_idx += last_start_quote_idx + 7
+      next_end_quote_idx += last_start_quote_idx + "[quote]".length
 
       text[last_start_quote_idx..next_end_quote_idx] = text[last_start_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do
         quote_text = $2
@@ -91,6 +93,28 @@ module MarkdownHelper
     # Remove whitespace before/after quote blocks
     whitespace_regex = /(?:\<\/?(?:p|br)\>|\s|\n|\r)*/
     text.gsub(/#{whitespace_regex}(\<\/?quote\>)#{whitespace_regex}/) { "</p>#{$1}<p>" }
+  end
+
+  def parse_directive_whispers(text)
+    loop do
+      last_start_whisper_idx = text.rindex(/\[whisper\]/)
+      break if last_start_whisper_idx.nil?
+      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/)
+      break if next_end_whisper_idx.nil?
+      next_end_whisper_idx += last_start_whisper_idx + "[whisper]".length
+
+      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/) do
+        if @markdown_options[:whisper_reveal]
+          "</p><whisper><div class=\"whispercontrol\"><b>Whisper</b> <small><i>(Click to reveal)</i></small></div><div class=\"whispercontent hidden\"><p>#{$1}</p></div></whisper><p>"
+        else
+          "</p><whisper><div class=\"whispercontrol\"><b>Whisper</b> <small><i>(hidden)</i></small></div></whisper><p>"
+        end
+      end
+    end
+
+    # Remove whitespace before/after whisper blocks
+    whitespace_regex = /(?:\<\/?(?:p|br)\>|\s|\n|\r)*/
+    text.gsub(/#{whitespace_regex}(\<\/?whisper\>)#{whitespace_regex}/) { "</p>#{$1}<p>" }
   end
 
   def escape_html_tags(text)
@@ -338,9 +362,9 @@ module MarkdownHelper
     "#{text}#{add_to_text.uniq.join(" ")}"
   end
 
-  def generate_unique_token(text)
+  def generate_unique_token(text, key:)
     loop do
-      new_token = "quotetoken" + ('a'..'z').to_a.sample(10).join("")
+      new_token = "#{key}token" + ('a'..'z').to_a.sample(10).join("")
       break new_token unless text.include?(new_token)
     end
   end
@@ -354,10 +378,10 @@ module MarkdownHelper
       break if last_start_quote_idx.nil?
       next_end_quote_idx = text[last_start_quote_idx..-1].index(/\[\/quote\]/)
       break if next_end_quote_idx.nil?
-      next_end_quote_idx += last_start_quote_idx + 7
+      next_end_quote_idx += last_start_quote_idx + "[quote]".length
 
       text[last_start_quote_idx..next_end_quote_idx] = text[last_start_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do |found_match|
-        token = generate_unique_token(text)
+        token = generate_unique_token(text, key: :quote)
         quotes << [token, found_match]
         token
       end
@@ -375,6 +399,38 @@ module MarkdownHelper
         quote_author = quote_to_unwrap[/\[quote(.*?)\]/][7..-2]
         quote_from = quote_author.presence ? " from #{escape_markdown_characters_in_string(quote_author)}" : ""
         "<br><br>_*\\[quote#{quote_from}]*_<br><br>"
+      end
+    end
+  end
+
+  def filter_nested_whispers(text, max_nest_level:)
+    text = text.dup
+    whispers = []
+
+    loop do
+      last_start_whisper_idx = text.rindex(/\[whisper\]/)
+      break if last_start_whisper_idx.nil?
+      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/)
+      break if next_end_whisper_idx.nil?
+      next_end_whisper_idx += last_start_whisper_idx + "[whisper]".length
+
+      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/) do |found_match|
+        token = generate_unique_token(text, key: :whisper)
+        whispers << [token, found_match]
+        token
+      end
+    end
+
+    unwrap_whispers(text, whispers: whispers, max_nest_level: max_nest_level)
+  end
+
+  def unwrap_whispers(text, depth: 0, whispers:, max_nest_level:)
+    text.gsub(/whispertoken[a-z]{10}/).each do |found_token|
+      whisper_to_unwrap = whispers.select { |(token, whisper)| token == found_token }.first[1]
+      if depth < max_nest_level
+        unwrap_whispers(whisper_to_unwrap, depth: depth + 1, whispers: whispers, max_nest_level: max_nest_level)
+      else
+        "<br><br>_*\\[whisper]*_<br><br>"
       end
     end
   end

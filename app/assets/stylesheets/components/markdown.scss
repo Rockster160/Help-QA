@@ -1,10 +1,22 @@
-quote {
+quote, whisper {
   display: block;
   margin: 3px 0 3px 15px;
   padding: 0 10px;
   background: $quote-background;
   border: 1px solid $quote-border;
   border-left: 4px solid $quote-border-left;
+}
+whisper {
+  background: adjust-hue($quote-background, 70%);
+  border: 1px solid adjust-hue($quote-border, 70%);
+  border-left: 4px solid adjust-hue($quote-border-left, 70%);
+
+  .whispercontrol {
+    font-size: 10px;
+    border-bottom: 1px solid adjust-hue($quote-border, 70%);
+    cursor: pointer;
+  }
+  .whispercontent {}
 }
 
 .tagged-user {

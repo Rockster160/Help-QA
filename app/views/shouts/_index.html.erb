@@ -1,6 +1,7 @@
 <% hide_shouttrail ||= false %>
 <% shouts.each do |shout| %>
   <% shouter = shout.sent_from %>
+  <% shoutee = shout.sent_to %>
   <div class="shout-container" id="shout-<%= shout.id %>">
     <div class="shout-author">
       <%= avatar(shouter.avatar(size: 30), size: 30) %>
@@ -19,11 +20,13 @@
         <% if can?(:remove_shouts) %>
           <%= hover_icon(:cross, "Remove Shout", href: shout_path(shout), method: :delete) %>
         <% end %>
-        <%= hover_icon("flag-red", "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shout.sent_to, anchor: "shout-#{shout.id}"))) %>
+        <%= hover_icon("flag-red", "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shoutee, anchor: "shout-#{shout.id}"))) %>
       </div>
     </div>
     <div class="shout-body">
-      <%= markdown(posted_by_user: shouter) { shout.body } %>
+      <% markdown_opts = {} %>
+      <% markdown_opts[:except] = [:whisper_reveal] unless current_mod? || current_user == shoutee || current_user == shouter %>
+      <%= markdown(posted_by_user: shouter, **markdown_opts) { shout.body } %>
     </div>
   </div>
   <hr>
