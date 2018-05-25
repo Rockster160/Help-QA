@@ -28,7 +28,6 @@
   <% class_list = ["ctr-#{controller_name}", "act-#{action_name}"] %>
   <% class_list << (user_signed_in? && !current_user.try(:settings).try(:censor_inappropriate_language) ? "no-censor" : "apply-censor") %>
   <% class_list << "mod" if current_mod? %>
-  <% class_list << "signed-in" if user_signed_in? %>
   <body class="<%= content_for :body_classes %> <%= class_list.join(' ') %> <%= 'archive' if Rails.env.archive? %>">
     <%= render 'layouts/flashes' %>
     <%= render 'layouts/navigation' %>

@@ -156,10 +156,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    request_acceptance unless user_signed_in?
-    return unless user_signed_in?
-
-    user = current_user
+    user = current_user || create_and_sign_in_user_by_email(params.dig(:new_user, :email))
 
     unless user.try(:persisted?)
       return redirect_to root_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously]), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
