@@ -38,10 +38,27 @@ class ShoutsController < ApplicationController
     end
   end
 
+  def update
+    @shout = Shout.find(params[:id])
+    return redirect_back(fallback_location: user_shouts_path(@shout.sent_to)) unless current_mod? || current_user == @shout.sent_from
+
+    if @shout.update(shout_params)
+      redirect_to user_shouttrail_path(@shout.sent_from, @shout.sent_to)
+    else
+      redirect_to user_shouttrail_path(@shout.sent_from, @shout.sent_to)
+    end
+  end
+
   def destroy
     shout = Shout.find(params[:id])
     shout.update(removed_at: DateTime.current)
     redirect_back fallback_location: user_shouts_path(shout.sent_to)
+  end
+
+  private
+
+  def shout_params
+    params.require(:shout).permit(:restore, :body)
   end
 
 end

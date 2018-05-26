@@ -11,7 +11,7 @@
     <div class="report">
       <%= hover_icon("flag-red", "Report this message to moderators", href: feedback_path(report_url: chat_url(message: message.id))) %>
       <% if can?(:remove_chat_messages) %>
-        <%= hover_icon(:cross, "Remove Message", href: remove_message_path(message)) %>
+        <%= hover_icon(:bin_t, "Remove Message", href: remove_message_path(message)) %>
       <% end %>
     </div>
     <div class="timestamp"><div class="timestamp-wrapper"><%= message.created_at.strftime("%H:%M") %></div></div>

@@ -44,6 +44,16 @@
         &.highlight {
           background: linear-gradient(to bottom, lighten($help-default, 40%), lighten($help-default, 45%));
         }
+        &.removed {
+          border: 2px solid red;
+          border-top: none;
+        }
+      }
+      .removed-shout {
+        border: 2px solid red;
+        background-color: lighten(red, 40%);
+        padding: 8px;
+        font-size: 10px;
       }
     }
     .new-shout {

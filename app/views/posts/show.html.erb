@@ -5,9 +5,9 @@
     <div class="mod-tools exempt-split">
       <% if can?(:remove_posts) %>
         <% if @post.removed? %>
-          <a rel="nofollow" href="<%= mod_post_path(@post, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Mark post as Safe") %></a>
+          <a rel="nofollow" href="<%= mod_post_path(@post, remove: false) %>" data-method="POST"><%= hover_icon(:bin, "Restore deleted post") %></a>
         <% else %>
-          <a rel="nofollow" href="<%= mod_post_path(@post, remove: true) %>" data-method="POST"><%= hover_icon(:bin_t, "Mark post as NSFW/Adult") %></a>
+          <a rel="nofollow" href="<%= mod_post_path(@post, remove: true) %>" data-method="POST"><%= hover_icon(:bin_t, "Delete Post") %></a>
         <% end %>
       <% end %>
       <% if can?(:adult_mark_posts) %>
@@ -124,7 +124,7 @@
 </div>
 
 <div class="replies post-section">
-  <div class="post-section-detail">Replies (<span class="reply-counter"><%= @replies.count %></span>)</div>
+  <div class="post-section-detail">Replies (<span class="reply-counter"><%= @post.replies.not_helpbot.count %></span>)</div>
   <div class="post-section-content">
     <div class="replies-container">
       <%= render partial: "replies/index", locals: { replies: @replies_with_notifications } %>

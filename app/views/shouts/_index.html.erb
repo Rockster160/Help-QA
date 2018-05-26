@@ -1,8 +1,14 @@
 <% hide_shouttrail ||= false %>
 <% shouts.each do |shout| %>
+  <% if shout.removed? %>
+    <div class="removed-shout <%= 'clickable' if current_mod? %>">Shout removed</div>
+    <% unless current_mod? %>
+      <hr><% next %>
+    <% end %>
+  <% end %>
   <% shouter = shout.sent_from %>
   <% shoutee = shout.sent_to %>
-  <div class="shout-container" id="shout-<%= shout.id %>">
+  <div class="shout-container <%= 'removed hidden' if shout.removed? %>" id="shout-<%= shout.id %>">
     <div class="shout-author">
       <%= avatar(shouter.avatar(size: 30), size: 30) %>
       <div class="author-details">
@@ -17,8 +23,12 @@
         </div>
       </div>
       <div class="report-flag">
-        <% if can?(:remove_shouts) %>
-          <%= hover_icon(:cross, "Remove Shout", href: shout_path(shout), method: :delete) %>
+        <% if shout.removed? %>
+          <%= hover_icon(:bin_t, "Restore Shout", href: shout_path(shout, shout: {restore: true}), method: :patch) if current_mod? && can?(:remove_shouts) %>
+        <% else %>
+          <% if can?(:remove_shouts) || shouter == current_user %>
+            <%= hover_icon(:bin, "Remove Shout", href: shout_path(shout), method: :delete, data: { confirm: "Are you sure you want to remove this shout?" }) %>
+          <% end %>
         <% end %>
         <%= hover_icon("flag-red", "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shoutee, anchor: "shout-#{shout.id}"))) %>
       </div>

@@ -117,7 +117,7 @@ Rails.application.routes.draw do
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
   end
-  delete "shout/:id" => "shouts#destroy", as: :shout
+  resources :shouts, only: [:update, :destroy]
 
   resources :webhooks, only: [] do
     collection do

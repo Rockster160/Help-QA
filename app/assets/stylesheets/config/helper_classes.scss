@@ -21,3 +21,5 @@
 .split-half, .small-up-half { @include split-page(50%); }
 
 body:not(.mod) .mod-only { display: none !important; }
+
+.clickable { cursor: pointer; }

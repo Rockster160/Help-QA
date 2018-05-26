@@ -114,7 +114,7 @@
           <td data-label="Replies" title="Replies"><a href="<%= user_replies_path(@user) %>" class="underline"><%= number_with_delimiter(@user.replies.claimed.not_removed.count) %></a></td> <%# Replies %>
           <td data-label="Shoutouts" title="Shoutouts"><a href="<%= user_shouts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.recent_shouts.count) %></a></td> <%# Shoutouts %>
           <td data-label="Tags Followed" title="Tags Followed"><%= number_with_delimiter(@user.tags_from_posts.count) %></td> <%# Tags Followed %>
-          <td data-label="Posts Touched" title="Posts Touched"><%= number_with_delimiter(@user.replies.claimed.not_removed.pluck(:post_id).uniq.count) %></td> <%# Posts Touched %>
+          <td data-label="Posts Touched" title="Posts Touched"><%= number_with_delimiter((@user.replies.pluck(:post_id) + @user.posts.pluck(:id)).uniq.count) %></td> <%# Posts Touched %>
           <td data-label="Favs/Fans/Friends" title="Favorites, Fans, and Friends"><%= number_with_delimiter(@user.favorites.count) %>/<%= number_with_delimiter(@user.fans.count) %>/<%= number_with_delimiter(@user.friends.count) %></td> <%# Favorites, Fans, and Friends %>
         </tr>
       </table>
