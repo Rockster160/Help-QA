@@ -97,13 +97,13 @@ module MarkdownHelper
 
   def parse_directive_whispers(text)
     loop do
-      last_start_whisper_idx = text.rindex(/\[whisper\]/)
+      last_start_whisper_idx = text.rindex(/\[whisper\]/i)
       break if last_start_whisper_idx.nil?
-      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/)
+      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/i)
       break if next_end_whisper_idx.nil?
       next_end_whisper_idx += last_start_whisper_idx + "[whisper]".length
 
-      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/) do
+      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/i) do
         if @markdown_options[:whisper_reveal]
           "</p><whisper><div class=\"whispercontrol\"><b>Whisper</b> <small><i>(Click to reveal)</i></small></div><div class=\"whispercontent hidden\"><p>#{$1}</p></div></whisper><p>"
         else
@@ -408,13 +408,13 @@ module MarkdownHelper
     whispers = []
 
     loop do
-      last_start_whisper_idx = text.rindex(/\[whisper\]/)
+      last_start_whisper_idx = text.rindex(/\[whisper\]/i)
       break if last_start_whisper_idx.nil?
-      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/)
+      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/i)
       break if next_end_whisper_idx.nil?
       next_end_whisper_idx += last_start_whisper_idx + "[whisper]".length
 
-      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/) do |found_match|
+      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/i) do |found_match|
         token = generate_unique_token(text, key: :whisper)
         whispers << [token, found_match]
         token
