@@ -119,6 +119,7 @@ class ApplicationController < ActionController::Base
         current_user.see!
         exception_data.merge!({ current_user: current_user })
       end
+      Sherlock.exception_data = exception_data
       exception_data.merge!({ params: params.permit!.except(:action, :controller).to_h })
       request.env['exception_notifier.exception_data'] = exception_data
     end

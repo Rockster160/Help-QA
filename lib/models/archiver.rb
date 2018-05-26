@@ -214,7 +214,6 @@ class Archiver
           end
         rescue => e
           puts "#{e} - #{row}: #{e.backtrace.join("\n")}".colorize(:red)
-          binding.pry
         end
         show_current_count("#{klass.name}s", total_count)
       end
