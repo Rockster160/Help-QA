@@ -42,12 +42,12 @@ class RepliesController < ApplicationController
     reply.touch # Trigger an update so it doesn't appear as a new object.
 
     modded_attrs = {}
-    modded_attrs[:in_moderation] = true if true_param?(:in_moderation)
-    modded_attrs[:in_moderation] = false if false_param?(:in_moderation) || true_param?(:remove) || true_param?(:adult)
-    modded_attrs[:marked_as_adult] = true if true_param?(:adult)
-    modded_attrs[:marked_as_adult] = false if false_param?(:adult)
-    modded_attrs[:removed_at] = DateTime.current if true_param?(:remove)
-    modded_attrs[:removed_at] = nil if false_param?(:remove)
+    modded_attrs[:in_moderation] = true if can?(:reply_moderation) && true_param?(:in_moderation)
+    modded_attrs[:in_moderation] = false if can?(:reply_moderation) && (false_param?(:in_moderation) || true_param?(:remove) || true_param?(:adult))
+    modded_attrs[:marked_as_adult] = true if can?(:adult_mark_replies) && true_param?(:adult)
+    modded_attrs[:marked_as_adult] = false if can?(:adult_mark_replies) && false_param?(:adult)
+    modded_attrs[:removed_at] = DateTime.current if (can?(:remove_replies) || current_user == reply.author) && true_param?(:remove)
+    modded_attrs[:removed_at] = nil if can?(:remove_replies) && false_param?(:remove)
 
     if reply.update(modded_attrs)
       reply.send(:notify_subscribers) if was_new && was_moderated && !reply.in_moderation? && !reply.removed?

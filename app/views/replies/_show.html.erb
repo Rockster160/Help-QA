@@ -72,6 +72,12 @@
               <a rel="nofollow" href="<%= post_reply_mod_path(reply.post, reply, in_moderation: true) %>" data-method="POST"><%= hover_icon(:bell_t, "Moderate") %></a>
             <% end %>
           <% end %>
+        <% else %>
+          <% if author == current_user %>
+            <%= link_to post_reply_mod_path(reply.post, reply, remove: true), method: :post, data: { confirm: "Are you sure you want to remove this reply? This cannot be undone." } do %>
+              <%= hover_icon(:bin_t, "Delete Reply") %>
+            <% end %>
+          <% end %>
         <% end %>
         <% if current_user&.can_edit_reply?(reply) %>
           <%= link_to "#", rel: :nofollow, class: "edit-reply", data: { reply_id: reply.id } do %>
