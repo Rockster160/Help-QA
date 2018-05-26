@@ -27,6 +27,7 @@
 
 # Unused: reports_moderation
 # Implied: Can view Audits
+# Needed: edit_shouts
 
 class ModAbilities < ApplicationRecord
   belongs_to :user

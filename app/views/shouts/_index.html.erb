@@ -24,15 +24,27 @@
       </div>
       <div class="report-flag">
         <% if shout.removed? %>
-          <%= hover_icon(:bin_t, "Restore Shout", href: shout_path(shout, shout: {restore: true}), method: :patch) if current_mod? && can?(:remove_shouts) %>
+          <%= hover_icon(:bin_t, "Restore Shout", href: shout_path(shout, shout: {restore: true}), method: :patch) if can?(:remove_shouts) %>
         <% else %>
           <% if can?(:remove_shouts) || shouter == current_user %>
             <%= hover_icon(:bin, "Remove Shout", href: shout_path(shout), method: :delete, data: { confirm: "Are you sure you want to remove this shout?" }) %>
+            <%= hover_icon(:comment_edit, "Edit Shout", class: "edit-shout") %>
+          <% else %>
+            <%= hover_icon(:flag_red, "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shoutee, anchor: "shout-#{shout.id}"))) %>
           <% end %>
         <% end %>
-        <%= hover_icon("flag-red", "Report this shout to Moderators", href: feedback_path(report_url: user_shouts_url(shoutee, anchor: "shout-#{shout.id}"))) %>
       </div>
     </div>
+    <% if can?(:remove_shouts) || shouter == current_user %>
+      <div class="shout-edit hidden">
+        <%= form_for shout do |f| %>
+          <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
+          <div class="text-right">
+            <%= f.submit "Reshout!" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
     <div class="shout-body">
       <% markdown_opts = {} %>
       <% markdown_opts[:except] = [:whisper_reveal] unless current_mod? || current_user == shoutee || current_user == shouter %>
