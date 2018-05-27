@@ -75,12 +75,12 @@ class PostsController < ApplicationController
     authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
     @replies = @post.replies.includes_for_display
-    @replies = @replies.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    @replies = @replies.where("replies.updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     post_edits = @post.post_edits.joins(:acting_user)
-    post_edits = post_edits.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    post_edits = post_edits.where("sherlocks.updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     post_edits = post_edits.displayable_post_edits
     invites = @post.post_invites
-    invites = invites.where("updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
+    invites = invites.where("post_invites.updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
     if post_edits.none? && invites.none?
       @replies_with_notifications = @replies
     else
