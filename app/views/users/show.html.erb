@@ -7,7 +7,7 @@
   <div class="user-info">
     <div class="username"><%= @user.username %></div>
     <%= render partial: "users/detail_icons", locals: { user: @user } %>
-    <% if current_user != @user && current_user.added?(@user) %>
+    <% if current_user != @user && current_user&.added?(@user) %>
       <% if current_user.shared_email?(@user) %>
         <%= hover_icon("mail-rem", "Hide Email", href: account_friend_path(@user, reveal_email: false), method: :patch, data: { confirm: "Hide Email?" }) %>
       <% else %>
