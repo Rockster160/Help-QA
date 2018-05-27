@@ -14,9 +14,9 @@
       <%= hover_icon("user-add", "Add as Friend", href: account_friend_path(user), method: :patch) %>
     <% end %>
     <% if current_user.shared_email?(user) %>
-      <%= hover_icon("mail-rem", "Reveal Email", href: account_friend_path(user), method: :delete, data: { confirm: "Reveal Email?" }) %>
+      <%#= hover_icon("mail-rem", "Reveal Email", href: account_friend_path(user), method: :delete, data: { confirm: "Reveal Email?" }) %>
     <% else %>
-      <%= hover_icon("mail-add", "Hide Email", href: account_friend_path(user), method: :patch, data: { confirm: "Hide Email?" }) %>
+      <%#= hover_icon("mail-add", "Hide Email", href: account_friend_path(user), method: :patch, data: { confirm: "Hide Email?" }) %>
     <% end %>
     <%= user.username %>
   </div>

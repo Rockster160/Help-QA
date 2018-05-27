@@ -72,7 +72,6 @@ ActiveRecord::Schema.define(version: 20180526225751) do
   create_table "friendships", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "friend_id"
-    t.datetime "accepted_at"
     t.datetime "created_at"
     t.datetime "shared_email_at"
     t.index ["friend_id"], name: "index_friendships_on_friend_id", using: :btree
