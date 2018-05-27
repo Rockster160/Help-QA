@@ -31,6 +31,16 @@
       .avatar-container { border-color: $gray-med; }
       .username { font-weight: bold; }
     }
+    .post-edits {
+      margin-top: 30px;
+      text-align: left;
+
+      .editor {
+        display: block;
+        
+        &, * { vertical-align: middle; }
+      }
+    }
     .words {
       padding-left: 10px;
 

@@ -54,6 +54,17 @@
       <%= render partial: "users/detail_icons", locals: { user: @post.author } %>
       <%# <div class="location"></div> %>
     <% end %>
+    <% if @post.editors.any? %>
+      <div class="post-edits">
+        Editors: <br><br>
+        <% @post.editors.each do |editor| %>
+          <a href="<%= user_path(editor) %>" class="editor">
+            <%= avatar(editor.avatar, size: 20) %>
+            <%= editor.username %>
+          </a>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <div class="words">
     <% if @post.marked_as_adult? %>

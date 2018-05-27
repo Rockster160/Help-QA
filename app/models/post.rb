@@ -125,6 +125,14 @@ class Post < ApplicationRecord
     end
   end
 
+  def post_edits
+    Sherlock.posts.where(obj_id: id).by_type(:edit)
+  end
+
+  def editors
+    User.where(id: post_edits.pluck(:acting_user_id).uniq - [author_id])
+  end
+
   def preview_content
     full_preview = body[title.length..-1].to_s.split("\n").reject(&:blank?).first
     cut_preview = cut_string_before_index_at_char(full_preview, 500)
