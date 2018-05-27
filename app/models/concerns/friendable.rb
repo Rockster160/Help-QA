@@ -18,6 +18,10 @@ module Friendable
   def friendships
     Friendship.where("user_id = :user_id OR friend_id = :user_id", user_id: self.id)
   end
+  def friendship_with(friend)
+    return unless friend
+    friendships_sent.find_by(friend_id: friend.id)
+  end
   def friends?(friend)
     friends.pluck(:id).include?(friend.id)
   end
@@ -29,7 +33,7 @@ module Friendable
   end
 
   def shared_email?(friend)
-    false
+    !!friendship_with(friend)&.shared_email?
   end
 
   def favorites
@@ -54,7 +58,7 @@ module Friendable
 
   def add_friend(friend)
     friendships_sent.find_or_create_by(friend_id: friend.id) do
-      if friendships_received?(friend)
+      if added_by?(friend)
         friend_path = Rails.application.routes.url_helpers.user_path(self)
         ActionCable.server.broadcast("notifications_#{friend.id}", message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!")
       else

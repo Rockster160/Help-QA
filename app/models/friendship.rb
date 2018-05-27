@@ -14,8 +14,12 @@ class Friendship < ApplicationRecord
   belongs_to :user
   belongs_to :friend, class_name: "User"
 
-  def friends?
-    accepted_at?
+  def shared_email?
+    shared_email_at?
+  end
+
+  def reveal_email=(new_val)
+    self.shared_email_at = new_val.to_s.downcase == "true" ? DateTime.current : nil
   end
 
 end

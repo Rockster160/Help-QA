@@ -10,7 +10,13 @@ class FriendsController < ApplicationController
 
   def update
     friend = User.find(params[:id])
-    current_user.add_friend(friend)
+    if true_param?(:add)
+      current_user.add_friend(friend)
+    else
+      friendship = current_user.friendship_with(friend)
+      friendship&.update(params.permit(:reveal_email))
+    end
+
     redirect_to account_friends_path
   end
 
@@ -19,6 +25,8 @@ class FriendsController < ApplicationController
     current_user.remove_friend(friend)
     redirect_to account_friends_path
   end
+
+  private
 
   def mark_all_read
     current_user.notices.friend_request.unread.each(&:read)

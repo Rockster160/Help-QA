@@ -7,6 +7,13 @@
   <div class="user-info">
     <div class="username"><%= @user.username %></div>
     <%= render partial: "users/detail_icons", locals: { user: @user } %>
+    <% if current_user != @user && current_user.added?(@user) %>
+      <% if current_user.shared_email?(@user) %>
+        <%= hover_icon("mail-rem", "Hide Email", href: account_friend_path(@user, reveal_email: false), method: :patch, data: { confirm: "Hide Email?" }) %>
+      <% else %>
+        <%= hover_icon("mail-add", "Reveal Email", href: account_friend_path(@user, reveal_email: true), method: :patch, data: { confirm: "Reveal Email?" }) %>
+      <% end %>
+    <% end %>
   </div>
   <% if current_mod? %>
     <ul class="moddable">
@@ -57,6 +64,12 @@
     <div class="mini-profile">
       <div class="title">Mini-Profile</div>
       <%= avatar(@user.avatar, size: 200) %>
+      <% if @user.shared_email?(current_user) %>
+        <div class="shared-email">
+          <i>This user shared their email with you: <br><a href="mailto:<%= @user.email %>"><%= @user.email %></a></i>
+          <hr>
+        </div>
+      <% end %>
       <div class="bio" data-inline-links>
         <% @user.profile.editable_attributes.each do |attr_key, sentence| %>
           <% text = @user.profile.send(attr_key) %>
