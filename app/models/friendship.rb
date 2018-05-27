@@ -2,11 +2,12 @@
 #
 # Table name: friendships
 #
-#  id          :integer          not null, primary key
-#  user_id     :integer
-#  friend_id   :integer
-#  accepted_at :datetime
-#  created_at  :datetime
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  friend_id       :integer
+#  accepted_at     :datetime
+#  created_at      :datetime
+#  shared_email_at :datetime
 #
 
 class Friendship < ApplicationRecord
