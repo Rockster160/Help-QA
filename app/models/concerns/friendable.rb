@@ -2,11 +2,13 @@ module Friendable
   extend ActiveSupport::Concern
 
   included do
-    has_many :shouts,        foreign_key: :sent_to_id,   class_name: "Shout",      dependent: :destroy
-    has_many :shouts_to,     foreign_key: :sent_to_id,   class_name: "Shout",      dependent: :destroy
-    has_many :shouts_from,   foreign_key: :sent_from_id, class_name: "Shout",      dependent: :destroy
-    has_many :friends_added, foreign_key: :user_id,      class_name: "Friendship", dependent: :destroy
-    has_many :added_by,      foreign_key: :friend_id,    class_name: "Friendship", dependent: :destroy
+    has_many :shouts,               foreign_key: :sent_to_id,   class_name: "Shout",      dependent: :destroy
+    has_many :shouts_to,            foreign_key: :sent_to_id,   class_name: "Shout",      dependent: :destroy
+    has_many :shouts_from,          foreign_key: :sent_from_id, class_name: "Shout",      dependent: :destroy
+    has_many :friendships_sent,     foreign_key: :user_id,      class_name: "Friendship", dependent: :destroy
+    has_many :friendships_received, foreign_key: :friend_id,    class_name: "Friendship", dependent: :destroy
+    has_many :favorites_all, through: :friendships_sent,     source: :friend
+    has_many :fans_all,      through: :friendships_received, source: :user
   end
 
   def recent_shouts
@@ -20,10 +22,10 @@ module Friendable
     friends.pluck(:id).include?(friend.id)
   end
   def added?(friend)
-    friends_added.where(friend_id: friend.id).any?
+    favorites_all.where(id: friend.id).any?
   end
   def added_by?(friend)
-    added_by.where(user_id: friend.id).any?
+    fans_all.where(id: friend.id).any?
   end
 
   def shared_email?(friend)
@@ -31,15 +33,13 @@ module Friendable
   end
 
   def favorites
-    @_favorites ||= User.not_banned.joins(:added_by).where.not(users: { id: id }, friendships: { friend_id: friends.ids }).distinct
+    @_favorites ||= favorites_all.where.not(users: { id: id }, friendships: { friend_id: friends.ids }).distinct
   end
   def fans
-    @_fans ||= User.not_banned.joins(:friends_added).where.not(users: { id: id }, friendships: { user_id: friends.ids }).distinct
+    @_fans ||= fans_all.where.not(users: { id: id }, friendships: { user_id: friends.ids }).distinct
   end
   def friends
-    @_friends ||= begin
-      User.not_banned.where(id: (friends_added.pluck(:friend_id) & added_by.pluck(:user_id)).uniq)
-    end
+    @_friends ||= User.not_banned.where(id: (friendships_sent.pluck(:friend_id) & friendships_received.pluck(:user_id)).uniq)
   end
   def not_friends
     @_not_friends ||= User.where.not(id: friends.pluck(:id))
@@ -53,8 +53,8 @@ module Friendable
   end
 
   def add_friend(friend)
-    friends_added.find_or_create_by(friend_id: friend.id) do
-      if added_by?(friend)
+    friendships_sent.find_or_create_by(friend_id: friend.id) do
+      if friendships_received?(friend)
         friend_path = Rails.application.routes.url_helpers.user_path(self)
         ActionCable.server.broadcast("notifications_#{friend.id}", message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!")
       else
@@ -64,7 +64,7 @@ module Friendable
     reset_friends_cache
   end
   def remove_friend(friend)
-    friends_added.find_by(friend_id: friend.id).destroy
+    friendships_sent.find_by(friend_id: friend.id).destroy
     reset_friends_cache
   end
 

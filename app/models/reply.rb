@@ -57,7 +57,7 @@ class Reply < ApplicationRecord
   scope :displayable,          ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) unless Rails.env.archive? }
   scope :includes_for_display, -> {
     includes(
-      author: [:friends_added, :added_by, :posts],
+      author: [:favorites_all, :fans_all, :posts],
       favorite_replies: [:user]
     ).order(created_at: :asc, id: :asc)
   }
