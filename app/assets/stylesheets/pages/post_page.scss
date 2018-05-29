@@ -31,13 +31,13 @@
       .avatar-container { border-color: $gray-med; }
       .username { font-weight: bold; }
     }
-    .post-edits {
+    .editors {
       margin-top: 30px;
       text-align: left;
 
       .editor {
         display: block;
-        
+
         &, * { vertical-align: middle; }
       }
     }
@@ -308,7 +308,7 @@
   @include xsmall-down {
     .body-wrapper > *:not(.exempt-split) { @include unsplit; }
     .post-container {
-      .author-details .avatar-container {
+      .author-details > .avatar-container {
         display: block !important;
         margin: 0 auto;
         width: 100px !important; // These values are normally generated in the ApplicationHelper

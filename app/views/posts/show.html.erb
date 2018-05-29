@@ -55,7 +55,7 @@
       <%# <div class="location"></div> %>
     <% end %>
     <% if @post.editors.any? %>
-      <div class="post-edits">
+      <div class="editors">
         Editors: <br><br>
         <% @post.editors.each do |editor| %>
           <a href="<%= user_path(editor) %>" class="editor">
