@@ -43,14 +43,17 @@ class PostsController < ApplicationController
     if can?(:post_moderation)
       modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
       modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
+      modded_attrs[:skip_sherlock] = true if params[:in_moderation].present?
     end
     if can?(:adult_mark_posts)
       modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
       modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
+      modded_attrs[:skip_sherlock] = true if params[:adult].present?
     end
     if can?(:edit_posts)
       modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
       modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
+      modded_attrs[:skip_sherlock] = true if params[:close].present?
     end
     if can?(:remove_posts)
       modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"

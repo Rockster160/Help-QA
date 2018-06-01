@@ -126,7 +126,7 @@ class Post < ApplicationRecord
   end
 
   def post_edits
-    Sherlock.posts.where(obj_id: id).by_type(:edit)
+    Sherlock.posts.where(obj_id: id).by_type(:edit).all_changed_attrs(:body)
   end
 
   def editors

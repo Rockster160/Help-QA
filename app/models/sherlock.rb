@@ -46,6 +46,14 @@ class Sherlock < ApplicationRecord
   scope :shouts,    -> { by_klass(:shout) }
   scope :chats,     -> { by_klass(:chat) }
   scope :ips,       -> { by_klass(:ip) }
+  scope :by_changed_attrs, ->(change_type, *changed_attr_keys) {
+    raise "Invalid change type" unless change_type.to_s.upcase.in?(["OR", "AND"])
+    q = changed_attr_keys.flatten.map { |attr_key| "sherlocks.changed_attrs ILIKE ?" }.join(" #{change_type} ")
+    vals = changed_attr_keys.flatten.map {|attr_key| "%#{attr_key}%"}
+    where(q, *vals)
+  }
+  scope :all_changed_attrs, ->(*changed_attr_keys) { by_changed_attrs(:AND, changed_attr_keys) }
+  scope :any_changed_attrs, ->(*changed_attr_keys) { by_changed_attrs(:OR, changed_attr_keys) }
 
   class << self
     attr_writer :acting_user, :acting_ip, :exception_data
@@ -82,7 +90,7 @@ class Sherlock < ApplicationRecord
       acting_ip = @acting_ip.presence || @acting_user.try(:current_sign_in_ip).presence || @acting_user.try(:last_sign_in_ip).presence || @acting_user.try(:ip_address).presence
       acting_user = @acting_user || @exception_data&.dig(:current_user)
       acting_user ||= obj if obj.is_a?(User)
-      acting_user ||= obj.try(:author) || obj.try(:user)
+      acting_user ||= obj.try(:author) || obj.try(:user) || obj.try(:sent_from)
 
       if acting_user.nil?
         slack_attachment = {
