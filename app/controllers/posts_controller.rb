@@ -43,17 +43,14 @@ class PostsController < ApplicationController
     if can?(:post_moderation)
       modded_attrs[:in_moderation] = true if params[:in_moderation].present? && params[:in_moderation] == "true"
       modded_attrs[:in_moderation] = false if params[:in_moderation].present? && params[:in_moderation] == "false"
-      modded_attrs[:skip_sherlock] = true if params[:in_moderation].present?
     end
     if can?(:adult_mark_posts)
       modded_attrs[:marked_as_adult] = true if params[:adult].present? && params[:adult] == "true"
       modded_attrs[:marked_as_adult] = false if params[:adult].present? && params[:adult] == "false"
-      modded_attrs[:skip_sherlock] = true if params[:adult].present?
     end
     if can?(:edit_posts)
       modded_attrs[:closed_at] = DateTime.current if params[:close].present? && params[:close] == "true"
       modded_attrs[:closed_at] = nil if params[:close].present? && params[:close] == "false"
-      modded_attrs[:skip_sherlock] = true if params[:close].present?
     end
     if can?(:remove_posts)
       modded_attrs[:removed_at] = DateTime.current if params[:remove].present? && params[:remove] == "true"
@@ -75,7 +72,7 @@ class PostsController < ApplicationController
       current_user.notices.subscription.unread.where(post: @post).each(&:read)
       @post.views.create(viewed_by: current_user)
     end
-    authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
+    return authenticate_adult if @post.marked_as_adult? && !current_user&.can_view?(@post)
 
     @replies = @post.replies.includes_for_display
     @replies = @replies.where("replies.updated_at > ?", Time.at(params[:since].to_i + 1)) if params[:since].present?
@@ -91,7 +88,12 @@ class PostsController < ApplicationController
     end
 
     if request.xhr?
-      render partial: "replies/index", locals: { replies: @replies_with_notifications }
+      render json: {
+        replies: inline_render_replies,
+        meta: {
+          reply_count: @post.replies.not_helpbot.count
+        }
+      }
     else
       respond_to do |format|
         format.html
@@ -175,6 +177,10 @@ class PostsController < ApplicationController
   end
 
   private
+
+  def inline_render_replies
+    view_context.render(partial: "replies/index", locals: { replies: @replies_with_notifications })
+  end
 
   def post_params
     params.require(:post).permit(:body, :posted_anonymously, :set_tags)

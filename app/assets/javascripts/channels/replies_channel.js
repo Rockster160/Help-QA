@@ -35,7 +35,10 @@ $(".ctr-posts.act-show").ready(function() {
     $.get(url, {since: last_post_timestamp}).success(function(data) {
       var prev_height = $(".replies-container").get(0).scrollHeight
       $(".replies-container").css({"max-height": prev_height})
-      $(data).each(function() {
+      if (data.meta.reply_count) {
+        $(".reply-counter").html(data.meta.reply_count)
+      }
+      $(data.replies).each(function() {
         var existing_reply = $("#" + $(this).attr("id"))
         if (existing_reply.length > 0) {
           existing_reply.replaceWith(this)
@@ -51,7 +54,6 @@ $(".ctr-posts.act-show").ready(function() {
       }, {
         duration: 1000,
         complete: function() {
-          $(".reply-counter").html($(".reply-container").length)
           $(".replies-container").css({"max-height": ""})
         }
       })
