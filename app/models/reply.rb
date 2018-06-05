@@ -108,6 +108,10 @@ class Reply < ApplicationRecord
     author_id == post.author_id && posted_anonymously? == post.posted_anonymously?
   end
 
+  def countable?
+    !author.helpbot? && !removed? && !in_moderation?
+  end
+
   private
 
   def update_popular_post

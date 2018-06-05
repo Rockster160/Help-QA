@@ -88,12 +88,7 @@ class PostsController < ApplicationController
     end
 
     if request.xhr?
-      render json: {
-        replies: inline_render_replies,
-        meta: {
-          reply_count: @post.replies.not_helpbot.count
-        }
-      }
+      render partial: "replies/index", locals: { replies: @replies_with_notifications }
     else
       respond_to do |format|
         format.html
@@ -177,10 +172,6 @@ class PostsController < ApplicationController
   end
 
   private
-
-  def inline_render_replies
-    view_context.render(partial: "replies/index", locals: { replies: @replies_with_notifications })
-  end
 
   def post_params
     params.require(:post).permit(:body, :posted_anonymously, :set_tags)

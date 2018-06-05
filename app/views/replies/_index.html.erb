@@ -1,6 +1,6 @@
 <% replies ||= @replies || [] %>
 <% replies.each do |reply| %>
-  <div class="reply-wrapper" id="reply-<%= reply.id %>">
+  <div class="reply-wrapper <%= 'countable' if reply.try(:countable?) %>" id="reply-<%= reply.id %>">
     <% if reply.is_a?(Sherlock) %>
       <% display_edits = false %>
       <% if reply.changed_attrs.keys.include?("closed_at") %>
