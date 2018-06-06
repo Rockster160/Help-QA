@@ -2,7 +2,7 @@ $(".ctr-posts.act-show").ready(function() {
 
   if ($("body.archive").length != 0) { return }
 
-  var unread_replies = 0
+  var unread_replies = undefined
   var default_title = document.title
   $(window).on("click scroll focus", function() { unread_replies = 0; updatePageTitleWithUnreads() })
 
@@ -20,6 +20,7 @@ $(".ctr-posts.act-show").ready(function() {
   })
 
   updatePageTitleWithUnreads = function() {
+    if (isNaN(unread_replies)) { return unread_replies = 0 }
     if (unread_replies == 0) {
       document.title = default_title
     } else if (unread_replies == 1) {
@@ -36,10 +37,12 @@ $(".ctr-posts.act-show").ready(function() {
       var prev_height = $(".replies-container").get(0).scrollHeight
       $(".replies-container").css({"max-height": prev_height})
       $(data).each(function() {
+        if ($(this).attr("id") == undefined) { return }
         var existing_reply = $("#" + $(this).attr("id"))
         if (existing_reply.length > 0) {
           existing_reply.replaceWith(this)
         } else {
+          debugger
           unread_replies += 1
           $(".replies-container").append(this)
         }
