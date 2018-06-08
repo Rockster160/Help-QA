@@ -413,7 +413,7 @@ module MarkdownHelper
       last_open_quote_final_idx = last_open_quote_idx + last_open_quote.length
       next_end_quote_idx = text[last_open_quote_final_idx..-1].index(/\[\/quote\]/)
       if next_end_quote_idx.nil?
-        text[last_open_quote_idx..last_open_quote_final_idx] = escape_markdown_characters_in_string(last_open_quote)
+        text[last_open_quote_idx..last_open_quote_final_idx] = last_open_quote.gsub("[", " &#91;")
         next
       end
       next_end_quote_idx += last_open_quote_final_idx + "[quote]".length
