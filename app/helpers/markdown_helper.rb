@@ -92,18 +92,27 @@ module MarkdownHelper
 
   def parse_directive_quotes(text)
     display_elapsed_time("parse_directive_quotes")
-    loop do
-      last_start_quote_idx = text.rindex(/\[quote(.*?)\]/)
-      break if last_start_quote_idx.nil?
-      next_end_quote_idx = text[last_start_quote_idx..-1].index(/\[\/quote\]/)
-      break if next_end_quote_idx.nil?
-      next_end_quote_idx += last_start_quote_idx + "[quote]".length
 
-      text[last_start_quote_idx..next_end_quote_idx] = text[last_start_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do
+    t=0
+    loop do
+      break if (t+=1) > 25
+      last_open_quote_match_data = text.match(/.*(\[quote(.*?)\])/)
+      break if last_open_quote_match_data.nil?
+      last_open_quote = last_open_quote_match_data[1]
+      last_open_quote_idx = text.rindex(last_open_quote)
+      last_open_quote_final_idx = last_open_quote_idx + last_open_quote.length
+      next_end_quote_idx = text[last_open_quote_final_idx..-1].index(/\[\/quote\]/)
+      if next_end_quote_idx.nil?
+        text[last_open_quote_idx..last_open_quote_final_idx-1] = last_open_quote.gsub("[", "[&zwnj;")
+        next
+      end
+      next_end_quote_idx += last_open_quote_final_idx + "[quote]".length
+
+      text[last_open_quote_idx..next_end_quote_idx] = text[last_open_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do
         quote_text = $2
         quote_author = escape_markdown_characters_in_string($1.squish)
 
-        quote_string = quote_author.present? ? "<strong>#{quote_author} wrote:</strong><br>" : ""
+        quote_string = quote_author.present? && quote_author.exclude?("<br>") ? "<strong>#{quote_author} wrote:</strong><br>" : quote_author
         "</p><quote><p>#{quote_string}#{quote_text}</p></quote><p>"
       end
     end
@@ -115,7 +124,10 @@ module MarkdownHelper
 
   def parse_directive_whispers(text)
     display_elapsed_time("parse_directive_whispers")
+
+    t=0
     loop do
+      break if (t+=1) > 25
       last_start_whisper_idx = text.rindex(/\[whisper\]/i)
       break if last_start_whisper_idx.nil?
       next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/i)
@@ -405,7 +417,9 @@ module MarkdownHelper
     text = text.dup
     quotes = []
 
+    t=0
     loop do
+      break if (t+=1) > 25
       last_open_quote_match_data = text.match(/.*(\[quote(.*?)\])/)
       break if last_open_quote_match_data.nil?
       last_open_quote = last_open_quote_match_data[1]
@@ -413,7 +427,7 @@ module MarkdownHelper
       last_open_quote_final_idx = last_open_quote_idx + last_open_quote.length
       next_end_quote_idx = text[last_open_quote_final_idx..-1].index(/\[\/quote\]/)
       if next_end_quote_idx.nil?
-        text[last_open_quote_idx..last_open_quote_final_idx] = last_open_quote.gsub("[", " &#91;")
+        text[last_open_quote_idx..last_open_quote_final_idx-1] = last_open_quote.gsub("[", "[&zwnj;")
         next
       end
       next_end_quote_idx += last_open_quote_final_idx + "[quote]".length
@@ -447,7 +461,9 @@ module MarkdownHelper
     text = text.dup
     whispers = []
 
+    t=0
     loop do
+      break if (t+=1) > 25
       last_open_whisper_idx = text.rindex(/\[whisper\]/i)
       break if last_open_whisper_idx.nil?
       next_end_whisper_idx = text[last_open_whisper_idx..-1].index(/\[\/whisper\]/i)
