@@ -1,5 +1,6 @@
 module MarkdownHelper
   def censor_text(text)
+    display_elapsed_time("censor_text")
     adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
 
     text.gsub(/\b(#{adult_word_regex})\b/i) do |found|
@@ -8,13 +9,25 @@ module MarkdownHelper
   end
 
   def humanize_bool(bool)
+    display_elapsed_time("humanize_bool")
     case bool.to_s.downcase
     when "true" then "Yes"
     when "false" then "No"
     end
   end
 
+  def display_elapsed_time(str)
+    return @previous_time = @start_time if @previous_time.nil?
+    new_time = Time.now.to_f
+
+    puts "Since: #{((new_time - @previous_time) * 100).round(2)} - Total: #{((new_time - @start_time) * 100).round(2)} - #{str}".colorize(:yellow)
+
+    @previous_time = new_time
+  end
+
   def markdown(only: nil, except: [], with: [], render_html: false, poll_post: nil, posted_by_user: nil, &block)
+    @start_time = Time.now.to_f
+    display_elapsed_time("Start")
     only = [only].flatten if only.is_a?(Array) # We want `only` to be `nil` if it wasn't explicitly set.
     except = [except].flatten
 
@@ -45,11 +58,13 @@ module MarkdownHelper
     text = censor_language(text)
     text = clean_up_html(text)
 
+    display_elapsed_time("End")
     # NOTE: This code is used in the FAQ - If it's ever changed, verify that changes did not break that page.
     text.html_safe
   end
 
   def clean_up_html(text)
+    display_elapsed_time("clean_up_html")
     text[0] = "" while text[0] =~ /[ \n\r]/ # Remove white space before post.
     text[-1] = "" while text[-1] =~ /[ \n\r]/ # Remove white space after post.
     text[0..text.index("</p>") + 3] = "" while text.index(/<p>[ |\n|\r]*?<\/p>/).try(:zero?) # Remove empty paragraph tags before post.
@@ -57,6 +72,7 @@ module MarkdownHelper
   end
 
   def censor_language(text)
+    display_elapsed_time("censor_language")
     adult_word_regex = Tag.adult_words.map { |word| Regexp.quote(word) }.join("|")
 
     text = text.gsub(/(^|\>).*?(\<|$)/) do |found|
@@ -68,12 +84,14 @@ module MarkdownHelper
   end
 
   def parse_directive_poll(text, post:)
+    display_elapsed_time("parse_directive_poll")
     text.sub("[poll]") do
       PostsController.render(template: 'posts/poll', layout: false, assigns: { post: post, user: current_user })
     end
   end
 
   def parse_directive_quotes(text)
+    display_elapsed_time("parse_directive_quotes")
     loop do
       last_start_quote_idx = text.rindex(/\[quote(.*?)\]/)
       break if last_start_quote_idx.nil?
@@ -96,6 +114,7 @@ module MarkdownHelper
   end
 
   def parse_directive_whispers(text)
+    display_elapsed_time("parse_directive_whispers")
     loop do
       last_start_whisper_idx = text.rindex(/\[whisper\]/i)
       break if last_start_whisper_idx.nil?
@@ -118,12 +137,14 @@ module MarkdownHelper
   end
 
   def escape_html_tags(text)
+    display_elapsed_time("escape_html_tags")
     text = text.gsub("&", "&amp;")
     text = text.gsub("<", "&lt;")
     text = text.gsub(">", "&gt;")
   end
 
   def escape_html_characters(text, render_html: false)
+    display_elapsed_time("escape_html_characters")
     text = text.gsub("&", "&amp;") # Escape ALL & - prevent Unicode injection / unexpected character behavior
     text = text.gsub("<script", "&lt;script") # Escape <script> Tags
 
@@ -139,6 +160,7 @@ module MarkdownHelper
   end
 
   def escape_escaped_markdown_characters(text)
+    display_elapsed_time("escape_escaped_markdown_characters")
     # Shrug loses left arm because it's a \_ which is interpreted as escaping an underscore.
     text = text.gsub("\\@", "&#64;") # @
     text = text.gsub("\\\\", "&#92;") # \
@@ -151,6 +173,7 @@ module MarkdownHelper
   end
 
   def escape_markdown_characters_in_string(str)
+    display_elapsed_time("escape_markdown_characters_in_string")
     str = str.gsub("@", "&#64;") # @
     str = str.gsub("\\", "&#92;") # \
     str = str.gsub("[", "&#91;") # [
@@ -163,6 +186,7 @@ module MarkdownHelper
   end
 
   def invite_tagged_users(text)
+    display_elapsed_time("invite_tagged_users")
     text = text.gsub(/(\s|\>)@\[([^ \`\@]+):(\d+)\]/) do |username_tag|
       user_id = $3
       tagged_user = User.find_by(id: user_id)
@@ -177,6 +201,7 @@ module MarkdownHelper
   end
 
   def parse_markdown(text)
+    display_elapsed_time("parse_markdown")
     text = text.gsub(/([ >\n\r])(\**)([ <\n\r])/) { |found_match| "#{$1}#{escape_markdown_characters_in_string($2)}#{$3}" }
     text = text.gsub(/<a(.*?)<\/a>/) do |found_match|
       "<a#{escape_markdown_characters_in_string($1)}</a>"
@@ -217,6 +242,7 @@ module MarkdownHelper
   end
 
   def parse_markdown_character_with(char, text, &string_with_special_replace)
+    display_elapsed_time("parse_markdown_character_with")
     return text unless text.include? char
     text.gsub(regex_for_wrapping_character(char)) do
       _full_match, pre_char, inner_text, post_char = Regexp.last_match.to_a
@@ -225,6 +251,7 @@ module MarkdownHelper
   end
 
   def regex_for_wrapping_character(character)
+    display_elapsed_time("regex_for_wrapping_character")
     regex_safe_character = Regexp.escape(character)
     permitted_attached_chars = "[\\*\\_\\~\\`\\.\\?!,\\[\\]\\(\\)]*"
 
@@ -232,6 +259,7 @@ module MarkdownHelper
   end
 
   def parse_emails_in_text(text)
+    display_elapsed_time("parse_emails_in_text")
     text.gsub(email_regex) do
       _full_match, pre_char, found_local, found_domain, post_char = Regexp.last_match.to_a
       found_email = "#{found_local}@#{found_domain}"
@@ -241,6 +269,7 @@ module MarkdownHelper
   end
 
   def find_links_in_text(text)
+    display_elapsed_time("find_links_in_text")
     extension_blacklist = [:to]
     domain_blacklist = [:idolosol]
     # These are exact matches, so something like sub.idolosol would not be counted.
@@ -312,6 +341,7 @@ module MarkdownHelper
   end
 
   def link_previews(text)
+    display_elapsed_time("link_previews")
     add_to_text = []
     current_idx = 0
 
@@ -363,6 +393,7 @@ module MarkdownHelper
   end
 
   def generate_unique_token(text, key:)
+    display_elapsed_time("generate_unique_token")
     loop do
       new_token = "#{key}token" + ('a'..'z').to_a.sample(10).join("")
       break new_token unless text.include?(new_token)
@@ -370,17 +401,24 @@ module MarkdownHelper
   end
 
   def filter_nested_quotes(text, max_nest_level:)
+    display_elapsed_time("filter_nested_quotes")
     text = text.dup
     quotes = []
 
     loop do
-      last_start_quote_idx = text.rindex(/\[quote(.*?)\]/)
-      break if last_start_quote_idx.nil?
-      next_end_quote_idx = text[last_start_quote_idx..-1].index(/\[\/quote\]/)
-      break if next_end_quote_idx.nil?
-      next_end_quote_idx += last_start_quote_idx + "[quote]".length
+      last_open_quote_match_data = text.match(/.*(\[quote(.*?)\])/)
+      break if last_open_quote_match_data.nil?
+      last_open_quote = last_open_quote_match_data[1]
+      last_open_quote_idx = text.rindex(last_open_quote)
+      last_open_quote_final_idx = last_open_quote_idx + last_open_quote.length
+      next_end_quote_idx = text[last_open_quote_final_idx..-1].index(/\[\/quote\]/)
+      if next_end_quote_idx.nil?
+        text[last_open_quote_idx..last_open_quote_final_idx] = escape_markdown_characters_in_string(last_open_quote)
+        next
+      end
+      next_end_quote_idx += last_open_quote_final_idx + "[quote]".length
 
-      text[last_start_quote_idx..next_end_quote_idx] = text[last_start_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do |found_match|
+      text[last_open_quote_idx..next_end_quote_idx] = text[last_open_quote_idx..next_end_quote_idx].gsub(/\[quote(.*?)\]((.|\n)*?)\[\/quote\]/) do |found_match|
         token = generate_unique_token(text, key: :quote)
         quotes << [token, found_match]
         token
@@ -391,6 +429,7 @@ module MarkdownHelper
   end
 
   def unwrap_quotes(text, depth: 0, quotes:, max_nest_level:)
+    display_elapsed_time("unwrap_quotes")
     text.gsub(/quotetoken[a-z]{10}/).each do |found_token|
       quote_to_unwrap = quotes.select { |(token, quote)| token == found_token }.first[1]
       if depth < max_nest_level
@@ -404,17 +443,18 @@ module MarkdownHelper
   end
 
   def filter_nested_whispers(text, max_nest_level:)
+    display_elapsed_time("filter_nested_whispers")
     text = text.dup
     whispers = []
 
     loop do
-      last_start_whisper_idx = text.rindex(/\[whisper\]/i)
-      break if last_start_whisper_idx.nil?
-      next_end_whisper_idx = text[last_start_whisper_idx..-1].index(/\[\/whisper\]/i)
+      last_open_whisper_idx = text.rindex(/\[whisper\]/i)
+      break if last_open_whisper_idx.nil?
+      next_end_whisper_idx = text[last_open_whisper_idx..-1].index(/\[\/whisper\]/i)
       break if next_end_whisper_idx.nil?
-      next_end_whisper_idx += last_start_whisper_idx + "[whisper]".length
+      next_end_whisper_idx += last_open_whisper_idx + "[whisper]".length
 
-      text[last_start_whisper_idx..next_end_whisper_idx] = text[last_start_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/i) do |found_match|
+      text[last_open_whisper_idx..next_end_whisper_idx] = text[last_open_whisper_idx..next_end_whisper_idx].gsub(/\[whisper\]((.|\n)*?)\[\/whisper\]/i) do |found_match|
         token = generate_unique_token(text, key: :whisper)
         whispers << [token, found_match]
         token
@@ -425,6 +465,7 @@ module MarkdownHelper
   end
 
   def unwrap_whispers(text, depth: 0, whispers:, max_nest_level:)
+    display_elapsed_time("unwrap_whispers")
     text.gsub(/whispertoken[a-z]{10}/).each do |found_token|
       whisper_to_unwrap = whispers.select { |(token, whisper)| token == found_token }.first[1]
       if depth < max_nest_level
@@ -436,6 +477,7 @@ module MarkdownHelper
   end
 
   def email_regex
+    display_elapsed_time("email_regex")
     alphanumeric = "a-z0-9"
     specialChars = ".!#$%&*+\\/=?^_`{|}~-".split("").map { |char| "\\#{char}" }.join("")
     local = "((?:[#{alphanumeric}#{specialChars}])+)"
@@ -449,6 +491,7 @@ module MarkdownHelper
   end
 
   def url_regex
+    display_elapsed_time("url_regex")
     # https://perishablepress.com/stop-using-unsafe-characters-in-urls/#character-encoding-chart
     @url_regex ||= begin
       # Regex groups

@@ -21,7 +21,7 @@ $(".ctr-posts.act-show, .ctr-users.act-show, .ctr-shouts, .ctr-replies").ready(f
     $(document).ajaxComplete(unregisterJqxhr);
   }
 
-  setInterval(autolinkTick, 500)
+  setTimeout(function() { setInterval(autolinkTick, 500) }, 500)
 })
 
 var url_regex = /(https?:\/\/)?((?:[a-z][a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:]{0,256}\.)+)([a-z][a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:]{1,6})(:[\d]{2,4})?([\/a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:\.]+)*(\/?\?[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:\&\%\=\[\]\.]+)?(\#[a-z0-9\$\-\_\+\!\*\'\(\)\,\;\:\&\%\=\[\]\.]+)?/ig
@@ -92,9 +92,9 @@ function chunkArray(myArray, chunk_size){
 currentlyLoadingLinks = false
 loadAllLinks = function() {
   if (currentlyLoadingLinks || $.active != 0) { return }
-  var $links = $("[data-load-preview]").slice(0, 2), links_to_generate = []
-  if ($links.length == 0) { return }
   currentlyLoadingLinks = true
+  var $links = $("[data-load-preview]").slice(0, 2), links_to_generate = []
+  if ($links.length == 0) { return currentlyLoadingLinks = false }
 
   $links.each(function() {
     var $link = $(this)

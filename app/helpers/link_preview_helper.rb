@@ -24,7 +24,7 @@ module LinkPreviewHelper
   end
 
   def get_meta_data_for_url(url)
-    Rails.cache.fetch(url, expires_in: 30.days) do
+    Rails.cache.fetch(url, expires_in: 1.day) do
       request_url = url.dup
       res, req, u = [nil, nil, nil]
       3.times do |t|
