@@ -16,4 +16,20 @@ module Sherlockable
       }
     end
   end
+
+  included do
+    before_destroy :leave_no_sherlock_trace
+  end
+
+  def leave_no_sherlock_trace
+    return if ignore_sherlock
+    return if Rails.env.archive?
+    Sherlock.create(
+      obj:             self,
+      changed_attrs:   {destroyed_at: nil},
+      discovery_type: :delete,
+      discovery_klass: self.class.table_name,
+      new_attributes:  attributes.merge(destroyed_at: DateTime.current)
+    )
+  end
 end

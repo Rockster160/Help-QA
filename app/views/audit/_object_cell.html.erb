@@ -1,36 +1,40 @@
 <div class="object-cell">
-  <% case @audit.obj_klass %>
-  <% when "User" %>
-    User: <%= link_to obj.username, obj %>
-  <% when "UserProfile", "UserSetting" %>
-    User: <%= link_to obj.user.username, obj.user %>
-  <% when "Post" %>
-    Post: <%= link_to obj.title, post_path(obj) %>
-    <br>
-    Author: <%= link_to obj.author.username, obj.author %>
-  <% when "Reply" %>
-    Author: <%= link_to obj.author.username, obj.author %>
-    <br>
-    <%= link_to post_path(obj.post_id, anchor: "reply-#{obj.id}") do %>
-      Reply:
-      <small><%= obj.body %></small>
+  <% if @audit.obj.present? %>
+    <% case @audit.obj_klass %>
+    <% when "User" %>
+      User: <%= link_to obj.username, obj %>
+    <% when "UserProfile", "UserSetting" %>
+      User: <%= link_to obj.user.username, obj.user %>
+    <% when "Post" %>
+      Post: <%= link_to obj.title, post_path(obj) %>
+      <br>
+      Author: <%= link_to obj.author.username, obj.author %>
+    <% when "Reply" %>
+      Author: <%= link_to obj.author.username, obj.author %>
+      <br>
+      <%= link_to post_path(obj.post_id, anchor: "reply-#{obj.id}") do %>
+        Reply:
+        <small><%= obj.body %></small>
+      <% end %>
+    <% when "Shout" %>
+      Author: <%= link_to obj.sent_from.username, obj.sent_from %>
+      <br>
+      <%= link_to user_shouts_path(obj.sent_to_id, anchor: "shout-#{obj.id}") do %>
+        Shout:
+        <small><%= obj.body %></small>
+      <% end %>
+    <% when "ChatMessage" %>
+      Author: <%= link_to obj.author.username, obj.author %>
+      <br>
+      <%= link_to chat_url(message: obj.id) do %>
+        Message:
+        <small><%= obj.body %></small>
+      <% end %>
+    <% when "BannedIp" %>
+      Banned IP Address: <%= obj.ip %>
+    <% else "Unknown Class: #{obj_klass}" %>
     <% end %>
-  <% when "Shout" %>
-    Author: <%= link_to obj.sent_from.username, obj.sent_from %>
-    <br>
-    <%= link_to user_shouts_path(obj.sent_to_id, anchor: "shout-#{obj.id}") do %>
-      Shout:
-      <small><%= obj.body %></small>
-    <% end %>
-  <% when "ChatMessage" %>
-    Author: <%= link_to obj.author.username, obj.author %>
-    <br>
-    <%= link_to chat_url(message: obj.id) do %>
-      Message:
-      <small><%= obj.body %></small>
-    <% end %>
-  <% when "BannedIp" %>
-    Banned IP Address: <%= obj.ip %>
-  <% else "Unknown Class: #{obj_klass}" %>
+  <% else %>
+    This <%= @audit.obj_klass %> has been deleted.
   <% end %>
 </div>

@@ -68,7 +68,8 @@ class Sherlock < ApplicationRecord
         edit:   1,
         remove: 2,
         ban:    3,
-        other:  4
+        other:  4,
+        delete: 5
       }
     end
 
@@ -120,7 +121,7 @@ class Sherlock < ApplicationRecord
   end
 
   def obj
-    @_obj ||= obj_klass.constantize.find(obj_id)
+    @_obj ||= obj_klass.constantize.find_by(id: obj_id)
   end
 
   def obj=(new_obj)
@@ -142,7 +143,7 @@ class Sherlock < ApplicationRecord
 
   def set_discovery_type
     changed_keys = changed_attrs.keys
-    self.discovery_type = if discovery_klass =~ /ip/
+    self.discovery_type ||= if discovery_klass =~ /ip/
       :ban # Forcefully set as ip if klass is an IP ban
     elsif changed_keys.find { |changed_key| changed_key == "id" }
       :new
@@ -170,8 +171,8 @@ class Sherlock < ApplicationRecord
 
   def changed_body
     return unless changed_attrs.key?("body")
-    previous_body = changed_attrs["body"].to_s.gsub(/(\r)?\n/, "¶\\1")
-    current_body = new_attributes["body"].to_s.gsub(/(\r)?\n/, "¶\\1")
+    previous_body = changed_attrs["body"].to_s.gsub(/(\r)?\n/, "¬\\1")
+    current_body = new_attributes["body"].to_s.gsub(/(\r)?\n/, "¬\\1")
     Differ.diff_by_word(escape_html_tags(current_body), escape_html_tags(previous_body))
   end
 
