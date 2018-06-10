@@ -1,4 +1,10 @@
 class ShoutsController < ApplicationController
+  before_action :authenticate_mod, only: [:show]
+
+  def show
+    shout = Shout.find(params[:id])
+    redirect_to user_shouttrail_path(shout.sent_from, shout.sent_to, shout_id: params[:id], anchor: "shout-#{shout.id}")
+  end
 
   def index
     @user = User.find(params[:user_id])
@@ -18,7 +24,7 @@ class ShoutsController < ApplicationController
     @user = User.find(params[:user_id])
     @other_user = User.find(params[:other_user_id])
     @user, @other_user = @other_user, @user if @other_user == current_user
-    @shouts = Shout.displayable.between(@user, @other_user).order(created_at: :desc, id: :desc).first(50)
+    find_shouts
 
     if @user == current_user
       @user.shouts_to.unread.where(sent_from_id: @other_user.id).each(&:read)
@@ -56,6 +62,20 @@ class ShoutsController < ApplicationController
 
   def shout_params
     params.require(:shout).permit(:restore, :body)
+  end
+
+  def find_shouts
+    if params[:shout_id]
+      limit = 100
+      shout_ids = Shout.between(@user, @other_user).order(created_at: :desc, id: :desc).pluck(:id)
+      shout_idx = shout_ids.index(params[:shout_id].to_i)
+      min_idx = [shout_idx - (limit / 2), 0].max
+      max_idx = [shout_idx + (limit / 2), shout_ids.length - 1].min
+      focused_shout_ids = shout_ids[min_idx..max_idx]
+      @shouts = Shout.includes(:sent_from, :sent_to).where(id: focused_shout_ids).order(created_at: :desc, id: :desc)
+    else
+      @shouts = Shout.displayable.includes(:sent_from, :sent_to).between(@user, @other_user).order(created_at: :desc, id: :desc).first(50)
+    end
   end
 
 end

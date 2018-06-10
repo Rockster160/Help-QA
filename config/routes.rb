@@ -117,7 +117,7 @@ Rails.application.routes.draw do
     resources :posts, only: [ :index ]
     resources :replies, only: [ :index ]
   end
-  resources :shouts, only: [:update, :destroy]
+  resources :shouts, only: [:show, :update, :destroy]
 
   resources :webhooks, only: [] do
     collection do

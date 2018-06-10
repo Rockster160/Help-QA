@@ -28,7 +28,7 @@ module Sherlockable
       obj:             self,
       changed_attrs:   {destroyed_at: nil},
       discovery_type: :delete,
-      discovery_klass: self.class.table_name,
+      discovery_klass: self.class,
       new_attributes:  attributes.merge(destroyed_at: DateTime.current)
     )
   end
