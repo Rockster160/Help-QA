@@ -68,7 +68,7 @@ class Post < ApplicationRecord
 
   before_validation :format_body
   before_validation :auto_adult, on: :create
-  validate :body_is_not_default, :body_has_alpha_characters, :debounce_posts
+  validate :body_is_not_default, :body_has_alpha_characters, :debounce_posts, :not_spam
 
   def self.text_matches_default_text?(text)
     stripped_default_text = DEFAULT_POST_TEXT.gsub("\n", " ").gsub(/[^a-z| ]/i, "")
@@ -183,6 +183,22 @@ class Post < ApplicationRecord
   def broadcast_creation
     return if Rails.env.archive?
     ActionCable.server.broadcast("posts_channel", {})
+  end
+
+  def not_spam
+    return if author.replies.where.not(id: id).any?
+    lower_body = body.downcase
+    fake_links = ["href=", "<a", "[url="]
+    cash_cows = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
+    spammy_phrases = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text"]
+
+    if fake_links.any? { |word| lower_body.include?(word) }
+      errors.add(:base, "This post has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll post it!")
+    elsif cash_cows.any? { |word| lower_body.include?(word) }
+      errors.add(:base, "This post has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
+    elsif spammy_phrases.any? { |word| lower_body.include?(word) }
+      errors.add(:base, "This post has been marked as spam. It looks like you're not actually asking for help but advertising external sites.")
+    end
   end
 
   def format_body

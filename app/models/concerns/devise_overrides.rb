@@ -50,7 +50,6 @@ module DeviseOverrides
     end
   end
 
-
   def password_required?
     super if confirmed?
   end

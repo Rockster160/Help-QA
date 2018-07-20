@@ -155,8 +155,8 @@ class Reply < ApplicationRecord
   def not_spam
     return if author.replies.where.not(id: id).any?
     lower_body = body.downcase
-    fake_links = ["href=", "<a"]
-    cash_cows = ["cash loans", "online casino", "creditloans", "poker online"]
+    fake_links = ["href=", "<a", "[url="]
+    cash_cows = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
     spammy_phrases = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text"]
 
     if fake_links.any? { |word| lower_body.include?(word) }
