@@ -157,7 +157,7 @@ class Reply < ApplicationRecord
     lower_body = body.downcase
     fake_links = ["href=", "<a", "[url="]
     cash_cows = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
-    spammy_phrases = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text"]
+    spammy_phrases = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text", "my web site", "to my site", "poker", "my website"]
 
     if fake_links.any? { |word| lower_body.include?(word) }
       errors.add(:base, "This reply has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll go ahead and post it!")
