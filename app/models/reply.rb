@@ -112,6 +112,29 @@ class Reply < ApplicationRecord
     !author.helpbot? && !removed? && !in_moderation?
   end
 
+  def body_contains_any?(words)
+    words.any? { |word| body.downcase.include?(word) }
+  end
+
+  def sounds_fake?
+    fake_words = ["href=", "<a", "[url="]
+    body_contains_any?(fake_words)
+  end
+
+  def sounds_like_cash_cow?
+    cash_cow_words = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
+    body_contains_any?(cash_cow_words)
+  end
+
+  def sounds_like_ad?
+    spam_words = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text", "my web site", "to my site", "poker", "my website", "my weblog"]
+    body_contains_any?(spam_words)
+  end
+
+  def sounds_like_spam?
+    sounds_fake? || sounds_like_cash_cow? || sounds_like_ad?
+  end
+
   private
 
   def update_popular_post
@@ -154,16 +177,12 @@ class Reply < ApplicationRecord
 
   def not_spam
     return if author.replies.where.not(id: id).any?
-    lower_body = body.downcase
-    fake_links = ["href=", "<a", "[url="]
-    cash_cows = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
-    spammy_phrases = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text", "my web site", "to my site", "poker", "my website"]
 
-    if fake_links.any? { |word| lower_body.include?(word) }
+    if sounds_fake?
       errors.add(:base, "This reply has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll go ahead and post it!")
-    elsif cash_cows.any? { |word| lower_body.include?(word) }
+    elsif sounds_like_cash_cow?
       errors.add(:base, "This reply has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
-    elsif spammy_phrases.any? { |word| lower_body.include?(word) }
+    elsif sounds_like_ad?
       errors.add(:base, "This reply has been marked as spam. It looks like you're not actually responding to the post.")
     end
   end
