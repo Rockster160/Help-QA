@@ -127,7 +127,7 @@ class Reply < ApplicationRecord
   end
 
   def sounds_like_ad?
-    spam_words = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text", "my web site", "to my site", "poker", "my website", "my weblog"]
+    spam_words = ["my web page", "my webpage", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my web-site", "my page", "%anchor_text", "my web site", "to my site", "poker", "my website", "my weblog", "web blog"]
     body_contains_any?(spam_words)
   end
 
