@@ -1,0 +1,17 @@
+.audit-table {
+  border-spacing: 0 10px;
+
+  tr {
+    td {
+      background: $form-highlight;
+      margin-top: 10px;
+      padding: 5px;
+      vertical-align: top;
+    }
+  }
+}
+.data-table {
+  tr td {
+    border: 1px solid black;
+  }
+}

@@ -1,14 +1,27 @@
 <h1>Spying on <%= @user.username %></h1>
-<ul>
-  <% @known_ips.each do |ip, users| %>
-    <li><h4><%= link_to ip, mod_audit_index_path(ip: @user.ip_address) %></h4>
-      <% if users.any? %>
-        <ul>
-          <% users.each do |user| %>
-            <li><%= link_to "#{user.id} #{user.username}", user %></li>
+<table class="audit-table">
+  <thead>
+    <tr>
+      <th>Count</th>
+      <th>IP</th>
+      <th>Others</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @known_ips.each do |ip, ip_hash| %>
+      <tr>
+        <td><%= ip_hash[:count] %></td>
+        <td><%= link_to ip || "null", mod_audit_index_path(ip: @user.ip_address) %></td>
+        <td>
+          <% if ip_hash[:users].present? %>
+            <ul>
+              <% ip_hash[:users].each do |user| %>
+                <li><%= link_to "#{user.id} #{user.username}", user %></li>
+              <% end %>
+            </ul>
           <% end %>
-        </ul>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
