@@ -100,7 +100,10 @@ module Accountable
 
   def known_accounts
     @known_accounts ||= begin
-      used_ips = Sherlock.select("acting_ip, COUNT(acting_ip) AS count_ip").group(:acting_ip).order("count_ip DESC")
+      used_ips = Sherlock.group(:acting_ip)
+        .where(acting_user_id: id)
+        .select("acting_ip, COUNT(acting_ip) AS count_ip")
+        .order("count_ip DESC")
       used_ips.each_with_object({}) do |ip, ip_hash|
         user_ids_shared_ip = Sherlock.where(acting_ip: ip.acting_ip).pluck(:acting_user_id)
         shared_users = User.where(id: user_ids_shared_ip).where.not(id: id)
