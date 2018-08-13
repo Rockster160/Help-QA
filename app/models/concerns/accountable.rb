@@ -105,6 +105,7 @@ module Accountable
         .select("acting_ip, COUNT(acting_ip) AS count_ip")
         .order("count_ip DESC")
       used_ips.each_with_object({}) do |ip, ip_hash|
+        next if ip.count_ip.zero? || ip.acting_ip.blank?
         user_ids_shared_ip = Sherlock.where(acting_ip: ip.acting_ip).pluck(:acting_user_id)
         shared_users = User.where(id: user_ids_shared_ip).where.not(id: id)
         ip_hash[ip.acting_ip] = {
