@@ -1,9 +1,49 @@
 .new-post-container {
   .text-area-wrapper {
+    position: relative;
+    overflow: visible;
+
     textarea {
       resize: vertical;
       font-size: 21px;
       width: 100%;
+    }
+    .tools-toggle-button {
+      position: absolute;
+      right: 3px;
+      top: 3px;
+      font-size: 14px;
+      text-decoration: underline;
+      font-style: italic;
+      font-weight: bold;
+      color: $grey-med;
+    }
+    .markdown-tools {
+      position: fixed;
+      padding: 3px;
+      border: 1px solid darkgrey;
+      border-radius: 4px 4px 0 0;
+      background: lightgrey;
+      z-index: map-get($zindex, popup);
+      box-shadow: 2px 1px 5px $purple-shadow;
+
+      &.visible { display: block; }
+      .toolbar {
+        .tool-cell {
+          display: inline-block;
+          width: 30px;
+          line-height: 30px;
+          text-align: center;
+          font-size: 20px;
+          border: 1px solid grey;
+          border-radius: 6px;
+
+          &:hover {
+            background: $popup-highlight;
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
   .post-controls {

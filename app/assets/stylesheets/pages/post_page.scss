@@ -28,7 +28,7 @@
     .author-details {
       font-size: 12px;
 
-      .avatar-container { border-color: $gray-med; }
+      .avatar-container { border-color: $grey-med; }
       .username { font-weight: bold; }
     }
     .editors {
@@ -93,7 +93,7 @@
       .details {
         border-top: 1px solid $border-color;
         padding-top: 3px;
-        color: $gray-med-light;
+        color: $grey-med-light;
         font-size: 10px;
       }
     }
@@ -140,7 +140,7 @@
             border-top: 3px solid limegreen;
           }
           .reply-container {
-            border: 1px solid $gray-med;
+            border: 1px solid $grey-med;
             margin-bottom: 10px;
             position: relative;
 
@@ -163,7 +163,7 @@
             }
             .reply-author {
               padding: 5px;
-              border-bottom: 1px solid $gray-med;
+              border-bottom: 1px solid $grey-med;
               position: relative;
               background: white;
               @include split-page(40px);

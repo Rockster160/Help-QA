@@ -92,10 +92,10 @@
   "sparkling_heart":        [ "heart", "love", "like", "affection", "valentines" ],
 
   "red_exclamation":        [ "punctuation", "heavy_exclamation_mark", "shocked", "danger", "surprise", "wow", "warning" ],
-  "grey_exclamation":       [ "punctuation", "heavy_exclamation_mark", "surprise", "gray", "wow", "warning" ],
+  "grey_exclamation":       [ "punctuation", "heavy_exclamation_mark", "surprise", "gray", "grey", "wow", "warning" ],
   "interrobang":            [ "punctuation", "wat", "surprise" ],
   "red_question":           [ "punctuation", "heavy_question_mark", "doubt", "confused" ],
-  "grey_question":          [ "punctuation", "doubts", "gray", "huh" ],
+  "grey_question":          [ "punctuation", "doubts", "gray", "grey", "huh" ],
 
   "couple":                 [ "people", "pair", "human", "love", "date", "dating", "like", "affection", "valentines", "marriage" ],
   "family":                 [ "people", "home", "parents", "child", "mom", "dad", "father", "mother", "human" ],

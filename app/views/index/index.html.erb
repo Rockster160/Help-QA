@@ -78,6 +78,7 @@
     <div class="new-post-container">
       <%= form_for @post || Post.new do |f| %>
         <div class="text-area-wrapper">
+          <%= render partial: "layouts/markdown_tools" %>
           <% should_show_default_text = params[:post_text].blank? || Post.text_matches_default_text?(params[:post_text]) %>
           <%= f.text_area :body, rows: 6, class: "autofillable-field #{'js-clear-text-after-focus' if should_show_default_text}", value: params[:post_text].presence || Post::DEFAULT_POST_TEXT.html_safe %>
         </div>

@@ -43,9 +43,9 @@
           <% elsif !posted_by_self && previous_favorite.reply == reply %>
             <%= hover_icon("medal", "Changed your mind? Unmark this as your favorite.#{other_users}", href: post_reply_unfavorite_path(reply.post, reply), text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
           <% elsif posted_by_self %>
-            <%= hover_icon("medal-add", "You cannot favorite your own reply.#{other_users}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
+            <%= hover_icon("medal-add", "You cannot favorite your own reply.#{other_users}", class: "greyscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
           <% else %>
-            <%= hover_icon("medal-add", "You've already favorited a reply for this post.#{other_users}", href: "#reply-#{reply.id}", class: "grayscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
+            <%= hover_icon("medal-add", "You've already favorited a reply for this post.#{other_users}", href: "#reply-#{reply.id}", class: "greyscale", text: reply.favorite_count.positive? ? "(#{reply.favorite_count})" : "") %>
           <% end %>
         <% end %>
         <%= hover_icon("quote", "Quote this reply", class: "quote-reply", href: "#") %>
