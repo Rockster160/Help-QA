@@ -1,0 +1,50 @@
+.text-area-wrapper {
+  position: relative;
+
+  .open-tools {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    font-size: 14px;
+    text-decoration: underline;
+    font-style: italic;
+    font-weight: bold;
+    color: $grey-med;
+  }
+  .close-tools {
+    float: right;
+    padding: 3px 3px;
+    color: $flash-alert-bg;
+    font-weight: bold;
+  }
+  .markdown-tools {
+    position: absolute;
+    width: 100%;
+    padding: 3px;
+    border: 1px solid darkgrey;
+    border-radius: 4px 4px 0 0;
+    background: $grey-light;
+    z-index: map-get($zindex, popup);
+    box-shadow: 2px 1px 5px $purple-shadow;
+
+    &.visible { display: block; }
+    .toolbar {
+      .tool-cell {
+        display: inline-block;
+        padding: 0 5px;
+        text-align: center;
+        border: 1px solid grey;
+        border-radius: 6px;
+
+        &, * {
+          line-height: 20px;
+          font-size: 14px;
+        }
+        &:hover {
+          background: $popup-highlight;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
