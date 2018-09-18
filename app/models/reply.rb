@@ -19,6 +19,7 @@ class Reply < ApplicationRecord
   include MarkdownHelper
   include Sherlockable
   include UrlHelper
+  include SpamCheck
   attr_accessor :hide_update, :has_invited
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
@@ -112,29 +113,6 @@ class Reply < ApplicationRecord
     !author.helpbot? && !removed? && !in_moderation?
   end
 
-  def body_contains_any?(words)
-    words.any? { |word| body.downcase.include?(word) }
-  end
-
-  def sounds_fake?
-    fake_words = ["href=", "<a", "[url="]
-    body_contains_any?(fake_words)
-  end
-
-  def sounds_like_cash_cow?
-    cash_cow_words = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
-    body_contains_any?(cash_cow_words)
-  end
-
-  def sounds_like_ad?
-    spam_words = ["my web", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my page", "%anchor_text", "my site", "poker", "web blog"]
-    body_contains_any?(spam_words)
-  end
-
-  def sounds_like_spam?
-    sounds_fake? || sounds_like_cash_cow? || sounds_like_ad?
-  end
-
   private
 
   def update_popular_post
@@ -178,11 +156,11 @@ class Reply < ApplicationRecord
   def not_spam
     return if author.replies.where.not(id: id).any?
 
-    if sounds_fake?
+    if sounds_fake?(body)
       errors.add(:base, "This reply has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll go ahead and post it!")
-    elsif sounds_like_cash_cow?
+    elsif sounds_like_cash_cow?(body)
       errors.add(:base, "This reply has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
-    elsif sounds_like_ad?
+    elsif sounds_like_ad?(body)
       errors.add(:base, "This reply has been marked as spam. It looks like you're not actually responding to the post.")
     end
   end

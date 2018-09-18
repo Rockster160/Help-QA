@@ -18,6 +18,7 @@
 class Post < ApplicationRecord
   include Defaults
   include Sherlockable
+  include SpamCheck
   attr_accessor :skip_debounce
 
   DEFAULT_POST_TEXT = "Start Here. \n\nAsk a question, post a rant, tell us your story.".freeze
@@ -187,16 +188,12 @@ class Post < ApplicationRecord
 
   def not_spam
     return if author.replies.where.not(id: id).any?
-    lower_body = body.downcase
-    fake_links = ["href=", "<a", "[url="]
-    cash_cows = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
-    spammy_phrases = ["my web", "look at my page", "free trial", "visit my blog", "blog post", "my homepage", "my page", "%anchor_text", "my site", "poker", "web blog"]
 
-    if fake_links.any? { |word| lower_body.include?(word) }
+    if sounds_fake?(body)
       errors.add(:base, "This post has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll post it!")
-    elsif cash_cows.any? { |word| lower_body.include?(word) }
+    elsif sounds_like_cash_cow?(body)
       errors.add(:base, "This post has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
-    elsif spammy_phrases.any? { |word| lower_body.include?(word) }
+    elsif sounds_like_ad?(body)
       errors.add(:base, "This post has been marked as spam. It looks like you're not actually asking for help but advertising external sites.")
     end
   end
