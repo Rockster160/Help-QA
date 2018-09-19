@@ -15,7 +15,10 @@
       </div>
       <div class="half">
         <div class="highlight-box">
-          <%= f.text_area attr_key, class: "full-width autofillable-field", rows: 4 %>
+          <div class="text-area-wrapper">
+            <%= render partial: "layouts/markdown_tools" %>
+            <%= f.text_area attr_key, class: "full-width autofillable-field", rows: 4 %>
+          </div>
         </div>
       </div>
     </div>

@@ -153,7 +153,10 @@
             Edit the reply text below, then click "Send Reply" to update your reply.
           </div>
           <%= f.label :body, "Reply:" %>
-          <%= f.text_area :body, rows: 8, class: "autofillable-field", placeholder: "Post a reply" %>
+          <div class="text-area-wrapper">
+            <%= render partial: "layouts/markdown_tools" %>
+            <%= f.text_area :body, rows: 8, class: "autofillable-field", placeholder: "Post a reply" %>
+          </div>
 
           <div class="reply-controls-wrapper">
             <%= f.submit "Send Reply" %>

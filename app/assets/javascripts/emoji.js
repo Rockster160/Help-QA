@@ -313,7 +313,6 @@ $(document).ready(function() {
     }
     currentCaretPos = caretPositionInField(this)
     var currentWord = currentWordForField(this)
-    console.log(currentWord);
     if ((currentWord[0] == ":" || currentWord[0] == "@") && (currentWord.length == 1 || currentWord[currentWord.length - 1] != ":")) {
       var loader
       if (currentWord[0] == ":") { loader = $(".emoji-loader") }

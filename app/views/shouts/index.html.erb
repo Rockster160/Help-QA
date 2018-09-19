@@ -18,7 +18,10 @@
         <p>Leave a shout for <%= @user.username %></p>
       <% end %>
       <%= form_for [@user, Shout.new] do |f| %>
-        <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
+        <div class="text-area-wrapper">
+          <%= render partial: "layouts/markdown_tools" %>
+          <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
+        </div>
         <div class="text-right">
           <%= f.submit "Shout!" %>
           <% if @user == current_user %>

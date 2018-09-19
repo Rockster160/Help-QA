@@ -1,6 +1,7 @@
 <div class="new-post-container">
   <%= form_for @post do |f| %>
     <div class="text-area-wrapper">
+      <%= render partial: "layouts/markdown_tools" %>
       <%= f.text_area :body, rows: 8, class: "autofillable-field" %>
     </div>
     <div class="form-field">
