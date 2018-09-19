@@ -2,14 +2,11 @@ $(document).ready(function() {
 
   filterOptionsFromText = function(loader, search_text) {
     search_text = search_text.toLowerCase().replace(/[ \_\-\:\@]/, "")
-    if (search_text.length == 0) {
-      loader.find(".searchable-container").removeClass("hidden")
-    }
 
     loader.find(".searchable-container").each(function() {
       var names = $(this).attr("data-searchable-by").toLowerCase().split(" ")
 
-      var hasMatched = false
+      var hasMatched = search_text.length == 0
       for (var name_idx in names) {
         if (hasMatched) { break }
 
@@ -29,7 +26,8 @@ $(document).ready(function() {
     })
   }
 
-  function setSelectionRange(input, selectionStart, selectionEnd) {
+  setSelectionRange = function(input, selectionStart, selectionEnd) {
+    input = $(input).get(0)
     if (input.setSelectionRange) {
       input.focus();
       input.setSelectionRange(selectionStart, selectionEnd);
@@ -221,9 +219,23 @@ $(document).ready(function() {
       prefill_value +
       field.val().substring(endIdx + 1, field.val().length)
     )
+    var newIdx = startIdx + prefill_value.length
 
     $(".field-autofiller").addClass("hidden")
-    setSelectionRange(field, endIdx + 1, endIdx + 1)
+    setSelectionRange(field, newIdx, newIdx)
+  }
+
+  pressedSearchableChar = function(key) {
+    var charCode = key.which
+    if (charCode >= keyEvent("A") && charCode <= keyEvent("Z")) {
+      return true
+    } else if (charCode >= keyEvent("0") && charCode <= keyEvent("9")) {
+      return true
+    } else if (charCode == keyEvent("+") || charCode == keyEvent("-") || charCode == keyEvent("_")) {
+      return true
+    } else {
+      return false
+    }
   }
 
   pressedOptionNavigationKey = function(key) {
@@ -288,17 +300,29 @@ $(document).ready(function() {
           return false
       }
     }
+    // Only open field when the starting char is entered (:@) or values are entered as part of the current word
+    // When hitting escape, close the current popup - since it's closed, arrow keys should no longer be disabled.
   }).on("keyup focus mouseup", function(evt) {
     if (pressedOptionNavigationKey(evt)) { return }
+    if (autofillerPopupVisible()) {
+      if (keyEvent("ESC") == evt.which) {
+        evt.preventDefault()
+        $(".field-autofiller").addClass("hidden")
+        return false
+      }
+    }
     currentCaretPos = caretPositionInField(this)
     var currentWord = currentWordForField(this)
-    if ((currentWord[0] == ":" || currentWord[0] == "@") && currentWord[currentWord.length - 1] != ":") {
+    console.log(currentWord);
+    if ((currentWord[0] == ":" || currentWord[0] == "@") && (currentWord.length == 1 || currentWord[currentWord.length - 1] != ":")) {
       var loader
       if (currentWord[0] == ":") { loader = $(".emoji-loader") }
       if (currentWord[0] == "@") { loader = $(".username-loader") }
 
       filterOptionsFromText(loader, currentWord)
-      loader.removeClass("hidden")
+
+      // Show loader if there are any options present
+      if (loader.find(".searchable-container:not(.hidden)").length > 0) { loader.removeClass("hidden") }
       alignAutoFillerToFocusedField()
     } else {
       $(".field-autofiller").addClass("hidden")

@@ -10,13 +10,17 @@ function insertAtCursor(field, insertBefore, insertAfter) {
       field.value.substring(startPos, endPos) +
       insertAfter +
       field.value.substring(endPos, field.value.length)
+    setSelectionRange(field, startPos + insertBefore.length, endPos + insertBefore.length)
   }
+  $(field).focus()
 }
 
 $(document).on("click", ".tool-cell", function(evt) {
-  var field = $(this).parents(".markdown-tools").siblings("textarea").get(0)
   evt.preventDefault()
-  insertAtCursor(field, $(this).attr("data-markdown-open").replace("\\n", "\n"), $(this).attr("data-markdown-close").replace("\\n", "\n"))
+  var field = $(this).parents(".markdown-tools").siblings("textarea").get(0)
+  var beforeText = $(this).attr("data-markdown-open").replace("\\n", "\n")
+  var afterText = $(this).attr("data-markdown-close").replace("\\n", "\n")
+  insertAtCursor(field, beforeText, afterText)
   return false
 }).on("click", ".open-tools", function() {
   var tools = $(this).siblings(".markdown-tools")

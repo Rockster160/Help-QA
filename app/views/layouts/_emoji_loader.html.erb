@@ -1,7 +1,7 @@
 <div class="field-autofiller emoji-loader hidden">
   <% @emoji_list.each do |emoji_name, aliases| %>
     <% code, raw_emoji = emoji_name.split(",") %>
-    <div class="searchable-container" data-type="emoji" data-searchable-by="<%= aliases %>">
+    <div class="searchable-container" data-type="emoji" data-searchable-by="<%= aliases %>" title="<%= aliases %>">
       <div class="emoji-wrapper"><div class="option-name"><%= raw_emoji %></div></div>
       <div class="aliases"><%= aliases %></div>
     </div>
