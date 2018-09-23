@@ -15,19 +15,19 @@ function insertAtCursor(field, insertBefore, insertAfter) {
   $(field).focus()
 }
 
-$(document).on("click tap", ".tool-cell", function(evt) {
+$(document).on("click tap touchend mouseup", ".tool-cell", function(evt) {
   evt.preventDefault()
   var field = $(this).parents(".markdown-tools").siblings("textarea").get(0)
   var beforeText = $(this).attr("data-markdown-open").replace("\\n", "\n")
   var afterText = $(this).attr("data-markdown-close").replace("\\n", "\n")
   insertAtCursor(field, beforeText, afterText)
   return false
-}).on("click tap", ".open-tools", function() {
+}).on("click tap touchend mouseup", ".open-tools", function() {
   var tools = $(this).siblings(".markdown-tools")
   var field = $(this).siblings("textarea")
   tools.removeClass("hidden")
   field.css("padding-top", tools.outerHeight())
-}).on("click tap", ".close-tools", function() {
+}).on("click tap touchend mouseup", ".close-tools", function() {
   var tools = $(this).parents(".markdown-tools")
   var field = tools.siblings("textarea")
   field.css("padding-top", "0")

@@ -2,14 +2,15 @@
   position: relative;
 
   .open-tools {
+    display: block;
     position: absolute;
-    right: 3px;
     top: 3px;
+    right: 3px;
+    color: $grey-med;
     font-size: 14px;
-    text-decoration: underline;
     font-style: italic;
     font-weight: bold;
-    color: $grey-med;
+    text-decoration: underline
   }
   .close-tools {
     float: right;
@@ -19,30 +20,30 @@
   }
   .markdown-tools {
     position: absolute;
-    width: 100%;
-    padding: 3px;
+    z-index: map-get($zindex, popup);
+    box-shadow: 2px 1px 5px $purple-shadow;
     border: 1px solid darkgrey;
     border-radius: 4px 4px 0 0;
     background: $grey-light;
-    z-index: map-get($zindex, popup);
-    box-shadow: 2px 1px 5px $purple-shadow;
+    padding: 3px;
+    width: 100%;
 
     &.visible { display: block; }
     .toolbar {
       .tool-cell {
         display: inline-block;
-        padding: 0 5px;
-        text-align: center;
         border: 1px solid grey;
         border-radius: 6px;
+        padding: 0 5px;
+        text-align: center;
 
         &, * {
-          line-height: 20px;
           font-size: 14px;
+          line-height: 20px;
         }
         &:hover {
-          background: $popup-highlight;
           cursor: pointer;
+          background: $popup-highlight;
         }
       }
     }

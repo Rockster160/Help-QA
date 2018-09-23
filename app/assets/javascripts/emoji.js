@@ -263,8 +263,11 @@ $(document).ready(function() {
   }).on("mousedown", ".searchable-container", function(evt) {
     evt.preventDefault()
     return false
-  }).on("mouseup touchend tap", ".searchable-container", function() {
+  }).on("mouseup touchend tap", ".searchable-container", function(evt) {
+    evt.preventDefault()
+    evt.stopPropagation()
     confirmOption()
+    return false
   })
 
   $(".emoji-quick-search").on("keyup", function() {
