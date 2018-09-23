@@ -219,7 +219,7 @@ $(document).ready(function() {
       prefill_value +
       field.val().substring(endIdx + 1, field.val().length)
     )
-    var newIdx = startIdx + prefill_value.length
+    var newIdx = startIdx + prefill_value.length + 1
 
     $(".field-autofiller").addClass("hidden")
     setSelectionRange(field, newIdx, newIdx)
