@@ -73,7 +73,7 @@ class EmailBlob < ApplicationRecord
     self.virus = header_from_content("X-SES-Virus-Verdict") != "PASS"
     save
     HelpBot.react_to_email(self)
-    return if failed_to_deliver_to_user # We don't need emails from Spam
+    return update(read_at: Time.current) if failed_to_deliver_to_user # We don't need emails from Spam
     path = url_for(Rails.application.routes.url_helpers.admin_email_blob_path(self))
     SlackNotifier.notify("New Email from #{from}\n<#{path}|Click here to view.>" , channel: '#helpqa', username: 'Help-Bot', icon_emoji: ':mailbox:')
   end
