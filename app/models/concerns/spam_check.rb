@@ -21,6 +21,8 @@ module SpamCheck
   end
 
   def sounds_like_spam?(text)
+    return false if author.replies.where.not(id: id).any? || author.posts.where.not(id: id).any?
+    
     sounds_fake?(text) || sounds_like_cash_cow?(text) || sounds_like_ad?(text)
   end
 end

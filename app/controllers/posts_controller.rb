@@ -167,6 +167,7 @@ class PostsController < ApplicationController
     if @post.persisted?
       redirect_to post_path(@post), notice: "Successfully created post! While you're waiting for replies, consider viewing other posts and helping others."
     else
+      current_user.destroy if @post.sounds_like_spam?(@post.body)
       redirect_to new_post_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously], email: user.email), alert: @post.errors.full_messages.first || "Something went wrong creating your post. Please make sure our post consists of words."
     end
   end

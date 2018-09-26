@@ -101,6 +101,7 @@ class RepliesController < ApplicationController
         end
       else
         reply = @post.replies.create(reply_params.merge(author: current_user))
+        current_user.destroy if reply.sounds_like_spam?(reply.body)
         @errors = reply.errors.full_messages
       end
     else
