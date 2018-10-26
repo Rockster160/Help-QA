@@ -158,6 +158,8 @@ class Reply < ApplicationRecord
 
     if sounds_fake?(body)
       errors.add(:base, "This reply has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll go ahead and post it!")
+    elsif blacklisted_text?(body)
+      errors.add(:base, "This reply has been marked as spam.")
     elsif sounds_like_cash_cow?(body)
       errors.add(:base, "This reply has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
     elsif sounds_like_ad?(body)
