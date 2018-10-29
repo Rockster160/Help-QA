@@ -51,6 +51,7 @@ class HelpBot
       shout_user(failed_user, "Hi there!\n\nI just tried to send you an email, but was told it doesn't exist. Could you verify that you've typed your email correctly? You can view your email and change it by visiting this url:\n\n#{url}\n\nIf you don't want to receive email notifications, that's okay! It will be helpful to use a real email account so you can access your account if you forget your password. You can opt-out of all other emails by clicking \"Do not email me\" in your account settings on the same page you set your email.")
       if failed_user.replies.one?
         first_reply = failed_user.replies.first
+        first_reply.ignore_sherlock = true
         first_reply.destroy if first_reply.sounds_like_spam?
       end
     end
