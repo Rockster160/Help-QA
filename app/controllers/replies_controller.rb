@@ -17,7 +17,13 @@ class RepliesController < ApplicationController
 
   def create
     is_new_user = !user_signed_in?
-    @user = create_and_sign_in_user_by_email(params.dig(:new_user, :email)) if is_new_user
+    if is_new_user
+      if Reply.sounds_like_spam?(params.dig(:reply, :body))
+        @errors = ["Your reply has been marked as spam. Please avoid posting links in your first reply or attempting to direct users to external sites."]
+      else
+        @user = create_and_sign_in_user_by_email(params.dig(:new_user, :email))
+      end
+    end
     @post = Post.find(params[:post_id])
 
     create_or_update_reply
@@ -90,6 +96,8 @@ class RepliesController < ApplicationController
   private
 
   def create_or_update_reply
+    return if @errors.present?
+
     if user_signed_in?
       if params[:id].present?
         reply = @post.replies.find(params[:id])

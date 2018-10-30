@@ -13,7 +13,7 @@
       <% unless user_signed_in? %>
         <div class="input-wrapper">
           <label for="new-post-email">Email: </label>
-          <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) %>">
+          <input type="new-post-email" name="new_user[email]" value="<%= params.dig(:new_user, :email) || params.dig(:email) %>">
         </div>
       <% end %>
       <div class="input-wrapper">

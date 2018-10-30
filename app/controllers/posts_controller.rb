@@ -156,10 +156,19 @@ class PostsController < ApplicationController
   end
 
   def create
-    user = current_user || create_and_sign_in_user_by_email(params.dig(:new_user, :email))
+    user = current_user
+    user ||= begin
+      if Post.sounds_like_spam?(params.dig(:post, :body))
+        user = User.new(email: params.dig(:new_user, :email))
+        user.errors.add(:base, "Your post has been marked as spam. Please avoid links in your first post. If you'd like to ask for help with some external site, try posting a reply with more information.")
+        user
+      else
+        create_and_sign_in_user_by_email(params.dig(:new_user, :email))
+      end
+    end
 
     unless user.try(:persisted?)
-      return redirect_to root_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously]), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
+      return redirect_to new_post_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously], email: user.email), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
     end
 
     @post = user.posts.create(post_params)
