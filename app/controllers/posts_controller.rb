@@ -167,7 +167,7 @@ class PostsController < ApplicationController
     if @post.persisted?
       redirect_to post_path(@post), notice: "Successfully created post! While you're waiting for replies, consider viewing other posts and helping others."
     else
-      if @post.sounds_like_spam?(@post.body)
+      if @post.sounds_like_spam?
         current_user.ignore_sherlock = true
         current_user.destroy
       end

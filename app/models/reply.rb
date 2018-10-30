@@ -20,6 +20,7 @@ class Reply < ApplicationRecord
   include Sherlockable
   include UrlHelper
   include SpamCheck
+  extend SpamCheck
   attr_accessor :hide_update, :has_invited
 
   sherlockable klass: :reply, ignore: [ :created_at, :updated_at, :favorite_count ]
@@ -156,13 +157,13 @@ class Reply < ApplicationRecord
   def not_spam
     return if author.replies.where.not(id: id).any?
 
-    if sounds_fake?(body)
+    if sounds_fake?
       errors.add(:base, "This reply has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll go ahead and post it!")
-    elsif blacklisted_text?(body)
+    elsif blacklisted_text?
       errors.add(:base, "This reply has been marked as spam.")
-    elsif sounds_like_cash_cow?(body)
+    elsif sounds_like_cash_cow?
       errors.add(:base, "This reply has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
-    elsif sounds_like_ad?(body)
+    elsif sounds_like_ad?
       errors.add(:base, "This reply has been marked as spam. It looks like you're not actually responding to the post.")
     end
   end

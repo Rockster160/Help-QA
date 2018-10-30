@@ -19,6 +19,7 @@ class Post < ApplicationRecord
   include Defaults
   include Sherlockable
   include SpamCheck
+  extend SpamCheck
   attr_accessor :skip_debounce
 
   DEFAULT_POST_TEXT = "Start Here. \n\nAsk a question, post a rant, tell us your story.".freeze
@@ -189,13 +190,13 @@ class Post < ApplicationRecord
   def not_spam
     return if author.replies.where.not(id: id).any?
 
-    if sounds_fake?(body)
+    if sounds_fake?
       errors.add(:base, "This post has been marked as spam. We use markdown rather than HTML. If you'd like to post a link somewhere, go ahead and just drop the url by itself and if it's safe, we'll post it!")
-    elsif blacklisted_text?(body)
+    elsif blacklisted_text?
       errors.add(:base, "This reply has been marked as spam.")
-    elsif sounds_like_cash_cow?(body)
+    elsif sounds_like_cash_cow?
       errors.add(:base, "This post has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
-    elsif sounds_like_ad?(body)
+    elsif sounds_like_ad?
       errors.add(:base, "This post has been marked as spam. It looks like you're not actually asking for help but advertising external sites.")
     end
   end

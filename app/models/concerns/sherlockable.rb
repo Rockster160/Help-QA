@@ -24,6 +24,7 @@ module Sherlockable
   def leave_no_sherlock_trace
     return if ignore_sherlock
     return if Rails.env.archive?
+
     Sherlock.create(
       obj:             self,
       changed_attrs:   {destroyed_at: nil},
