@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   get "history(((((/:claimed_status)/:reply_count)/:user_status)/:tags)/:page)" => "posts#history", as: :history
 
   get "url" => "replies#meta", as: :get_meta
+  get "preview" => "replies#preview"
   get "posts/:id.csv" => "posts#show", format: :csv
   resources :posts, except: [ :destroy ] do
     member do

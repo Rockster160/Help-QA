@@ -87,6 +87,12 @@ class RepliesController < ApplicationController
     end
   end
 
+  def preview
+    reply = Reply.new(author: current_user, body: params[:body], post_id: params[:post_id])
+
+    render(partial: 'show', layout: false, locals: { reply: reply })
+  end
+
   def meta
     respond_to do |format|
       format.json { render json: generate_previews_for_urls }

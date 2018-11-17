@@ -1,16 +1,16 @@
 .ctr-posts.act-new {
   h6 { margin-top: 20px; }
   ol {
-    font-size: 12px;
     padding-left: 20px;
+    font-size: 12px;
 
     li {
       font-weight: bold;
 
       p {
+        margin-top: 0;
         font-size: 12px;
         font-weight: normal;
-        margin-top: 0;
       }
     }
   }
@@ -45,9 +45,9 @@
       padding-left: 10px;
 
       .title p {
-        font-size: 25px;
-        margin-bottom: 15px;
         margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 25px;
       }
       .body {
         min-height: 50px;
@@ -61,8 +61,8 @@
           max-width: 250px;
         }
         .poll {
-          line-height: 2;
           padding-right: 50px;
+          line-height: 2;
 
           .poll-results {
             display: table;
@@ -71,20 +71,20 @@
             span {
               display: table-cell;
               vertical-align: middle;
-              width: 50px;
 
               padding-right: 5px;
-              text-align: right;
+              width: 50px;
               font-size: 10px;
               line-height: 10px;
+              text-align: right;
             }
             .vote-bar-wrapper {
               display: table-cell;
               vertical-align: middle;
 
               .vote-bar {
-                height: 5px;
                 background: green;
+                height: 5px;
               }
             }
           }
@@ -99,9 +99,9 @@
     }
   }
   .post-section {
+    margin-top: 10px;
     border-top: 1px solid $border-color;
     padding-top: 3px;
-    margin-top: 10px;
     text-align: left;
 
     .reciprocity-some { background: $reciprocity-some; }
@@ -112,8 +112,8 @@
       line-height: 1.5;
 
       .text-wrapper {
-        padding: 5px 5px;
         vertical-align: middle;
+        padding: 5px 5px;
         line-height: 1;
 
         span { display: inline-block; }
@@ -123,13 +123,13 @@
       }
     }
     .post-section-content {
-      font-size: 11px;
       padding: 5px;
+      font-size: 11px;
 
       .deep { font-weight: bold; }
       &.reciprocity-none .deep { color: darken($reciprocity-none, 60%); }
       &.reciprocity-some .deep { color: darken($reciprocity-some, 60%); }
-      .replies-container {
+      .replies-container, .preview-container {
         padding: 5px;
         padding-right: 0;
         overflow: hidden;
@@ -140,9 +140,9 @@
             border-top: 3px solid limegreen;
           }
           .reply-container {
-            border: 1px solid $grey-med;
-            margin-bottom: 10px;
             position: relative;
+            margin-bottom: 10px;
+            border: 1px solid $grey-med;
 
             &.attached {
               margin-top: -13px;
@@ -152,25 +152,25 @@
             }
             &.deactivated:after {
               position: absolute;
-              content: "";
               top: 0;
-              left: 0;
               right: 0;
               bottom: 0;
-              background: white;
+              left: 0;
               opacity: 0.6;
+              background: white;
               pointer-events: none;
+              content: "";
             }
             .reply-author {
-              padding: 5px;
-              border-bottom: 1px solid $grey-med;
               position: relative;
+              border-bottom: 1px solid $grey-med;
               background: white;
+              padding: 5px;
               @include split-page(40px);
 
               .avatar-container {
-                border-color: black;
                 margin: 0;
+                border-color: black;
               }
               .reply-author-text {
                 padding-top: 4px;
@@ -179,8 +179,8 @@
 
                 .reply-author-name {
                   display: inline-block;
-                  font-weight: bold;
                   font-size: 14px;
+                  font-weight: bold;
                 }
                 .reply-author-stats {
                   display: inline-block;
@@ -192,21 +192,21 @@
               }
               .reply-options {
                 position: absolute;
-                bottom: 0;
                 right: 0;
-                width: auto;
-                height: auto;
+                bottom: 0;
                 border-top: 1px solid $border-color;
                 border-left: 1px solid $border-color;
+                width: auto;
+                height: auto;
 
                 .hover-icon { padding: 5px 3px; }
               }
             }
             .reply-content {
               background: $off-white;
+              padding: 8px 5px;
               width: 100%;
               max-width: 745px;
-              padding: 8px 5px;
 
               p {
                 font-size: 12px;
@@ -214,15 +214,15 @@
               }
             }
             .reply-after-message {
+              margin: 5px 0;
               border-top: 1px solid $border-color;
               background: white;
-              margin: 5px 0;
 
               p {
-                font-size: 12px;
+                display: inline;
                 margin: 0;
                 padding: 3px;
-                display: inline;
+                font-size: 12px;
               }
             }
             &.original-poster {
@@ -234,12 +234,12 @@
           }
         }
         .pending-reply {
+          position: relative;
+          margin-bottom: 10px;
           border: 2px solid $help-default;
           background: lighten($help-default, 40%);
-          color: black;
-          margin-bottom: 10px;
           padding: 10px;
-          position: relative;
+          color: black;
 
           &.removed {
             border-color: red;
@@ -265,8 +265,8 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            font-size: 16px;
             cursor: pointer;
+            font-size: 16px;
           }
         }
       }
@@ -274,8 +274,8 @@
         padding: 10px;
       }
       .new-reply-container {
-        padding-left: 5px;
         margin-bottom: 30px;
+        padding-left: 5px;
 
         label {
           font-weight: bold;
@@ -288,15 +288,15 @@
           .editing-reply {
             border: 2px solid gold;
             background: lighten(gold, 40%);
-            color: black;
             padding: 10px;
+            color: black;
           }
           .reply-controls-wrapper {
             .input-wrapper {
               display: block;
               margin-top: 5px;
             }
-            input[type=submit] {
+            input[type=submit], button {
               float: right;
             }
           }
@@ -329,8 +329,8 @@
         .reply-options {
           top: 0;
           bottom: inherit;
-          border-bottom: 1px solid $border-color;
           border-top: none;
+          border-bottom: 1px solid $border-color;
           width: auto;
         }
       }
