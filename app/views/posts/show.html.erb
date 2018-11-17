@@ -160,8 +160,8 @@
 
           <div class="reply-controls-wrapper">
             <%= f.submit "Send Reply" %>
-            <button type="button" name="button" class="preview-reply">Preview</button>
             <% if user_signed_in? %>
+              <button type="button" name="button" class="preview-reply">Preview</button>
               <span>Post as <strong><%= current_user.username %></strong></span>
             <% else %>
               <%= label_tag "new_user[email]", "Your Email:" %>
@@ -175,7 +175,7 @@
           </div>
         <% end %>
       </div>
-      
+
       <div class="preview-container" data-url="<%= preview_path(post_id: @post.id) %>"></div>
     <% end %>
   </div>
