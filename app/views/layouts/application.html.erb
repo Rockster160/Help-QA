@@ -23,6 +23,7 @@
       current_userid = "<%= current_user.try(:id) %>"
       notifications_url = "<%= notifications_account_path %>"
     </script>
+    <%= yield(:head_scripts) %>
   </head>
 
   <% class_list = ["ctr-#{controller_name}", "act-#{action_name}"] %>

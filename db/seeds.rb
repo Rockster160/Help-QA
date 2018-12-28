@@ -1,8 +1,6 @@
-HelpBot.create_helpbot
+HelpBot.helpbot
 
-if Rails.env.production?
-  create_helpbot
-else
+unless Rails.env.production?
   puts "Destroying previous data..."
   models = Dir.new("app/models").entries.select {|f|f[/\.rb$/]}.map { |f|f[0..-4].titleize.gsub(" ", "").constantize }
   models.each { |model| model.try(:destroy_all) rescue nil }
@@ -27,7 +25,7 @@ else
   @stored_sentences = []
   def random_sentences(count)
     until @stored_sentences.length >= count
-      sentences = RestClient.get("http://johno.jsmf.net/knowhow/ngrams/index.php?table=en-nigga-word-2gram&length=2000&paragraphs=1").body[/\<div id="text" \>(.|\n)*?\<\/div\>/][24..-14].split(/(?<=[.?!;])\s+(?=\p{Lu})/).reject(&:blank?)
+      sentences = RestClient.get("http://randomtextgenerator.com").body[/<textarea id="generatedtext">(.|\n)*?<\/textarea>/][29..-16].split(/(?<=[.?!;\n\r])/).reject(&:blank?).map(&:squish)
       @stored_sentences += sentences
       @tag_words ||= @stored_sentences.join(" ").gsub(/[^a-z \-]/i, "").gsub(/\b[a-z]{1,2}\b/i, "").split(" ").sample(100)
     end
@@ -68,7 +66,6 @@ else
   posts = 20
   replies = 60
 
-  create_helpbot
   u = User.create({
     email: "rocco11nicholls@gmail.com",
     password: "password",

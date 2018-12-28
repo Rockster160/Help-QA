@@ -1,3 +1,7 @@
+<%= content_for(:head_scripts) do %>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+<% end %>
+
 <% meta_title "Feedback" %>
 
 <h1>File a Report</h1>
@@ -36,9 +40,15 @@
 
     <div class="form-field">
       <%= f.label :url do %>
-      URL <small><i>(If this is a report concerning a post or user, please leave a link for us to investigate)</i></small>
+        URL <small><i>(If this is a report concerning a post or user, please leave a link for us to investigate)</i></small>
       <% end %>
       <%= f.text_field :url, value: @feedback.url || params[:report_url], class: "full-width" %>
+    </div>
+
+    <div class="form-field">
+      <%= label_tag :recaptcha, "Spam check" %>
+      <!-- <div class="g-recaptcha" data-sitekey="<%= ENV['HELPQA_RECAPTCHA_KEY'] %>"></div> -->
+      <div class="g-recaptcha" data-sitekey="6LfxY4UUAAAAAJhxucJRBhnboedChh2tZnb9Pc61"></div>
     </div>
 
     <div class="form-field">

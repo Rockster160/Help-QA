@@ -101,7 +101,7 @@ class Post < ApplicationRecord
     end
   end
 
-  def body; super || ""; end
+  def body; self[:body] || ""; end
   def title
     return "No Content" unless body.present?
     first_sentence = body.split(/[\!\.\n\;\?\r][ \r\n]/).reject(&:blank?).first

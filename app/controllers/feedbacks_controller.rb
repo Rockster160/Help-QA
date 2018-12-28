@@ -25,7 +25,10 @@ class FeedbacksController < ApplicationController
     @feedback = Feedback.new(feedback_params)
     @feedback.user = current_user if user_signed_in?
 
-    if @feedback.save
+    if !recaptcha_success?
+      flash.now[:alert] = "Please check the \"I'm not a robot\" checkbox to show that you are not a bot."
+      render :show
+    elsif @feedback.save
       redirect_to root_path, notice: "Thank you for your feedback. A moderator will review shortly, and if we need to follow up, we will get back to you in a timely manner."
     else
       flash.now[:alert] = "Failed to submit your Feedback. Please fix the problems listed below and try again."
@@ -41,6 +44,15 @@ class FeedbacksController < ApplicationController
   end
 
   private
+
+  def recaptcha_success?
+    response = RestClient.post("https://www.google.com/recaptcha/api/siteverify", secret: ENV['HELPQA_RECAPTCHA_SECRET'], response: params["g-recaptcha-response"], remoteip: request.try(:remote_ip))
+    JSON.parse(response)["success"]
+  rescue TypeError => e
+    false
+  rescue JSON::ParserError => e
+    false
+  end
 
   def feedback_params
     params.require(:feedback).permit(
