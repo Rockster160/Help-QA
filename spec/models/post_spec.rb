@@ -1,11 +1,18 @@
 # == Schema Information
 #
-# Table name: tags
+# Table name: posts
 #
-#  id                    :integer          not null, primary key
-#  tag_name              :string
-#  tags_count            :integer
-#  similar_tag_id_string :text
+#  id                 :integer          not null, primary key
+#  body               :text
+#  author_id          :integer
+#  posted_anonymously :boolean
+#  closed_at          :datetime
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  reply_count        :integer
+#  marked_as_adult    :boolean
+#  in_moderation      :boolean          default("false")
+#  removed_at         :datetime
 #
 
 require 'rails_helper'

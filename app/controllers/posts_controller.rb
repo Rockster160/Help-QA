@@ -32,6 +32,7 @@ class PostsController < ApplicationController
     @posts = @posts.search_for(params[:search]) if params[:search].present? && params[:regex_body] != "true"
     @posts = @posts.regex_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] == "true"
     @posts = @posts.by_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] != "true"
+    @posts = @posts.where(author_id: params[:author_id]) if params[:author_id].present?
     @posts = @posts.by_tags(@filter_options[:tags]) if @filter_options[:tags].present?
     @posts = @posts.page(params[:page])
   end
