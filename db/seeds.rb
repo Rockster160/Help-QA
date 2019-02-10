@@ -1,9 +1,12 @@
-HelpBot.helpbot
-
 unless Rails.env.production?
   puts "Destroying previous data..."
   models = Dir.new("app/models").entries.select {|f|f[/\.rb$/]}.map { |f|f[0..-4].titleize.gsub(" ", "").constantize }
   models.each { |model| model.try(:destroy_all) rescue nil }
+end
+
+HelpBot.helpbot
+
+unless Rails.env.production?
 
   def random_user(count=1)
     users = User.not_helpbot.sample(count)
@@ -82,7 +85,7 @@ unless Rails.env.production?
 
   puts "\n"
   Rando.people(users_count).each_with_index do |person, person_idx|
-    print_inline("Users: #{users_count - person_idx} / #{users_count}")
+    print_inline("Users: #{person_idx + 1} / #{users_count}")
     u = User.new
     u.skip_confirmation!
     email_with_idx = person.email.split("@").join("#{User.count}@")
@@ -110,26 +113,26 @@ unless Rails.env.production?
 
   puts "\n"
   u_count = User.count
-  User.find_each.with_index do |user, user_idx|
-    print_inline("Friends: #{u_count - user_idx} / #{u_count}")
+  User.not_helpbot.find_each.with_index do |user, user_idx|
+    print_inline("Friends: #{user_idx + 1} / #{u_count}")
 
     friends_count = linearly_biased_random_number(0, max_friend_count_per_user)
     friends_count.times do |friend_idx|
-      print_inline("User: #{u_count - user_idx} / #{u_count} - Friends: #{friends_count - friend_idx} / #{friends_count}")
+      print_inline("User: #{user_idx + 1} / #{u_count} - Friends: #{friend_idx + 1} / #{friends_count}")
       user.add_friend(random_user)
     end
   end
 
   puts "\n"
   shout_conversations.times do |conv_idx|
-    print_inline("Shouts: #{shout_conversations - conv_idx} / #{shout_conversations}")
+    print_inline("Shouts: #{conv_idx + 1} / #{shout_conversations}")
 
     user1, user2 = random_user(2)
 
     message_count = (rand(50) + rand(50) + rand(100)) / 3
     last_message_at = random_time_between_now_and([user1.created_at, user2.created_at].max, 1.second.from_now)
     message_count.times do |msg_idx|
-      print_inline("Shouts: #{shout_conversations - conv_idx} / #{shout_conversations} - Messages: #{message_count - msg_idx} / #{message_count}")
+      print_inline("Shouts: #{conv_idx + 1} / #{shout_conversations} - Messages: #{msg_idx + 1} / #{message_count}")
       if DateTime.current.to_i - last_message_at.to_i > 1000
         to, from = [user1, user2].shuffle
         to.shouts_from.create(sent_to: from, body: random_body_with_whitespace(1), created_at: last_message_at)
@@ -140,7 +143,7 @@ unless Rails.env.production?
 
   puts "\n"
   posts.times do |post_idx|
-    print_inline("Posts: #{posts - post_idx} / #{posts}")
+    print_inline("Posts: #{post_idx + 1} / #{posts}")
 
     author = random_user
     post = author.posts.new
@@ -189,7 +192,7 @@ unless Rails.env.production?
     end
 
     view_count.times do |view_idx|
-      print_inline("Post: #{post_idx + 1} / #{all_posts_count} - Views: #{view_count - view_idx} / #{view_count}")
+      print_inline("Post: #{post_idx + 1} / #{all_posts_count} - Views: #{view_idx + 1} / #{view_count}")
       view = post.views.new
       viewer = random_user
       view.viewed_by = viewer
