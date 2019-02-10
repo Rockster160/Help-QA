@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :unauth_banned_user, :deactivate_user, :see_current_user, :logit, :preload_emojis, :set_notifications, :set_theme
   skip_before_action :logit, only: [:flash_message, :chat_list]
   skip_before_action :logit, if: -> { params[:since].present? }
+  helper_method :true_param?, :false_param?
   # around_action :display_request_length, except: [:flash_message, :chat_list]
   # skip_before_action :verify_authenticity_token
 

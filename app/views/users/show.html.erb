@@ -27,6 +27,20 @@
       <% if can?(:view_user_spy) %>
         <li><a href="<%= spy_user_path %>">Spy Accounts</a></li>
       <% end %>
+      <li>
+        <% if true_param?(:show_anon) %>
+          <%= link_to "Hide Anonymous", params.permit(:show_removed) %>
+        <% else %>
+          <%= link_to "Show Anonymous", params.permit(:show_removed).merge(show_anon: true) %>
+        <% end %>
+      </li>
+      <li>
+        <% if true_param?(:show_removed) %>
+          <%= link_to "Hide Hidden", params.permit(:show_anon) %>
+        <% else %>
+          <%= link_to "Show Hidden", params.permit(:show_anon).merge(show_removed: true) %>
+        <% end %>
+      </li>
       <li>--</li>
       <% if can?(:ban_users) %>
         <li>
@@ -137,6 +151,10 @@
         <% end %>
         <% @recent_posts.each do |post| %>
           <div class="recent-post">
+            <% if post.marked_as_adult? %>
+              <div class="nsfw" title="Not Safe For Work / children - This post will not show up on the home page.">NSFW</div>
+            <% end %>
+            <%= hover_icon(:bin, "This post was removed.") if post.removed? %>
             <%= fa(:user_secret, "This post was written anonymously.") if post.posted_anonymously? %>
             <a href="<%= post_path(post) %>"><%= markdown(with: [:ignore_previews], except: [:tags, :quote, :codeblock]) { post.title } %></a>
             <i class="small"><%= hover_icon(:lock, "This post is closed.") if post.closed? %> written (<%= timeago(post.created_at) %>) ago</i>
