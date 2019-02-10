@@ -30,9 +30,16 @@ class PostsController < ApplicationController
     @posts = @posts.not_closed if @filter_options["open"]
     @posts = @posts.regex_search(params[:search]) if params[:search].present? && params[:regex_body] == "true"
     @posts = @posts.search_for(params[:search]) if params[:search].present? && params[:regex_body] != "true"
-    @posts = @posts.regex_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] == "true"
-    @posts = @posts.by_username(params[:by_user]) if params[:by_user].present? && params[:regex_user] != "true"
-    @posts = @posts.where(author_id: params[:author_id]) if params[:author_id].present?
+
+    if params[:by_user].present? && (current_mod? || @filter_options["claimed"])
+      if params[:by_user].to_s == params[:by_user].to_i.to_s
+        @posts = @posts.where(author_id: params[:by_user])
+      else
+        @posts = @posts.regex_username(params[:by_user]) if params[:regex_user] == "true"
+        @posts = @posts.by_username(params[:by_user]) if params[:regex_user] != "true"
+      end
+    end
+
     @posts = @posts.by_tags(@filter_options[:tags]) if @filter_options[:tags].present?
     @posts = @posts.page(params[:page])
   end
