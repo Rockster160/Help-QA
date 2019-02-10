@@ -103,6 +103,11 @@ module ApplicationHelper
     words.first(word_count).join(", ")
   end
 
+  def fa(icon, alt, opts={})
+    "<i class=\"fa fa-#{icon.to_s.gsub('_', '-')} #{opts[:class]}\" title=\"#{alt}\"></i>".html_safe
+  end
+  module_function :fa
+
   def hover_icon(icon, alt, options={})
     img = ActionController::Base.helpers.image_tag("blank.png", alt: alt, title: alt, class: "icon #{icon.to_s.gsub('_', '-')}")
     data = options[:data]&.map { |k,v| "data-#{k}=\"#{v}\"" }&.join(" ") || ""
