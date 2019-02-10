@@ -10,7 +10,8 @@ class RepliesController < ApplicationController
       return
     end
     @replies = Reply.not_helpbot.displayable(current_user).order(created_at: :desc, id: :desc).page(params[:page]).per(10)
-    @replies = @replies.claimed.where(author_id: params[:user_id]) if params[:user_id].present?
+    @replies = @replies.where(author_id: params[:user_id]) if params[:user_id].present?
+    @replies = @replies.claimed if params[:user_id].present? && !(current_mod? && true_param?(:show_anon))
     @replies = @replies.by_fuzzy_text(params[:by_fuzzy_text]) if params[:by_fuzzy_text].present?
     @user = User.find(params[:user_id]) if params[:user_id].present?
   end

@@ -186,10 +186,13 @@
         </div>
       <% end %>
       <div class="recent-replies">
-        <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="<%= user_replies_path(@user) %>">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
+        <div class="title">Last <%= pluralize([@replies.count, 5].min, "Reply") %> - <a href="<%= user_replies_path(@user, params.permit(:show_anon)) %>">All <%= pluralize_with_delimiter(@replies.count, "Reply") %> »</a></div>
         <% @replies.limit(5).each do |reply| %>
           <div class="post-reply-container">
-            <div class="post-reply-title"><a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a></div>
+            <div class="post-reply-title">
+              <%= fa(:user_secret, "This post was written anonymously.") if reply.posted_anonymously? %>
+              <a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a>
+            </div>
             <div class="reply-text">
               <div class="quote-container">
                 <%= markdown(posted_by_user: @user, except: [:allow_link_previews]) { reply.body } %>

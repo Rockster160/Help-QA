@@ -33,6 +33,8 @@
             <a href="<%= user_path(reply.author) %>" class="underline"><%= reply.author.username %></a>
           <% end %>
           for
+        <% else %>
+          <%= fa(:user_secret, "This post was written anonymously.") if reply.posted_anonymously? %>
         <% end %>
         <a href='<%= post_path(reply.post, anchor: "reply-#{reply.id}") %>' class="underline"><%= reply.post.title %></a>
       </div>
