@@ -1,9 +1,16 @@
 <div class="detail-icons">
-  <% line_status = user.online? ? "online" : "offline" %>
-  <%= hover_icon(line_status, line_status) %>
+  <%=
+    if user.online?
+      hover_icon(:online, "Online now!")
+    elsif (user.last_seen_at || user.created_at) > 30.days.ago
+      hover_icon(:offline, "last online: #{timeago(user.last_seen_at)}")
+    else
+      hover_icon(:offline, "last online: #{(user.last_seen_at || user.created_at).to_formatted_s(:short_with_time)}")
+    end
+  %>
   <%= hover_icon("star", "Help-QA Volunteer Moderator") if user.mod? && !user.admin? %>
   <%= hover_icon("shield", "Help-QA Admin") if user.admin? %>
-  <%= hover-icon("grave", "Deceased") if user.deceased? %>
+  <%= hover_icon("grave", "Deceased") if user.deceased? %>
   <% if user.verified? %>
     <%= hover_icon("user-green", "Verified User (#{time_difference_in_words(DateTime.current, user.verified_at)})") %>
   <% else %>
