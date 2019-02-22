@@ -26,7 +26,7 @@ class HelpBot
       author_path = url_for(Rails.application.routes.url_helpers.user_path(author))
       post_path = url_for(Rails.application.routes.url_helpers.post_path(post))
 
-      slack_message = "Author: #{'un' unless author.verified?}verified user <@#{author_path}|#{author.username}>\nPost: <#{post_path}|#{post.title}>"
+      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{post.title}>"
 
       attachment = {
         fallback: slack_message,
