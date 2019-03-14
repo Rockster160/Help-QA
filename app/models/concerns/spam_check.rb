@@ -30,7 +30,7 @@ module SpamCheck
   end
 
   def includes_link?(text)
-    (text =~ /https?\:\/\//).nil?
+    !(text =~ /https?\:\/\//).nil?
   end
 
   def sounds_like_spam?(text)
