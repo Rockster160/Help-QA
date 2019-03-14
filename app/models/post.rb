@@ -109,6 +109,9 @@ class Post < ApplicationRecord
     max_title_length = 200
     cut_string_before_index_at_char(long_title, max_title_length)
   end
+  def non_title_body
+    body[title.length..-1]
+  end
 
   def open?; !closed?; end
   def closed?; closed_at?; end

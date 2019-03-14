@@ -1,5 +1,6 @@
 module SpamCheck
   extend ActiveSupport::Concern
+
   def body_contains_any?(text, words)
     words.any? { |word| text.downcase.include?(word) }
   end
@@ -28,8 +29,12 @@ module SpamCheck
     body_contains_any?(text, spam_words)
   end
 
+  def includes_link?(text)
+    (text =~ /https?\:\/\//).nil?
+  end
+
   def sounds_like_spam?(text)
-    sounds_fake?(text) || sounds_like_cash_cow?(text) || sounds_like_ad?(text)
+    sounds_fake?(text) || sounds_like_cash_cow?(text) || sounds_like_ad?(text) || includes_link?(text)
   end
 
   included do
