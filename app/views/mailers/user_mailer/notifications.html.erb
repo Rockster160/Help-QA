@@ -1,2 +1,41 @@
 <p>Hey <%= @user.username %>, here's what you've missed up at <a href="<%= attach_auth_token_to_url(root_url) %>">Help-QA.com</a>:</p>
-<p><%= @message.html_safe %></p>
+
+<ul>
+  <% @notifications.each do |count, notification| %>
+    <li>
+      <%= "(#{count})" if count > 1 %>
+      <% case notification.class.to_s %>
+      <% when "Notice" %>
+        <% case notification.notice_type.to_sym %>
+        <% when :other %>
+          <%= link_to(notification.title.presence || "New Notice", notification.url) %>
+        <% when :subscription %>
+          <% if notification.reply_id.present? %>
+            <% post_url = post_url(notification.post_id, anchor: "reply-#{notification.reply_id}") %>
+          <% else %>
+            <% post_url = post_url(notification.post_id) %>
+          <% end %>
+          New Comment on <%= link_to(notification.post.title, post_url) %>
+        <% when :friend_request %>
+          New Friend Request from <%= link_to(notification.friend.username, account_friends_url) %>
+        <% end %>
+      <% when "Shout" %>
+        <% sent_to = notification.sent_to %>
+        <% sent_from = notification.sent_from %>
+        New Shout from <%= link_to(sent_from.username, user_shouttrail_url(sent_to, sent_from)) %>
+      <% when "Invite" %>
+        <% if notification.invited_anonymously? %>
+          <% display_name = "Anonymous" %>
+        <% else %>
+          <% display_name = notification.from_user.username %>
+        <% end %>
+        <% if notification.reply_id.present? %>
+          <% post_url = post_url(notification.post_id, anchor: "reply-#{notification.reply_id}") %>
+        <% else %>
+          <% post_url = post_url(notification.post_id) %>
+        <% end %>
+        <%= display_name %> mentioned you in the post <%= link_to(notification.post.title, post_url) %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

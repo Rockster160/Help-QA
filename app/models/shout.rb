@@ -53,8 +53,8 @@ class Shout < ApplicationRecord
     return unless updated_at == created_at
     return unless sent_to.settings.send_reply_notifications?
     return if sent_to.online? || sent_to.banned?
-    shout_path = url_for(Rails.application.routes.url_helpers.user_shouttrail_path(sent_to, sent_from))
-    UserMailer.notifications(sent_to, "New Shout from <a href=\"#{shout_path}\">#{sent_from.username}</a>").deliver_later
+
+    UserMailer.notifications(sent_to).deliver_later
   end
 
   def broadcast_creation

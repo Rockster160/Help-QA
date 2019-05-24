@@ -1,14 +1,30 @@
 class UserMailer < ApplicationMailer
   include UrlHelper
 
-  def notifications(user, message)
+  def notifications(user)
     @user = user
-    @message = add_params_to_urls_in_message(message, auth: user.auth_token)
+    @login_params = { auth: user.auth_token }
 
-    mail({
+    notices = user.notices.unread.map { |notice| [notice.created_at, notice.groupable_identifier, notice] }
+    shouts = user.shouts.unread.map { |shout| [shout.created_at, "shout-#{shout.sent_from_id}", shout] }
+    invites = user.invites.unread.map { |invite| [invite.created_at, "invite-#{invite.groupable_identifier}", invite] }
+
+    all_notifications = (notices + shouts + invites)
+    all_notifications = all_notifications.sort_by { |timestamp, grouper, instance| -timestamp.to_i }
+    all_notifications = all_notifications.each_with_object({}) do |notification, count_hash|
+      timestamp, grouper, instance = notification
+      count_hash[grouper] ||= [0, instance]
+      count_hash[grouper][0] += 1
+    end
+
+    @notifications = all_notifications.values
+
+    notification_mail = mail({
       to: user.email,
       subject: "We're missing you at Help-QA!"
     })
+    notification_mail.perform_deliveries = false if @notifications.none?
+    notification_mail
   end
 
   def confirmation_instructions(user)

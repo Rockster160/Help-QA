@@ -93,16 +93,11 @@ class Notice < ApplicationRecord
   def notify_user
     return unless user.settings.send_reply_notifications?
     return unless user.settings.send_email_notifications?
-    return if user.online? || user.banned?
-    if subscription?
-      post_subscription = user.subscriptions.find_by(post_id: post_id)
-      if post_subscription
-        previous_notification = post_subscription.last_notified_at || DateTime.new
-        post_subscription.update(last_notified_at: 30.seconds.from_now) # Catch race conditions
-        return if previous_notification > 22.hours.ago
-      end
-    end
-    UserMailer.notifications(user, notice_message(passed_root: root_domain)).deliver_later
+    return if user.banned?
+    return if user.notices.where("created_at > ?", 5.minutes.ago).any?
+    return if post_id.present? && user.notices.unread.where(post_id: post_id).any?
+
+    UserMailer.notifications(user).deliver_later(wait: 5.minutes)
   end
 
   def can_notify
