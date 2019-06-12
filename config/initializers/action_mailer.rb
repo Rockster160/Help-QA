@@ -16,7 +16,8 @@ module ActionMailer
     private
 
     def check_deliverability
-      Rails.logger.info "#{@_message.body.raw_source}" if Rails.env.development?
+      msg = @_message.body.raw_source[/<body.*?<\/body>/] || @_message.body.raw_source
+      Rails.logger.info "Email: #{msg}" if Rails.env.development?
       return if self.class.to_s.include?("Devise")
       mail_to = @_message.to.try(:first)
       mail_to_user = User.where(email: mail_to).first

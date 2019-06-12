@@ -94,10 +94,11 @@ class Notice < ApplicationRecord
     return unless user.settings.send_reply_notifications?
     return unless user.settings.send_email_notifications?
     return if user.banned?
-    return if user.notices.where("created_at > ?", 5.minutes.ago).any?
-    return if post_id.present? && user.notices.unread.where(post_id: post_id).any?
+    unread_notices = user.notices.unread.where.not(id: id)
+    return if unread_notices.where("created_at > ?", 5.minutes.ago).any?
+    return if post_id.present? && unread_notices.where(post_id: post_id).any?
 
-    UserMailer.notifications(user).deliver_later(wait: 5.minutes)
+    NotificationsWorker.perform_in(5.minutes, user.id)
   end
 
   def can_notify

@@ -57,6 +57,8 @@ class Invite < ApplicationRecord
     else
       Rails.application.routes.url_helpers.post_path(post_id)
     end
+
+    NotificationsWorker.perform_in(1.minute, invited_user_id)
   end
 
   def cannot_invite_helpbot

@@ -52,9 +52,9 @@ class Shout < ApplicationRecord
   def notify_user
     return unless updated_at == created_at
     return unless sent_to.settings.send_reply_notifications?
-    return if sent_to.online? || sent_to.banned?
+    return if sent_to.banned?
 
-    UserMailer.notifications(sent_to).deliver_later
+    NotificationsWorker.perform_in(1.minute, sent_to_id)
   end
 
   def broadcast_creation
