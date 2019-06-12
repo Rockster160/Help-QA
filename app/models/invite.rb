@@ -49,6 +49,8 @@ class Invite < ApplicationRecord
     else
       ActionCable.server.broadcast("notifications_#{invited_user_id}", message: notice_message)
     end
+
+    NotificationsWorker.perform_in(1.minute, invited_user_id)
   end
 
   def invite_link
@@ -57,8 +59,6 @@ class Invite < ApplicationRecord
     else
       Rails.application.routes.url_helpers.post_path(post_id)
     end
-
-    NotificationsWorker.perform_in(1.minute, invited_user_id)
   end
 
   def cannot_invite_helpbot
