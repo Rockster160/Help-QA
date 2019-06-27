@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include ApplicationHelper
-  prepend_before_action :block_ip_addresses
+  prepend_before_action :unauth_bad_requests
   before_action :auto_sign_in
   before_action :store_user_location!, if: :storable_location?
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -156,8 +156,9 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:username, :email, :date_of_birth, :password, :password_confirmation, :current_password])
   end
 
-  def block_ip_addresses
+  def unauth_bad_requests
     head :unauthorized if BannedIp.where(ip: current_ip_address).any?
+    head :unauthorized if params[:mode] == "addshout"
   end
 
   def current_ip_address
