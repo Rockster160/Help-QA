@@ -23,6 +23,7 @@ $(document).ready(function() {
   })
 
   updateNotifications = function() {
+    $.rails.refreshCSRFTokens()
     $.get(notifications_url).success(function(data) {
       $("#notifications-notices").text(data.notices)
       $("#notifications-shouts").text(data.shouts)

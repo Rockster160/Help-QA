@@ -39,6 +39,7 @@
 #  revoked_public_edit_access :boolean
 #  anonicon_seed              :string
 #  deceased_at                :datetime
+#  last_notified              :datetime
 #
 
 FactoryGirl.define do
