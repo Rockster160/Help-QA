@@ -33,7 +33,7 @@ module PostsHelper
   def filter_posts_link(link_text, options={})
     new_filter_options = options.slice(:claimed_status, :reply_count, :user_status, :rating, :status)
 
-    current_filters = @filter_params
+    current_filters = @filter_params || {}
 
     selected_filter_key = new_filter_options.keys.first
     selected_filter_value = new_filter_options.values.first

@@ -164,7 +164,7 @@
         <% end %>
         <% if @recent_posts.count > 0 %>
           <div class="post-index-wrapper">
-            <a href="<%= history_path(by_user: @user.id) %>">All Claimed Posts »</a>
+            <a href="/history/claimed?by_user=<%= @user.id %>">All Claimed Posts »</a>
           </div>
           <hr>
         <% end %>
