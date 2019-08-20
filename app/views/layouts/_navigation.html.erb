@@ -17,7 +17,7 @@
             <div class="dropdown-container">
               <a href="<%= user_path(current_user) %>" class="dropdown-clickable">Public Profile</a>
               <ul class="dropdown-list hidden">
-                <a href="/history/claimed?by_user=<%= @user.id %>">My Posts</a>
+                <a href="/history/claimed?by_user=<%= current_user.id %>">My Posts</a>
                 <a href="<%= user_replies_path(current_user) %>">My Replies</a>
                 <!-- <a href="/map/near/me">Near Me</a> -->
               </ul>
