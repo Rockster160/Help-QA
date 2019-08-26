@@ -44,6 +44,7 @@ gem 'paperclip'
 gem 'exception_notification'
 gem 'stripe'
 gem 'differ'
+gem 'nokogiri', "~> 1.10.4"
 
 group :development, :test do
   gem 'byebug', platform: :mri
