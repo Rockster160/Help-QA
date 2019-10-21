@@ -64,7 +64,7 @@ class Post < ApplicationRecord
   scope :displayable,          ->(user=nil) { not_banned.not_removed.no_moderation.conditional_adult(user) }
 
   after_create :auto_add_tags, :alert_helpbot, :invite_users
-  after_commit :broadcast_creation, :subscribe_author, :generate_poll
+  after_commit :broadcast_creation, :subscribe_author, :generate_poll, :remove_notices
   defaults reply_count: 0
   defaults posted_anonymously: false
 
@@ -271,6 +271,12 @@ class Post < ApplicationRecord
     if created_at == updated_at && !author.helpbot?
       subscriptions.find_or_create_by(user_id: author_id)
     end
+  end
+
+  def remove_notices
+    return unless closed? || removed?
+
+    Notice.unread.where(post_id: id).each(&:read!)
   end
 
   def invite_users
