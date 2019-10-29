@@ -276,7 +276,7 @@ class Post < ApplicationRecord
   def remove_notices
     return unless closed? || removed?
 
-    Notice.unread.where(post_id: id).each(&:read!)
+    Notice.unread.where(post_id: id).each(&:read)
   end
 
   def invite_users
