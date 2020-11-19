@@ -208,11 +208,14 @@ class Reply < ApplicationRecord
 
   def format_body
     return if Rails.env.archive?
-    if new_obj? && !author.trusted_user?
-      has_adult_words = Tag.sounds_nsfw?(body)
-      is_verified_user = author.verified?
-      contains_link = body =~ url_regex
-      self.in_moderation = has_adult_words || (!is_verified_user && contains_link)
-    end
+    return unless new_obj?
+    return if author.trusted_user?
+    return if author.long_term_user?
+
+    has_adult_words = Tag.sounds_nsfw?(body)
+    is_verified_user = author.verified?
+    contains_link = body =~ url_regex
+
+    self.in_moderation = has_adult_words || (!is_verified_user && contains_link)
   end
 end

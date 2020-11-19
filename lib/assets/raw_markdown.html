@@ -1,6 +1,7 @@
 <h4>Markdown</h4>
 <p>In order to apply markdown to your text, simply put the character(s) before and after the word or phrase, and we'll do the rest!</p>
 <p>When applying Markdown, always make sure that you put the first character against the front of the word or phrase you're using, and the last character against the last word, otherwise we assume that you are just trying to display the raw character.</p>
+<p>The Markdown toolbar is available everywhere you enter text. Just click the small `A` at the top right of the text area.</p>
 <p>If you would like to disable markdown for any character, add a backslash `\\` before the character, like this: <br>`\\* This is an asterisk without being bold.` <br>(Don't worry, we'll hide the `\\` so it doesn't mess up your post.)</p>
 <ul class="no-list">
   <li>
@@ -8,6 +9,7 @@
     <div class="indent">
       <p>Use `\*` (Asterisk) to create *bold lettering*. Bold text is helpful when adding *important* messages.</p>
       <p>`\*This is my bold text\*`</p>
+      <p>Found as *B* in the markdown tools.</p>
     </div>
   </li>
   <li>
@@ -15,6 +17,7 @@
     <div class="indent">
       <p>Use `\_` (Underscore) to create _italic lettering_. Italics are helpful for adding _particular_ emphasis on a word or phrase.</p>
       <p>`\_This is my italic text.\_`</p>
+      <p>Found as _i_ in the markdown tools.</p>
     </div>
   </li>
   <li>
@@ -22,6 +25,7 @@
     <div class="indent">
       <p>Use `\~` (Tilde) to create ~striked text~. Striked text is useful ~for everything~ when you want to show a changed direction in your message.</p>
       <p>`\~This is striked through text.\~`</p>
+      <p>Found as ~S~ in the markdown tools.</p>
     </div>
   </li>
   <li>
@@ -29,6 +33,7 @@
     <div class="indent">
       <p>Use `\`` (Back tick) to create `inline code`.</p>
       <p>`\`This is my inline code.\``</p>
+      <p>Found as `m` in the markdown tools.</p>
     </div>
   </li>
   <li>
@@ -43,6 +48,7 @@ This is more text that's included on another line.
 _Other Markdown is supported within this block, *however*, you cannot nest multiple code blocks within each other._
 \```
       ```
+      <p>Found as `&gt;/&lt;` in the markdown tools.</p>
     </div>
   </li>
 </ul>
@@ -70,10 +76,21 @@ _Other Markdown is supported within this block, *however*, you cannot nest multi
     <p>In order to display a quote, enter `\[quote Bob]This is Bob's Text\[/quote]`. Adding the username is option, but recommended.</p>
     [quote Bob]This is Bob's text.[/quote]
     <p>This is made easier by using the quote button on the edge of a reply. ({{quote-icon}})</p>
+    <p>Found as <i class="fa fa-quote-right"></i> in the markdown tools.</p>
+  </li>
+  <li>
+    <h6>Whispers</h6>
+    <p>Whispers can be used as a spoiler- a user can only see the contents after clicking on it. Be sure to add a warning so they know what they're getting themselves into!</p>
+    <p>Whispers can also be used to send a message to a user that other users cannot view. Simply use a Whisper inside of the shout space and only you and the other user will be able to reveal the contents!</p>
+    <small>(Mods still have access to view these messages.)</small>
+    <p>In order to add a whisper, enter `\[whisper]This is my secret message!\[/whisper]`.</p>
+    [whisper]This is my secret message![/whisper]
+    <p>Found as <i class="fa fa-user-secret"></i> in the markdown tools.</p>
   </li>
   <li>
     <h6>Invites</h6>
     <p>You can invite a friend to a post by entering their username preceeded by an `@` sign.</p>
     <p>Hey @[helpbot:1]! We need you!</p>
+    <p>Found as *\@* in the markdown tools.</p>
   </li>
 </ul>
