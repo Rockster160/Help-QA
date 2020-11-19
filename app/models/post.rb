@@ -112,6 +112,9 @@ class Post < ApplicationRecord
   def non_title_body
     body[title.length..-1]
   end
+  def word_count
+    body.to_s.squish.split(" ").count
+  end
 
   def open?; !closed?; end
   def closed?; closed_at?; end
@@ -201,6 +204,8 @@ class Post < ApplicationRecord
       errors.add(:base, "This post has been marked as spam. Please do not advertise cash loans or anything similar. Instead, try to post relevant, actual help.")
     elsif sounds_like_ad?
       errors.add(:base, "This post has been marked as spam. It looks like you're not actually asking for help but advertising external sites.")
+    elsif word_count < 2
+      errors.add(:base, "This post has been marked as spam. Please try to explain your problem with detail so that others can help you.")
     end
   end
 

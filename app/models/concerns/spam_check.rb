@@ -12,13 +12,13 @@ module SpamCheck
   end
 
   def blacklisted_text?(text)
-    blacklist = ["__media__"]
+    blacklist = ["__media__", "visiting your website", "your contact form", "partnership with your company", "You've been hacked", "Donate"]
 
     body_contains_any?(text, blacklist)
   end
 
   def sounds_like_cash_cow?(text)
-    cash_cow_words = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy"]
+    cash_cow_words = ["cash loans", "online casino", "creditloans", "poker online", "onlinebuy", "investment portfolio", "expand your existing"]
 
     body_contains_any?(text, cash_cow_words)
   end
