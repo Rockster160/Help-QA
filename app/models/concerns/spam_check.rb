@@ -2,7 +2,7 @@ module SpamCheck
   extend ActiveSupport::Concern
 
   def body_contains_any?(text, words)
-    words.any? { |word| text.downcase.include?(word) }
+    words.any? { |word| text.to_s.downcase.include?(word) }
   end
 
   def sounds_fake?(text)
