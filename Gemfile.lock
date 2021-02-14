@@ -135,7 +135,7 @@ GEM
       railties (>= 3.2.16)
     js_cookie_rails (2.1.4)
       railties (>= 3.1)
-    json (1.8.6)
+    json (2.3.1)
     jstz-rails3-plus (1.0.5)
       railties (>= 3.1)
     kaminari (1.0.1)
