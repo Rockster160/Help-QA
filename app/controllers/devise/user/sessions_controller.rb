@@ -11,8 +11,13 @@ class Devise::User::SessionsController < Devise::SessionsController
   def create
     return redirect_to root_path, alert: "Sorry, accounts can not be created in Archive mode. If you need help, or you've landed here by accident, head over to https://help-qa.com to get started." if Rails.env.archive?
     if !recaptcha_success?
-      flash.now[:alert] = "Please check the \"I'm not a robot\" checkbox to show that you are not a bot."
-      render :new
+      self.resource = resource_class.new sign_in_params
+
+      respond_with_navigational(resource) do
+        flash.now[:alert] = "Please check the \"I'm not a robot\" checkbox to show that you are not a bot."
+        render :new
+        flash.discard(:recaptcha_error) # We need to discard flash to avoid showing it on the next page reload
+      end
     elsif params.dig(:user, :password).blank?
       @user = User.find_for_database_authentication(user_params)
       if @user.nil?
