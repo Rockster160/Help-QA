@@ -10,7 +10,10 @@ class Devise::User::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
   def create
     return redirect_to root_path, alert: "Sorry, accounts can not be created in Archive mode. If you need help, or you've landed here by accident, head over to https://help-qa.com to get started." if Rails.env.archive?
-    if params.dig(:user, :password).blank?
+    if !recaptcha_success?
+      flash.now[:alert] = "Please check the \"I'm not a robot\" checkbox to show that you are not a bot."
+      render :new
+    elsif params.dig(:user, :password).blank?
       @user = User.find_for_database_authentication(user_params)
       if @user.nil?
         @user = User.create(email: user_params[:login])
@@ -31,7 +34,16 @@ class Devise::User::SessionsController < Devise::SessionsController
   #   super
   # end
 
-  # protected
+  private
+
+  def recaptcha_success?
+    response = RestClient.post("https://www.google.com/recaptcha/api/siteverify", secret: ENV['HELPQA_RECAPTCHA_SECRET'], response: params["g-recaptcha-response"], remoteip: request.try(:remote_ip))
+    JSON.parse(response)["success"]
+  rescue TypeError => e
+    false
+  rescue JSON::ParserError => e
+    false
+  end
 
   def user_params
     params.require(:user).permit(:login)
