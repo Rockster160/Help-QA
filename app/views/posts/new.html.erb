@@ -28,6 +28,13 @@
         </div>
       <% end %>
     </div>
+    <% unless user_signed_in? %>
+      <div class="form-field">
+        <%= label_tag :recaptcha, "" %>
+        <!-- <div class="g-recaptcha" data-sitekey="<%= ENV['HELPQA_RECAPTCHA_KEY'] %>"></div> -->
+        <div class="g-recaptcha" data-sitekey="6LfxY4UUAAAAAJhxucJRBhnboedChh2tZnb9Pc61"></div>
+      </div>
+    <% end %>
   <% end %>
 
   <h6>How This Works</h6>
