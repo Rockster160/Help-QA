@@ -166,7 +166,11 @@ class PostsController < ApplicationController
   def create
     user = current_user
     user ||= begin
-      if Post.sounds_like_spam?(params.dig(:post, :body))
+      if !recaptcha_success?
+        user = User.new(email: params.dig(:new_user, :email))
+        user.errors.add(:base, "Please check the \"I'm not a robot\" checkbox to show that you are not a bot.")
+        user
+      elsif Post.sounds_like_spam?(params.dig(:post, :body))
         user = User.new(email: params.dig(:new_user, :email))
         user.errors.add(:base, "Your post has been marked as spam. Please avoid links in your first post. If you'd like to ask for help with some external site, try posting a reply with more information.")
         user
@@ -193,6 +197,15 @@ class PostsController < ApplicationController
   end
 
   private
+
+  def recaptcha_success?
+    response = RestClient.post("https://www.google.com/recaptcha/api/siteverify", secret: ENV['HELPQA_RECAPTCHA_SECRET'], response: params["g-recaptcha-response"], remoteip: request.try(:remote_ip))
+    JSON.parse(response)["success"]
+  rescue TypeError => e
+    false
+  rescue JSON::ParserError => e
+    false
+  end
 
   def post_params
     params.require(:post).permit(:body, :posted_anonymously, :set_tags)

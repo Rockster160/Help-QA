@@ -1,3 +1,9 @@
+<% if !user_signed_in? %>
+  <%= content_for(:head_scripts) do %>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+  <% end %>
+<% end %>
+
 <div class="front-page">
   <div class="users-side">
     <div class="wrapper">
@@ -100,6 +106,11 @@
               You must be 13 years or older
             </div>
           <% end %>
+        </div>
+        <div class="form-field">
+          <%= label_tag :recaptcha, "Spam check" %>
+          <!-- <div class="g-recaptcha" data-sitekey="<%= ENV['HELPQA_RECAPTCHA_KEY'] %>"></div> -->
+          <div class="g-recaptcha" data-sitekey="6LfxY4UUAAAAAJhxucJRBhnboedChh2tZnb9Pc61"></div>
         </div>
       <% end %>
     </div>
