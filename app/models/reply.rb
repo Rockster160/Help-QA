@@ -37,6 +37,7 @@ class Reply < ApplicationRecord
   validate :post_is_open, :debounce_replies, :valid_text, :not_spam
 
   after_create :notify_subscribers
+  after_create :alert_helpbot
 
   before_save :invite_users
   after_commit :broadcast_creation, :update_popular_post
@@ -166,6 +167,10 @@ class Reply < ApplicationRecord
     elsif sounds_like_ad?
       errors.add(:base, "This reply has been marked as spam. It looks like you're not actually responding to the post.")
     end
+  end
+
+  def alert_helpbot
+    HelpBot.react_to_reply(self)
   end
 
   def notify_subscribers

@@ -22,19 +22,19 @@ class HelpBot
     def react_to_post(post)
       return if Rails.env.archive?
       # Notify me
-      # author = post.author
-      # author_path = url_for(Rails.application.routes.url_helpers.user_path(author))
-      # post_path = url_for(Rails.application.routes.url_helpers.post_path(post))
-      #
-      # slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{post.title}>"
-      #
-      # attachment = {
-      #   fallback: slack_message,
-      #   title: "New post has been submitted",
-      #   text: slack_message,
-      #   color: "#0F6FFF"
-      # }
-      # SlackNotifier.notify("", attachments: [attachment])
+      author = post.author
+      author_path = url_for(Rails.application.routes.url_helpers.user_path(author))
+      post_path = url_for(Rails.application.routes.url_helpers.post_path(post))
+
+      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{post.title}>"
+
+      attachment = {
+        fallback: slack_message,
+        title: "New post has been submitted",
+        text: slack_message,
+        color: "#0F6FFF"
+      }
+      SlackNotifier.notify("", attachments: [attachment])
       # ^^
       return unless Tag.sounds_depressed?(post.body)
 
@@ -42,6 +42,20 @@ class HelpBot
     end
 
     def react_to_reply(reply)
+      author = reply.author
+      post = reply.post
+      author_path = url_for(Rails.application.routes.url_helpers.user_path(author))
+      post_path = url_for(Rails.application.routes.url_helpers.post_path(post, anchor: "reply-#{reply.id}"))
+
+      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{reply.body}>"
+
+      attachment = {
+        fallback: slack_message,
+        title: "New reply has been posted",
+        text: slack_message,
+        color: "#0F6FFF"
+      }
+      SlackNotifier.notify("", attachments: [attachment])
     end
 
     def react_to_email(email)
