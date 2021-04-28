@@ -8,7 +8,7 @@ module SpamCheck
   def sounds_fake?(text)
     fake_words = ["href=", "<a", "[url="]
 
-    body_contains_any?(text, fake_words)
+    body_contains_any?(text, fake_words) || keysmash_garbage?(text)
   end
 
   def blacklisted_text?(text)
@@ -31,6 +31,10 @@ module SpamCheck
 
   def includes_link?(text)
     !(text =~ /https?\:\/\//).nil?
+  end
+
+  def keysmash_garbage?(text)
+    text.squish.match(/^[a-zA-Z0-9]+$/).present?
   end
 
   def sounds_like_spam?(text)
