@@ -26,7 +26,7 @@ class HelpBot
       author_path = url_for(Rails.application.routes.url_helpers.user_path(author))
       post_path = url_for(Rails.application.routes.url_helpers.post_path(post))
 
-      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{post.title}>"
+      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{post_path}>\n#{post.title}"
 
       attachment = {
         fallback: slack_message,
@@ -35,7 +35,6 @@ class HelpBot
         color: "#0F6FFF"
       }
       SlackNotifier.notify("", attachments: [attachment])
-      # ^^
       return unless Tag.sounds_depressed?(post.body)
 
       reply_to_post(post, ApplicationController.render(partial: "replies/helpbot_message"))
@@ -47,7 +46,7 @@ class HelpBot
       author_path = url_for(Rails.application.routes.url_helpers.user_path(author))
       post_path = url_for(Rails.application.routes.url_helpers.post_path(post, anchor: "reply-#{reply.id}"))
 
-      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nPost: <#{post_path}|#{reply.body}>"
+      slack_message = "Author: #{'un' unless author.verified?}verified user <#{author_path}|@#{author.username}>\nReply: <#{post_path}|#{post_path}>\n#{reply.body}"
 
       attachment = {
         fallback: slack_message,
