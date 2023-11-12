@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
   filterOptionsFromText = function(loader, search_text) {
-    search_text = search_text.toLowerCase().replace(/[ \_\-\:\@]/, "")
+    search_text = search_text.toLowerCase().replace(/[ \_\-\:\@]/g, "")
 
     loader.find(".searchable-container").each(function() {
       var names = $(this).attr("data-searchable-by").toLowerCase().split(" ")
@@ -11,7 +11,7 @@ $(document).ready(function() {
         if (hasMatched) { break }
 
         var name = names[name_idx], searchableText = name, string_valid = true
-        searchableText = searchableText.replace(/[ \_\-\:\@]/, "")
+        searchableText = searchableText.replace(/[ \_\-\:\@]/g, "")
 
         // Full word-based matching
         if (searchableText.indexOf(search_text) < 0) { string_valid = false }

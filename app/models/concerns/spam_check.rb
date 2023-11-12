@@ -34,7 +34,7 @@ module SpamCheck
   end
 
   def keysmash_garbage?(text)
-    text.squish.match(/^[a-zA-Z0-9]+$/).present?
+    text.to_s.squish.match(/^[a-zA-Z0-9]+$/).present?
   end
 
   def sounds_like_spam?(text)
