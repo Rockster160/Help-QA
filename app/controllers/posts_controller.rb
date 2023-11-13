@@ -174,6 +174,10 @@ class PostsController < ApplicationController
         user = User.new(email: params.dig(:new_user, :email))
         user.errors.add(:base, "Your post has been marked as spam. Please avoid links in your first post. If you'd like to ask for help with some external site, try posting a reply with more information.")
         user
+      elsif params[:post].blank?
+        user = User.new(email: params.dig(:new_user, :email))
+        user.errors.add(:base, "Your post looks empty. Please try again.")
+        user
       else
         create_and_sign_in_user_by_email(params.dig(:new_user, :email))
       end
