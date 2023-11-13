@@ -184,7 +184,7 @@ class PostsController < ApplicationController
     end
 
     unless user.try(:persisted?)
-      return redirect_to new_post_path(post_text: post_params[:body], anonymous: post_params[:posted_anonymously], email: user.email), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
+      return redirect_to new_post_path(post_text: params.dig(:post, :body), anonymous: params.dig(:post, :posted_anonymously), email: user.email), alert: user.errors.full_messages.first || "Something went wrong creating your account. Please make sure you are using a valid email address."
     end
 
     @post = user.posts.create(post_params)
