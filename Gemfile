@@ -45,6 +45,7 @@ gem 'exception_notification'
 gem 'stripe'
 gem 'differ'
 gem 'nokogiri', "~> 1.10.4"
+gem 'mimemagic', github: 'mimemagicrb/mimemagic', ref: '3543363026121ee28d98dfce4cb6366980c055ee'
 
 group :development, :test do
   gem 'byebug', platform: :mri
