@@ -12,9 +12,12 @@ class ApplicationController < ActionController::Base
   # around_action :display_request_length, except: [:flash_message, :chat_list]
   # skip_before_action :verify_authenticity_token
 
-  rescue_from ActionController::UnknownFormat,     with: :not_found
-  rescue_from ActionController::UnknownController, with: :not_found
-  rescue_from ActionView::MissingTemplate,         with: :not_found
+  if Rails.env.production?
+    rescue_from ActionController::UnknownFormat,     with: :not_found
+    rescue_from ActionController::UnknownController, with: :not_found
+    rescue_from ActionView::MissingTemplate,         with: :not_found
+    rescue_from ActionController::ParameterMissing,  with: :not_found
+  end
 
   def flash_message
     flash.now[params[:flash_type].to_sym] = params[:message].html_safe
