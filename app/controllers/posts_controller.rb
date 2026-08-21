@@ -2,6 +2,7 @@ class PostsController < ApplicationController
   include ApplicationHelper
   include PostsHelper
   before_action :authenticate_mod, only: [:mod]
+  before_action :authenticate_user, only: [:history, :history_redirect]
 
   def index
     @posts = Post.not_closed.displayable(current_user).order(created_at: :desc, id: :desc)

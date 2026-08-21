@@ -128,9 +128,11 @@
       <div class="posts-container">
         <%= render partial: "posts/index", locals: { posts: @recent_posts } %>
       </div>
-      <div class="history">
-        <a href="<%= history_path %>" class="underline">View and Search All Posts</a>
-      </div>
+      <% if user_signed_in? %>
+        <div class="history">
+          <a href="<%= history_path %>" class="underline">View and Search All Posts</a>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

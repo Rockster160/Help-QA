@@ -4,7 +4,9 @@
     <a href="<%= root_path %>" class="navigation-head">HelpQA</a>
     <!-- <a href="/about">About</a> -->
     <a href="<%= tags_path %>">Tags</a>
-    <a href="<%= history_path %>">Search</a>
+    <% if user_signed_in? %>
+      <a href="<%= history_path %>">Search</a>
+    <% end %>
     <a href="<%= faq_path %>">FAQ</a>
     <br class="xxsmall-only">
     <a href="<%= new_post_path %>">Start a New Post</a>

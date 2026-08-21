@@ -39,6 +39,8 @@
 
   <div class="recent-posts">
     <%= render partial: "posts/index", locals: { posts: @posts.limit(20) } %>
-    <p class="view-all"><%= link_to "View all #{@posts.length} Posts tagged #{tags_together} »", "/history/#{params[:tags].split(',').map(&:squish).join(',')}" %></p>
+    <% if user_signed_in? %>
+      <p class="view-all"><%= link_to "View all #{@posts.length} Posts tagged #{tags_together} »", "/history/#{params[:tags].split(',').map(&:squish).join(',')}" %></p>
+    <% end %>
   </div>
 </div>

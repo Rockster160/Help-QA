@@ -128,7 +128,7 @@
           <td>Favorites, Fans, and Friends</td>
         </tr>
         <tr class="user-stat-value">
-          <td data-label="Posts" title="Posts"><a href="<%= history_path(by_user: @user.username) %>" class="underline"><%= number_with_delimiter(@user.posts.claimed.not_removed.count) %></a></td> <%# Posts %>
+          <td data-label="Posts" title="Posts"><% posts_count = number_with_delimiter(@user.posts.claimed.not_removed.count) %><% if user_signed_in? %><a href="<%= history_path(by_user: @user.username) %>" class="underline"><%= posts_count %></a><% else %><%= posts_count %><% end %></td> <%# Posts %>
           <td data-label="Subscriptions" title="Subscriptions"><%= number_with_delimiter(@user.subscriptions.not_removed.count) %></td> <%# Subscriptions %>
           <td data-label="Replies" title="Replies"><a href="<%= user_replies_path(@user) %>" class="underline"><%= number_with_delimiter(@user.replies.claimed.not_removed.count) %></a></td> <%# Replies %>
           <td data-label="Shoutouts" title="Shoutouts"><a href="<%= user_shouts_path(@user) %>" class="underline"><%= number_with_delimiter(@user.recent_shouts.count) %></a></td> <%# Shoutouts %>
@@ -162,7 +162,7 @@
           </div>
           <hr>
         <% end %>
-        <% if @recent_posts.count > 0 %>
+        <% if @recent_posts.count > 0 && user_signed_in? %>
           <div class="post-index-wrapper">
             <a href="/history/claimed?by_user=<%= @user.id %>">All Claimed Posts »</a>
           </div>
