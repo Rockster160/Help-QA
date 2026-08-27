@@ -12,7 +12,12 @@ module Helpqa
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.autoload_paths += %W(#{config.root}/app/workers)
+    # Staged upgrade: the app came from Rails 5.0 defaults. 6.1 is the intermediate
+    # step recommended by the upgrade guide; bump to 7.0 once the suite is green.
+    config.load_defaults 6.1
+
+    # app/workers is picked up automatically by Zeitwerk -- every app/* directory
+    # is an autoload root, so it must not be added a second time.
 
     config.paperclip_defaults = {
       storage:           :s3,

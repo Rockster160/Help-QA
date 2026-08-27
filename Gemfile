@@ -5,47 +5,51 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+ruby '3.2.2'
+
 # Defaults
-gem 'rails', '~> 5.0.2'
-gem 'pg', '~> 0.18'
-gem 'puma', '~> 3.0'
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
+gem 'rails', '~> 7.0.8'
+gem 'pg', '~> 1.5'
+gem 'puma', '~> 6.4'
+gem 'sprockets-rails'
+gem 'sassc-rails'
+gem 'terser'
+gem 'coffee-rails', '~> 5.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'jbuilder', '~> 2.5'
-gem 'redis', '~> 3.0'
-gem 'redis-namespace'
+gem 'jbuilder', '~> 2.11'
+gem 'redis', '~> 5.0'
 # /Defaults
 
 # Essentials
-gem 'sidekiq'
-gem 'sidekiq-cron'
+gem 'sidekiq', '~> 7.2'
+gem 'sidekiq-cron', '~> 1.12'
+# connection_pool 3.0 changed TimedStack#pop's signature; Sidekiq 7.3 still
+# calls it with an argument, which kills the scheduler thread (no retries, no
+# scheduled jobs, no cron). Sidekiq's own dependency is too loose to prevent it.
+gem 'connection_pool', '~> 2.5'
 gem 'autoprefixer-rails'
 gem 'font-awesome-rails'
 gem 'colorize'
 gem 'faker'
-gem 'rspec'
-gem 'factory_girl_rails'
+gem 'factory_bot_rails'
 # / Essentials
 
-gem 'devise'
+gem 'devise', '~> 4.9'
 gem 'rest-client'
 gem 'has_friendship'
 gem 'chroma'
-gem 'oily_png'
+gem 'chunky_png'
 gem 'kaminari'
 gem 'slack-notifier'
 gem 'browser-timezone-rails'
 gem 'obscenity'
 gem 'aws-sdk-s3'
-gem 'paperclip'
+gem 'kt-paperclip', '~> 7.2'
 gem 'exception_notification'
 gem 'stripe'
 gem 'differ'
-gem 'nokogiri', "~> 1.10.4"
-gem 'mimemagic', github: 'mimemagicrb/mimemagic', ref: '3543363026121ee28d98dfce4cb6366980c055ee'
+gem 'nokogiri', '~> 1.16'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -55,15 +59,12 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rspec-rails', '~> 6.1'
 end
 
 group :development do
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.0.5'
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'rails_real_favicon'
+  gem 'web-console', '>= 4.2'
+  gem 'listen', '~> 3.8'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

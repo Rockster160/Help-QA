@@ -47,7 +47,7 @@ class Invite < ApplicationRecord
     if read?
       ActionCable.server.broadcast("notifications_#{invited_user_id}", {})
     else
-      ActionCable.server.broadcast("notifications_#{invited_user_id}", message: notice_message)
+      ActionCable.server.broadcast("notifications_#{invited_user_id}", { message: notice_message })
     end
 
     NotificationsWorker.perform_in(1.minute, invited_user_id)

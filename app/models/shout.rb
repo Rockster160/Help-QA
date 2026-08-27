@@ -59,7 +59,7 @@ class Shout < ApplicationRecord
 
   def broadcast_creation
     if updated_at == created_at
-      ActionCable.server.broadcast("notifications_#{sent_to_id}", message: "New Shout from <a href=\"#{shouts_path}\">#{sent_from.username}</a>".html_safe)
+      ActionCable.server.broadcast("notifications_#{sent_to_id}", { message: "New Shout from <a href=\"#{shouts_path}\">#{sent_from.username}</a>".html_safe })
     else
       ActionCable.server.broadcast("notifications_#{sent_to_id}", {})
     end

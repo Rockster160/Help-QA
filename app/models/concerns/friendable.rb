@@ -36,11 +36,15 @@ module Friendable
     !!friendship_with(friend)&.shared_email?
   end
 
+  # A single where.not carrying two conditions builds NOT (a AND b), which never
+  # excludes anything here -- users.id is the other person's id, so it is never
+  # equal to our own. Chaining them chains NOT a AND NOT b, which is what these
+  # two actually mean: drop ourselves, and drop anyone already a mutual friend.
   def favorites
-    @_favorites ||= favorites_all.where.not(users: { id: id }, friendships: { friend_id: friends.ids }).distinct
+    @_favorites ||= favorites_all.where.not(users: { id: id }).where.not(friendships: { friend_id: friends.ids }).distinct
   end
   def fans
-    @_fans ||= fans_all.where.not(users: { id: id }, friendships: { user_id: friends.ids }).distinct
+    @_fans ||= fans_all.where.not(users: { id: id }).where.not(friendships: { user_id: friends.ids }).distinct
   end
   def friends
     @_friends ||= User.not_banned.where(id: (friendships_sent.pluck(:friend_id) & friendships_received.pluck(:user_id)).uniq)
@@ -60,7 +64,7 @@ module Friendable
     friendships_sent.find_or_create_by(friend_id: friend.id) do
       if added_by?(friend)
         friend_path = Rails.application.routes.url_helpers.user_path(self)
-        ActionCable.server.broadcast("notifications_#{friend.id}", message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!")
+        ActionCable.server.broadcast("notifications_#{friend.id}", { message: "<a href=\"#{friend_path}\">#{self.username}</a> has accepted your friend request!" })
       else
         friend.notices.friend_request.create(friend: self)
       end

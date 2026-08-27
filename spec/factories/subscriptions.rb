@@ -10,7 +10,7 @@
 #  unsubscribed_at  :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :subscription do
     post
     user

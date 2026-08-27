@@ -42,7 +42,7 @@
 #  last_notified              :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     email
     password

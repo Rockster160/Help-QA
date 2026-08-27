@@ -15,9 +15,9 @@
 #  in_moderation      :boolean          default("false")
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :reply do
-    author :user
+    association :author, factory: :user
     body
   end
 end

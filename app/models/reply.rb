@@ -126,7 +126,7 @@ class Reply < ApplicationRecord
     return if hide_update || Rails.env.archive?
     mod_message = in_moderation? ? "<a href=\"/mod/queue\">There is a new reply that requires approval.</a>" : ""
     User.mod.each do |mod|
-      ActionCable.server.broadcast("notifications_#{mod.id}", message: mod_message)
+      ActionCable.server.broadcast("notifications_#{mod.id}", { message: mod_message })
     end
 
     ActionCable.server.broadcast("replies_for_#{post_id}", {})

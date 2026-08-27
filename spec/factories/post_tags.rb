@@ -7,7 +7,7 @@
 #  post_id :integer
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :post_tag do
     tag
     post

@@ -49,35 +49,35 @@ RSpec.describe User, type: :model do
   context "validations" do
     context "username" do
       context "when blank" do
-        let(:user) { ::FactoryGirl.build(:user, username: "") }
+        let(:user) { ::FactoryBot.build(:user, username: "") }
 
         it "should be invalid" do
           expect(user.valid?).to be(false)
-          expect(user.errors.keys).to include(:username)
+          expect(user.errors.attribute_names).to include(:username)
         end
       end
 
       context "as only numbers" do
-        let(:user) { ::FactoryGirl.build(:user, username: "12345678") }
+        let(:user) { ::FactoryBot.build(:user, username: "12345678") }
 
         it "should be invalid" do
           expect(user.valid?).to be(false)
-          expect(user.errors.keys).to include(:username)
+          expect(user.errors.attribute_names).to include(:username)
         end
       end
 
       context "with a space" do
-        let(:user) { ::FactoryGirl.build(:user, username: "hello world") }
+        let(:user) { ::FactoryBot.build(:user, username: "hello world") }
 
         it "should be invalid" do
           expect(user.valid?).to be(false)
-          expect(user.errors.keys).to include(:username)
+          expect(user.errors.attribute_names).to include(:username)
         end
       end
 
       context "when username already exists" do
-        let!(:user1) { ::FactoryGirl.create(:user, username: "helloworld") }
-        let(:user2) { ::FactoryGirl.build(:user, username: "helloworld") }
+        let!(:user1) { ::FactoryBot.create(:user, username: "helloworld") }
+        let(:user2) { ::FactoryBot.build(:user, username: "helloworld") }
 
         it "should be valid" do
           expect(user2.valid?).to be(false)
@@ -85,7 +85,7 @@ RSpec.describe User, type: :model do
       end
 
       context "with special characters" do
-        let(:user) { ::FactoryGirl.build(:user, username: "~~~helloworld~~~") }
+        let(:user) { ::FactoryBot.build(:user, username: "~~~helloworld~~~") }
 
         it "should be valid" do
           expect(user.valid?).to be(true)
@@ -95,9 +95,9 @@ RSpec.describe User, type: :model do
   end
 
   context "Friendship" do
-    let(:user)     { ::FactoryGirl.create(:user) }
-    let(:friend)   { ::FactoryGirl.create(:user) }
-    let(:favorite) { ::FactoryGirl.create(:user) }
+    let(:user)     { ::FactoryBot.create(:user) }
+    let(:friend)   { ::FactoryBot.create(:user) }
+    let(:favorite) { ::FactoryBot.create(:user) }
 
     context "can add friends" do
       it "can add or be added" do
@@ -150,7 +150,7 @@ RSpec.describe User, type: :model do
 
   context "default values" do
     context "username" do
-      let(:user) { ::FactoryGirl.create(:user, username: nil, email: "thisismy@email.com") }
+      let(:user) { ::FactoryBot.create(:user, username: nil, email: "thisismy@email.com") }
 
       it "should auto set the username to the first part of their email" do
         expect(user.username).to eq("thisismy")
@@ -160,7 +160,7 @@ RSpec.describe User, type: :model do
 
   context "public methods" do
     context "ip_address" do
-      let(:user) { ::FactoryGirl.create(:user, last_sign_in_ip: "174.52.39.242") }
+      let(:user) { ::FactoryBot.create(:user, last_sign_in_ip: "174.52.39.242") }
 
       it "should fall back to some value" do
         expect(user.ip_address).to eq("174.52.39.242")
@@ -168,7 +168,7 @@ RSpec.describe User, type: :model do
     end
 
     context "see!" do
-      let(:user) { ::FactoryGirl.create(:user, last_seen_at: nil) }
+      let(:user) { ::FactoryBot.create(:user, last_seen_at: nil) }
 
       it "should update the last_seen_at attribute" do
         user.see!
@@ -177,7 +177,7 @@ RSpec.describe User, type: :model do
     end
 
     context "letter" do
-      let(:user) { ::FactoryGirl.create(:user, username: "~~!#hello") }
+      let(:user) { ::FactoryBot.create(:user, username: "~~!#hello") }
 
       it "should return the first alpha charater in the username" do
         expect(user.letter).to eq("H")
@@ -186,7 +186,7 @@ RSpec.describe User, type: :model do
 
     context "online?" do
       context "when recently seen" do
-        let(:user) { ::FactoryGirl.create(:user, last_seen_at: 2.minutes.ago) }
+        let(:user) { ::FactoryBot.create(:user, last_seen_at: 2.minutes.ago) }
 
         it "should return true" do
           expect(user.online?).to be(true)
@@ -194,7 +194,7 @@ RSpec.describe User, type: :model do
       end
 
       context "when not recently seen" do
-        let(:user) { ::FactoryGirl.create(:user, last_seen_at: 2.years.ago) }
+        let(:user) { ::FactoryBot.create(:user, last_seen_at: 2.years.ago) }
 
         it "should return false" do
           expect(user.online?).to be(false)
@@ -203,7 +203,7 @@ RSpec.describe User, type: :model do
     end
 
     context "#aka" do
-      let(:user) { ::FactoryGirl.create(:user, username: "ToStart") }
+      let(:user) { ::FactoryBot.create(:user, username: "ToStart") }
       let(:timestamp1) { 1.months.ago }
       let(:timestamp2) { 2.months.ago }
       let(:timestamp3) { 3.months.ago }

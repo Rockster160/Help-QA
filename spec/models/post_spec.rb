@@ -32,7 +32,7 @@ RSpec.describe Post, type: :model do
     end
 
     context "instance" do
-      let(:post) { FactoryGirl.build(:post, body: spam_text) }
+      let(:post) { FactoryBot.build(:post, body: spam_text) }
 
       it "should be marked as spam" do
         expect(post.sounds_like_spam?).to     be(true)

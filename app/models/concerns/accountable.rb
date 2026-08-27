@@ -155,10 +155,15 @@ module Accountable
   def gravatar?(options={})
     hash = Digest::MD5.hexdigest(email.to_s.downcase)
     options = { rating: "pg", timeout: 2 }.merge(options)
-    http = Net::HTTP.new("www.gravatar.com", 80)
+    # Gravatar answers plain HTTP with a 301 to HTTPS, so the old
+    # `code != "302"` test reported a hit for every address. Asking for
+    # `default=404` makes "no avatar for this address" an explicit 404.
+    http = Net::HTTP.new("www.gravatar.com", 443)
+    http.use_ssl = true
     http.read_timeout = options[:timeout]
-    response = http.request_head("/avatar/#{hash}?rating=#{options[:rating]}&default=http://gravatar.com/avatar")
-    response.code != "302"
+    http.open_timeout = options[:timeout]
+    response = http.request_head("/avatar/#{hash}?rating=#{options[:rating]}&default=404")
+    response.code == "200"
   rescue StandardError, Timeout::Error
     false  # Show "no gravatar" if the service is down or slow
   end
@@ -196,7 +201,7 @@ module Accountable
   end
 
   def broadcast_changes
-    ActionCable.server.broadcast("chat", banned: id) if previous_changes["can_use_chat"].present? && !can_use_chat?
+    ActionCable.server.broadcast("chat", { banned: id }) if previous_changes["can_use_chat"].present? && !can_use_chat?
   end
 
   def reset_auth_token

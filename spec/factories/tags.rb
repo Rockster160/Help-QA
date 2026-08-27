@@ -8,8 +8,8 @@
 #  similar_tag_id_string :text
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :tag do
-    tag_name Faker::Lorem.word
+    tag_name { Faker::Lorem.word }
   end
 end

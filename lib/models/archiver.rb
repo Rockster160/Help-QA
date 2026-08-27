@@ -210,7 +210,7 @@ class Archiver
           obj.assign_attributes(obj_attrs)
           obj.save(validate: false)
           if obj.errors.any?
-            puts "#{obj.errors.full_messages} (#{obj.errors.keys.first}: #{obj.send(obj.errors.keys.first)})".colorize(:red)
+            puts "#{obj.errors.full_messages} (#{obj.errors.attribute_names.first}: #{obj.send(obj.errors.attribute_names.first)})".colorize(:red)
           end
         rescue => e
           puts "#{e} - #{row}: #{e.backtrace.join("\n")}".colorize(:red)

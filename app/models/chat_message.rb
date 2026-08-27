@@ -28,9 +28,9 @@ class ChatMessage < ApplicationRecord
 
   def broadcast_creation
     if removed?
-      ActionCable.server.broadcast "chat", removed: id
+      ActionCable.server.broadcast "chat", { removed: id }
     else
-      ActionCable.server.broadcast "chat", message: id
+      ActionCable.server.broadcast "chat", { message: id }
     end
   end
 end

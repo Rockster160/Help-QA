@@ -14,7 +14,8 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require js.cookie
-//= require jstz
+// browser-timezone-rails 1.1 detects the zone with the native Intl API, so the
+// bundled jstz shim it used to ship (and that was required here) is gone.
 //= require browser_timezone_rails/set_time_zone
 //= require_tree .
 

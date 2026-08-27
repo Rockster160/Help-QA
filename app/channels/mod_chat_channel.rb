@@ -25,7 +25,7 @@ class ModChatChannel < ApplicationCable::Channel
 
   def send_user_list
     rendered_message = ChatController.render(partial: "chat/online_list", locals: { usernames: Rails.cache.fetch("mods_chatting") { {} } })
-    ActionCable.server.broadcast "mod_chat", users: rendered_message
+    ActionCable.server.broadcast "mod_chat", { users: rendered_message }
   end
 
   def user_disconnected

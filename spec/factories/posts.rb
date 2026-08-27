@@ -15,9 +15,9 @@
 #  removed_at         :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :post do
-    author { ::FactoryGirl.create(:user) }
+    author { ::FactoryBot.create(:user) }
     body
   end
 end

@@ -1,0 +1,11 @@
+# This app stores attachments with Paperclip (see config.paperclip_defaults in
+# config/application.rb), not Active Storage. Active Storage is still loaded by
+# `require "rails/all"` and refuses to boot without this file, so it gets a
+# local-disk config it never actually uses.
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>

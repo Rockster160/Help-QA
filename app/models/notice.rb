@@ -84,7 +84,7 @@ class Notice < ApplicationRecord
 
   def broadcast_creation
     if updated_at == created_at
-      ActionCable.server.broadcast("notifications_#{user_id}", message: notice_message)
+      ActionCable.server.broadcast("notifications_#{user_id}", { message: notice_message })
     else
       quiet_notify
     end

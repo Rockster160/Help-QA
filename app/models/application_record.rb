@@ -11,6 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   def delay(method)
     return send(method) if Rails.env.test?
-    DelayWorker.perform_in(5.seconds, self.class.name, self.id, method)
+    # method arrives as a Symbol; Sidekiq 7's strict_args! rejects those.
+    DelayWorker.perform_in(5.seconds, self.class.name, self.id, method.to_s)
   end
 end

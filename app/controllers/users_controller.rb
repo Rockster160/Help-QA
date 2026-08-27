@@ -1,7 +1,7 @@
  class UsersController < ApplicationController
   include PostsHelper
   before_action :authenticate_mod, only: [:moderate]
-  before_action :unauthenticated, only: [:spy], unless: "can?(:view_user_spy)"
+  before_action :unauthenticated, only: [:spy], unless: -> { can?(:view_user_spy) }
 
   def index
     @users = User.displayable.order(created_at: :desc, id: :desc)

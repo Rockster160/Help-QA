@@ -19,6 +19,6 @@ class ModMessage < ApplicationRecord
   private
 
   def broadcast_creation
-    ActionCable.server.broadcast "mod_chat", message: id
+    ActionCable.server.broadcast "mod_chat", { message: id }
   end
 end

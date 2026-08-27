@@ -9,7 +9,10 @@ module Sherlockable
       self.send :after_save, proc {
         next if ignore_sherlock
         next if Rails.env.archive?
-        discovery = Sherlock.discover(self, changes.reject { |change_key| change_key.blank? || change_key.to_sym.in?(ignore.to_a) }, klass)
+        # `changes` is empty inside after_save from Rails 5.2 on -- the record is
+        # no longer dirty by the time callbacks run. `saved_changes` carries the
+        # same {attr => [before, after]} shape for the save that just happened.
+        discovery = Sherlock.discover(self, saved_changes.reject { |change_key| change_key.blank? || change_key.to_sym.in?(ignore.to_a) }, klass)
         next unless discovery.present?
         discovery_type = discovery.set_discovery_type
         discovery.save unless discovery_type.in?(skip)

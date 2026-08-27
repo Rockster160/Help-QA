@@ -8,9 +8,9 @@
 #  created_at   :datetime
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :post_view do
-    viewed_by :user
+    association :viewed_by, factory: :user
     post
   end
 end
