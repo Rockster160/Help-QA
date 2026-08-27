@@ -8,9 +8,9 @@ end
 ruby '3.2.2'
 
 # Defaults
-gem 'rails', '~> 7.0.8'
+gem 'rails', '~> 7.2.3', '>= 7.2.3.2'
 gem 'pg', '~> 1.5'
-gem 'puma', '~> 6.4'
+gem 'puma', '~> 7.2.1'
 gem 'sprockets-rails'
 gem 'sassc-rails'
 gem 'terser'
@@ -23,7 +23,7 @@ gem 'redis', '~> 5.0'
 
 # Essentials
 gem 'sidekiq', '~> 7.2'
-gem 'sidekiq-cron', '~> 1.12'
+gem 'sidekiq-cron', '~> 2.4'
 # connection_pool 3.0 changed TimedStack#pop's signature; Sidekiq 7.3 still
 # calls it with an argument, which kills the scheduler thread (no retries, no
 # scheduled jobs, no cron). Sidekiq's own dependency is too loose to prevent it.
@@ -35,7 +35,7 @@ gem 'faker'
 gem 'factory_bot_rails'
 # / Essentials
 
-gem 'devise', '~> 4.9'
+gem 'devise', '~> 5.0.4'
 gem 'rest-client'
 gem 'has_friendship'
 gem 'chroma'

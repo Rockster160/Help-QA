@@ -34,7 +34,7 @@ class Notice < ApplicationRecord
   after_create :notify_user
   after_commit :broadcast_creation
 
-  enum notice_type: {
+  enum :notice_type, {
     other:              0,
     subscription:       1,
     friend_request:     3

@@ -13,11 +13,21 @@ module Helpqa
     # -- all .rb files in that directory are automatically loaded.
 
     # Staged upgrade: the app came from Rails 5.0 defaults. 6.1 is the intermediate
-    # step recommended by the upgrade guide; bump to 7.0 once the suite is green.
+    # step recommended by the upgrade guide; bump toward 7.2 once the suite is green.
     config.load_defaults 6.1
 
     # app/workers is picked up automatically by Zeitwerk -- every app/* directory
     # is an autoload root, so it must not be added a second time.
+
+    # Rails 7.2 dropped config/secrets.yml. production and archive used to read
+    # secret_key_base out of it via ENV["HELPQA_APP_SECRET"]; without this they
+    # would refuse to boot, and any replacement value would invalidate every
+    # signed cookie, session, and Devise reset token already in the wild.
+    # development and test have no such env var and fall back to the secret Rails
+    # generates into tmp/local_secret.txt.
+    if ENV["HELPQA_APP_SECRET"].present?
+      config.secret_key_base = ENV["HELPQA_APP_SECRET"]
+    end
 
     config.paperclip_defaults = {
       storage:           :s3,

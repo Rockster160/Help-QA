@@ -25,8 +25,9 @@ class Sherlock < ApplicationRecord
     def self.dump(hash); hash.is_a?(String) ? hash : JSON.dump(hash); end
     def self.load(str); JSON.parse(str) rescue {}; end
   end
-  serialize :new_attributes, JSONWrapper
-  serialize :changed_attrs, JSONWrapper
+  # Rails 7.2 removed the positional coder argument; it must be passed as coder:.
+  serialize :new_attributes, coder: JSONWrapper
+  serialize :changed_attrs, coder: JSONWrapper
 
   validate :some_changes_made
 

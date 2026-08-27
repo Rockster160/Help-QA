@@ -5,7 +5,7 @@ module Moddable
     has_one :mod_abilities, dependent: :destroy
     has_many :feedbacks, dependent: :destroy
 
-    enum role: {
+    enum :role, {
       default:      0,
       trusted_user: 1,
       ancient_user: 2,
