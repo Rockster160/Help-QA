@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
 
   if Rails.env.production?
     rescue_from ActionController::UnknownFormat,     with: :not_found
-    rescue_from ActionController::UnknownController, with: :not_found
     rescue_from ActionView::MissingTemplate,         with: :not_found
     rescue_from ActionController::ParameterMissing,  with: :not_found
   end
