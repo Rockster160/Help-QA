@@ -102,7 +102,12 @@ class AnoniconGenerator
     elsif
       color = @corner_color
     end
-    @png.polygon(shape.relative_poly_coords.map { |rel_x, rel_y| [(rel_x * @chunk_size) + ox, (rel_y * @chunk_size) + oy] }, color, color)
+    # flat_map, not map: chunky_png's multiple_from_array checks
+    # `source.first.is_a?(Numeric) || source.first =~ /^\d+$/`. An array of
+    # [x, y] pairs falls through to `=~`, which Ruby 3.2 removed from Object,
+    # raising NoMethodError. A flat [x1, y1, x2, y2] list matches the Numeric
+    # branch first and never reaches it. Same points either way.
+    @png.polygon(shape.relative_poly_coords.flat_map { |rel_x, rel_y| [(rel_x * @chunk_size) + ox, (rel_y * @chunk_size) + oy] }, color, color)
   end
 
 end
